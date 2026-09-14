@@ -1,0 +1,28 @@
+# Baseline Conformer-CTC. Chạy `python -m src.models.param_count` sau khi
+# cài mamba-ssm để tinh chỉnh mamba yaml khớp số tham số với config này.
+experiment_name: conformer_ctc_baseline
+
+encoder:
+  type: conformer
+  input_dim: 80
+  d_model: 256
+  n_layers: 8
+  n_heads: 4
+  conv_kernel_size: 31
+  ff_dim: 1024
+  dropout: 0.1
+
+tokenizer:
+  vocab_size: 1000
+
+training:
+  batch_size: 16 # điều chỉnh theo VRAM thực tế trên Colab T4 (16GB)
+  lr: 3e-4
+  epochs: 30
+  warmup_steps: 1000
+  grad_clip: 5.0
+
+data:
+  train_split: train
+  eval_split: dev-test
+  sample_rate: 16000

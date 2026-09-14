@@ -1,0 +1,28 @@
+# Mamba-CTC. d_model/n_layers/expand là giá trị khởi điểm — PHẢI tinh chỉnh
+# bằng `python -m src.models.param_count` để khớp số tham số với
+# model_conformer.yaml (< 5% chênh lệch) trước khi bắt đầu train (Tuần 9-10).
+experiment_name: mamba_ctc
+
+encoder:
+  type: mamba
+  input_dim: 80
+  d_model: 256
+  n_layers: 10 # Mamba block thường nhẹ hơn 1 Conformer block -> cần nhiều layer hơn để khớp param
+  d_state: 16
+  d_conv: 4
+  expand: 2
+
+tokenizer:
+  vocab_size: 1000 # PHẢI khớp với model_conformer.yaml (dùng chung tokenizer)
+
+training:
+  batch_size: 16
+  lr: 3e-4
+  epochs: 30
+  warmup_steps: 1000
+  grad_clip: 5.0
+
+data:
+  train_split: train
+  eval_split: dev-test
+  sample_rate: 16000

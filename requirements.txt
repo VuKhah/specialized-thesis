@@ -1,0 +1,33 @@
+# Core (đã có sẵn trên Colab, ghi rõ để tái lập môi trường)
+torch>=2.1
+torchaudio>=2.1
+
+# Feature extraction
+librosa
+soundfile
+
+# Tokenizer BPE tiếng Việt
+sentencepiece
+tokenizers
+
+# Mamba encoder (xem notebooks/00_setup_environment.ipynb để cài đúng cách trên Colab T4)
+mamba-ssm
+causal-conv1d>=1.4.0
+
+# Conformer encoder — dùng khối conformer chuẩn trong torchaudio, không cần thêm thư viện.
+# Nếu cần thư viện tham khảo/kiểm chứng thêm: espnet hoặc conformer (pypi), chỉ thêm khi cần.
+
+# Dataset
+datasets
+huggingface_hub
+
+# Evaluation
+jiwer
+
+# Demo
+gradio
+
+# Config & utils
+pyyaml
+tqdm
+tensorboard
