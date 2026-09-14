@@ -79,9 +79,40 @@ ghi rõ trong Chương 2 và ước lượng lại thời gian train).
 (đúng như giả định trong `src/data/vietsuperspeech_dataset.py`), `source`
 là tên file video nguồn — có thể dùng để nhóm/loại nhiễu theo kênh khi cần.
 
-**Việc cần làm lần 3:** chạy lại notebook đã cập nhật (đặc biệt là bước
-restart runtime ở mục 2b), copy full traceback nếu lỗi `__dict__` vẫn còn,
-ghi kết quả vào đây (Lần 3 — ...). Nếu restart runtime giải quyết được lỗi,
-coi như rủi ro cao nhất của đề tài đã được xác nhận an toàn (dùng CUDA
-kernel thật); nếu không, quyết định dùng `selective_scan_ref` làm phương án
-chính thức và ghi rõ trong đề cương/báo cáo.
+## Lần 3 — 2026-09-14
+
+User gửi full traceback của lỗi `__dict__ of 'type' objects is not
+writable` (trước đó chỉ có `repr(e)`). **Nguyên nhân thật, không liên quan
+đến torch dispatcher hay build isolation:**
+
+```
+from mamba_ssm import Mamba
+  -> mamba_ssm/__init__.py: from mamba_ssm.modules.mamba3 import Mamba3
+    -> mamba_ssm/ops/tilelang/mamba3/mamba3_mimo_fwd.py: import tilelang
+      -> tilelang/__init__.py: import tvm
+        -> tvm/ir/attrs.py: @tvm_ffi.register_object("ir.DictAttrs")
+          -> tvm_ffi/registry.py: setattr(type_cls, name, field.as_property(type_cls))
+             AttributeError: attribute '__dict__' of 'type' objects is not writable
+```
+
+Nhánh `main` của `state-spaces/mamba`, từ tag **v2.3.2** (5/2025), gộp thêm
+kiến trúc **Mamba-3** — và `mamba_ssm/__init__.py` **luôn luôn** import
+`Mamba3` (không có try/except), kéo theo dependency nặng `tilelang` → `tvm`.
+Bản thân `tvm_ffi` có bug đăng ký class attribute không tương thích Python
+3.12.13 (không liên quan gì đến CUDA/GPU hay code của đề tài). Đề tài chỉ
+cần kiến trúc Mamba/S6 cổ điển (Mamba-1/2), không dùng Mamba-3.
+
+**Fix:** pin cài đặt về tag **`v2.3.1`** (release cuối cùng trước khi gộp
+Mamba-3, 10/03/2025):
+
+```
+pip install --no-build-isolation git+https://github.com/state-spaces/mamba@v2.3.1
+```
+
+Đã cập nhật `notebooks/00_setup_environment.ipynb` theo fix này.
+
+**Việc cần làm lần 4:** chạy lại notebook đã pin v2.3.1, xác nhận
+`from mamba_ssm import Mamba` + forward pass CUDA kernel chạy được, ghi kết
+quả vào đây (Lần 4 — ...). Nếu vẫn lỗi khác, đây mới thực sự là lúc cân
+nhắc chính thức chuyển sang `selective_scan_ref` (đã xác nhận khả dụng từ
+Lần 2) làm phương án chính.
