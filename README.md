@@ -65,18 +65,33 @@ checkpoints/   model checkpoint đã train (không commit vào git)
 data/          dữ liệu audio (không commit vào git — quá lớn cho GitHub)
 ```
 
-## Trạng thái hiện tại (Tuần 1)
+## Trạng thái hiện tại
 
+**Tuần 1-2:**
 - [x] Đề cương chi tiết + tóm lược đã hoàn thiện, đã đăng ký với GVHD.
 - [x] Cấu trúc project + skeleton code.
 - [x] **Rủi ro kỹ thuật cao nhất: cài `mamba-ssm` trên Kaggle T4 — ĐÃ GIẢI
       QUYẾT.** Build từ source, pin tag `v2.3.1`, CUDA kernel thật đã chạy
       được (forward pass xác nhận, Lần 4). Xem
-      [`docs/notes/mamba_ssm_install_log.md`](docs/notes/mamba_ssm_install_log.md)
-      cho lệnh cài đặt chính xác và toàn bộ quá trình chẩn đoán.
-- [x] Xác nhận schema VietSuperSpeech (`audio`, `text`, `duration`, `source`).
-- [ ] Tải & khảo sát thống kê đầy đủ VietSuperSpeech.
-- [ ] Xây tokenizer BPE tiếng Việt.
+      [`docs/notes/mamba_ssm_install_log.md`](docs/notes/mamba_ssm_install_log.md).
+
+**Tuần 3:**
+- [x] Khảo sát thống kê đầy đủ VietSuperSpeech (`src/data/survey.py`, chạy
+      local, không cần GPU) — kết quả: `reports/results/dataset_survey_*.json`.
+- [x] Xây tokenizer BPE tiếng Việt (`configs/tokenizer.model`, vocab_size=1000,
+      train trên 60.656 transcript thật).
+- [x] Lấy mẫu clean-test 200-300 câu (seed cố định) —
+      `data/processed/clean_test_manifest.json` (250 mẫu, seed=42, còn
+      trống cột `corrected_text`, cần nghe & hiệu đính thủ công).
+- [ ] ⚠️ **VẤN ĐỀ MỞ, CHƯA QUYẾT ĐỊNH HƯỚNG XỬ LÝ**: số liệu dataset thật
+      khác đáng kể so với đề cương đã đăng ký (67.405 mẫu/245,42h thực đo
+      so với 52.023/267,39h trong đề cương; tên split đúng là
+      `train`/`validation` không phải `dev-test`; **độ dài audio thực tế
+      gần như đồng nhất 10-15 giây, không phải dải 3-30 giây** như đề cương
+      giả định) — ảnh hưởng trực tiếp đến thiết kế RQ2 (RTF theo độ dài
+      audio). Toàn bộ phân tích + 4 hướng xử lý khả dĩ:
+      [`docs/notes/dataset_discrepancy.md`](docs/notes/dataset_discrepancy.md).
+      **Cần quyết định trước khi triển khai thực nghiệm RQ2** (Tuần 8, 12).
 
 Xem kế hoạch chi tiết theo tuần trong đề cương (Tuần 1–15).
 
