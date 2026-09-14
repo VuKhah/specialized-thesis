@@ -2,15 +2,33 @@
 
 Nguồn: https://huggingface.co/datasets/thanhnew2001/VietSuperSpeech
 Lưu ý: transcript là pseudo-label (Zipformer-30M-RNNT-6000h qua Sherpa-ONNX),
-chưa qua kiểm định người — xem clean_test.py (Tuần 3) để tạo tập clean-test
+chưa qua kiểm định người — xem src/data/survey.py (Tuần 3) cho tập clean-test
 200-300 câu hiệu đính thủ công, seed cố định.
+
+QUAN TRỌNG — cấu trúc audio (phát hiện khi xây notebooks/02_dataset_eda.ipynb,
+2026-09-14): cột "audio" KHÔNG phải kiểu `datasets.Audio` tự giải mã — nó chỉ
+là chuỗi đường dẫn tương đối (vd. "audio/asr_segments_.../xxx_seg047.wav").
+Phải tự tải bằng `hf_hub_download` rồi đọc bằng soundfile.
+
+TODO (Tuần 4-5, trước khi train thật): tải từng file qua HTTP riêng lẻ trong
+__getitem__ như dưới đây MẤT ~1-4 GIÂY/FILE — với 60k+ mẫu, epoch đầu sẽ mất
+hàng chục giờ nếu không có chiến lược cache/tải hàng loạt. Cần tải trước toàn
+bộ thư mục audio/ bằng `huggingface_hub.snapshot_download` (song song, một
+lần) trước khi bắt đầu vòng lặp train, thay vì tải từng mẫu on-the-fly như
+hiện tại — bản dưới đây CHỈ phù hợp cho khảo sát/thử nghiệm nhỏ (EDA), không
+phù hợp để train trực tiếp.
 """
 
+from pathlib import Path
+
+import soundfile as sf
 import torch
 from datasets import load_dataset
+from huggingface_hub import hf_hub_download
 from torch.utils.data import Dataset
 
 HF_DATASET_ID = "thanhnew2001/VietSuperSpeech"
+AUDIO_CACHE_DIR = "data/raw/audio_cache"
 
 
 class VietSuperSpeechDataset(Dataset):
@@ -21,15 +39,18 @@ class VietSuperSpeechDataset(Dataset):
         cho chênh lệch số liệu đầy đủ so với đề cương)."""
         self.hf_dataset = load_dataset(HF_DATASET_ID, split=split)
         self.tokenizer = tokenizer
+        Path(AUDIO_CACHE_DIR).mkdir(parents=True, exist_ok=True)
 
     def __len__(self):
         return len(self.hf_dataset)
 
     def __getitem__(self, idx: int):
         item = self.hf_dataset[idx]
-        # Schema xác nhận qua notebooks/00_setup_environment.ipynb (Kaggle, 2026-09-14):
-        # dict_keys(['audio', 'text', 'duration', 'source']) — source = tên file video gốc.
-        waveform = torch.tensor(item["audio"]["array"], dtype=torch.float32)
+        # Schema: dict_keys(['audio', 'text', 'duration', 'source']) —
+        # "audio" là đường dẫn tương đối (string), không tự giải mã, xem TODO ở đầu file.
+        local_path = hf_hub_download(HF_DATASET_ID, item["audio"], repo_type="dataset", local_dir=AUDIO_CACHE_DIR)
+        array, _sample_rate = sf.read(local_path)
+        waveform = torch.from_numpy(array).float()
         text = item["text"]
         token_ids = self.tokenizer.encode(text) if self.tokenizer else None
         return {"waveform": waveform, "text": text, "token_ids": token_ids}
