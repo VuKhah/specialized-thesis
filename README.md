@@ -69,45 +69,42 @@ data/          dữ liệu audio (không commit vào git — quá lớn cho GitH
 
 - [x] Đề cương chi tiết + tóm lược đã hoàn thiện, đã đăng ký với GVHD.
 - [x] Cấu trúc project + skeleton code.
-- [ ] **Kiểm tra rủi ro kỹ thuật cao nhất: cài `mamba-ssm` trên Kaggle T4.**
-      Đã cài được (build từ source, pin tag `v2.3.1`) và xác nhận fallback
-      thuần PyTorch hoạt động; **chưa verify CUDA kernel thật chạy đúng sau
-      khi pin** — xem phần "Rủi ro" bên dưới và log chi tiết trong
-      [`docs/notes/mamba_ssm_install_log.md`](docs/notes/mamba_ssm_install_log.md).
+- [x] **Rủi ro kỹ thuật cao nhất: cài `mamba-ssm` trên Kaggle T4 — ĐÃ GIẢI
+      QUYẾT.** Build từ source, pin tag `v2.3.1`, CUDA kernel thật đã chạy
+      được (forward pass xác nhận, Lần 4). Xem
+      [`docs/notes/mamba_ssm_install_log.md`](docs/notes/mamba_ssm_install_log.md)
+      cho lệnh cài đặt chính xác và toàn bộ quá trình chẩn đoán.
 - [x] Xác nhận schema VietSuperSpeech (`audio`, `text`, `duration`, `source`).
 - [ ] Tải & khảo sát thống kê đầy đủ VietSuperSpeech.
 - [ ] Xây tokenizer BPE tiếng Việt.
 
 Xem kế hoạch chi tiết theo tuần trong đề cương (Tuần 1–15).
 
-## Rủi ro kỹ thuật lớn nhất: cài đặt `mamba-ssm`
+## Rủi ro kỹ thuật lớn nhất: cài đặt `mamba-ssm` — ĐÃ GIẢI QUYẾT (Tuần 1)
 
 `mamba-ssm` cần biên dịch CUDA kernel (`causal-conv1d` + `selective_scan`).
-Lịch sử 3 lần thử trên Kaggle T4 (chi tiết đầy đủ, kèm log lỗi thật:
-[`docs/notes/mamba_ssm_install_log.md`](docs/notes/mamba_ssm_install_log.md)):
+Sau 4 lần thử trên Kaggle T4 (toàn bộ log lỗi + chẩn đoán chi tiết:
+[`docs/notes/mamba_ssm_install_log.md`](docs/notes/mamba_ssm_install_log.md)),
+lệnh cài đặt đúng đã xác nhận:
 
-1. **Cài qua pip thẳng — thất bại**: lỗi build metadata do PEP517 build
-   isolation không thấy torch cài sẵn.
-2. **Build từ source (`--no-build-isolation`), nhánh `main` — cài được**,
-   nhưng import lỗi `AttributeError: __dict__ of 'type' objects is not
-   writable`.
-3. **Chẩn đoán bằng full traceback → xác định nguyên nhân thật**: nhánh
-   `main` (từ v2.3.2) gộp thêm kiến trúc **Mamba-3** mới, và
-   `mamba_ssm/__init__.py` luôn import nó dù không dùng tới — kéo theo
-   `tilelang` → `tvm`, và `tvm` có bug không tương thích Python 3.12.
-   **Fix**: pin cài đặt về tag `v2.3.1` (bản cuối trước Mamba-3) — đề tài
-   chỉ cần Mamba/S6 cổ điển nên không mất gì. Xem
-   [`docs/notes/mamba_versions.md`](docs/notes/mamba_versions.md) để hiểu
-   rõ khác biệt Mamba/S6 vs Mamba-2 vs Mamba-3 và vì sao chọn bản cổ điển.
+```bash
+pip install packaging ninja
+pip install --no-build-isolation git+https://github.com/Dao-AILab/causal-conv1d
+pip install --no-build-isolation git+https://github.com/state-spaces/mamba@v2.3.1
+```
 
-**Phương án dự phòng đã xác nhận hoạt động**: `mamba_ssm` có sẵn
-implementation thuần PyTorch không cần CUDA kernel custom
-(`selective_scan_ref`, chậm hơn nhưng đúng về mặt số học) — đề tài không bị
-chặn ngay cả khi CUDA kernel thật còn vấn đề.
+Tóm tắt quá trình: pip cài thẳng thất bại do PEP517 build isolation không
+thấy torch cài sẵn → build từ source (`--no-build-isolation`) cài được
+nhưng nhánh `main` (từ v2.3.2) kéo theo kiến trúc **Mamba-3** mới (qua
+`tilelang`/`tvm`, có bug không tương thích Python 3.12) → pin về tag
+`v2.3.1` (bản cuối trước Mamba-3, đúng Mamba/S6 cổ điển mà đề cương cần) →
+**CUDA kernel thật chạy đúng, đã xác nhận bằng forward pass thật.** Xem
+[`docs/notes/mamba_versions.md`](docs/notes/mamba_versions.md) để hiểu rõ
+khác biệt Mamba/S6 vs Mamba-2 vs Mamba-3.
 
-Việc này **phải xác nhận xong trong Tuần 1–2** theo đúng kế hoạch trong đề
-cương — đây là rủi ro cao nhất của toàn bộ đề tài. Còn thiếu: verify lại
-CUDA kernel thật chạy đúng sau khi pin `v2.3.1` (Lần 4, chưa chạy).
+Phương án dự phòng (`selective_scan_ref`, thuần PyTorch, không cần CUDA
+kernel) cũng đã xác nhận khả dụng — vẫn giữ làm backup nếu môi trường
+Kaggle thay đổi version torch/CUDA sau này.
 
 ## Dataset
 

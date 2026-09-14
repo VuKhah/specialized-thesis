@@ -117,8 +117,44 @@ pip install --no-build-isolation git+https://github.com/state-spaces/mamba@v2.3.
 
 Đã cập nhật `notebooks/00_setup_environment.ipynb` theo fix này.
 
-**Việc cần làm lần 4:** chạy lại notebook đã pin v2.3.1, xác nhận
-`from mamba_ssm import Mamba` + forward pass CUDA kernel chạy được, ghi kết
-quả vào đây (Lần 4 — ...). Nếu vẫn lỗi khác, đây mới thực sự là lúc cân
-nhắc chính thức chuyển sang `selective_scan_ref` (đã xác nhận khả dụng từ
-Lần 2) làm phương án chính.
+## Lần 4 — 2026-09-14 — ĐÃ GIẢI QUYẾT
+
+**Môi trường:** Kaggle T4 x2, torch 2.10.0+cu128, Python 3.12.13 (session mới).
+
+Chạy lại notebook đã pin `v2.3.1`:
+
+```
+pip install packaging ninja                                              -> return code 0
+pip install --no-build-isolation git+.../Dao-AILab/causal-conv1d         -> return code 0
+pip install --no-build-isolation git+.../state-spaces/mamba@v2.3.1       -> return code 0
+```
+
+Test forward pass CUDA kernel thật:
+
+```
+from mamba_ssm import Mamba
+m = Mamba(d_model=64, d_state=16, d_conv=4, expand=2).to("cuda")
+y = m(torch.randn(2, 32, 64, device="cuda"))
+-> OK — mamba-ssm (CUDA kernel) hoạt động. Output shape: torch.Size([2, 32, 64])
+```
+
+`MAMBA_CUDA_OK = True`, `FALLBACK_OK = True` (selective_scan_ref cũng vẫn
+import được). Kết luận notebook: **dùng CUDA kernel thật cho tốc độ
+train/inference tốt nhất.**
+
+## Kết luận cuối cùng — rủi ro cao nhất của đề tài đã được xác nhận an toàn
+
+Cài đặt đúng cho `mamba-ssm` (Mamba/S6 cổ điển, không dính Mamba-3) trên
+Kaggle T4:
+
+```bash
+pip install packaging ninja
+pip install --no-build-isolation git+https://github.com/Dao-AILab/causal-conv1d
+pip install --no-build-isolation git+https://github.com/state-spaces/mamba@v2.3.1
+```
+
+Dùng `from mamba_ssm import Mamba` bình thường trong `src/models/mamba_encoder.py`
+— CUDA kernel thật hoạt động, không cần fallback `selective_scan_ref` (vẫn
+giữ như phương án dự phòng nếu môi trường Kaggle thay đổi version sau này).
+Có thể tiếp tục sang Tuần 3 (khảo sát VietSuperSpeech, xây tokenizer) theo
+đúng kế hoạch trong đề cương.
