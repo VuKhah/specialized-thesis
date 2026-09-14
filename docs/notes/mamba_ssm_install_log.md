@@ -36,5 +36,52 @@ về tính khả dụng của fallback thuần PyTorch từ lần chạy này.
 (`--no-build-isolation`, build từ source, dùng đúng torch đã cài sẵn).
 Notebook đã được cập nhật để thử cách này làm ưu tiên tiếp theo.
 
-**Việc cần làm lần 2:** chạy lại `notebooks/00_setup_environment.ipynb`
-(đã sửa), ghi kết quả tiếp vào file này (Lần 2 — ...).
+## Lần 2 — 2026-09-14
+
+**Môi trường:** Colab T4 mới (session khác), `torch 2.10.0+cu128`, driver
+CUDA 13.0, Python 3.12.13.
+
+**Cách 2 — build từ source với `--no-build-isolation`: CÀI THÀNH CÔNG.**
+
+```
+pip install packaging ninja                                            -> return code 0
+pip install --no-build-isolation git+.../Dao-AILab/causal-conv1d       -> return code 0
+pip install --no-build-isolation git+.../state-spaces/mamba            -> return code 0
+```
+
+Xác nhận đúng giả thuyết ở Lần 1: build isolation là nguyên nhân, dùng
+`--no-build-isolation` để setup.py thấy torch cài sẵn đã giải quyết được.
+
+**Nhưng test forward pass với CUDA kernel thật vẫn THẤT BẠI, lỗi khác:**
+
+```
+AttributeError("attribute '__dict__' of 'type' objects is not writable")
+```
+
+Chưa có traceback đầy đủ ở lần chạy này (cell cũ chỉ in `repr(e)`) nên chưa
+xác định được lỗi xảy ra ở đâu (import `mamba_ssm`, khởi tạo `Mamba(...)`,
+hay lúc gọi forward). Notebook đã được cập nhật 2 việc để chẩn đoán tiếp ở
+lần chạy sau:
+1. In full traceback (`traceback.print_exc()`) thay vì chỉ `repr(e)`.
+2. Thêm bước **restart runtime sau khi cài, trước khi import** — nghi vấn
+   hàng đầu: torch đã được import trước khi cài package build từ source
+   trong cùng session, custom CUDA op đăng ký vào torch dispatcher có thể
+   cần runtime mới để nhận đúng trạng thái.
+
+**Tin tốt — phương án dự phòng đã xác nhận hoạt động:**
+`from mamba_ssm.ops.selective_scan_interface import selective_scan_ref` →
+**import thành công.** Đề tài không bị chặn ngay cả khi CUDA kernel thật
+không chạy được — có thể tiếp tục với `selective_scan_ref` (chậm hơn, cần
+ghi rõ trong Chương 2 và ước lượng lại thời gian train).
+
+**Bonus — xác nhận schema dataset VietSuperSpeech:**
+`dict_keys(['audio', 'text', 'duration', 'source'])`. `text` là transcript
+(đúng như giả định trong `src/data/vietsuperspeech_dataset.py`), `source`
+là tên file video nguồn — có thể dùng để nhóm/loại nhiễu theo kênh khi cần.
+
+**Việc cần làm lần 3:** chạy lại notebook đã cập nhật (đặc biệt là bước
+restart runtime ở mục 2b), copy full traceback nếu lỗi `__dict__` vẫn còn,
+ghi kết quả vào đây (Lần 3 — ...). Nếu restart runtime giải quyết được lỗi,
+coi như rủi ro cao nhất của đề tài đã được xác nhận an toàn (dùng CUDA
+kernel thật); nếu không, quyết định dùng `selective_scan_ref` làm phương án
+chính thức và ghi rõ trong đề cương/báo cáo.
