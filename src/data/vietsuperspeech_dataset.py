@@ -15,9 +15,10 @@ HF_DATASET_ID = "thanhnew2001/VietSuperSpeech"
 
 class VietSuperSpeechDataset(Dataset):
     def __init__(self, split: str = "train", tokenizer=None):
-        """split: "train" hoặc "dev-test" (tên field theo dataset gốc — xác
-        nhận lại tên split chính xác khi chạy thử load_dataset lần đầu, Tuần 3).
-        """
+        """split: "train" hoặc "validation" — tên split thật trên HF Hub
+        (KHÔNG phải "dev-test" như ghi trong đề cương, xác nhận qua
+        src/data/survey.py, Tuần 3 — xem docs/notes/dataset_discrepancy.md
+        cho chênh lệch số liệu đầy đủ so với đề cương)."""
         self.hf_dataset = load_dataset(HF_DATASET_ID, split=split)
         self.tokenizer = tokenizer
 

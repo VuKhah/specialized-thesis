@@ -11,6 +11,9 @@ data/raw/*
 data/processed/*
 !data/raw/.gitkeep
 !data/processed/.gitkeep
+# Manifest hiệu đính thủ công (clean-test) là công sức tay, PHẢI track dù
+# nằm trong data/processed/ — chỉ audio/transcript thô mới loại trừ.
+!data/processed/clean_test_manifest.json
 checkpoints/*
 !checkpoints/.gitkeep
 *.pt
@@ -31,5 +34,5 @@ Thumbs.db
 .vscode/
 .idea/
 
-# Local Claude settings
-.claude/settings.local.json
+# Local Claude Code session state
+.claude/

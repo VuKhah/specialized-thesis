@@ -1,0 +1,2007 @@
+{
+  "split": "validation",
+  "seed": 42,
+  "n": 250,
+  "samples": [
+    {
+      "index": 4,
+      "source": "Ai_cung_bat_dau_moi_trai_nghiem_vi_muon_duoc_yeu_-_MC_Lieu_Ha_Trinh_HaveASip_211.mp4",
+      "duration_s": 11.4,
+      "pseudo_label": "THẾ NÀY NÀY TRƯỚC MẶT TÔI LUÔN CÓ NGƯỜI KHÔNG CÓ NGƯỜI LÀ CHẾT NHỞ DẠ KHÔNG KHÔNG CÓ KHÁN GIẢ KHÔNG CÓ NGƯỜI LẮNG NGHE MÌNH LÀ CÁI CÁI NATURE CỦA CÁI CÔNG VIỆC NÀY NÓ BIẾN MẤT",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 26,
+      "source": "2024_da_nen_xuong_tien_mua_nha_-_Kiet_Vo_Director_National_Head_of_Residential_Project_MKT_CBRE.mp4",
+      "duration_s": 14.7,
+      "pseudo_label": "TOU HOUSE BI TOW HOUSE PRICE IN HO I VEING LIST FIVES A LOT OF THE NEW CONDOM AT DA HEP ANRACE AND PROVID A LOT OF THE NEW HOUSE TO THE MARKET",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 53,
+      "source": "Ai_giat_day_nhung_con_roi_tlinh_-_Rapper_tlinh_HaveASip_120.mp4",
+      "duration_s": 14.8,
+      "pseudo_label": "NHƯNG MÀ EM LÀ CHỊ NHỚ ĐẾN À KHÔNG SUBOI NÓ TRÔNG CÁI SÂU KHÔNG CÂY KHÔNG VỀ ĐẾN MỘT LÚC NÓ LỘT LÔNG MÌ RỒI MÌNH CỨ BỊ VƯỚNG VƯỚNG MÀ NÓI CHUNG LÀ MÌNH CŨNG PHẢI CHỈN CHU",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 94,
+      "source": "Ban_thich_GOI_DIEN_hay_NHAN_TIN_Nguoi_La_Oi_EP01.mp4",
+      "duration_s": 14.7,
+      "pseudo_label": "TỪ CÁI VỊ ẤY KIỂU THIỆT LÀ MẸ NÓ BẢ QUÁ NÊN RA LÀ ẤY CŨNG TỐT NÊN LÀ KHÔNG CÓ Ừ ĐỨA ANH THÌ KIỂU KHÔNG BẢ CHO LẮM NÊN CHỈ ĐEN THÔI CHỨ KHÔNG CÓ KHÔNG CÓ THẤY",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 159,
+      "source": "Cat_cao_tieng_hat_trong_thoi_chien_-_NSUT_Le_Thien_Tram_Nam_San_Khau_Ep5.mp4",
+      "duration_s": 15.0,
+      "pseudo_label": "HÔM NAY CÔ NGỒI ÔM LẠI NHỮNG KỶ NIỆM NÀY CÔ VỪA NÓI CÔ VỪA CƯỜI NHƯNG MÀ RÕ RÀNG LÀ CÁI THỜI GIAN ĐÓ MÌNH PHẢI RẤT LÀ SỢ HÃI VẬY THÌ CÁI VIỆC CÁI ĐỘNG LỰC NÀO GIÚP CÔ VƯỢT QUA NHỮNG NỖI SỢ ĐÓ ĐÓ BOM CÓ THỂ GIẾT CHẾT MÌNH NGAY KHI MÌNH ĐANG HÁT",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 204,
+      "source": "Hanh_trinh_chinh_phuc_nguoi_dung_Viet_-_Jean-Paul_Schmetz_Vu_Anh_Nguyen_Chairman_CEO_Coc_Coc.mp4",
+      "duration_s": 13.5,
+      "pseudo_label": "SHOGE WEB PROGER CHANO UPDATE ING THE BEAU THE MY KIT FRED AUNG TIM MÌNH NOT A KẾT SUBER FECTION HAPPER AND SHARE MORE BUFFET WORKING TOTY OF THE",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 217,
+      "source": "Hau_Covid_nganh_FB_Viet_Nam_rut_ra_nhung_bai_hoc_gi_Alive_Kicking_Ep1.mp4",
+      "duration_s": 12.3,
+      "pseudo_label": "WEB THE MONEY IS OND EXCƠI AND WHAT YOU TO MONEY ISO DI FUENT SORRY IS OANH BEST JORDA",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 244,
+      "source": "Hoi_dap_cung_thay_Minh_Niem_-_Thuy_Minh_Thay_Minh_Niem_Ban_Than_Ban_Than.mp4",
+      "duration_s": 11.0,
+      "pseudo_label": "ĐÓ LÀ MỘT SỰ THÀNH CÔNG MỘT BỮA NẤU ĂN THẦY NẤU ĂN LÀM SAO CHO NÓ THÀNH CÔNG VỪA GỌN GÀNG VỪA KHÔNG MẤT THỜI GIAN VỪA KHÔNG CÓ PHIỀN NÃO SÂN SI VỪA CÓ DINH DƯỠNG",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 260,
+      "source": "Kham_pha_nhung_insight_dat_gia_o_nhieu_nganh_hang_tu_2_research_guru_Young_Marketers_EP05.mp4",
+      "duration_s": 11.9,
+      "pseudo_label": "TÀI CHÁNH CỦA NGÂN HÀNG NHÁ VÀ CÁI ĐÒN BẨY TÀI CHÍNH NGÂN HÀNG NÓ SẼ GIÚP TỨC LÀ NÓ SẼ GIÚP CHO NGƯỜI TA FASHILITAGE CHO NGƯỜI TA THỰC HIỆN NHỮNG CÁI START HAY LÀ NHỮNG CÁI INVESTMENT",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 262,
+      "source": "Khang_thuong_hien_tai_thuong_minh_o_tuong_lai_-_Vietcetera_Team_Khang_Thuong_SS1_EP18.mp4",
+      "duration_s": 13.6,
+      "pseudo_label": "Ờ SẼ CÓ HAI LÝ DO ĐẦU TIÊN LÀ LÚC ĐẤY LÀ MỌI NGƯỜI ĐỀU NGHĨ ĐẾN VỀ XÊ RA LÀ MỘT CÁI ĐƠN VỊ LÀM POSTCA CHỮA LÀNH RỒI MÌNH LÀM RẤT LÀ NHIỀU NỘI DUNG MÀ CÁI LÚC ĐẤY CÁI TỪ CHỮA LÀNH NÓ LÀ MỘT CÁI TỪ RẤT LÀ THỊNH HÀNH",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 355,
+      "source": "Lam_moi_viec_voi_goc_nhin_toi_khong_biet_gi_het_-_Thai_Van_Linh_Have_a_Sip_EP54.mp4",
+      "duration_s": 13.4,
+      "pseudo_label": "KHÓ CỰC KỲ KHÓ NẾU MÀ SO SÁNH LÀM TÀI CHÍNH SO VỚI LÀM KHO THAN THÌ KHO XE KHÓ HƠN NỘI DUNG LÀ CÓ THỂ CÓ THỂ LÀ VỚI LINH LÀ MÌNH ĐÃ CÓ NHIỀU NĂM KINH NGHIỆM LÀM",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 375,
+      "source": "Lam_sao_de_nhung_loi_chuc_cat_canh_-_Dien_gia_Le_Do_Quynh_Huong_HaveASip_10.mp4",
+      "duration_s": 13.6,
+      "pseudo_label": "KHÔNG CÓ CÁNH NỮA NHÁ KHÔNG CHÚC XUÔNG NỮA NHÁ ĐÚNG KHÔNG THẾ THÌ THEO EM CÔNG THỨC CỦA MỘT LỜI CHÚC CẤT CÁNH THÌ SẼ LÀ EM CHÚC CHỊ TRƯỚC SAU ĐÓ NÓ PHẢI LIÊN ĐỚI ĐẾN CHUYỆN EM SẼ LÀM GÌ OK ĐÂY EM CHÚC CHỊ MỘT NĂM MỚI TIẾP TỤC",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 385,
+      "source": "Lam_the_nao_de_truong_thanh_hon_khi_yeu_Yeu_Lanh_SS5_EP1.mp4",
+      "duration_s": 15.0,
+      "pseudo_label": "Ờ THÌ MÌNH NÊN LƯU Ý NHỚ CÁI GÌ TRONG CÁI GIAI ĐOẠN NÀY ĐÂY THÌ ĐÚNG LÀ CÁI VẤN ĐỀ MÀ SỰ CHÚ TÂM GIỐNG NHƯ CHỊ THÙY MINH NÓI NÓ KHÁ LÀ TRẦM TRỌNG Ở RẤT LÀ NHIỀU NGƯỜI TRƯỞNG THÀNH VIỆT NAM HIỆN NAY ÍT NHẤT LÀ NHỮNG THÂN CHỦ MÀ EM ĐÃ TỪNG TIẾP XÚC VÀ THAM VẤN",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 458,
+      "source": "Mui_huong_va_nhung_goi_cam_tinh_duc_-_Duong_Do_Chuyen_gia_mui_huong_Coi_Mo_S4EP4.mp4",
+      "duration_s": 13.5,
+      "pseudo_label": "CÓ NGHĨA LÀ NHỮNG CÁI ẸP THÊM VỀ CÁI HƯỚNG LÀ MÙI MANG TÍNH THẨM MỸ VÀO CƠ THỂ MÌNH ĐỂ THỂ HIỆN NHỮNG CÁI NÉT KHÁC BAO GỒM LÀ TÍNH CÁCH RỒI GU RỒI HIỂU BIẾT",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 474,
+      "source": "Nen_chua_20_de_hoai_nghi_chinh_minh_-_Vu_Cat_Tuong_HaveASip_103.mp4",
+      "duration_s": 14.3,
+      "pseudo_label": "ĐỂ NHỮNG CÁI NĂNG LƯỢNG TẠP NÓ VÀO NGƯỜI MÌNH MÌNH GIỐNG NHƯ EM NÓI ĐÓ EM FOLLOW THE FLOP LIFE NHƯNG MÀ LẠI SET CÁI BUDREY RẤT LÀ CÓ THỂ NÓI LÀ HƠI XA CÁCH VỚI NHỮNG THỨ BÊN NGOÀI",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 520,
+      "source": "22_nam_mang_nong_san_Viet_ra_the_gioi_-_Phan_Minh_Thong_Founder_CEO_Phuc_Sinh_Corporation.mp4",
+      "duration_s": 14.4,
+      "pseudo_label": "A LION DÀI ANGELOT OF CHAND GIRL AUDORGE ORT LIKE A LITTLE BEAT RICH BACKED MODRIDGE BECTA RICHAGE",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 542,
+      "source": "3_co_hoi_kiem_tien_trong_thoi_dai_cong_nghe_Tien_Dong_Tien_Dinh_EP05.mp4",
+      "duration_s": 11.5,
+      "pseudo_label": "ĐƯỜNG HOA NĂM NAY CÔ VIẾT BÔNG CÓ AI ĐI ĐƯỢC HẾT CHÚNG TA THẤY Ở NHÀ CHÚNG TA CÓ BÔNG CÓ HOA CHO NÓ VUI CỬA VÔ NHÀ NÊN MỚI CHUYỂN QUA MÀU KHÁC ĐI BÂY GIỜ TỔNG CHUYỂN ĐỘNG BỒ HAI BA HAI BA HAI BA HAI BA DUNG NĂM NÀY Ê LẮM",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 566,
+      "source": "3_nhan_to_quan_trong_de_doi_moi_ben_vung_-_Binu_Jacob_-_CEO_Nestle_Vietnam_VI_S3_EP12.mp4",
+      "duration_s": 12.3,
+      "pseudo_label": "SUSTAR FULLY FIVE YOUT AND COMPANY IS OUR IN THE CROPIC B WAVE YOU STRUG HOW YOU AND THE BEA",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 569,
+      "source": "3_nhan_to_quan_trong_de_doi_moi_ben_vung_-_Binu_Jacob_-_CEO_Nestle_Vietnam_VI_S3_EP12.mp4",
+      "duration_s": 13.9,
+      "pseudo_label": "SO WE HAVE ADGE PROSECINASTRATION VE COLLE IDOL ADY ALLON SUTI HOUTI COMMENT YOU AT THE PROC SUPER FO DO THEN VET HOLDING CON ZOOM ATNASED SO VỚI STAN",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 584,
+      "source": "Biet_dang_duoc_gi_mat_gi_-_Thay_Minh_Niem_Thuy_Minh_DuocMat_EP1.mp4",
+      "duration_s": 14.7,
+      "pseudo_label": "MÌNH ĐÁNG ĐƯỢC HƯỞNG VÀ TẠI SAO MÌNH THÀNH QUẢ CỦA MÌNH MÀ SAO MÌNH CHO CÁI TUỔI THỌ NÓ NGẮN VẬY SAO CÓ MỘT TUẦN LÀ MÌNH CHÁN RỒI HAY LÀ MÌNH KHÔNG NGÓ NGÀNG TỚI NÓ SAO KHÔNG CHO MỘT THÁNG ĐI THÌ MỘT THÁNG ĐÓ MÌNH CÓ CÁI HẠNH PHÚC CỦA ĐIỂM B MÌNH ĐẠT ĐƯỢC ĐÚNG KHÔNG RỒI HÃY ĐẶT C CHO NÊN CUỐI CÙNG BUDA",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 645,
+      "source": "3_dieu_can_tim_de_biet_minh_la_ai_-_Thay_Gian_Tu_Trung_HaveASip_113.mp4",
+      "duration_s": 13.0,
+      "pseudo_label": "NHIỀU MỌI GIÁ TRỊ ĐỀU BỊ THÁCH THỨC VÍ DỤ NHƯ MÌNH ĐI TÌM MÌNH TÌM CON NGƯỜI VĂN HÓA ĐÓ MÌNH THẤY CÁI GIÁ TRỊ NÀY NÓ TUYỆT VỜI QUÁ HAY QUÁ NHƯNG MÀ TỰ NHIÊN BÂY GIỜ SAU MỘT HAI NĂM SAU MÌNH THẤY CÁI GIÁ TRỊ ĐÓ HÌNH NHƯ NÓ CÓ CÒN ĐÚNG KHÔNG",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 653,
+      "source": "7_thanh_vien_cua_Sai_Gon_Teu_ke_chuyen_di_dien_Hai_doc_thoai_Have_A_Sip_Special_Episode.mp4",
+      "duration_s": 14.5,
+      "pseudo_label": "Ồ TAO RẤT ỐM Ô TAO CÓ CÁI ĐIỀU NÀY TAO RẤT LÀ XẤU HỔ VỀ BẢN THÂN NÈ NHƯNG MÀ ĐÓ COI ĐI VUI KHÔNG VUI MÀ MÀY CŨNG VẬY MÀ THÌ CÁI CẢM GIÁC ĐÓ LÀ MỘT CÁI CẢM GIÁC LÀ HAY EM NGHĨ VẬY TỨC LÀ KHÔNG PHẢI LÀ SỰ HÀI HƯỚC À",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 701,
+      "source": "7_thanh_vien_cua_Sai_Gon_Teu_ke_chuyen_di_dien_Hai_doc_thoai_Have_A_Sip_Special_Episode.mp4",
+      "duration_s": 14.3,
+      "pseudo_label": "CHỒNG LÊN NHAU THÌ KHÔNG THỂ NÀO MÀ DÀNH CHO TẤT CẢ MỌI NGƯỜI ĐÂU LAYER KHÁC ĐÚNG ĐẤY THÌ MỖI CÁI CUỘC NÓI CHUYỆN VỚI CÁC BẠN THÌ MÌNH LẠI THẤY CÓ MỘT CÁI Ý MỚI LIÊN QUAN ĐẾN HÀI ĐỘC THOẠI VÀ MÌNH VẪN LÀ NGƯỜI PHÍA BÊN NGOÀI NHÉ NHÌN VÀO VÀ MÌNH THẤY CÁI VIỆC ĐÓ",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 712,
+      "source": "AI_lieu_co_the_thay_the_bartender_-_Bartender_Huu_Phu_Coi_Mo_Happy_Hour_SS2_Ep10.mp4",
+      "duration_s": 15.0,
+      "pseudo_label": "DẠ XIN MỜI HỮU PHÚ GIỚI THIỆU SƠ NÉT VỀ BẢN THÂN THÌ LẬP HIẾU MÌNH CÓ NÓI VỀ HAPP BO VÀ NHỮNG VỊ TRÍ KHÁC THÌ MÌNH GIỚI THIỆU CỤ THỂ HANDMA LÀ SẼ LÀM CÔNG VIỆC GÌ NHA THÌ EM LÀ NGUYỄN HỮU PHÚ EM LÀ HIỆN LÀ HAPP BA CỦA HARRIS VẬY MÌNH TỰ GỌI Ở ĐÂY HYBRIDGE LÀ MỘT CÁI HÌNH THỨC",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 744,
+      "source": "AI_va_tuong_lai_cua_thi_truong_lao_dong_-_Peng_T_Ong_Co-Founder_Monks_Hill_Ventures_VI_S4EP4.mp4",
+      "duration_s": 12.1,
+      "pseudo_label": "SO ICRIT THE TALK TO SUM FRIENDS FOR MALTITIONS GEORGE OF SINGAPORE YÊU THẦU WEN ANTI TOUR GEORGE WASHING",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 759,
+      "source": "ASMR_khi_giac_quan_duoc_lay_dong_-_Dau_bep_Youtuber_Culinary_Frank_HaveASip_124.mp4",
+      "duration_s": 14.0,
+      "pseudo_label": "THÌ EM CŨNG ĐÃ HỌC ĐƯỢC TỪ CÁC BẠN KHÁ LÀ NHIỀU THÌ BAN ĐẦU EM START VỚI CÁI CHAINEL CỦA EM THỰC RA LÀ MỘT CÁI BÀI MỘT CÁI KÊNH BLOG MÀ EM VIẾT BLOG VỀ NHỮNG CÂU CHUYỆN BỞI VÌ ĐỐI VỚI EM MÓN ĂN NÓ CẦN PHẢI ĐƯỢC",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 767,
+      "source": "ASMR_khi_giac_quan_duoc_lay_dong_-_Dau_bep_Youtuber_Culinary_Frank_HaveASip_124.mp4",
+      "duration_s": 11.9,
+      "pseudo_label": "CHO NÊN EM PHẢI TÌM RA MỘT CÁI SỰ CÂN BẰNG Ở GIỮA ĐỂ MÀ NGHĨA LÀ MÌNH VẪN HÀI LÒNG VỚI NHỮNG NGƯỜI MÌNH LÀM MÀ MỌI NGƯỜI CŨNG CÓ THỂ TIẾP NHẬN NÓ DỄ DÀNG HƠN MỌI NGƯỜI HAY NÓI RẰNG LÀ",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 792,
+      "source": "Ai_O_dau_Lam_gi_Trong_mot_quan_bar_-_Bar_Manager_Jimmy_Nguyen_Coi_Mo_Happy_Hour_SS2_EP8.mp4",
+      "duration_s": 14.6,
+      "pseudo_label": "MỘT SỰ THẬT NHA NẾU NHƯ MỘT BẠN NÓ CHƯA CÓ BẤT KỲ MỘT CÁI TRẢI NGHIỆM NÀO VÀ ĐÓ LÀ LẦN ĐẦU TIÊN MÀ LẠI CÒN CÓ CÁI TÍNH LÀ KIỂU CÓ CÁI CÓ CÁI TÔI CAO NỮA THÌ HỎI CÁI CÂU LÀ MUỐN CÁI LY NÀY ĐƯỢC KHÔNG Á LÀ KHÓA HỌNG NGƯỜI TA LUÔN Á",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 827,
+      "source": "Ai_cung_can_nhung_luc_khong_lam_gi_ca_-_My_Anh_HaveASip_160.mp4",
+      "duration_s": 14.6,
+      "pseudo_label": "ĐANG XÂY NHÀ KIỂU GÌ ĐANG ĐANG LÀM CHIẾN THUẬT KIỂU GÌ EM NGHĨ LÀ KHÔNG CHỈ TRONG NHÓM TUỔI CỦA BỌN EM ĐÂU MÀ LÀ BẤT CỨ TRONG NGÀNH NÀO NÓ CŨNG CÓ MỘT CÁI ĐỘ CẠNH TRANH NHẤT ĐỊNH ẤY MÌNH LUÔN LUÔN NGÓ XEM LÀ",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 837,
+      "source": "Ai_cung_co_it_nhat_mot_ly_do_de_hanh_phuc_-_Nhiep_anh_gia_Thien_Minh_HaveASip_235.mp4",
+      "duration_s": 11.9,
+      "pseudo_label": "HÓA RA LÀ EM THIẾU EM CẢM THẤY EM THIẾU CÁI SỰ TỰ DO SỰ TỰ DO ĐÓ LÀ CÁI SỰ TỰ EM TRÓI BUỘC VÀO MÌNH VỚI TẤT CẢ NHỮNG CÁI THỨ MÀ CHUNG QUANH MÌNH MÌNH NGHĨ LÀ THIẾU CÁI ĐÓ MÀ MÌNH KHÔNG SỐNG ĐƯỢC",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 839,
+      "source": "Ai_cung_co_it_nhat_mot_ly_do_de_hanh_phuc_-_Nhiep_anh_gia_Thien_Minh_HaveASip_235.mp4",
+      "duration_s": 11.3,
+      "pseudo_label": "VÀ ĐỂ HỌ HẠNH PHÚC ĐỂ HỌ VUI VÀ EM CŨNG HẠNH PHÚC HỌ VUI TRONG CÁI HÀNH TRÌNH NÀY THÌ RA NHỮNG CÁI ĐIỀU ĐÓ EM CÓ TỪ CÁI NỀN TẢNG TUỔI THƠ CỦA CHÍNH EM MÀ EM NÓI BẰNG MỘT CÁI CÁCH RẤT LÀ BẢN NĂNG",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 871,
+      "source": "Ai_giuc_de_thi_gop_tien_nuoi_con_ho_voi_-_Lam_Thuy_Nhan_Me_cua_He_va_Hiu_Coi_Mo_SS3_Ep19.mp4",
+      "duration_s": 14.8,
+      "pseudo_label": "KIA BẮT MẠNH CÁI LÀ ĐÚNG RỒI LÀM SAO MÀ CÓ ĐƯỢC NGHĨ GÌ NHƯNG MỘT PHẦN NỮA LÀ BỞI VÌ DO LÀ DO LÀ CÁI HỆ TƯ TƯỞNG CỦA EM ĐÃ QUYẾT ĐỊNH LÀ KHÔNG CÓ CON RỒI VÀ EM ĐÃ Ở NAN SO VỚI CÁI CHUYỆN ĐÓ RỒI EM KHÔNG CÓ MUỐN MÌNH BỊ TAI NẠN NHƯ VẬY LÀ MỘT CÁI THỨ HAI LÀ EM KHÔNG",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 898,
+      "source": "Ai_roi_cung_se_co_cho_cua_rieng_minh_-_Ca_si_My_Linh_HaveASip_164.mp4",
+      "duration_s": 12.9,
+      "pseudo_label": "CHO NÊN EM TÒ MÒ LÀ CÁI LÚC MÀ CHỊ CẢM NHẬN ĐƯỢC TỪ KHÁN GIẢ CÓ CÁI KHOẢNH KHẮC NÀO NÓ LÀ QUÁ NHIỀU CHO CHỊ KHÔNG TẠI VÌ NẾU EM HÌNH DUNG TRONG CẢ MỘT CÁI QUÃNG ĐƯỜNG ĐI HÁT CỦA CHỊ BIẾT BAO NHIÊU SHOW DIỄN NẾU LÚC NÀO CŨNG",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 912,
+      "source": "Ai_roi_cung_se_co_cho_cua_rieng_minh_-_Ca_si_My_Linh_HaveASip_164.mp4",
+      "duration_s": 14.8,
+      "pseudo_label": "MIC NHỮNG CÁI TRACK B CHẲNG HẠN NHƯ THẾ THÌ BẮT ĐẦU TỪ ĐẤY ĐÃ RỒI BẮT ĐẦU MỚI LAN ĐẾN CÁC NGHỆ SĨ TRÌNH DIỄN HOẶC LÀ BẠN CŨNG VÀO THU ĐÃ TỪNG LÀM VIỆC CHUNG VỚI TAYLOR TAYLOR SHOPEE NÀY RỒI LÀ CÁC NHẠC SĨ",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 913,
+      "source": "Ai_roi_cung_se_co_cho_cua_rieng_minh_-_Ca_si_My_Linh_HaveASip_164.mp4",
+      "duration_s": 14.9,
+      "pseudo_label": "CÒN NẾU MÀ CÁI TỪ FLOP ĐẤY NHÁ MÀ DÙNG CHO CÁI ĐỘ DÀI CỦA SỰ NGHIỆP LÀ CHỊ CŨNG HƠI THÁCH CÁC BẠN ĐẤY ĐÙA VỚI CHỊ ĐI NHÁ ĐỪNG CÓ ĐÙA VỚI CẢ CHỊ VĨ LINH GIÀ NÀY NHÁ GIỜ NÀY CHỊ VẪN CÒN NGỒI ĐÂY LÀ CÁC BẠN CŨNG PHẢI PHẤN ĐẤU ĐẤY",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 916,
+      "source": "Ai_roi_cung_se_co_cho_cua_rieng_minh_-_Ca_si_My_Linh_HaveASip_164.mp4",
+      "duration_s": 11.5,
+      "pseudo_label": "ĐẸP ĐẼ VÀ RẤT LÀ CHỊ ĐỌC XONG MỘT BÀI VÀ CHỊ ĐI MUA TẤT CẢ SÁCH CỦA CÁI ĐẤY ĐỂ ĐỂ CHỊ HIỂU THÊM VỀ CÁI THỜI KỲ ĐẤY THÌ CHỊ MỚI THẤY RẰNG LÀ NGƯỜI VIỆT MÌNH HAY LẮM",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 938,
+      "source": "Album_CAMON_-_Orange_ft_Hien_Bui_Founder_C_Mazor_Entertainment_Bit_Tat_Nhac_270.mp4",
+      "duration_s": 15.0,
+      "pseudo_label": "CÁI LÁ BÀI NHƯ LÀ KIỂU THE TAWORTH TWIN FLAME RỒI SOMAS RỒI ĐÓ THÌ MÌNH CŨNG RẤT LÀ HAY XEM VÀ RẤT LÀ SUY NGHĨ VỀ NHỮNG CÁI KHÁI NIỆM NÀY THÌ TWIN FLAME LÀ ĐẶC BIỆT LÀ MỘT CÁI KHÁI NIỆM MÀ MÌNH CẢM GIÁC LÀ NÓ NÓ ĐÚNG VỚI MÌNH VỚI CÁI HÀNH TRÌNH",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 1022,
+      "source": "An_toan_giua_the_gioi_dau_tu_mao_hiem_-_Binh_Tran_General_Partner_Ascend_VN_Ventures_VI_S2_EP16.mp4",
+      "duration_s": 13.8,
+      "pseudo_label": "AND HOT THE CREAT THEN A CAPIRO THE SEATION PATRIMEA BELL CUA AND FILE THE PIP OPI NHƯ PEPLAY COM",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 1030,
+      "source": "Andy_Cao_Tao_ra_khong_gian_cua_nhung_giac_mo_MAD_EP09.mp4",
+      "duration_s": 10.2,
+      "pseudo_label": "NHỮNG CÁI ĐÓ BÊN MỸ MUỐN CÓ NHỮNG CÁI ĐÓ MÀ MUỐN LÀM BÊN MỸ MÀ LÀM BẰNG TAY THÌ NÓ SẼ RẤT LÀ ĐẮT RẤT LÀ ĐẮT ĐỎ NHỮNG DỰ ÁN CỦA TỤI ANH BÊN MỸ SẼ KHÔNG CHO MÌNH CHO PHÉP MÌNH",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 1051,
+      "source": "Angus_Liew_General_Director_of_Gamuda_Land_An_cu_thoi_dai_40_Vietnam_Innovators_S2_EP10.mp4",
+      "duration_s": 14.2,
+      "pseudo_label": "AND SLIDE TOAN SHOPPING THE PRICE OF FOR THE ARE TOT SOUTHIVE THE SLOWING AR SOCIAL GATES OF BRUCE TINH PART PARB OF FIGUS",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 1133,
+      "source": "Bai_hoc_tu_19_cuoc_tro_chuyen_voi_cac_C-levels_cua_host_Ruby_Nguyen_COO_tai_Vietcetera.mp4",
+      "duration_s": 12.5,
+      "pseudo_label": "HIỂU HƠN VỀ SỰ NĂNG ĐỘNG CỦA NỀN KINH TẾ TRI THỨC NÀY NGHE THÌ CÓ VẺ TO TÁT ĐÚNG KHÔNG NHƯNG THỰC RA TỤI MÌNH LÀM ĐƠN GIẢN THÔI BẰNG CÁCH KỂ NHỮNG CÂU CHUYỆN THỰC NHỮNG VIỆC THỰC CỦA KHÁCH MỜI CÁC KHÁCH MỜI LÀ NHỮNG NHÀ LÃNH ĐẠO ĐẾN TỪ CÁC LĨNH VỰC KHÁC NHAU",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 1143,
+      "source": "Bai_hoc_tu_nhung_lan_thay_doi_chien_luoc_-_Pham_Tran_Nhat_Minh_Minh_Nhua_PTGD_Nhua_Long_Thanh.mp4",
+      "duration_s": 14.3,
+      "pseudo_label": "VỀ MẶT CÁC CÁI SẢN PHẨM MỚI MÀ ANH ĐƯA RA THÌ THẬT RA LÀ ĐÚNG LÀ ĐẶT CƯỢC VÀO MỘT CÁI SẢN PHẨM NHƯ VẬY THÌ GẦN NHƯ LÀ MÌNH SẼ ĐI NHẶT CÁC CÁI ĐỒNG LẺ NẾU MÀ NÓI NÔM NA LÀ NHƯ VẬY THÌ CÁI QUYẾT ĐỊNH LÀ NÓ CHỈ NẰM Ở CÁI CHỖ LÀ MÌNH BẢO VỆ MÔI TRƯỜNG HAY LÀ QUYẾT ĐỊNH NÓ NẰM Ở CHỖ NÀO NỮA",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 1170,
+      "source": "Ban_co_biet_bao_nhieu_ngon_ngu_chi_can_nho_mot_tu_tieng_Viet_-_Co_Ton_Nu_Thi_Ninh_HaveASip_234.mp4",
+      "duration_s": 13.8,
+      "pseudo_label": "NHỮNG CÁI THÔNG ĐIỆP NHỮNG CÁI CHIA SẺ CỦA MÌNH VỚI NHỮNG ĐỐI TƯỢNG HẾT SỨC LÀ KHÁC NHAU CÓ THỂ LÀ LÀ ĐỐI TÁC LÀ ĐỐI PHƯƠNG RỒI BẠN BÈ PHỤ NỮ NÓI CHUNG THÂN NHƯNG NÓI CHUNG RỒI",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 1252,
+      "source": "Ban_hoa_ca_tren_giuong_-_Minh_Toc_Lam_Coi_Mo_SS5_EP7.mp4",
+      "duration_s": 14.3,
+      "pseudo_label": "CÓ HỨNG HAY KHÔNG NHA VÀ BẠN ĐÓ NÓI LÀ NHỮNG CÁI GIỌNG MÀ TÔNG TRẦM CÁC THỨ NÀY NỌ Á LÀ Ừ VÀ LÚC MÀ BẠN BẠN HẾT XÉT LÀ BẠN CÒN KÊU BẠN NƠ LÀ CỐ GẮNG GẰN GẰN CÁI GIỌNG CHÚT XÍU THẬM CHÍ LÀ",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 1273,
+      "source": "Ban_le_hang_hoa_Viet_Nam_ra_the_gioi_-_Toan_Trinh_Giam_doc_khu_vuc_mien_Bac_-_Amazon_Global_Selling.mp4",
+      "duration_s": 15.0,
+      "pseudo_label": "THÌ CÓ LẼ LÀ NẾU NHƯ CÓ CƠ HỘI ĐƯỢC MỜI TRỞ LẠI CHƯƠNG TRÌNH THÌ CÓ NGHĨA LÀ MÌNH SẼ XIN PHÉP Ở VAI TRÒ LÀ HOST LÚC ĐẤY LÀ CÓ THỂ LÀ CHÚNG TA SẼ BẮT ĐẦU VỚI MỘT CÁI CHỦ ĐỀ LÀ AMAZON CỦA BỜ SALIN ĐÃ LÀM CÁCH NÀO ĐỂ HỖ TRỢ MIRO THÀNH NHÀ BÁN HÀNG TRIỆU ĐÔ TRÊN AMAZON",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 1295,
+      "source": "Bao_Nguyen_Giam_doc_quoc_gia_tai_Salesforce_Dung_cong_nghe_de_phat_trien_Vietnam_Innovators_EP28.mp4",
+      "duration_s": 15.0,
+      "pseudo_label": "THINSACTION AN WARKI AU THE MORE OF IN CAN FIRCUS THING IN HOUSE FERN STY OF MORE HEN MY WHI TODAY WEST RECE OF SCHO THI HAPPING WARKING WEI LIVE APPY TOP B",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 1307,
+      "source": "Bao_gio_cho_het_chuyen_doi_moi_-_Ruby_Nguyen_CEO_Curieous_VIV_S2_EP25.mp4",
+      "duration_s": 11.7,
+      "pseudo_label": "DẪN TỚI LÀ KHÔNG CÓ ĐỦ SỨC VỀ MẶT OPERATION VỀ MẶT VẬN HÀNH ĐỂ CÓ THỂ PHỤC VỤ HẾT ĐƯỢC CHO KHÁCH HÀNG MỌI NGƯỜI HAY NGHĨ CÔNG NGHỆ LÀ MỘT CÁI GÌ PHÉP MÀU MÌNH KHÔNG DÁM DÙNG TỪ PHÉP MÀU NHƯNG MÀ ĐÚNG NÓ LÀ MỘT CÁI ĐÒN BẨY RẤT LÀ MẠNH",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 1310,
+      "source": "Bao_gio_cho_het_chuyen_doi_moi_-_Ruby_Nguyen_CEO_Curieous_VIV_S2_EP25.mp4",
+      "duration_s": 15.0,
+      "pseudo_label": "GỒM CÓ COFO NHỮNG NGƯỜI LÀM VIỆC CÙNG VỚI MÌNH NHÀ ĐẦU TƯ CỦA MÌNH CŨNG LÀ KHÁCH HÀNG CỦA MÌNH THẬM CHÍ LÀ CỘNG ĐỒNG NHỮNG NGƯỜI ỦNG HỘ MÌNH CÓ THỂ KHÔNG TRẢ TIỀN CHO MÌNH NHƯNG ĐỐI VỚI MÌNH CŨNG LÀ KHÁCH HÀNG CỦA MÌNH MÌNH THẤY NÓ RẤT LÀ QUAN TRỌNG VÀ MÌNH SẼ LUÔN LUÔN TÌM CÁCH ĐỂ CÓ THỂ QUAY TRỞ LẠI VỚI NGUYÊN TẮC ĐÓ NẾU NHƯ MÌNH NHỠ MAY BỊ SAI LỆCH",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 1323,
+      "source": "Bao_hiem_so_huong_den_su_thuan_tien_va_de_tiep_can_-_Dang_Hoang_Tung_CEO_OPES_VI_S3_EP26.mp4",
+      "duration_s": 14.5,
+      "pseudo_label": "SẢN PHẨM NHỎ MICRO MÀ ĐI THEO NHỮNG CÁI GỌI LÀ HOẠT ĐỘNG HÀNG NGÀY CỦA KHÁCH HÀNG DO ĐÓ CÁI CƯỜNG ĐỘ TƯƠNG TÁC NÓ SẼ RẤT LÀ THƯỜNG XUYÊN VÍ DỤ NHỮNG CÁI SẢN PHẨM MÀ MÌNH ĐI KÈM VỚI CẢ CÁC DỊCH VỤ MÀ HỌ SỬ DỤNG HÀNG NGÀY NHƯ LÀ MỘT CÁI TAXI CÔNG NGHỆ",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 1332,
+      "source": "Bao_lau_roi_chua_goi_ve_cho_me_-_NSND_Le_Khanh_Khang_Thuong_SS1_EP8.mp4",
+      "duration_s": 11.2,
+      "pseudo_label": "CÔ CẢM ƠN CÁC CON CÔ VÌ NHỜ CÁC CON MÀ CÔ ĐÃ VƯỢT QUA CHÍNH BẢN THÂN MÌNH CÔ VƯỢT QUA BAO NHIÊU THỬ THÁCH VÀ LÀM ĐƯỢC BAO NHIÊU ĐIỀU KỲ DIỆU NGOÀI SỨC TƯỞNG TƯỢNG CỦA MÌNH",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 1338,
+      "source": "Bao_nhieu_lan_quay_bay_nhieu_lan_so_bi_ghet_-_Khanh_Vy_Gen_Z_Truyen_EP11.mp4",
+      "duration_s": 15.0,
+      "pseudo_label": "EM NGỒI NGẪM Ý EM NGỒI NGẪM LÀ HÔM NAY EM KIỂU LÀM CHƯA TỐT CÁI ĐIỀU GÌ CÁC THỨ EM LUÔN GẮN TỪNG CÁI VỊ TRÍ Ở TRONG BÃI ĐỖ XE CỦA ĐÀI LÀ MỘT CÁI THÔNG TIN MÀ NHỮNG CÁI BÀI HỌC MÀ EM HỌC ĐƯỢC KHI MÀ EM TỚI ĐÀI THÌ EM SẼ BIẾT LÀ Ờ HÔM ĐẤY MÌNH ĐỖ XE ĐẤY THÌ HÔM ĐẤY CÁI VẤN ĐỀ CỦA MÌNH Ở ĐÂY ĐÂY ĐÂY THÌ",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 1352,
+      "source": "Bao_ve_chinh_minh_tren_khong_gian_mang_-_Ngo_Minh_Hieu_Hieu_PC_Chuyen_vien_giam_sat_NCSC.mp4",
+      "duration_s": 11.9,
+      "pseudo_label": "PHÂN LOẠI VÀ ĐƯA VÀO DANH SÁCH ĐEN CHỨ CỨ THẤY CÁI TRANG NÀO NÓ CŨNG ĐƯA VÀO LÀ XONG COI NHƯ LÀ LÀ MÌNH SẼ MẤT HẾT CÁC MỐI QUAN HỆ",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 1401,
+      "source": "Bat_dong_san_phan_manh_-_co_hoi_dau_tu_cho_so_dong_Alex_Pham_CEO_Co-founder_Realbox_S3_EP15.mp4",
+      "duration_s": 15.0,
+      "pseudo_label": "TẠI VÌ MÌNH KHÔNG CÓ THAY ĐỔI CÁI CÁI CHỦ NHÂN CỦA TÀI SẢN ĐÓ TẠI VÌ MÌNH SẼ PHẢI THÀNH LẬP MỘT CÁI SP TỨC LÀ MỘT CÁI ĐƠN VỊ ĐẶC BIỆT ĐỂ MÌNH SỞ HỮU TÀI SẢN ĐÓ VÀ CÁI VIỆC SỞ HỮU ĐÓ KHÔNG THAY ĐỔI THÌ KHI VIỆC SỞ HỮU KHÔNG THAY ĐỔI THÌ CÁI NGƯỜI MÀ KHAI THÁC TÀI SẢN HỌ ĐẢM BẢO ĐƯỢC",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 1463,
+      "source": "Biet_dang_duoc_gi_mat_gi_-_Thay_Minh_Niem_Thuy_Minh_DuocMat_EP1.mp4",
+      "duration_s": 13.7,
+      "pseudo_label": "NẾU NHƯ NHỮNG GÌ THẦY BIẾT VỀ THÙY MINH NHA THẦY ĐOÁN THỬ LÀ THÙY MINH ĐANG CÓ HAI CÁI KẾ HOẠCH MỘT LÀ MÌNH SẼ TIẾP TỤC LÊN MỘT CÁI DANH SÁCH VỀ NHỮNG CÁI ĐIỀU MÀ MÌNH MUỐN CÓ ĐƯỢC",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 1575,
+      "source": "Buc_tranh_truyen_thong_trong_ky_nguyen_so_-_Dale_Nottingham_Founder_CEO_Afflatus_Media_Group.mp4",
+      "duration_s": 13.4,
+      "pseudo_label": "DO TRIỆT QUIENT LIKE SUST PROPS IN ASO MY NON THE SOI MONEY HOP WESU THE KIT THE MONEY HAVE",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 1628,
+      "source": "But_pha_voi_xu_huong_thuong_mai_xa_hoi_-_Dhruv_Vohra_Meta_Praneeth_Yendamuri_Bain_Company.mp4",
+      "duration_s": 11.6,
+      "pseudo_label": "THE BEAVE GEN YOU BIN COMMERS ON LIGHT THE NOBU SPEED THE FIT THAT THE HAVE DOING THEN SOFT DORANCISTED INDY FINDED VINIFNAT",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 1629,
+      "source": "But_pha_voi_xu_huong_thuong_mai_xa_hoi_-_Dhruv_Vohra_Meta_Praneeth_Yendamuri_Bain_Company.mp4",
+      "duration_s": 12.2,
+      "pseudo_label": "SUM YO DOWNERAL SHO ICON MERCID ORNING ATTATE ACIENTUTURE FERN IT SOUTHIC THE ARTING FIM HERES RESEL LION SEE",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 1647,
+      "source": "CEO_Hao_Tran_va_nhung_du_dinh_tuong_lai_cho_Vietnam_Innovators.mp4",
+      "duration_s": 13.8,
+      "pseudo_label": "SHO CAI THING THE BEST OF THE INTRE AND THE RENEVATION IT TO SOFT THORTIME TO DO WHAT THE LISE ARIS IT SATURMBING MY SOFT AZO",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 1716,
+      "source": "Cai_dau_va_trai_tim_khong_phai_thu_vo_han_-_Dao_dien_Viet_Linh_HaveASip_106.mp4",
+      "duration_s": 12.1,
+      "pseudo_label": "THÌ MÌNH CỨ HAY ĐI XEM NHỮNG CÁI TÁC PHẨM CỦA NÓ RỒI RỒI ĐI XEM SÂN KHẤU HỌC ĐẠO DIỄN LÀ THẦY TRƯỜNG CHO ĐI XEM RẤT LÀ NHIỀU PHIM MÀ XEM SÂN KHẤU MÌNH CÓ NHỮNG CÁI",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 1728,
+      "source": "Cai_moi_thuc_chat_la_loi_cai_cu_ra_-_Nguyen_Hoang_Diep_Have_a_Sip_EP65.mp4",
+      "duration_s": 13.9,
+      "pseudo_label": "KHÁN GIẢ XEM PHIM THÌ MÌNH HÌNH DUNG LÀ SẼ CÓ MỘT CÁI CƠ HỘI RẤT LÀ TỐT CHO ĐIỆN ẢNH VIỆT NAM Ở CHỖ LÀ KHOẢNG ĐỘ VÀI NĂM NAY THÌ MỌI NGƯỜI ĐÃ YÊU PHIM VIỆT MẶC DÙ LÀ KHÔNG CÓ TÁC PHẨM",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 1735,
+      "source": "Cai_moi_thuc_chat_la_loi_cai_cu_ra_-_Nguyen_Hoang_Diep_Have_a_Sip_EP65.mp4",
+      "duration_s": 10.7,
+      "pseudo_label": "MÌNH THAM GIA MỘT CÁI DỰ ÁN TÊN LÀ VÌ MỘT HÀ NỘI ĐÁNG SỐNG THÌ TRONG CÁI DỰ ÁN ĐẤY NÓ CÓ MỘT CÁI HOẠT ĐỘNG RẤT LÀ THÚ VỊ ĐẤY LÀ MỌI NGƯỜI LÀM MỚI CÁI BỜ VỞ SÔNG HỒNG",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 1741,
+      "source": "Cai_tinh_phia_sau_san_khau_-_NSUT_Dieu_Hien_Tram_Nam_San_Khau_SS2_Ep1.mp4",
+      "duration_s": 14.4,
+      "pseudo_label": "RỒI CÁI CÒN CÁI HÌNH NÀY THÌ NÓ NHỎ XÍ CÔ MỚI ĐEM CÔ RỬA RA CÔ DÁN Ở BÊN CHỖ CÔ Ở ĐÓ TỚI CHỪNG BẢ DƠ BẢ NÓI Ê Ở ĐÂU MẤY NGƯỜI CÓ CÁI HÌNH NÀY VẬY TÔI NÓI TRỜI ƠI THÌ LÚC CHỤP ĐÓ RỒI BỎ BÙ LĂN BÙ LÓC",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 1763,
+      "source": "Cai_toi_de_lam_gi_-_Thay_Minh_Niem_Thuy_Minh_Ban_Than_Ban_Than_Ep4.mp4",
+      "duration_s": 14.0,
+      "pseudo_label": "EM KHÔNG HIỂU CÁI BỀN VỮNG ĐẤY MÌNH TÌM KIẾM Ở ĐÂU BÂY GIỜ KHI MÀ NÓ CŨNG Y HỆT NHƯ CÁI CÁCH LÀ CHÚNG TA PHÂN TÁN NĂNG LƯỢNG TÍCH CỰC CÁI NĂNG LƯỢNG TIÊU CỰC EM THẤY NÓ TINH VI Ở CHỖ LÀ NÓ CŨNG ĐẾN VỚI MÌNH CÓ NHỮNG CÁI LÚC NÓ ẬP VÀO MÌNH",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 1791,
+      "source": "Cam_on_xin_loi_va_tam_biet_Tram_Nam_San_Khau_SS2.mp4",
+      "duration_s": 12.6,
+      "pseudo_label": "DO ÔNG NỘI ÔNG NỘI TẬP CHO MÁ BA ÔNG NỘI DẠY MÁ BA RỒI TỚI CHÚ SÁU CŨNG LÀ CÓ ÔNG NỘI ĐỜI ĐÓ CÒN ÔNG NỘI ÔNG NỘI CHO HÁT NHƯNG MÀ KHI QUA TỚI ĐỜI CỦA BÀ NỘI THÌ BÀ NỘI BÀ NỘI PHẢI NÓI RẰNG LÀ",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 1796,
+      "source": "Cam_on_xin_loi_va_tam_biet_Tram_Nam_San_Khau_SS2.mp4",
+      "duration_s": 11.5,
+      "pseudo_label": "CHỊ NGỌC GIÀU NÈ CHỊ PHƯỢNG LIÊN NÈ CHỊ KIM NGỌC NÈ HỒNG NHA NÈ CHỊ MAI LAN NÈ CÒN KÉP LÀ DŨNG THANH LÂM NÈ ÚT HIỀN NÈ VĂN TRUNG NÈ THANH VIỆT",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 1799,
+      "source": "Cam_on_xin_loi_va_tam_biet_Tram_Nam_San_Khau_SS2.mp4",
+      "duration_s": 13.6,
+      "pseudo_label": "ĐI KIẾM NGÀNH KHÁC MÀ SỐNG DẠ NHƯNG NẾU TA ĐÃ CÓ CÁI DŨNG KHÍ GỌI LÀ CÁI NGHIỆP CẦM CA MÀ BƯỚC VÀO THÌ HÃY YÊU NÓ VÀ NÓI TRƯỚC LÀ CON ĐƯỜNG YÊU ĐỂ THÀNH TỰU THÌ VÔ CÙNG GIAN NAN CHỨ KHÔNG PHẢI MÀU HỒNG ĐÂU",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 1805,
+      "source": "Cam_xuc_quan_trong_nhat_la_su_so_hai_-_PGS_TS_Nguyen_Phuong_Mai_HaveASip_169.mp4",
+      "duration_s": 15.0,
+      "pseudo_label": "CUNG CẤP CHO CÁC BẠN SINH VIÊN MỘT CÁI MÔI TRƯỜNG HỌC THUẬT ĐỂ CÁC BẠN ẤY CÓ THỂ PHÁT TRIỂN TỐT NHẤT VÀ DỰA VÀO NHỮNG KIẾN THỨC MÀ MÌNH ĐÃ BIẾT VỀ THẦN KINH HỌC THÌ CHỊ NGHĨ LÀ NÓ MỞ RA MỘT CÁI HƯỚNG HOÀN TOÀN KHÁC CHO MÌNH ĐẤY ĐỌC MỘT CUỐN SÁCH TỰ DƯNG CÓ MỘT CUỐN SÁCH Ở TRÊN ĐỜI RƠI VÀO ĐẦU VÀ",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 1828,
+      "source": "Cam_xuc_quan_trong_nhat_la_su_so_hai_-_PGS_TS_Nguyen_Phuong_Mai_HaveASip_169.mp4",
+      "duration_s": 13.8,
+      "pseudo_label": "EVER USTER TỨC LÀ SỐNG MÃI MÃI BÊN NHAU ĐỜI HẠNH PHÚC THÌ NGÀY XƯA CHỊ CŨNG NGHĨ CHỊ ĐÃ ĐỌC CHUYỆN THÔI NHƯNG MÀ BÂY GIỜ THÌ CHỊ MỚI PHÁT HIỆN RA LÀ NÓ LÀ MỘT CÁI TEMPLET NÓ LÀ MỘT CÁI MỘT CÁI KHUNG ĐỂ CHO TRẺ CON",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 1866,
+      "source": "Cang_o_trong_nghich_canh_tinh_than_dan_toc_cang_ro_net_-_Phong_vien_anh_Nguyen_Khanh_HaveASip_210.mp4",
+      "duration_s": 14.9,
+      "pseudo_label": "VÀ ĐÓ LÀ LUÔN LUÔN LÀ CÁI ĐIỀU MÀ EM LUÔN LUÔN HƯỚNG ĐẾN ĐẤY LÀ CÓ LẼ LÀ CÁI ĐỘNG LỰC LỚN NHẤT ĐỂ MÌNH DUY TRÌ CÁI CÔNG VIỆC NÀY ĐẾN NĂM NAY LÀ NĂM THỨ MƯỜI BỐN MƯƠI NĂM RỒI VÀ EM NGHĨ LÀ MÌNH CÓ THỂ THEO ĐƯỢC MÃI VÌ MÌNH CÓ MỘT LÝ TƯỞNG RÕ RÀNG NHƯ VẬY THÌ MÌNH SẼ THEO NÓ RẤT LÀ DÀI",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 1876,
+      "source": "Cang_roi_cang_can_mot_dieu_don_gian_-_Wren_Evans_HaveASip_213.mp4",
+      "duration_s": 12.3,
+      "pseudo_label": "MÌNH TẮM RỬA MÌNH RỬA MẮT MÌNH MÌNH CHĂM SÓC TẤT CẢ NHỮNG THỨ MÀ KIỂU MẤY NĂM NAY MÌNH CẢM THẤY TỐT LÀM CHO MÌNH CẢM THẤY ĐẸP HƠN",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 1905,
+      "source": "Cang_trai_qua_nhieu_ton_thuong_phu_nu_cang_manh_me_HaveManySips_191.mp4",
+      "duration_s": 12.9,
+      "pseudo_label": "CARATIN CÁC THỂ LOẠI VÀ SAU ĐÓ EM THẤY LÀ ÔI THÔI MỆT QUÁ NẾU QUY ĐỊNH LÀ MÌNH CHẢ LÀM GÌ CẢ CHẢ LÀM GÌ CẢ VÀ BÂY GIỜ THÌ EM THẤY LÀ KIỂU Ơ EM THẤY MÌNH VẪN RẤT LÀ ĐẸP TÓC MÌNH VẪN RẤT LÀ TỰ",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 1907,
+      "source": "Cang_trai_qua_nhieu_ton_thuong_phu_nu_cang_manh_me_HaveManySips_191.mp4",
+      "duration_s": 13.4,
+      "pseudo_label": "ĐỂ MẶC CẤP MỚI LUÔN EM THẤY LÀ MÌNH CŨNG KHÔNG ĐẸP NHƯ MÌNH TƯỞNG TƯỢNG ĐÂU NHƯNG MÀ MÌNH ĐÃ ĐƯỢC THỬ CÁI MÀU MÌNH THẬT SỰ MUỐN VÀ MÌNH CHẤP NHẬN LÀ CÁI GIÁ MÌNH PHẢI TRẢ LÀ NẾU THẤP HƠN TỔ THÌ EM SẼ CẢM ĐỘNG ĐỂ MỚI LẠI",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 1961,
+      "source": "Cau_chuyen_chuyen_minh_cua_Forbes_Vietnam_-_Cuong_Dang_CEO_Forbes_Vietnam_Vietnam_Innovators.mp4",
+      "duration_s": 13.8,
+      "pseudo_label": "SO SHO IF ARE MANA THEM AND PART THE VIEW M FOCUS ANG USERINE THE BEST STEM THE AMIN SO STANING WATER RIAL WARRE APP THE CATION OF WARTING AS",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 1973,
+      "source": "Cau_chuyen_chuyen_minh_cua_Forbes_Vietnam_-_Cuong_Dang_CEO_Forbes_Vietnam_Vietnam_Innovators.mp4",
+      "duration_s": 13.9,
+      "pseudo_label": "FROM COMMENT WEST COMMENT PROSOFT FOR HUBERT ORCE FIND IN LOVEC ACTION ANDY FIT DO LOGIR VASELF PIN NOTE THEO LOGIC COMMI WE ARE LENO I AN I",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 2005,
+      "source": "Chan_yeu_-_Thai_Van_Linh_Thuy_Minh_Yeu_Lanh_SS2_Ep2.mp4",
+      "duration_s": 14.0,
+      "pseudo_label": "CẢ HAI ĐỀU MỆT MÀ NẤY CHỈ NGỒI MỘT ĐỐNG RỒI BẠN ẤY LÀ PHẢI LÀ NGƯỜI ĐI NẤU VÀ HOẶC LÀ ĐÃ NẤU RỒI PHẢI CÒN PHẢI RỬA CHÉN NỮA NÃY MÌNH CÓ NHẮC TỚI LÀ KHÔNG CỐ GẮNG KHÔNG THẤY LÀ BẠN ẤY ĐÃ TIẾP TỤC NỖ LỰC",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 2006,
+      "source": "Chan_yeu_-_Thai_Van_Linh_Thuy_Minh_Yeu_Lanh_SS2_Ep2.mp4",
+      "duration_s": 14.4,
+      "pseudo_label": "HƠI QUÁ NHỎ NHỎ LÀ CHỈ VÌ BẠN ẤY KHÔNG RỬA CHÉN MÀ NHƯNG CÁI ĐÓ LÀ NÓ CHỈ LÀ MỘT CÁI DẤU HIỆU CÓ THỂ LÀM CHỈ LÀ MỘT CÁI CÂU CHUYỆN MÀ MÌNH CÓ THỂ CHIA SẺ MÀ NÓ CÓ NHIỀU THỨ SÂU HƠN NỮA THÌ NÓ MỚI DẪN ĐẾN LÀ MỌI NGƯỜI CẢM THẤY",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 2020,
+      "source": "Chan_yeu_-_Thay_Minh_Niem_Thuy_Minh_Yeu_Lanh_EP2.mp4",
+      "duration_s": 10.1,
+      "pseudo_label": "NGOÀI CÁI VIỆC LÀ CÓ MỘT CÁI TÌNH CẢM SAU THỜI GIAN NÓ ĐƯỢC VUN ĐẮP NÓ CHO THẤY CÁI SỰ TRƯỞNG THÀNH CỦA MỘT CÁI MỐI QUAN HỆ NỮA NHƯNG MÀ",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 2059,
+      "source": "Chapter_2_Hoa_giai_-_Thay_Minh_Niem_Thuy_Minh_The_Inner_Child_EP2.mp4",
+      "duration_s": 13.2,
+      "pseudo_label": "VÀ BÂY GIỜ ANH CHỊ ĐÃ NHẬN DIỆN RA RỒI ANH CHỊ CHẤP NHẬN HOÀN TOÀN HOAN HỶ MÌNH CÓ MỘT ĐỨA EM TỔN THƯƠNG MỘT ĐỨA TRẺ TỔN THƯƠNG VÀ MUỐN TRỞ VỀ ĐỂ CÙNG NHAU THÁO GỠ CÙNG NHAU NHÌN LẠI NHỮNG CÂU CHUYỆN CỦA QUÁ KHỨ",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 2152,
+      "source": "Goi_ten_van_de_la_buoc_dau_de_giai_quyet_no_-_Lan_Doan_CEO_TAPTAP_First_Lady_EP3.mp4",
+      "duration_s": 10.4,
+      "pseudo_label": "LÀ CÁI BỘ NÃO THÌ CHỊ NGHĨ ĐÂU ĐÓ NÓ CÓ CẢM GIÁC NHƯ VẬY HOẶC LÀ MEBBE ĐÓ KHÔNG CHỈ TRONG NGÀNH TECH MÀ NHÌN CHUNG LÀ NHƯ VẬY",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 2157,
+      "source": "Goi_ten_van_de_la_buoc_dau_de_giai_quyet_no_-_Lan_Doan_CEO_TAPTAP_First_Lady_EP3.mp4",
+      "duration_s": 11.1,
+      "pseudo_label": "MỘT NAM CEO KHÁC CỦA MỘT CÔNG TY TECH KHÁC ĐỐI THỦ HOẶC LÀ MỘT ĐỐI TÁC KHÁC THỜI GIAN CÁI THỜI GIAN CỦA HỌ TỰ NHIÊN CÁI QUỸ THỜI GIAN CỦA HỌ NHIỀU HƠN CỦA MÌNH RẤT LÀ NHIỀU",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 2166,
+      "source": "Gunneet_Singh_Bally_Quan_ly_san_pham_Giao_tiep_khach_hang_tai_Ubank_Vietnam_Innovators_EP31.mp4",
+      "duration_s": 11.1,
+      "pseudo_label": "I NON AND THE IOPLACE IS RED ALE DEPINFO PIN CONTRIC TẠI MỘT XE AN",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 2169,
+      "source": "Gunneet_Singh_Bally_Quan_ly_san_pham_Giao_tiep_khach_hang_tai_Ubank_Vietnam_Innovators_EP31.mp4",
+      "duration_s": 15.0,
+      "pseudo_label": "AND FOXICO VEDAN ASTRAZEN OUR THE FUTURE AND IT BARRY SHIN MIC US MUT ON CAN THIỆP TO",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 2171,
+      "source": "Gunneet_Singh_Bally_Quan_ly_san_pham_Giao_tiep_khach_hang_tai_Ubank_Vietnam_Innovators_EP31.mp4",
+      "duration_s": 12.1,
+      "pseudo_label": "THE THAT TOP PERSON VIETT COMING FROM U BANK AND YOU THE PART US US BAN YOU AND THE PROFIT O BESAME",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 2185,
+      "source": "HEINEKEN_va_30_nam_phat_trien_cung_Viet_Nam_-_Alexander_Koch_Managing_Director_HEINEKEN_Vietnam.mp4",
+      "duration_s": 14.1,
+      "pseudo_label": "OK YOURS IN THE RING CON AFGHANISTAN TON TO WITH TOTRON GÌ NÓ",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 2187,
+      "source": "HEINEKEN_va_30_nam_phat_trien_cung_Viet_Nam_-_Alexander_Koch_Managing_Director_HEINEKEN_Vietnam.mp4",
+      "duration_s": 15.0,
+      "pseudo_label": "SOCI UN THE MANT AN WARN JOHN ING PIN OF IT ASSI VERY WHITE REANG OF PEARL SO WEVEN BU THE HAPP THE STU THE WELLS THE IT STEEL",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 2193,
+      "source": "HEINEKEN_va_doi_moi_danh_rieng_cho_nguoi_Viet_-_Holly_Bostock_Corporate_Affairs_Director_HEINEKEN.mp4",
+      "duration_s": 11.4,
+      "pseudo_label": "CARTER ROVER UNIVER TRATION OVER THE LIT S BE MCRIT ISOGE EVERTION APP SONEY FINCH OK",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 2211,
+      "source": "HIV_chuyen_cu_truyen_thong_kieu_moi_-_Todd_Pollack_Country_Director_HAIVN_MAD_S2_EP11.mp4",
+      "duration_s": 14.3,
+      "pseudo_label": "COMMING TO GET GATES MATION PROTEIN",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 2253,
+      "source": "Hai_dieu_can_ghi_nho_neu_muon_lac_quan_-_Huynh_Duy_Khuong_Trainer_Managing_Partner_Hoc_vien_AYP.mp4",
+      "duration_s": 14.0,
+      "pseudo_label": "TIẾP NÓI ĐÃ MUỐN CHIA SẺ CHỖ NÀY CHỖ KIA RỒI NHƯNG NẾU TIP TRONG CHƯƠNG TRÌNH NGÀY HÔM NAY ANH SUY NGHĨ CÁI NỀN TẢNG NHẤT LÀ BẠN BẮT ĐẦU VỚI CHUYỆN GIAO TIẾP KHOAN NÊN ĐẶT MỤC TIÊU LÀ MÌNH SẼ THỂ HIỆN CÁI GÌ MÌNH SẼ NÓI NHƯ THẾ NÀO",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 2276,
+      "source": "Hanh_trinh_5_nam_cua_Vietcetera_Vietnam_Innovators_EP19.mp4",
+      "duration_s": 12.3,
+      "pseudo_label": "GE APACIAL TO SO VỚI FIVES SUN RIGARD STORE I A DIỆT OF WARTI ASPORT IT IMU LIKE WON OF THE MONETH AFGHA AN WEM",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 2277,
+      "source": "Hanh_trinh_5_nam_cua_Vietcetera_Vietnam_Innovators_EP19.mp4",
+      "duration_s": 14.7,
+      "pseudo_label": "THE PEOPLE THE COMPANY BEHAN THE NEW YORK NO SO WIN HA THE CANCE OF MATION BAN SOCI TOMASING ITAL IDUNO WATCHES AND STENTINA BUSH THEN BASIAN PRO CHANES",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 2278,
+      "source": "Hanh_trinh_5_nam_cua_Vietcetera_Vietnam_Innovators_EP19.mp4",
+      "duration_s": 13.9,
+      "pseudo_label": "THE UND IDOL AMERIC ILLINO ĐẶT SẠCH FILE IN THE MULTIER FUND THE SLATINING PEPSI GREATION OF PI",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 2370,
+      "source": "Hanh_trinh_hoc_cach_yeu_ban_than_minh_-_Tac_gia_sach_Thu_Ha_HaveASip_12.mp4",
+      "duration_s": 14.4,
+      "pseudo_label": "ĐÓ LÀ MỘT CÁI LÝ DO MÀ TẠI SAO CHỊ VIẾT NHIỀU VỀ CHUYỆN CHA MẸ VÀ CON CÁI NHƯ THẾ CÁI ĐÓ MỘT PHẦN LÀ CHO SUSHIM VÀ CHO NHỮNG NGƯỜI KHÁC VÀ MỘT PHẦN LỚN LÀ ĐỂ CHỮA LÀNH NHỮNG CÁI MÀ NÓ VẪN CÒN ẤM ỨC TRONG CHỊ NỮA",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 2401,
+      "source": "Hanh_trinh_tim_lai_minh_giua_Sai_Gon_-_Nodey_Nhac_si_DJ_Nha_san_xuat_am_nhac_MAD_S3_EP1.mp4",
+      "duration_s": 11.6,
+      "pseudo_label": "ITU US AT TOAN AE SO VỚI LACE BELL ASMO SERIES THE OR THE SA WATER THE MONEY FI YEA",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 2404,
+      "source": "Hat_nhac_buon_co_nhat_thiet_phai_buon_-_Tao_Backseat_EP01.mp4",
+      "duration_s": 14.4,
+      "pseudo_label": "NÓ LÀ MỘT CÁI BÀI GRAB VIẾT VỀ GIỜ LÀ CHUYỆN TÌNH CẢM NÀY NỌ THÔI NHƯNG MÀ TÁO TÁO NÓ LẠI MUỐN CÁI RÕ RÀNG NHẤT CỦA CÁI BÀI ĐÓ NÓ GIỐNG NHƯ LÀ MỘT BÀI REMAC",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 2444,
+      "source": "Hay_cho_nguoi_co_hoi_yeu_thuong_minh_Yeu_Lanh_SS5_EP4.mp4",
+      "duration_s": 10.7,
+      "pseudo_label": "MÌNH CŨNG KHÔNG PHẢI LÀ NGƯỜI MÀ À PUBLIC DISNEY FITION ĐÚNG KHÔNG LÀ MÌNH KHÔNG PHẢI LÀ CÁI NGƯỜI LÀ NGAY LẬP TỨC LÀ NHÌN THẤY BIẾT NGAY LÀ RẤT LÀ YÊU THƯƠNG NGƯỜI NÀY NHƯNG RÕ RÀNG CÓ CÁI QUỸ ĐẤY TỨC LÀ MÌNH",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 2519,
+      "source": "Helen_Le_On_Being_A_Full-time_YouTuber_NGHE_LA.mp4",
+      "duration_s": 11.2,
+      "pseudo_label": "MỌI NGƯỜI THÌ LUÔN NGHĨ LÀ LÀM YOUTUBER LÀ RẤT LÀ VUI NHƯNG MÀ ĐẰNG SAU ĐÓ CŨNG RẤT LÀ NHIỀU CÁI ÁP LỰC MÀ NHỮNG NGƯỜI KHÔNG LÀM YOUTUBE THÌ KHÔNG BIẾT ĐẾN MÌNH LÀ HILLA LÊ MÌNH LÀ NHÀ SÁNG TẠO NỘI DUNG YOUTUBE",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 2553,
+      "source": "Het_yeu_-_Thai_Van_Linh_Thuy_Minh_Yeu_lanh_SS2_Ep1.mp4",
+      "duration_s": 13.7,
+      "pseudo_label": "ĐỂ MÀ TRÒ CHUYỆN CUỐI CÙNG ĐỂ TÌM ĐẾN SỰ YÊN LÀNH THÌ HÔM NAY TẬP ĐẦU TIÊN CẢM ƠN TẬP ĐẦU MÌNH SẼ HƠI KHÓ KHĂN HƠN MỘT CHÚT XÍU CÒN MỘT HÀNH TRÌNH DÀI VỚI NHAU CẢM ƠN TẤT CẢ CÁC KHÁN GIẢ CỦA YÊU LÀNH CHÚNG TA SẼ GẶP LẠI NHAU",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 2577,
+      "source": "Hieu_ve_ESG_de_mo_khoa_tang_truong_cho_doanh_nghiep_-_Mimi_Vu_Van_Ly_-_Parters_at_RAISE_PARTNERS.mp4",
+      "duration_s": 15.0,
+      "pseudo_label": "NGƯỜI TA YÊU CONVERSATION PARK HANG SEOUL TRAC WIM BRAD FIRE WATSON PRISE PARS OF THE TRIALY THE SNOWRAY NO RUNG ANSOR THE FIR",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 2584,
+      "source": "Hieu_ve_ESG_de_mo_khoa_tang_truong_cho_doanh_nghiep_-_Mimi_Vu_Van_Ly_-_Parters_at_RAISE_PARTNERS.mp4",
+      "duration_s": 14.8,
+      "pseudo_label": "ON THE WARM RS AT SOFT OF THE THOATION HAS SO WELLING THE FERMPION FORTURE AND SOH HE OR MI CLOUD OK AND CLODING PROFIN FORINGTATION AND THE",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 2655,
+      "source": "Hoc_cach_phat_trien_ban_than_ma_khong_roi_xa_TAM_minh_-_Hoang_Dung_HaveASip_226.mp4",
+      "duration_s": 10.4,
+      "pseudo_label": "EM EM BỒI DƯỠNG CÁI NIỀM TIN CỦA MÌNH QUA MỖI LẦN MÀ EM RA SẢN PHẨM KHÁN GIẢ CHO EM NHỮNG CÁI TÍN HIỆU RẰNG LÀ À CÁI NIỀM TIN NÀY CỦA MÌNH CÓ",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 2656,
+      "source": "Hoc_cach_phat_trien_ban_than_ma_khong_roi_xa_TAM_minh_-_Hoang_Dung_HaveASip_226.mp4",
+      "duration_s": 13.9,
+      "pseudo_label": "HOẶC LÀ VŨ ĐẠO RẤT ĐẸP HÌNH THỂ RẤT ĐẸP BÂY GIỜ PHẢI CÓ HẾT VÀO THÌ CÁC CÁI XÉT DIỄN CÓ THỂ LÀ NÓ CŨNG LIÊN QUAN ĐẾN SỰ NO NÊ ĐẤY TỨC LÀ MÌNH KHÁN GIẢ HỌ AXIT VỚI NHIỀU HÌNH ẢNH TRÊN MẠNG",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 2757,
+      "source": "Hoi_thang_nguoi_yeu_ve_boc_banh_tra_tien_-_Will_va_Tina_Coi_Mo_SS5_EP2.mp4",
+      "duration_s": 10.5,
+      "pseudo_label": "NÊN LÀ ANH SẼ KHÔNG LÀM CHUYỆN KHI EM CÓ Ừ THÌ EM LẦN ĐÂU HIỆN TẠI TRONG ĐIỆN THOẠI CỦA EM EM ĐANG CÓ GIỮ ẢNH VIDEO CỦA NGƯỜI YÊU CŨ KHÔNG",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 2786,
+      "source": "Hoi_thao_truc_tuyen_HOMECOMING_-_Hanh_trinh_tro_ve.mp4",
+      "duration_s": 14.8,
+      "pseudo_label": "AN TO WORK KHÓA ANSEL AND FULL FILE WORD HENRY FOREM HOẶC CREAM OF FRENTICE AND TOUR HACMER",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 2787,
+      "source": "Hoi_thao_truc_tuyen_HOMECOMING_-_Hanh_trinh_tro_ve.mp4",
+      "duration_s": 13.8,
+      "pseudo_label": "ÂM IN THE SHREE SO NEUT THE SAKE Y CHANGAL LIKE COMMY MA BEAU CON MATRY BYSIC MENTISTRY ON MEET YO TO CHRISTIC",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 2817,
+      "source": "Hu_kho_bat_chuoc_chu_tot_rat_de_gia_vo_-_Tri_Le_Cao_The_Tri_Way_Coi_Mo_SS3_Ep15.mp4",
+      "duration_s": 12.4,
+      "pseudo_label": "NHƯNG MÀ EM THÌ EM THẤY LÀ CÁI ĐÓ NÓ CŨNG RẤT LÀ DỄ DẪN TỚI NHỮNG CÁI KHÁC TỨC LÀ NÓ VÍ DỤ NHƯ TRONG TRONG TÂM LÝ HỌC NÓ CÓ MỘT THUẬT NGỮ LÀ MỘT CÁI PHƯƠNG PHÁP MÀ ĐIBULIN THAO TÚNG GỌI LÀ LỚP BOM",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 2910,
+      "source": "Kartick_Narayan_Nha_sang_lap_va_CEO_tai_Kilo_Nang_cap_nganh_ban_le_Vietnam_Innovators_EP17.mp4",
+      "duration_s": 11.2,
+      "pseudo_label": "IF A LEE FUND IDOLF FACEBOOK FRIENDU VIETNAM SHOW LA VIETNAM",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 2940,
+      "source": "Khach_san_phat_trien_nhu_the_nao_thoi_40_-_Niklas_Wagner_General_Manager_New_World_Saigon_Hotel.mp4",
+      "duration_s": 14.4,
+      "pseudo_label": "LIKE SCHO SONY THE LITT BECKHAM LIKE THE FILE BECTIFY WON OF BACHER COFFEE SHO ANFIELD A LA",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 2962,
+      "source": "Kham_chua_benh_tai_chinh_-_Doctor_Housing_TheMoneyDate_SS2_Ep12.mp4",
+      "duration_s": 12.9,
+      "pseudo_label": "NGAY HÔM ĐÓ LUÔN THÌ TÔI CÓ MỘT CÁI STATUS Ở TRÊN FANPAGE ĐÓ LÀ CÁC BẠN CẬN TƯỢNG CẨN THẬN CÙI LỬA KHI HÀNG LOẠT NGƯỜI LỪA ĐẢO MỜI MUA CỔ PHIẾU VINFAST BỞI VÌ NGƯỜI VIỆT KHÔNG MUA ĐƯỢC CHỨNG KHOÁN CỦA MỸ",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 2965,
+      "source": "Kham_chua_benh_tai_chinh_-_Doctor_Housing_TheMoneyDate_SS2_Ep12.mp4",
+      "duration_s": 11.1,
+      "pseudo_label": "CÓ THỂ ĐÂY LÀ MỘT CÁI NƠI GIẢI TRÍ CÓ THỂ LÀ MỘT CÁI KHU CHÚNG TA CÓ THỂ LÀ LÀM VIỆC CÓ THỂ LÀ NƠI ĐÂY CHÚNG TA CÓ THỂ LÀ LẤY LẠI NĂNG LƯỢNG CÔNG VIỆC NHƯNG CHÚNG TA LẠM DỤNG QUÁ LÀ NÓ HƠI PHÍ ĐÓ CÓ THIỆT",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 2973,
+      "source": "Kham_pha_nganh_ruou_vang_huu_co_tai_Australia_Wine_Not_EP04.mp4",
+      "duration_s": 11.8,
+      "pseudo_label": "THE NATIONAL ASSOCIATION SUSTINABLE A RECOUSTRAL ICEWELL SO THE AT TOI OF LAPAL UNFY TO NO THA DICI ORGANIC OUR NOT THE AUTO MAN DI CORTIFICATION OR THE WAR",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 2988,
+      "source": "Kham_pha_nhung_insight_dat_gia_o_nhieu_nganh_hang_tu_2_research_guru_Young_Marketers_EP05.mp4",
+      "duration_s": 14.4,
+      "pseudo_label": "MỘT CÁI BLIT TỪ TRƯỚC ĐẾN GIỜ KHÔNG LÀ NỢ LÀ ĐÂU GÌ HAY HO ĐÂU NGAY CẢ NGƯỜI LỚN CỦA MÌNH NHIỀU NGƯỜI RẤT LÀ SỢ NỢ HA THẾ THÌ ANH VĂN BÌNH CÓ LÀM CHUNG MỘT CÁI DỰ ÁN LIÊN QUAN ĐẾN CHUYỆN MÀ CŨNG LÀ FINANCE NHƯNG MÀ LẠI CHO GIỚI TRẺ NHIỀU HƠN",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 3032,
+      "source": "Kham_pha_nhung_vung_ruou_vang_cua_Australia_Wine_Not_EP02.mp4",
+      "duration_s": 13.6,
+      "pseudo_label": "I SMI THE WHI CAN PEVAL A VERY VERY LONGTO SO WENE SAY BECAU THE UYS A VERY NICE COMPANY FORCE ANDY SAY TODY ICE MIN A WHI CON PEP TRUDY YOU IN THE POTTER WENTY PROPENT",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 3059,
+      "source": "Khi_ban_than_chua_biet_the_nao_la_du_-_Orange_Ha_Tran_HaveASip_Dark_Hours_170.mp4",
+      "duration_s": 12.8,
+      "pseudo_label": "AI BẠC TÌNH ĐÃ BẮT ĐẦU AI BẰNG TÌNH ĐÃ BẰNG ĐẦU HAI CHÂN TÌNH CŨNG ĐÃ VƠ SAU ĐÓ CON NHỎ NÀY NÓ ÍT TUỔI NÓ MÀ CÁI QUAN TRỌNG LÀ VẬY NÈ",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 3063,
+      "source": "Khi_ban_than_chua_biet_the_nao_la_du_-_Orange_Ha_Tran_HaveASip_Dark_Hours_170.mp4",
+      "duration_s": 10.3,
+      "pseudo_label": "TÔI LÀ SỐNG LÂU LÊN LÁO LÀNG Ở ĐẤT NƯỚC NÀY HOẠT ĐỘNG Ở ĐÂY CŨNG LÀ CÂU CHUYỆN QUÁ HAY NHỎ HƯƠNG",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 3100,
+      "source": "Khi_ngan_sach_truyen_thong_han_che_Nhat_quan_mot_platform_qua_nhieu_nam_co_phai_la_cach_YMT_EP08.mp4",
+      "duration_s": 12.0,
+      "pseudo_label": "TẤT NHIÊN LÀ BÂY GIỜ MÌNH CŨNG ĐÃ TRẢI QUA MỘT SỐ CÁI SETIENT Ở TRONG CÁI CHƯƠNG TRÌNH RỒI CHÚNG TA CŨNG ĐÃ CÓ NHỮNG CÁI BUỔI TỔNG QUAY VỀ MARKETING NGAY CÁI SỐ VỪA RỒI THÌ MÌNH CÓ MỘT CÁI BUỔI LIÊN QUAN TỚI INSIDE THÌ BỮA HÔM NAY MÌNH TỚI CÂU CHUYỆN CỦA PLANCOME MINIGATION",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 3108,
+      "source": "Khi_ngan_sach_truyen_thong_han_che_Nhat_quan_mot_platform_qua_nhieu_nam_co_phai_la_cach_YMT_EP08.mp4",
+      "duration_s": 14.7,
+      "pseudo_label": "XẾP TỔNG Ở BÊN KHÁCH HÀNG VÀ XẾP TỔNG BÊN MÌNH CÙNG NHAU CÙNG ĐỒNG THUẬN ĐÓ LÀ MỘT INSPLASTROM VÀ TIẾP TỤC NÓ THÌ NĂM SAU THÌ MÌNH LÀM MÌNH ATTIVE TRÊN TV LUÔN ĐỒNG THỜI LÀ TRÊN DITLE VÀ SOCIAL",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 3112,
+      "source": "Khi_ngan_sach_truyen_thong_han_che_Nhat_quan_mot_platform_qua_nhieu_nam_co_phai_la_cach_YMT_EP08.mp4",
+      "duration_s": 13.0,
+      "pseudo_label": "THÌ BÂY GIỜ MÌNH CÓ MỘT CÁI COMPI PLASTORM RỒI LÀ BETH COOLTIC BLOG DỰA TRÊN CÁI NỀN TẢNG INSIDE VỀ PARENTIN INSIDE VỀ TRẺ CON THÌ BÂY GIỜ CÁI CÁCH MÀ THƯƠNG HIỆU CỦA MÌNH MÌNH ATT NÓ",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 3113,
+      "source": "Khi_ngan_sach_truyen_thong_han_che_Nhat_quan_mot_platform_qua_nhieu_nam_co_phai_la_cach_YMT_EP08.mp4",
+      "duration_s": 10.7,
+      "pseudo_label": "MÌNH PHẢI POST VÀO CÁI NÀY HƠI VỀ BUSINESS MỘT TÍ THÌ NÓ SẼ TÙY THUỘC VÀO OTATION TÙY THUỘC VÀO CÁI OPTION ĐÓ LÀ NHƯ THẾ NÀO À NÓ LÀ FESTIV HAY NÓ LÀ DO SCHOOL THÌ MÌNH SẼ CHỌN NHỮNG CÁI INSIDE",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 3126,
+      "source": "Khi_that_bai_cung_la_mot_cu_ly_de_dan_than_-_Anh_Vien_HaveASip_195.mp4",
+      "duration_s": 12.3,
+      "pseudo_label": "CON KHÔNG CÓ THỂ NÀO ĐỒNG HÀNH CÙNG VỚI THẦY ĐỂ MÀ PHÁT TRIỂN ĐƯỢC TẠI VÌ MÌNH TẬP NÓ RẤT LÀ MỆT VÀ KHI MÀ TỚI NHỮNG CÁI GIAI ĐOẠN MÀ MỆT MÀ CẦN MÌNH CỐ GẮNG HƠN NỮA MÀ MÌNH LẠI CỨ LÙI XUỐNG Á",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 3152,
+      "source": "Khi_that_bai_thi_tim_cach_dung_len_-_Vua_ho_tieu_Phan_Minh_Thong_HaveASip_232.mp4",
+      "duration_s": 14.7,
+      "pseudo_label": "MỘT THẾ GIỚI NHƯ THẾ NÀY THÌ PHẢI LÀ THÍCH NGHI MÀ NHẤT LÀ MỘT CÔNG TY XUẤT KHẨU NÔNG SẢN Ở VIỆT NAM NÔNG SẢN ĐÃ BỊ BIẾN ĐỘNG THỜI TIẾT ĐÃ BỊ RẤT LÀ NHIỀU THỨ VÀ CẢ THẾ GIỚI CÒN ANH ĐANG BÁN BỐN MƯƠI CONTAINER ĐI SANG NGA UKRAINE",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 3241,
+      "source": "Khong_ai_co_don_trong_noi_dau_cua_minh_-_Binh_Bong_Bot_HaveASip_112.mp4",
+      "duration_s": 12.4,
+      "pseudo_label": "ĐÓ LÀ ĐẦU NĂM MÌNH ĐI ĐẮK NÔNG SAU ĐÓ MÌNH ĐI ĐẮK LẮK MÌNH ĐI HÀ NỘI MÌNH ĐI ĐỦ THỨ VÀ MÌNH ĐANG SINH VISA ĐỂ MÌNH RỜI KHỎI SÀI GÒN BỞI VÌ MÌNH ĐÃ TRẢ XONG MỘT CÁI MÓN NỢ VỚI CÁI THÀNH PHỐ MÌNH YÊU MÌNH ĐÃ GIẢI QUYẾT ĐƯỢC MỘT CÁI TỔN THƯƠNG",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 3268,
+      "source": "Khong_ai_hieu_minh_thi_minh_lam_nhac_-_Kewtiie_Gen_Z_Truyen_SS4_EP10.mp4",
+      "duration_s": 13.5,
+      "pseudo_label": "NÓ SẼ MẤT NHIỀU THỜI GIAN NÓ BỊ CÁI CÓ KHI NÀO KIỂU MÌNH ĐƯA MÌNH ĐƯA MÌNH BIẾT QUA CÁI XONG NGƯỜI TA KIỂU LÀM LẠI ĐI EM CÓ CHỨ CÓ CHỨ MẤY KHÚC ĐÓ THÌ CÁI TÔI CÁI TÔI Ở ĐÂU",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 3271,
+      "source": "Khong_ai_hit_tho_ton_thuong_thay_ban-_PGSTS_Phuong_Hoa_Vien_truong_Vien_Tam_ly_hoc_Truyen_thong.mp4",
+      "duration_s": 12.4,
+      "pseudo_label": "NẾU MÀ MÌNH KHÔNG KHÔNG XÁC ĐỊNH RÕ NHƯ VẬY THÌ MÌNH SẼ LÀM NHỮNG CÁI VIỆC MÀ MÌNH KHÔNG KHÔNG PHẢI SỞ TRƯỜNG CỦA MÌNH MÀ THẬM CHÍ LẠI LÀ SỞ ĐOẠN EM MUỐN HỎI TIẾP MỘT CÂU HỎI LÀ NGƯỜI TRẺ HỌ PHẢI ĐỐI MẶT VỚI CHUYỆN LÀ RẤT LÀ NHIỀU CÁI VAI TRÒ RẤT LÀ NHIỀU CÁI TRÁCH NHIỆM RẤT NHIỀU CÁI ÁP LỰC",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 3286,
+      "source": "Khong_ai_lam_bieng_ma_thanh_cong_-_Chuyen_gia_trang_diem_Hung_Vanngo_HaveASip_138.mp4",
+      "duration_s": 13.2,
+      "pseudo_label": "BỞI VÌ NÓ KHÔNG PHẢI NÓ ĐỪNG DIỄN RA NÓI LÀ KHÔNG CÓ ĐÚNG BỞI VÌ KHÔNG CÓ THÍCH AQUA CÁI QUE BB CỦA CÔNG TRÍ TẠI VÌ CÔNG TRÍ RẤT LÀ ĐÀ NHĂN RỒI NHƯNG ANH THÍCH TÍNH CHÍ LÀ HẠP ĐÓ LÀ GẶP VÀI NĂM GẶP Ở BÊN MỸ CHỨ",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 3436,
+      "source": "Khong_lam_hoa_hau_cung_la_mot_loai_dong_luc_-_Nguyen_Thuc_Thuy_Tien_HaveASip_109.mp4",
+      "duration_s": 10.7,
+      "pseudo_label": "GIÀ HƠN Ờ ĐẤY BÂY GIỜ NHƯ NÀY QUÁ KHỨ THÌ ĐÃ LÀ KHÔNG PHẢI LÀ MỘT CÔ GÁI QUÁ Ý THỨC NHIỀU VỀ CÁI MẶT BỀ NGOÀI CỦA MÌNH NHƯNG BÂY GIỜ ĐƯỢC CẢ NƯỚC CÔNG NHẬN LÀ ĐẸP",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 3456,
+      "source": "Khong_the_ngung_suy_nghi_ve_nau_nuong_Chef_Phan_Le_Anh_Tu_Khong_Cay_Khong_Ve_SS3_EP06.mp4",
+      "duration_s": 14.1,
+      "pseudo_label": "EM CÓ QUÀ RỒI MỌI NGƯỜI NHƯ MỌI NGƯỜI CŨNG BIẾT LÀ KHÔNG CÁI KHÔNG VỀ THÌ TRONG NHỮNG CÁI SEASON TRƯỚC THÌ MÌNH PHỎNG VẤN CÁC CÁI NGHỆ SĨ LÀM NHẠC SEASON ĐẶC BIỆT THỨ BA NÀY",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 3458,
+      "source": "Khong_the_ngung_suy_nghi_ve_nau_nuong_Chef_Phan_Le_Anh_Tu_Khong_Cay_Khong_Ve_SS3_EP06.mp4",
+      "duration_s": 10.5,
+      "pseudo_label": "BẢN THÂN EM LÀ NGƯỜI RẤT THÍCH ĂN CAY HAY ĂN CAY VÀ HÔM QUA ĐÓ LÀ CÁI SHOST ĐẦU TIÊN KHIẾN EM PHẢI ĐỘNG BẰNG SỮA Ồ TRONG ĐỜI TRƯỚC GIỜ EM MUỐN UỐNG SỮA VÌ",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 3462,
+      "source": "Khong_the_thang_tien_duoc_neu_chi_lam_du_gio_THANG_TIEN_EP02.mp4",
+      "duration_s": 15.0,
+      "pseudo_label": "MÌNH KHÔNG CÓ BỎ LƠ BẰNG KHÔNG LUÔN TẤT CẢ NHỮNG CÁI VIỆC KHÁC MÀ QUAN TRỌNG NHƯNG MÌNH CŨNG CÓ NGHĨA LÀ GIỮ CÁI MỐI VÀ MÌNH CŨNG GIẢI THÍCH CHO CHO NHỮNG NGƯỜI TRONG CUỘC SỐNG CỦA MÌNH ĐÂY LÀ LÝ DO VÌ SAO BẰNG CÁCH NÀY MÌNH CÓ THỂ KÉO HỌ VÀO CÁI KẾ HOẠCH ĐỂ CHO CÁI",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 3466,
+      "source": "Khong_thieu_tien_khong_phai_sinh_vien_-_Mach_Quang_Phu_TheMoneyDate_S2_Ep22.mp4",
+      "duration_s": 12.4,
+      "pseudo_label": "ĐÚNG RỒI HIỆN VẬT KIỂU THẾ HOẶC LÀ HÔM NÀO MÀ MUỐN ĐỔI RA TIỀN THÌ BUỔI CHỤP THÌ CHẮC CŨNG LÚC ẤY HÌNH NHƯ ĐƯỢC VÀI ĐƯỢC VÀI TRĂM HAY SAO Ý KIỂU THẾ VÀI TRĂM KIỂU MỘT GIỜ HAY MỘT BUỔI LUÔN",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 3509,
+      "source": "Kich_tinh_la_dieu_can_thiet_nhung_chan_that_la_yeu_to_quyet_dinh_-_CEO_Van_Hanh_HaveASip_188.mp4",
+      "duration_s": 15.0,
+      "pseudo_label": "THÌ ĐẤY LÀ CÁI HÀNH TRÌNH NHƯNG MÀ CHỊ NGHĨ RẰNG TẠI VÌ MÌNH QUÁ YÊU NÓ CHO NÊN LÀ MÌNH CẢM THẤY RẰNG MÌNH LÀM MỘT CÁI ĐIỀU BẤT KỲ MỘT CÁI ĐIỀU GÌ LÀM TỔN THƯƠNG ĐẾN CÁI TÌNH CẢM CÁI KHÔNG KHÍ ĐÓ THÌ LÀ MỘT CÁI CẢM GIÁC TỘI LỖI VÀ CÁC ANH CŨNG THẾ CÁC ANH THẤY KHỦNG KHIẾP LẮM",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 3561,
+      "source": "Kiem_tien_tu_Dropshipping_-_Ha_Phuong_Anh_CRO_OpenCommerce_Vietnam_Innovators_S2_EP02.mp4",
+      "duration_s": 15.0,
+      "pseudo_label": "THẤY THAM VỌNG CỦA OPEN COMMERS VỚI THỊ TRƯỜNG TRUNG QUỐC TRONG NHỮNG NĂM TIẾP THEO LÀ GÌ VÀ SAU TRUNG QUỐC SẼ LÀ Ở ĐÂU TỤI EM SẼ ĐÁNH VÀO ĐÂU DẠ VÂNG THÌ THAM VỌNG CỦA BÊN EM LÀ TRỞ THÀNH HỆ SINH THÁI SỐ MỘT TOÀN CẦU VỀ DK SHOPPING VÀ PRINTANING VÀ THỊ TRƯỜNG TRUNG QUỐC THÌ CŨNG KHÔNG PHẢI LÀ",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 3588,
+      "source": "Kien_truc_mang_nang_luong_lay_dong_con_nguoi_-_KTS_Dam_Vu_Dong_sang_lap_Kien_truc_O_Blueprint_S2.mp4",
+      "duration_s": 10.8,
+      "pseudo_label": "Ừ TỨC LÀ NÓ PHẢI CÓ MỘT CÁI NỀN CHO MỘT CÁI CÁI CHỨC NĂNG NÀO ĐÓ NÓ CÓ PHẢI CÓ LÝ DO ĐƯỢC NÓ ĐƯỢC TẠO RA RỒI CHÍNH XÁC ĐÓ LÀ CÁI ĐIỀU THÚ VỊ KHI MÀ CHÚNG TA LÀM NHỮNG CÔNG TRÌNH MÀ Ở NHIỀU THỂ LOẠI KHÁC NHAU ĐÓ",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 3679,
+      "source": "Ky_uc_co_phai_la_tai_san_cua_moi_nguoi_-_Nha_van_Hoang_Anh_Tu_HaveASip_136.mp4",
+      "duration_s": 13.2,
+      "pseudo_label": "NHƯNG MÀ LỊCH SỬ GẮN BÓ VỚI THÙY MINH THÌ PHẢI TỪ THỜI NIÊN THIẾU CÁI NÀY NÓI KHÔNG CÓ SAI XIN ĐƯỢC CHÀO MỪNG ANH HOÀNG ANH TÚ ĐẾN VỚI HAPPSHEET XIN CHÀO THỦY MINH ANH VẪN NHỚ RẰNG LÀ THÙY MINH CŨNG ĐÃ HẸN ANH",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 3698,
+      "source": "Ky_uc_co_phai_la_tai_san_cua_moi_nguoi_-_Nha_van_Hoang_Anh_Tu_HaveASip_136.mp4",
+      "duration_s": 11.9,
+      "pseudo_label": "MẤT GÌ ĐÂU MỘT CÁI NGƯỚC MẮT NHÌN LÊN BẦU TRỜI MẤT GÌ ĐÂU MỘT CÁI NGÀY CÓ THỂ TRỌN VẸN MỘT NGÀY NGHỈ TRỌN VẸN LÀ TRUNG THU",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 3714,
+      "source": "LGBT_dau_tranh_vi_dieu_gi_-_Linh_Ngo_Giam_doc_ICS_Coi_Mo_SS3_Ep11.mp4",
+      "duration_s": 11.9,
+      "pseudo_label": "HAY LÀ CỘNG ĐỒNG VÍ DỤ NHƯ ĐƠN GIẢN NHƯ LÀ HÀI ĐỘC THOẠI CỦA TỤI EM KHI MÌNH DU NHẬP MỘT CÁI GÌ ĐÓ MỚI VỀ CHẮC CHẮN NÓ PHẢI CÓ NHỮNG KHÁI NIỆM MÀ MỌI NGƯỜI KHÔNG BIẾT VÀ CHẮC CHẮN NÓ SẼ CÓ RẤT NHIỀU KHÁI NIỆM MÀ CHÚNG TA TẠI SAO MỌI NGƯỜI THOẢI MÁI ĐỂ MỌI NGƯỜI HỌC NHỮNG KHÁI NIỆM VỀ RÁP",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 3716,
+      "source": "LGBT_dau_tranh_vi_dieu_gi_-_Linh_Ngo_Giam_doc_ICS_Coi_Mo_SS3_Ep11.mp4",
+      "duration_s": 14.4,
+      "pseudo_label": "ĐÓ CHÍNH LÀ LÝ DO MÀ TÔI ĐỒNG Ý PHẢI ĐI KÝ TÊN TRƯỚC HOÀI ĐÚNG RỒI ĐI HOÀI ĐI HOÀI TẠI VÌ ĐÓ CHÍNH NHỮNG CÁI CHỮ KÝ ĐẤY NHỮNG CÁI CÂU CHUYỆN NHỮNG CÁI SỰ ỦNG HỘ CỦA XÃ HỘI LÀ CÁI THỨ MÀ SẼ GỌI LÀ GIÚP CÁI MỤC TIÊU NÀY TRỞ THÀNH HIỆN THỰC",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 3758,
+      "source": "Lam_Coin98_khong_phai_vi_tien_ma_vi_rat_nhieu_tien_-_Nguyen_The_Vinh_Co-founder_CEO_Coin98.mp4",
+      "duration_s": 12.8,
+      "pseudo_label": "FINANCE VAI HAY LÀ NÀY KHÁC MÌNH CŨNG KHÔNG ẤY NHƯNG MÀ THỰC RA LÀ VỀ MINDSET CÁ NHÂN KHÔNG CHỈ LÀ BÂY GIỜ MÀ LÀ TRƯỚC ĐÂY THÌ EM DỰ ĐOÁN LÀ ĐẾN KHOẢNG HAI KHÔNG HAI LĂM",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 3763,
+      "source": "Lam_Marketing_kieu_Duolingo_-_Haina_Xiang_Marketing_Director_APAC_tai_Duolingo_VI_S3_EP15.mp4",
+      "duration_s": 15.0,
+      "pseudo_label": "A WEIN ASSICA VIETNAM PENCE WE SO RELATION ROSE ANOM AND WE WANT EXPRESS FIEL MORRIS OF ECTIVE TO BE HENRY DOWNLO THE DOLLING GOU",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 3786,
+      "source": "Lam_cong_an_luong_thi_khi_nao_moi_giau.mp4",
+      "duration_s": 12.6,
+      "pseudo_label": "KÊNH ĐẦU TƯ THỨ BA LÀ BẤT ĐỘNG SẢN MỌI NGƯỜI THƯỜNG NGHĨ RẰNG CẦN CÓ RẤT NHIỀU TIỀN THÌ MỚI CÓ THỂ ĐẦU TƯ VÀO KÊNH NÀY THẬT RA ĐÓ CHỈ LÀ ĐỐI VỚI ĐẦU TƯ BẤT ĐỘNG SẢN TRUYỀN THỐNG HIỆN NAY CÓ RẤT NHIỀU HÌNH THỨC ĐẦU TƯ BẤT ĐỘNG SẢN KHÔNG ĐÒI HỎI NGUỒN VỐN LỚN",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 3834,
+      "source": "Lam_dung_nghe_khong_phai_luc_nao_cung_vui_-_ThS_Phoenix_Ho_HaveASip_140.mp4",
+      "duration_s": 11.3,
+      "pseudo_label": "TỨC LÀ KHI CHƯA VÀO BỆNH CÀNG DÀI CÀNG TỐT CHO HỌ CHO HỌ RỒI CÁI GIAI ĐOẠN MÀ XẤU NHẤT ĐÓ LÀ GIAI ĐOẠN MÀ GIA ĐÌNH PHẢI ĐỒNG HÀNH VÍ DỤ NHƯ CON TRAI NÓ NHÌN MẸ NÓ NHƯ THẾ NÀO",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 3893,
+      "source": "Lam_moi_viec_voi_goc_nhin_toi_khong_biet_gi_het_-_Thai_Van_Linh_Have_a_Sip_EP54.mp4",
+      "duration_s": 14.8,
+      "pseudo_label": "VÀ NHÀ ĐẦU TƯ ĐÓ LÀ CÓ MỘT CÁI QUAN ĐIỂM LÀ MÌNH LÀ MỘT NGƯỜI DOANH NHÂN MÌNH LUÔN PHẢI SUY NGHĨ VỀ QUỸ TẠI VÌ ĐÓ MÌNH LÀ ĐẠI DIỆN CHO QUỸ VÀ MÌNH CÓ CÁI TRÁCH NHIỆM ĐỂ CHO MÌNH MÌNH TẠO",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 3981,
+      "source": "Lam_rapper_cung_can_come_out_voi_gia_dinh_-_16_TYPH_GONZO_HaveASip_91.mp4",
+      "duration_s": 15.0,
+      "pseudo_label": "Ờ ĐỐI VỚI CẢ MỘT NGƯỜI Ở THẾ HỆ TRƯỚC NHƯ MẸ THÌ RAP NÓ LÀ MỘT CÁI KHÁI NIỆM NÓ RẤT LÀ MỚI VÀ KHI MÀ MÌNH TIẾP XÚC VỚI CẢ MỘT KHÁI NIỆM MỚI MÌNH HOÀN TOÀN KHÔNG BIẾT GÌ VỀ NÓ THÌ CÁI XU HƯỚNG LÀ MÌNH SẼ NHÌN VÀO CÁI VÍ DỤ GẦN NHẤT MÀ MÌNH CÓ THỂ NHÌN ĐƯỢC THÌ VÍ DỤ GẦN NHẤT ĐÓ LÀ EM",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 4002,
+      "source": "Lam_rapper_cung_can_come_out_voi_gia_dinh_-_16_TYPH_GONZO_HaveASip_91.mp4",
+      "duration_s": 11.3,
+      "pseudo_label": "CHO SUSVIN VÀ TOTY LÚC ĐÓ CÁI THỜI ĐIỂM ĐÓ CHƯA CÓ HAI EM VÀ CHỊ RẤT LÀ TÒ MÒ LÀ NẾU MÀ CHỊ ĐƯỢC ĐẶT CÂU HỎI LẠI VỚI NHỮNG ANH EM CỦA SPIKER THÌ",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 4042,
+      "source": "Lam_sang_tao_tai_sao_phai_hieu_ve_NFT_-_Pham_Toan_Thang_CEOFounder_Cong_Troi_NFT_MAD_S3_EP02.mp4",
+      "duration_s": 13.2,
+      "pseudo_label": "HƠN MƯỜI LĂM NĂM HOẠT ĐỘNG TRÊN LĨNH VỰC NÀY THÌ MÌNH NHÌN THẤY LÀ NFT NÓ ĐƯA LẠI MỘT CÁI ỨNG DỤNG MÀ NÓ PHÙ HỢP VỚI LẠI CÁI CÁI CÔNG VIỆC MÀ MÌNH ĐANG LÀM VÀ MÌNH TIN RẰNG LÀ TRONG KHOẢNG",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 4089,
+      "source": "Lam_the_nao_Go-Food_chiem_20_thi_truong_chi_trong_vong_3_tuan_Young_Marketers_Podcast_EP13.mp4",
+      "duration_s": 14.3,
+      "pseudo_label": "HẾT THÍCH MUỐN ĂN LUÔN KHÔNG CÒN MUỐN ĂN NỮA CÒN MỘT BẠN THÌ RÕ RÀNG LÀ CÁI LƯỢNG MÀ LƯỢNG RIVER LƯỢNG SHIPPER RẤT LÀ ĐÔNG THỜI GIAN GIAO ĐỒ ĂN CŨNG KHÁ LÀ NHANH LUÔN TUY NHIÊN THÌ CÁI SỐ LƯỢNG MÀ NHÀ HÀNG KHÔNG CÓ NHIỀU THÌ THÀNH RA LÀ",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 4100,
+      "source": "Lam_the_nao_Go-Food_chiem_20_thi_truong_chi_trong_vong_3_tuan_Young_Marketers_Podcast_EP13.mp4",
+      "duration_s": 15.0,
+      "pseudo_label": "EM KHÔNG THỂ NÀO MÀ LÀ MỘT ANH RẤT ĐẸP TRAI NHƯNG MÀ LẠI KHÔNG CÓ BAO LƯU GÌ HẾT TRONG CUỘC ĐỜI TÔI HOẶC LÀ MỘT ANH RẤT CÓ LÝ CUỘC ĐỜI TÔI NHƯNG MÀ LẠI CHẲNG TINH TẾ GÌ CẢ ĐẤY THÌ ĐÓ THÌ ĐÓ LÀ CHỊ NGHĨ LÀ NÓ LÀ BỔ TRỢ LẪN NHAU NÓI KHÔNG CÓ BÊN ĐÂY CHO CÔNG TY THẾ NÀO KHÔNG",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 4139,
+      "source": "Lam_the_nao_de_truong_thanh_hon_khi_yeu_Yeu_Lanh_SS5_EP1.mp4",
+      "duration_s": 13.9,
+      "pseudo_label": "THEO CÁI DẠNG ĐÓ LÀ HỌ BỊ RÀNG BUỘC BỞI QUÁ NHIỀU NHỮNG CÁI QUAN ĐIỂM MÀ CÓ THỂ HỌ HỌC ĐƯỢC HOẶC DO HỌ TỰ ĐƯA RA VÍ DỤ ĐỪNG BAO GIỜ TIN NGƯỜI NÀY TIN CUỘC ĐỜI XONG RỒI LÀ SẼ KHÔNG AI CHÚ Ý TỚI BẠN ĐÂU RỒI CÁC THỨ THÌ HỌ SẼ CẦN NHỮNG CÁI MỐI TƯƠNG GIAO CHÂN THẬT",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 4158,
+      "source": "Lam_truyen_thong_khong_can_thiet_phai_ton_nhieu_tien_Kinh_nghiem_tai_nganh_FMCG_Cong_nghe_YM_EP7.mp4",
+      "duration_s": 11.3,
+      "pseudo_label": "NHƯNG MÀ NÓ CHỈ CÓ KHI MÀ MÌNH ĐÃ THẬT SỰ RẤT LÀ VỮNG VỀ CÁI THƯƠNG HIỆU CỦA MÌNH LÀ GÌ LÀ AI Ừ VỀ SẢN PHẨM NÓ THỰC SỰ NÓ ĐÃ SET TỘI DOW RỒI THÌ CÁI PLAFON NÓ BẮT ĐẦU NÓ MỚI ĐƯỢC XÂY DỰNG VÀ HÌNH THÀNH QUA NĂM THÁNG TRUYỀN THÔNG QUA NĂM THÁNG",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 4174,
+      "source": "Lam_tu_do_tai_chinh_phai_tu_lo_Highlight_Am_U_Talk_3.mp4",
+      "duration_s": 12.7,
+      "pseudo_label": "TẠI VÌ CÁI NÀY NÓ QUAN TRỌNG LẮM NHA TẠI VÌ SAU NÀY VÍ DỤ NHƯ EM KHÔNG THÍCH LÀM FREELANCER NỮA EM ĐI LÀM CHO DOANH NGHIỆP ĐI THÌ LÚC ĐÓ EM SẼ BIẾT LÀ CÁI THU NHẬP CỦA EM NHƯ THẾ NÀO ĐỂ MÀ EM ĐIÊU VỚI LẠI BÊN PHÒNG NHÂN SỰ CÁI MÀ ĐẦU TIÊN ANH MUỐN KHUYÊN EM ĐÓ LÀ",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 4239,
+      "source": "Lanh_dao_toan_dien_giai_doan_toan_cau_hoa_Managing_Director_tai_Global_Ready_LLC_VI_S3_EP13.mp4",
+      "duration_s": 13.4,
+      "pseudo_label": "OM SO IPHAM COPLOYE AND I DITLE OF THAT AND THE MY CREAM IF FILE THAT ACRY WHY MY DOING ORLE THIS",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 4322,
+      "source": "Linh_Thai_x_Vietcetera_Ep8_Xoa_tan_noi_so_mang_ten_Networking.mp4",
+      "duration_s": 10.3,
+      "pseudo_label": "TỚI NGÀY HÔM NAY LINH VẪN DÙNG NHỮNG TIP NÀY VÀ LINH HY VỌNG RẰNG NÓ SẼ GIÚP ÍCH CHO BẠN LINH RẤT MUỐN NGHE NHỮNG LỜI GỢI Ý CỦA BẠN THÌ NẾU BẠN CÓ CHIA SẺ GÌ HÃY COMMENT DƯỚI ĐÂY NHA",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 4334,
+      "source": "Loi_thu_nhan_cua_ke_bat_nat_nan_nhan_tay_chay_hoc_duong_-_Yen_Nhi_Thanh_Ngan_ConNhaNguoiTa_Ep3.mp4",
+      "duration_s": 15.0,
+      "pseudo_label": "ĐẾN EM RẤT LÀ NHIỀU EM CẢM GIÁC LÀ CHÁN CÁI VIỆC HỌC Ở TRƯỜNG HƠN EM BẮT ĐẦU RỜI XA GIA ĐÌNH RỜI XA BẠN BÈ VÀ ĐĂNG NHỮNG CÁI HÌNH ẢNH LÊN TRÊN FACEBOOK NÓ HƠI LÀ PHẢN CẢM MỘT XÍU VÀ KHÔNG CÓ PHÙ HỢP VỚI LỨA TUỔI EM ĐÓ THÌ CÁC BẠN THẤY ĐƯỢC CÁI HÌNH ẢNH ĐÓ CÁC BẠN",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 4344,
+      "source": "Long_ghep_ban_sac_dia_phuong_de_mo_rong_chuoi_khach_san_-_Amar_Lalvani_CEO_Standard_International.mp4",
+      "duration_s": 14.6,
+      "pseudo_label": "AND IS FROCY PIENT THE FIR SECTION OF THE INT AROP PARASION BECATRAY PLATION OVER STING THE COMMENTATION THE RELATIONSHIP THE BULTING THE SEATY LOD AS TO DOT HOTEL JOPING OUT FURY GOTHE",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 4363,
+      "source": "Luong_duyen_Creator_va_Facebook_-_Rafael_Guida_Director_Creative_Shop_Khoi_Le_Country_Head_Meta.mp4",
+      "duration_s": 13.9,
+      "pseudo_label": "IT THING LIKE JUST FIRE ABOUT THE WAY ARE BRITING DOM BERLIN ANGE WISHER BETTER UNING EAS A CASE THING HE BLACK FURY SAME LIKE ATHING GOING BACK TO LIVE THE COTY WEI TALK ABOUT OLIVER THE HAVE",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 4375,
+      "source": "Ly_ca_phe_tao_nen_su_an_tam_-_Tran_Nhat_Quang_-_Founder_La_Viet_Coffee_LOCO_EP01.mp4",
+      "duration_s": 13.3,
+      "pseudo_label": "NÓ THIÊN NHIỀU VỀ CÁI SỰ CHIA SẺ VÀ THƯỞNG THỨC HƠN LÀ VỀ NHU CẦU VÀ CÁI ĐẤY NÓ TẠO NÊN MỘT CÁI SỰ KHÁC BIỆT ĐỂ MỌI NGƯỜI ĐỀU THẤY RẰNG KHI ĐẾN VIỆT NAM THÌ AI CŨNG CÓ THỂ RẤT LÀ DỄ DÀNG NÓI VỀ CÀ PHÊ HOẶC LÀ NGỒI CÀ PHÊ HAY LÀ MỜI NHAU LY CÀ PHÊ",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 4392,
+      "source": "Ly_le_cua_trai_tim_-_Ba_Xuan_Phuong_Thuy_Minh_Yeu_Lanh_SS4_EP4.mp4",
+      "duration_s": 11.2,
+      "pseudo_label": "VÀ ANH ẤY NHỚ RẰNG DẦU ANH ĐÃ CHẾT TÔI KHÔNG BAO GIỜ THA LỖI CHO ANH CHỨ TÔI CŨNG KHÔNG HIỀN LÀNH GÌ ĐÂU TÔI KHÔNG THA LỖI CHO ANH BỞI VÌ",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 4398,
+      "source": "Ly_le_cua_trai_tim_-_Ba_Xuan_Phuong_Thuy_Minh_Yeu_Lanh_SS4_EP4.mp4",
+      "duration_s": 12.6,
+      "pseudo_label": "BÀ GIÀ MÀ KHI NHÌN THẤY NGƯỜI ĐẤY CÓ MỘT CÁI CỬ CHỈ GÌ ĐÓ LÀ LẬP TỨC TÔI ĐI XA HÀNG TRĂM KM NGAY LẬP TỨC THẾ THÌ CÁI SỰ MÀ MÌNH SAU NÀY MÌNH ĐỠ VẤP VÁP HƠN Á",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 4415,
+      "source": "Ly_tri_co_giup_ta_tranh_khoi_nhung_ton_thuong_-_Karik_HaveASip_Dark_Hours_185.mp4",
+      "duration_s": 13.9,
+      "pseudo_label": "NHƯNG NỖI ĐAU CỦA MÌNH THÌ NÓ VẪN Ở ĐẤY BABY LÀ CHỊ ĐANG Ở CÁI LÚC MÀ CHỊ CHƯA VƯỢT QUA ĐƯỢC NÓ NÊN CHỊ CẢM GIÁC NHƯ LÀ CHỊ BIẾT RẤT RÕ LÀ ĐƯỢC VÀ CHỊ BIẾT RẤT RÕ LÀ ĐÂY BÀI HỌC CUỘC SỐNG VÀ CHỊ BIẾT LÀ À OK SAU ĐÂY LÀ MÌNH TỐT NGHIỆP",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 4417,
+      "source": "Ly_tri_co_giup_ta_tranh_khoi_nhung_ton_thuong_-_Karik_HaveASip_Dark_Hours_185.mp4",
+      "duration_s": 13.9,
+      "pseudo_label": "NHƯNG MÀ ĐỐI VỚI EM CÁI NGƯỜI MÀ NẮM ĐƯỢC META FOLLO THEO BETA PHẢI LÀ NGƯỜI LUÔN NẮM BẮT ĐƯỢC CÁI NHẠC ĐÓ VÀ PHÙ HỢP VỚI CARETT CỦA HỌ MATCHING ĐƯỢC VỚI CÁI CARETTLE CỦA HỌ THÌ MỚI LÀ NGƯỜI THEO META",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 4418,
+      "source": "Ly_tri_co_giup_ta_tranh_khoi_nhung_ton_thuong_-_Karik_HaveASip_Dark_Hours_185.mp4",
+      "duration_s": 10.4,
+      "pseudo_label": "VÀ NÓ ĐỊNH NGHĨA MÌNH NÓ KHÔNG PHẢI CÔNG VIỆC KHÔNG PHẢI LÀ VÌ MÌNH MAYBE LÚC MÌNH CÒN TRẺ RỒI XÃ HỘI HAY GIA ĐÌNH SẼ CHO MÌNH MỘT SỐ CÁC CÁI KHUÔN MẪU LÀ PHẢI ĐI LÀM ĐỂ LÀ NGƯỜI THÀNH ĐẠT THÌ PHẢI ABC",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 4464,
+      "source": "Mang_nganh_khach_san_Viet_tiem_can_tieu_chuan_quoc_te_-_Karim_Meziane_GM_Shilla_Monogram_Danang.mp4",
+      "duration_s": 13.2,
+      "pseudo_label": "AS THE MANTREAL WEALTH THE MATT CRISIS RE COVID PUN THE MIC DINH AVENIE PRESENT NEW FEEDY A VITAY THE AT VINICE IT IT MOAN",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 4467,
+      "source": "Mang_nganh_khach_san_Viet_tiem_can_tieu_chuan_quoc_te_-_Karim_Meziane_GM_Shilla_Monogram_Danang.mp4",
+      "duration_s": 15.0,
+      "pseudo_label": "TO BE MTER DIS THE MORAFT CHAMP TO RETITING OF EN BEED FRANK ZUMBLE THE BREXI WILL BE THE FIR WE WAT WECTION CRISTIC INFO",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 4503,
+      "source": "Mark_Chapman_PTGD_Phat_Trien_Kinh_Doanh_Kenh_Hop_Tac_Prudential_Viet_Nam_Vietnam_Innovators_EP21.mp4",
+      "duration_s": 14.0,
+      "pseudo_label": "BEGANIC SOA ADN RE WAT COMMER TOAN CON OPTIER COMMENTS ANDREY BEAGAN THE STREET MIBY NOT SO CAREND FREU THE VIT MESSI HOPLICUN TODAY",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 4522,
+      "source": "Marketing_cau_chuyen_hieu_qua_thanh_cong_ca_that_bai_tu_cuu_GD_Marketing_Coca-Cola_DNA_YMP_EP02.mp4",
+      "duration_s": 14.1,
+      "pseudo_label": "VÀ NHỮNG CÁI ĐÓ RẤT LÀ THẬT TỨC LÀ KHI MÀ KHI MÀ KHI MÀ ĐẾN SORRY CHỊ NÓI VỀ CHUYỆN VỀ VỀ BEVEST VÀ DREAM VÌ ĐÓ LÀ CÁI CATACOGE CHỊ MẤT NHIỀU NHẤT HA THÌ ĐÓ LÀ NHỮNG CÁI NHU CẦU RẤT THẬT MÌNH NHÌN VÔ TRONG CÁI NICE VỀ",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 4532,
+      "source": "Marketing_cau_chuyen_hieu_qua_thanh_cong_ca_that_bai_tu_cuu_GD_Marketing_Coca-Cola_DNA_YMP_EP02.mp4",
+      "duration_s": 13.7,
+      "pseudo_label": "ĐỂ LÀM KHÔNG CHỈ LÀ CÁI BẰNG CÁI PRODUC ĐỂ MAC LIKE PETER BIBO LIVESTOR BẰNG CÁI PREM BOY ĐỂ TRAN NHỮNG CÁI PERCEDES ĐỂ CÓ CHỮ GỌI LÀ TREND MÀ CHỈ GỌI LÀ ĐỂ",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 4562,
+      "source": "Marketing_quan_trong_hay_branding_quan_trong_hon_Thuc_te_tai_Bitis_Pepsi_va_Samsung_YMP_EP01.mp4",
+      "duration_s": 11.4,
+      "pseudo_label": "THÌ MÌNH HÃY CHO HỌ MỘT CÁI CẢM HỨNG TRƯỚC ĐỂ HỌ TÌM HIỂU VỀ MÌNH ĐÓ LÀ CÁI CẢM QUEN CÁI CHIẾN DỊCH MÀ DISC LEVING RA ĐỜI ĐÂY MỚI LÀ SỐNG VÀ MÌNH ĐƯA CÁI CÁI PHONG CÁCH SỐNG CỦA HÀN QUỐC",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 4597,
+      "source": "May_do_theo_nhu_cau_khach_hang_-_Nguyen_Thai_Son_CEO_SmartOSC_VI_SS02_EP04.mp4",
+      "duration_s": 11.1,
+      "pseudo_label": "VỀ CÁI TƯ DUY ĐÓ THÌ ĐẤY LÀ MỘT CÁI ĐIỂM ĐẦU TIÊN ĐIỂM THỨ HAI KHI MÀ MỌI NGƯỜI ĐÃ THỐNG NHẤT CÁI ĐIỂM ĐÓ RỒI THÌ CHÚNG TÔI SẼ ĐẶT RA CÂU HỎI LÀ THẾ BÂY GIỜ CÁI ĐỊNH VỊ CỦA MÌNH LÀ GÌ ĐẤY THÌ",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 4598,
+      "source": "May_do_theo_nhu_cau_khach_hang_-_Nguyen_Thai_Son_CEO_SmartOSC_VI_SS02_EP04.mp4",
+      "duration_s": 15.0,
+      "pseudo_label": "SUY NGHĨ XEM LÀ MÌNH LÀM CÁI GÌ THẾ NHƯNG MÀ BỌN MÌNH THÌ ĐI NGƯỢC LẠI MÌNH NGHĨ RẰNG LÀ CHÚNG TA KHÔNG NÊN GIẢI QUYẾT NHỮNG CÁI BÀI TOÁN DỄ NHƯ VẬY TỨC LÀ VỀ MẶT VỀ MẶT BÁN CÁI GÌ THÌ MÌNH NÊN NGHĨ MỘT CÁI GÌ ĐÓ MÀ MÌNH CÓ THỂ TRỞ THÀNH SỐ MỘT TRONG LĨNH VỰC MÀ MÌNH LÀM THÌ ĐẤY LÀ CÁI CÂU CHUYỆN VỀ ĐỊNH VỊ THÌ SMART AC",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 4646,
+      "source": "Me_minh_de_ramot_cuc_noi_nhieu_-_Mai_Am_Nhac_GenZTruyen_S2Ep1.mp4",
+      "duration_s": 11.4,
+      "pseudo_label": "MÌNH ĐẸP CHO CHÍNH BẢN THÂN MÌNH ĐÚNG NHẬN SAI CÃI TORI ĐÚNG CHƯƠNG TRÌNH NGÀY HÔM NAY RẤT THÚ VỊ KẾT THÚC CUỘC TRÒ CHUYỆN RẤT LÀ VUI NÀY THÌ EM HỎI CHỊ MỘT CÂU RẤT LÀ BUỒN LÀ LẦN CUỐI CHỊ KHÓC VỀ TÌNH YÊU LÀ KHI NÀO",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 4647,
+      "source": "Met_hoac_stress_qua_thi_om_vo_-_Cris_Devil_Gamer_Have_A_Sip_-_After_Hours_EP11.mp4",
+      "duration_s": 12.1,
+      "pseudo_label": "NẾU MÀ MỌI NGƯỜI XEM KỸ THÌ CHRIS LUÔN GỬI GẮM NHỮNG CÁI BÀI HỌC VÀO TRONG ĐÓ ĐỂ CHÚNG TA CÓ NHỮNG BÀI HỌC TRONG CUỘC SỐNG NÀY HAY LÀ NHỮNG CÁI KINH NGHIỆM MÀ CHRIS LỠ MÀ FAIL THÌ COI NHƯ LÀ",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 4729,
+      "source": "Minh_chua_yeu_minh_thi_sao_yeu_nguoi_-_Minh_Tu_Coi_Mo_SS2_EP15.mp4",
+      "duration_s": 11.1,
+      "pseudo_label": "GIỐNG NHƯ MỘT CÚ SỐC THÔI NÓ KHÔNG HẲN MÌNH DÙNG TỪ TRẦM CẢM THÌ NÓ NẶNG VÀ TRONG CÁI THỜI ĐIỂM ĐÓ THÌ MINH TÚ NGHĨ LÀ CÁI DỊCH Á TẤT CẢ MỌI NGƯỜI CŨNG SẼ BỊ RỐI LOẠN VỀ TÂM LÝ ÍT HAY NHIỀU",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 4780,
+      "source": "Minh_se_lam_start-up_nay_den_chet_-_Nhat_Tan_CEO_Seesaw_GenZTruyen_SS2_Ep3.mp4",
+      "duration_s": 15.0,
+      "pseudo_label": "CÓ THỂ LÀ GẶP STARTUP FODER HOẶC LÀ GẶP CÁC BẠN VÍ DỤ NHƯ CÁC BẠN KIẾM ĐƯỢC RẤT NHIỀU TIỀN HƠN MÌNH MÌNH LÀ STARTUP MÌNH PHẢI ĐỔ HẾT TIỀN CỦA MÌNH VÀO STARTUP CHỨ CHƯA NÓI ĐẾN CHUYỆN LÀ STARTUP ĐƯA TIỀN CHO MÌNH MÌNH KHÔNG CÓ KIẾM ĐƯỢC NHIỀU TIỀN TRONG KHI LÀ CÁCH ĐÂY KHOẢNG BA BỐN NĂM TÂN CŨNG ĐÃ ĐI LÀM NHỮNG CÔNG VIỆC MÀ LƯƠNG KHOẢNG MỘT NGÀN ĐÔ GÌ ĐẤY RỒI",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 4788,
+      "source": "Mo_hinh_khu_cong_nghiep_sinh_thai_dau_tu_ben_vung_-_Bruno_Jaspaert_CEO_DEEP_C_Industrial_Zones.mp4",
+      "duration_s": 14.6,
+      "pseudo_label": "A BPAP IS THE ISW PLATIBOTICS SAN FROM THE LINK USICAL SUDAT NOBIN AND NON BROF IT NIN IT I ME THE TOT DOMING IT MEANS IT U MAG AN",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 4827,
+      "source": "Moi_chuyen_chac_chan_se_qua_chi_la_gio_minh_phai_hoile_let_-_My_Tam_HaveASip_126.mp4",
+      "duration_s": 14.7,
+      "pseudo_label": "NGAY NGÀY CÁC PHIM TÀI LIỆU ĐI TÂM CŨNG ĐÂU CÓ Ý ĐỊNH LÀM THÌ EM THẤY ĐÓ KHÔNG CÓ XONG XONG RỒI MỚI TUYÊN BỐ LÀ EM ĐÃ NGHI NGỜ CÓ NGHĨA LÀ LÀ KHÔNG NHƯNG MÀ MAY CÁI LÀ MÌNH KHÔNG PHẢI LÀ LÀM KIỂU BÌNH THƯỜNG MÀ LÀ MÌNH ĐÃ CÓ TẤT CẢ NHỮNG CÁI TƯ LIỆU RỒI",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 4837,
+      "source": "Moi_chuyen_chac_chan_se_qua_chi_la_gio_minh_phai_hoile_let_-_My_Tam_HaveASip_126.mp4",
+      "duration_s": 13.8,
+      "pseudo_label": "TỨC LÀ NẾU KHÔNG CÓ ĐỒ ĂN LÀ CHỊ MANG SÁCH LIÊN QUAN ĐẾN SINH TỒN À ĐÚNG KHÔNG CÓ PHẢI KHÔNG THÌ ĐƯƠNG NHIÊN LÀ MÌNH PHẢI HỎI XUNG QUANH CÁI ĐIỀU KIỆN VẬT LÝ ĐIỀU KIỆN SỐNG MỌI THỨ SAO THẬT RA NẾU MÀ LÀ NHƯ VẬY CHẮC",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 4881,
+      "source": "Moi_nguoi_deu_co_mot_vi_than_ben_trong_minh_-_Giam_doc_Sang_tao_Cuong_Dam_HaveASip_201.mp4",
+      "duration_s": 13.5,
+      "pseudo_label": "CẢM ƠN TẤT CẢ MỌI NGƯỜI NGÀY HÔM NAY VÀ ĐÚNG NHƯ CƯỜNG NÓI NHIỀU TỪ RẤT LÀ HAY TỰ ỨNG NGHIỆM ĐÔI KHI CHỊ KHÔNG PHẢI LÀ NGƯỜI ĐÃ ĐỨNG SAU CÁI TRIỂN LÃM NÀY NHƯNG MÀ CHỊ CẢM GIÁC LÀ CƯỜNG BÂY GIỜ SẼ RẤT SƯỚNG",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 4885,
+      "source": "Moi_thu_deu_quy_ve_tinh_nguoi_-_Dien_vien_Huynh_Lap_HaveASip_163.mp4",
+      "duration_s": 14.4,
+      "pseudo_label": "TẠI SAO KHÔNG LẮNG ĐỌNG HAY NHƯ THẾ NÀO HẾT TẠI VÌ TỪ TRƯỚC TỚI GIỜ TÔI THÍCH KỊCH CỦA THẦY MINH NHÍ MÀ TẠI SAO BÂY GIỜ HUỲNH LẬP LẠI DIỄN NHƯ VẬY VẬY ĐÓ THÌ LÚC ĐÓ EM CŨNG RẤT LÀ BUỒN TẠI VÌ EM CHƯA CHINH PHỤC ĐƯỢC KHÁN GIẢ RIÊNG CỦA SÂN KHẤU ĐỂ BUỒN THẬT",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 4906,
+      "source": "Mot_buoc_lui_lai_la_mot_buoc_tien_-_Dao_dien_Bao_Nguyen_HaveASip_171.mp4",
+      "duration_s": 14.7,
+      "pseudo_label": "ANDRE FORING ANDREN FAST FRIEND SUM THIN ITUN APP STICK ME FROM LIKE UNITED AND OF PICU LÀ CÁC BẠN IM MY WALKER WAYFROM SOMETHING ALEX ORSAGE KO THAU NÓ IOS HAMB",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 4931,
+      "source": "Mot_doi_giay_cho_ca_the_gioi_-_Huynh_Quang_Ngoc_Han_Dong_sang_lap_Mot_LOCO_EP05.mp4",
+      "duration_s": 14.5,
+      "pseudo_label": "SAU ĐÓ TỚI CUỐI HAI KHÔNG MƯỜI CHÍN THÌ THE GIN THÌ THE GIN VỪA MỚI LÊN MỘT CÁI LÀ CÓ RẤT NHIỀU NGƯỜI EMAIL MUỐN MUA THÌ LÚC ĐÓ TỤI CHỊ TỨC LÀ CÁI GIÁ GIÀY",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 4945,
+      "source": "Mot_thap_ky_dem_cam_hung_den_nguoi_dung_-_Van_Ba_Luyt_GD_San_pham_OPPO_Viet_Nam_Vinh_Vat_Vo.mp4",
+      "duration_s": 15.0,
+      "pseudo_label": "Ờ DĨ NHIÊN LÀ KHI MÀ MÌNH ĐÃ BẮT TAY HỢP TÁC VỚI CÁC AMEC THÌ RÕ RÀNG LÀ HỌ CÓ NHỮNG CÁI HỖ TRỢ VÀ ĐÓNG GÓP RẤT LÀ TÍCH CỰC CHO ĐẾN VIỆC LÀ XÂY DỰNG HÌNH ẢNH THƯƠNG HIỆU CŨNG NHƯ LÀ LAN TỎA CÁC THÔNG TIN ĐẾN VỚI NGƯỜI DÙNG ĐỂ GIÚP CHO NGƯỜI DÙNG CÓ THỂ LÀ BIẾT ĐẾN THƯƠNG HIỆU BIẾT ĐẾN SẢN PHẨM CỦA MÌNH NHIỀU HƠN THÌ ĐÓ LÀ MỘT CÁI",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 4969,
+      "source": "Mua_truoc_tra_sau-_Nguyen_Anh_Cuong_Co-founder_CEO_tai_FUNDIIN_Vietnam_Innovators_VN_EP13.mp4",
+      "duration_s": 14.8,
+      "pseudo_label": "DOANH SỐ LÊN KHOẢNG BA MƯƠI PHẦN TRĂM THÌ CÁI NGUỒN TĂNG DOANH SỐ NÓ ĐẾN TỪ TĂNG CONVERSION TỨC LÀ TỪ MỘT KHÁCH HÀNG CHƯA MỘT CÁI SẢN PHẨM NÀO HẾT THÌ BÂY GIỜ CÓ GIẢI PHÁP FUNDINE THÌ MAYB LÀ HỌ SẼ MUA CÁI SẢN PHẨM ĐẦU TIÊN VÀ CÁI THỨ HAI NỮA LÀ TĂNG GIÁ TRỊ TRUNG BÌNH CỦA MỘT CÁI ĐƠN HÀNG VÍ DỤ NHƯ LÀ HỌ THÔNG THƯỜNG HỌ CHỈ MUA MỘT",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 4988,
+      "source": "Mui_huong_va_nhung_goi_cam_tinh_duc_-_Duong_Do_Chuyen_gia_mui_huong_Coi_Mo_S4EP4.mp4",
+      "duration_s": 10.3,
+      "pseudo_label": "KHI MÀ CÓ QUÁ NHIỀU NGƯỜI SỬ DỤNG THÌ RẤT DỄ LÀ NÓ DỄ BỊ ĐÁNH ĐẦU VÀ LIÊN TƯỞNG ĐẾN NHỮNG CÁI HÌNH ẢNH NÓ MANG TÍNH TIÊU CỰC",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 4990,
+      "source": "Mui_huong_va_nhung_goi_cam_tinh_duc_-_Duong_Do_Chuyen_gia_mui_huong_Coi_Mo_S4EP4.mp4",
+      "duration_s": 12.8,
+      "pseudo_label": "THÌ TỐT NHẤT NÊN LÀ MỘT CÁI MÙI TỰ NHIÊN NHẤT VÀ NHẸ NHÀNG NHẤT THÌ NÓ SẼ ĐỠ ÁC CẢM VÀ NHỮNG CÁI YẾU TỐ KHÁC NÓ SẼ NÍU KÉO LẠI CÒN MAY MẮN MÀ SỬ DỤNG ĐƯỢC MỘT MÙI MÀ",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 5066,
+      "source": "Muon_trai_nghiem_tot_phai_len_ke_hoach_tai_chinh_tot_-_Hoang_Anh_Admin_bearbrickbtws.mp4",
+      "duration_s": 13.8,
+      "pseudo_label": "CÁI LÚC MÀ MUA ĐƯỢC CÁI VÉ CON SỐT XONG THÌ MÌNH THẤY KIỂU MÌNH ĐÃ CHINH PHỤC ĐƯỢC ĐỈNH CAO NHẤT CỦA THẾ GIỚI NHƯNG ĐẾN BÂY GIỜ KHI MÀ LÊN CÁI BÀI TOÁN CHI PHÍ CHO CHUYẾN ĐI THÌ MỚI THẤY LÀ ÔI CÒN RẤT NHIỀU NHỮNG CHI PHÍ KHÁC MÀ MÌNH CHƯA NGHĨ TỚI LÚC ĐÓ",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 5122,
+      "source": "Nen_chua_20_de_hoai_nghi_chinh_minh_-_Vu_Cat_Tuong_HaveASip_103.mp4",
+      "duration_s": 12.4,
+      "pseudo_label": "VÀ CON ĐƯỜNG CỦA MÌNH NHIỀU KHI CÓ THỂ MÌNH NỞ HOA LÚC NĂM MƯƠI TUỔI THÌ SAO THÌ CHẢ LẼ LÀ LÚC MÀ MÌNH KHÔNG NỞ HOA LÚC BA MƯƠI TUỔI LÀ MÌNH THẤT BẠI SAO THẾ THÌ KHI MÀ NẾU MÀ MÌNH ĐỂ NGƯỜI KHÁC ĐỊNH NGHĨA MÌNH NHƯ VẬY THÌ MÌNH SẼ BỊ",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 5140,
+      "source": "Nen_mong_doanh_nghiep_bat_dong_san_-_Steve_Ang_Team_Leader_Retail_CRM_Keppel_Land_VN_VI_S2_EP14.mp4",
+      "duration_s": 13.3,
+      "pseudo_label": "HOTDO DAVEFIELD IS LIVEST PASTEINDAY NO ABYSSOC SUTUGE AS ZUMPLE REASING A THOMALI CATERING TOP HARRINGS THEN ANSTOT SOBISKI TAFOSIS OF",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 5149,
+      "source": "Nen_mong_doanh_nghiep_bat_dong_san_-_Steve_Ang_Team_Leader_Retail_CRM_Keppel_Land_VN_VI_S2_EP14.mp4",
+      "duration_s": 11.7,
+      "pseudo_label": "HOW HAM MY PIAS ONE KING EXP BACK IWER PART THE EXICO THE MET SUBREGON OK CAPLE LAM VIETNAM EN RUỘT PEPLE STRUM",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 5201,
+      "source": "Neu_khong_lam_cau_thu_thi_lam_gi_-_Luong_Xuan_Truong_Have_A_Sip_-_After_Hours_EP13.mp4",
+      "duration_s": 11.7,
+      "pseudo_label": "ANH CŨNG LÊN TÌM INSTAGRAM THÌ ANH TÌM ĐƯỢC INSTAGRAM CỦA EM NHƯNG MÀ ANH THẤY LÀ ĐANG CÒN LÂU EM CÓ LỜI NÓI ANH NHẮN TIN ĐÚNG KHÔNG ANH NHẮN TIN VÀ MÌNH HẸN LÀ GẶP NHAU NHƯNG MÀ PHẢI",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 5207,
+      "source": "Neu_toi_la_Gen_Z_thi_chet_-_Toc_Tien_HaveASip_64.mp4",
+      "duration_s": 11.1,
+      "pseudo_label": "À KHOANH TRONG NGÀY LÀ CÓ TÍNH LÀ THỨC DẬY VÀ UỐNG NƯỚC KHÔNG CHỊ THÔI TÔI BỎ THÔI BỎ CÁI GÌ KHÔNG TẠI VÌ TRONG CHƯƠNG TRÌNH NÀY CHỊ HAY HỎI MỌI NGƯỜI VÀ MỌI NGƯỜI HAY CHỌN CỐC NƯỚC QUÁ NÊN LÀ THÔI MÌNH CHỌN CHỌN MỘT CÁI ĐỒ UỐNG ĐẦU TIÊN SAU CỐC NƯỚC DẠ LÀ",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 5234,
+      "source": "Ngai_Bez_Babakhani_-_Tong_Lanh_su_Canada_tai_TPHCM_9_ty_USD_hang_hoa_Vietnam_Innovators_EP23.mp4",
+      "duration_s": 12.9,
+      "pseudo_label": "NON N TOP MOTION OF SLOW YOU SOTINO URIC AND NEXT THE YOU BEO FIR HOME AND NEU YOU LO PROTECULT LOE OF SCI OF ENTO",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 5238,
+      "source": "Ngai_Bez_Babakhani_-_Tong_Lanh_su_Canada_tai_TPHCM_9_ty_USD_hang_hoa_Vietnam_Innovators_EP23.mp4",
+      "duration_s": 15.0,
+      "pseudo_label": "ALO ACB SUN SUN THE SUN EM HAPP TOMMENT SEXY TO EXPRESS THANK YOU FOR TREO IN THE SHOW GREPIC TIME DON AND WORTER MOR CLIMATION FEEDING",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 5242,
+      "source": "Ngai_Robert_McClelland_Professor_Deputy_Dean_SBM_RMIT_Vietnam_Vietnam_Innovators_EP08.mp4",
+      "duration_s": 12.5,
+      "pseudo_label": "AN LOVE ACT UM BRASE DISPROPS AND THINTAGE OF THE TRINH DIGITAL MENTOR MATION RETICTION DIGITAL DISPORTION AND THIS IS AN OPFOTIFORD TO",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 5250,
+      "source": "Ngai_Robert_McClelland_Professor_Deputy_Dean_SBM_RMIT_Vietnam_Vietnam_Innovators_EP08.mp4",
+      "duration_s": 14.7,
+      "pseudo_label": "Ờ SO THEN RESTRIC SO AR NOM BEACH CRIST RMATICLE IS COS FIBLE COVID TOYO A SAY TO THE IT DISPI CỦA IN THE ALLO AREST TRATION AND THEN STRANGE STATE VIET NAM SODA",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 5266,
+      "source": "Nganh_nghe_nao_cung_co_the_sang_tao_-_Rapper_Anh_Phan_MAD_S3EP6.mp4",
+      "duration_s": 14.9,
+      "pseudo_label": "MỌI NGƯỜI LÀM RA CÁI ĐIỀU ĐÓ GIỐNG NHƯ MỌI NGƯỜI KHÔNG PHẢI LÀ Ô TÔI NGHĨ KHÁC BIỆT MỌI NGƯỜI HIỂN NHIÊN TRONG QUÁ TRÌNH MỌI NGƯỜI LÀM RẤT LÀ NATSCHE MỌI NGƯỜI KHÁC BIỆT NÊN ANH NGHĨ CÁI ĐIỀU ĐÓ CÒN MÀ KIỂU MỌI NGƯỜI RA CÁI NÓI Ồ TÔI KHÁC BIỆT HAY LÀ TÔI CÁ TÍNH ANH THẤY RẤT LÀ NGƯỢNG ẤY",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 5308,
+      "source": "Nghe_thuat_Viet_Nam_-_Ha_Lan_giao_thoa_va_the_nghiem_-_Tu_Hoang_Freelancing_Movement_Artist.mp4",
+      "duration_s": 11.4,
+      "pseudo_label": "AND THEN FILE LIN TORTING SIXIN A CÓ THE CONTRAC IN CONNECTION DONS AND THEN MY JOURNAL BIT IN GENERAL ONE",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 5323,
+      "source": "Nghe_thuat_la_mo_ra_nhung_chieu_sau_moi_-_Nghe_si_Tuan_Andrew_Rapper_Wowy_HaveASip_29.mp4",
+      "duration_s": 10.1,
+      "pseudo_label": "COMMERSO CUMASO HAND HOẶC LÀ SẼ CÓ NHỮNG NGHỆ SĨ MÀ HỌ RẤT LÀ PUBLI RẤT LÀ PHỔ BIẾN VÍ DỤ NHƯ LÀ JACK CUN MÀ LÀM MẤY CÁI TÁC PHẨM MÀ",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 5369,
+      "source": "Nghe_trong_nghiep_ngoai_-_Huynh_Vinh_Son_Phuong_Vu_Trung_Bao_Hai_Doan_Nguyen_Tien_Huy_Tuan_Le.mp4",
+      "duration_s": 13.5,
+      "pseudo_label": "CẢM ƠN MỌI NGƯỜI ĐẾN BUỔI LIVE SHO ĐẦU TIÊN CỦA EMEDY PODCAST RẤT CẢM ƠN MỌI NGƯỜI ĐÃ ĐẾN ĐÂY CẢM ƠN KHÁCH MỜI CỦA CHÚNG TA LÁT NỮA NHỮNG KHÁCH MỜI SẼ CÓ CƠ HỘI ĐỂ GIỚI THIỆU BẢN THÂN CHO MỌI NGƯỜI ĐÓ AI MÀ CHƯA BIẾT NHỮNG KHÁCH CỦA MÌNH",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 5404,
+      "source": "Nghi_thuc_giao_tiep_-_Ky_nang_can_co_de_hoi_nhap_toan_cau_-_Tran_Yenly_Founder_CEO_Etik_Academy.mp4",
+      "duration_s": 15.0,
+      "pseudo_label": "ĐÚNG LÀ VÍ DỤ NHƯ KIỂU LÀ TRƯỚC ĐÂY THÌ LÀ MỘT SỐ CÁC CÔNG TY MÀ ĐI GẶP ĐỐI TÁC NƯỚC NGOÀI THÌ ĐẶC BIỆT LÀ NHẬT HOẶC LÀ HÀN QUỐC CŨNG CÓ MỘT SỐ CÁC CÁI GỌI LÀ CÁC CÁI ĐẶC TRƯNG CỦA HỌ LÀ MÌNH CẦN SẼ PHẢI TÔN TRỌNG NÊN LÀ MỘT KHI MÀ MÌNH ĐÃ SANG ĐÓ SANG ĐẤY RỒI THÌ HỌ EXPAG HOẶC LÀ RẤT LÀ",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 5417,
+      "source": "Thi_truong_mua_ban_sap_nhap_doanh_nghiep_-_trien_vong_nao_cho_2024_-_The_Anh_KPMG_Vietnam.mp4",
+      "duration_s": 13.7,
+      "pseudo_label": "OK WHAT KIEF CARMENTER CODE OF THE TOWN TO DINO ASO IS PING OF A THE CHANNEL O THE OF SUN FOR ROLES NO YES NO BUNG",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 5490,
+      "source": "Thoi_gian_la_nhanh_hay_cham_-_Ba_Xuan_Phuong_Thuy_Minh_Yeu_Lanh_SS4_EP3.mp4",
+      "duration_s": 12.6,
+      "pseudo_label": "TÔI CỐ GẮNG TÔI SỢ CHẾT VÔ CÙNG NHƯNG TÔI CỐ GẮNG LÀM SAO CÁI SỰ RA ĐI CỦA MÌNH NÓ NHANH CHỪNG NÀO LÀ TỐT CHỪNG ĐẤY VÀ CÁI CHÚC THƯ CỦA TÔI VẪN LÀ SAU KHI TÔI MẤT RỒI",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 5502,
+      "source": "Thu_bao_nhieu_lan_truoc_khi_dung_lai_-_Vu_HaveASip_93.mp4",
+      "duration_s": 12.8,
+      "pseudo_label": "LẦN CÒN LẦN TRƯỚC THÌ THÌ LẠI LÀ Ở GẦN QUÁ NHƯNG MÀ VẪN BỐC XE THÀNH RA LÀ BẤT NGỜ ĐÁNG LÝ RA LÀ CÓ THỂ ĐI BỘ KHOẢNG HAI TRĂM MẤY CHỤC MÉT LÀ ĐẾN NƠI NHƯNG MÀ CUỐI CÙNG LÀ PHẢI BƯỚC XE RA CÒN LẦN NÀY THÌ LÀ BỊ MẤT ĐIỆN MÌNH ĐÃ CHỌN MỘT CÁI CHIẾC ÁO THẬT SỰ LÀ",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 5543,
+      "source": "Thu_ngan_khoang_cach_nhan_luc_Viet_Nam_va_the_gioi_-_Le_Dinh_Hieu_Founder_GAP_Institute.mp4",
+      "duration_s": 12.7,
+      "pseudo_label": "MÀ KHI EM HỌC TẠI UND THÌ EM MỚI THẤY LÀ NHÀ TRƯỜNG DÙNG CÁI TỪ ĐÓ ĐỂ CHỈ NHỮNG NGƯỜI HỌC NHƯ TỤI EM TẠI VÌ ĐÂY LÀ CHƯƠNG TRÌNH HỌ ĐÀO TẠO KHỞI NGHIỆP TRONG GIÁO DỤC VÀ LÚC ĐÓ EM CÓ HỎI BÀI GIÁO SƯ LÀ NHƯ VẬY THÌ",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 5572,
+      "source": "Thu_nghiem_chi_nen_lam_khi_minh_da_biet_thu_minh_thich_nhat_-_Phuong_My_Chi_HaveASip_231.mp4",
+      "duration_s": 11.6,
+      "pseudo_label": "MÌNH KÉM CÁI NGƯỜI THỨ NHÌ CÓ KHÔNG PHẨY TÁM ĐIỂM ĐÚNG KHÔNG NHƯNG NẾU MÌNH BẰNG NGƯỜI TA THÌ MÌNH LẠI ƯỚC LÀ MÌNH LẠI BẰNG CÁI NGƯỜI NHẤT NẾU MÀ MÌNH CỨ CHẠY THEO MỘT SỐ KỲ VỌNG THÌ CHỊ NGHĨ LÀ",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 5574,
+      "source": "Thu_nghiem_chi_nen_lam_khi_minh_da_biet_thu_minh_thich_nhat_-_Phuong_My_Chi_HaveASip_231.mp4",
+      "duration_s": 13.8,
+      "pseudo_label": "CHỊ ƠI BÂY GIỜ MÌNH LÀM SAO MÌNH BIẾT CÁI NGƯỜI ĐÓ TỐT HAY NGƯỜI ĐÓ XẤU NÊN MÌNH CÓ THỂ QUEN CÁI NGƯỜI ĐÓ TẠI VÌ EM CẢM THẤY TỰ NHIÊN KHÔNG BIẾT MÌNH CHƯA TRẢI QUA YÊU ĐƯƠNG LẦN NÀO NHƯNG MÌNH CẢM THẤY TỰ NHIÊN YÊU ĐƯƠNG TRONG MÔI TRƯỜNG SHO BẾP NÀY CẢM THẤY HƠI KHÔNG AN TOÀN LẮM",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 5584,
+      "source": "Thuc_hu_ve_nhung_than_duoc_tren_giuong_-_PGSTS_Nguyen_Hoai_Bac_Dai_hoc_Y_HN_Coi_Mo_S3_Ep18.mp4",
+      "duration_s": 15.0,
+      "pseudo_label": "ĐẰNG SAU CỦA NÓ HỌ VẪN THẤY CÁI ĐÓ KHÁ LÀ HAY TỨC LÀ NÓ CÓ CẢ MỘT CÁI BỀ DÀY LỊCH SỬ VÀ VĂN HÓA Ở TRONG ĐÓ VỀ VỀ CẢ CHÂU Á LẪN NGƯỜI CHÂU ÂU MÌNH NHƯNG MÀ CHỊ VẪN THẤY LÀ NGƯỜI CHÂU Á LÀ KIỂU ASTRAM LI CÓ CÁI KIỂU UP XẾP LÀ KIỂU GIỐNG NHƯ LÀ TỨC LÀ LUÔN LUÔN NGHĨ BÂY GIỜ ĐÚNG RỒI ĐÚNG RỒI",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 5599,
+      "source": "Thuc_hu_ve_nhung_than_duoc_tren_giuong_-_PGSTS_Nguyen_Hoai_Bac_Dai_hoc_Y_HN_Coi_Mo_S3_Ep18.mp4",
+      "duration_s": 15.0,
+      "pseudo_label": "CÓ BẰNG CHỨNG RÕ RÀNG THÌ LÀ THỨ RẤT LÀ TỐT VÍ DỤ CÁC BẠN KHÔNG CẦN PHẢI QUA SẢN PHẨM THỰC PHẨM CHỨC NĂNG QUẢNG CÁO ĐẦY TRÊN MẠNG ĐÂU CÁC BẠN CHỈ CẦN BỔ SUNG NHỮNG VIÊN VITAMIN TỔNG HỢP THÔI BẢN THÂN TÔI CŨNG DÙNG VITAMIN HÀNG NGÀY TÔI KHÔNG DÙNG CÁI DÂY CAO XA TÔI DÙNG CÁI VIÊN BA B MỖI NGÀY TÔI UỐNG",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 5608,
+      "source": "Thuong_minh_ton_trong_minh_hieu_minh_tin_minh_de_gan_den_la_minh_hon_EduStation_Special_Episode.mp4",
+      "duration_s": 13.3,
+      "pseudo_label": "NÓ CÓ MỘT CÁI ĐỘNG LỰC TỪ BÊN NGOÀI TỨC LÀ ÁP LỰC TÀI CHÍNH CỦA GIA ĐÌNH NẾU GIA ĐÌNH TÔI RẤT KHÓ KHĂN NẾU TÔI CẦN VIỆC LÀM PHẢI LƯƠNG CỠ NÀY TÔI MỚI LO ĐƯỢC CHO GIA ĐÌNH CHỨ THẤP HƠN TÔI KHÔNG ĐỦ THÌ TÔI PHẢI RÁNG",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 5637,
+      "source": "Tien_hoc_uong_hau_hoc_an_Coi_Mo_Happy_Hour_EP07_coimohappyhour.mp4",
+      "duration_s": 15.0,
+      "pseudo_label": "ANH THƯỜNG HAY ĐỂ SẴN TRONG TỦ LẠNH LÀ NHỮNG CÁI CHAI MÀ NƯỚC ĐIỆN GIẢI CÒN NÓ SINH THÌ CÓ MỘT CÁI TIP NHỎ NỮA ĐÓ LÀ NẾU BẠN BIẾT HÔM ĐÓ BẠN SẼ THẢ GA ĐI UỐNG THẢ GA VÀ SẼ ĂN PHẢI NẠP NĂNG LƯỢNG LẠI SAU BỮA UỐNG",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 5651,
+      "source": "Tien_phong_khai_niem_khach_san_thuan_ich_-_Nguyen_Ba_Luan_Tong_Giam_Doc_SOJO_Hotels.mp4",
+      "duration_s": 13.7,
+      "pseudo_label": "THÌ NẾU MÀ VỚI SOCHO SOJO THÌ CŨNG LÀ MỘT SẢN PHẨM KHÁ LÀ TRẺ VÀ CŨNG ĐANG MỚI RA THỊ TRƯỜNG VÀ GẦN NHƯ ĐANG GỌI LÀ ĐANG ĐI THỬ NGHIỆM CÁI PHẢN ỨNG CỦA THỊ TRƯỜNG THÌ PHẢN ỨNG THÌ CÓ VẺ LÀ ĐANG TÍCH CỰC RỒI THÌ",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 5719,
+      "source": "Tim_cai_tham_my_o_troi_Tay_bao_gio_moi_voi_toi_-_Nha_nghien_cuu_Phan_Cam_Thuong_HaveASip_84.mp4",
+      "duration_s": 10.5,
+      "pseudo_label": "LẠI PHẢI TÌM ĐẾN NHỮNG CÁI XẢ CHẾT RỒI LÀ VÂN VÂN THẾ THÌ XONG LẠI CÒN PHẢI TRẦM UẤT RỒI CÒN TỰ KỶ NỮA THÌ BỊ CHỮA CÒN NHIỀU TIỀN THẾ THÌ DO ĐÓ MÀ",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 5745,
+      "source": "Tim_duy_nhat_mot_thu_khien_minh_khong_bao_gio_lac_loi_-_RHYDER_HaveASip_237.mp4",
+      "duration_s": 12.7,
+      "pseudo_label": "THẾ THÌ NHÌN EM MÚT CỦA EM NÓ KHÁC HẲN LUÔN THẾ THÌ EM NGỒI VIẾT LUÔN CẢ BÀI LUÔN THẾ LÀ EM THẤY LÀ ÔI ÍT GÌ CŨNG ĐƯỢC SÒNG BÀI HÁT CŨNG XONG BÀI SƯỚNG MÀ LÚC ẤY EM NGHE MÀ KIỂU VIẾT MÀ VIẾT MÀ RA ĐƯỢC BÀI HAY ĐẤY NÊN LÀ NÓ SƯỚNG LẮM CHỊ Ạ",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 5749,
+      "source": "Tim_duy_nhat_mot_thu_khien_minh_khong_bao_gio_lac_loi_-_RHYDER_HaveASip_237.mp4",
+      "duration_s": 15.0,
+      "pseudo_label": "BÂY GIỜ ÔNG BÀ LÊN VUI BÀN RẤT LÀ NGHI NGỜ CHỊ ĐI HÁT KARAOKE KHÓ EM NGHĨ LÀ NÓ CŨNG LÀ MỘT PHẦN ĐẤY NÓ CŨNG LÀ MỘT PHẦN CÁI CẢM GIÁC KHI MÀ ĐẾN EM VIẾT NHẠC CŨNG THẾ THÔI EM RÕ RÀNG EM CÓ THỂ VIẾT ĐƯỢC CÁI TỪ NÀY NÓ VIẾT MỘT HAI NỐT RỒI NÀY",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 5771,
+      "source": "Tim_duy_nhat_mot_thu_khien_minh_khong_bao_gio_lac_loi_-_RHYDER_HaveASip_237.mp4",
+      "duration_s": 15.0,
+      "pseudo_label": "CŨNG CHƯA THỂ HẾT Ở ĐÂY ĐƯỢC EM NGHĨ THẾ EM CẢM NHẬN ĐƯỢC CÁI ĐIỀU ĐẤY NÊN LÀ CÁI LẦN NÀY HAY ĐẤY NHƯNG MÀ NÊN LÀ CÁI LẦN NÀY KIỂU EM NGHĨ LÀ EM MUỐN CHỌN NGƯỜI THẬT LÀ À PHỐI HỢP",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 5840,
+      "source": "Tinh_that_sao_phai_song_thu_Coi_Mo_EP12.mp4",
+      "duration_s": 15.0,
+      "pseudo_label": "CÁI CĂN XÉT MÀ ĐỒ ĐÔI CHÍNH LÀ OVER CẦN SỚM CHÂN NGƯỜI TA MUỐN BÁN CHO BẠN HAI THỨ CÒN MỘT MÓN NHƯNG MÀ NGƯỜI CHÂU Á RẤT LÀ THÍCH CÁI VIỆC KHÔNG THÌ MÌNH MỚI NÓI NÓ LÀ MỘT CÁI VIỆC NÓ KHÁ LIÊN ĐỚI ĐẾN VIỆC CHÚNG SỚM THỬ ĐẤY BỞI VÌ LÀ MÌNH THÍCH CÁI GỌI LÀ",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 5865,
+      "source": "Tinh_yeu_nao_roi_cung_tan_vo_-_Bao_Anh_Khang_Thuong_SS2_EP8.mp4",
+      "duration_s": 12.3,
+      "pseudo_label": "VẤT VẢ KHÓ KHĂN HAY LÀ BCE NHƯ THẾ NÀO ĐI CHĂNG NỮA THÌ KHI MÀ CÁI PHIÊN BẢN MÀ MÌNH VỀ NHÀ MÌNH VẪN PHẢI LÀ MỘT CÁI PHIÊN BẢN ĐÃ DẸP HẾT TẤT CẢ MỌI THỨ VÀ DÀNH CÁI PHIÊN BẢN TỐT NHẤT CHO CÁI ĐỨA TRẺ NÀY",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 5881,
+      "source": "Tinh_yeu_xuyen_bien_gioi_-_Chiec_Tay_Valentin_Coi_Mo_SS3_Ep9.mp4",
+      "duration_s": 14.4,
+      "pseudo_label": "GIỮA CÁI VIỆC LÀ LẤY MỘT NGƯỜI NƯỚC NGOÀI MÀ ĐẶC BIỆT LÀ MỘT NGƯỜI MÀ CÓ NHỮNG CÁI SUY NGHĨ VỀ VIỆC LÀ SẼ KHÔNG CÓ CON HOẶC LÀ ZIFREE LUÔN TỨC NGHĨA LÀ ĐI THEO MỘT CÁI HỆ TƯ TƯỞNG LÀ SẼ KHÔNG CÓ CON LUÔN Á THÌ RẤT LÀ KHÓ LUÔN VÍ DỤ NHƯ LÀ EM MẶC DÙ LÀ RẤT LÀ NO ĐIỀN NHA",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 5895,
+      "source": "To_chuc_show_thoi_trang_o_nhung_noi_khong_tuong_-_Jessica_Minh_Anh_Founder_cua_JMA_GLOBAL.mp4",
+      "duration_s": 15.0,
+      "pseudo_label": "PHẢI CÓ MỘT CÁI SHOW DIỄN HOÀNH TRÁNG Ở MỸ THÌ EM CẢM THẤY LÀ VÂN VÂN KHÔNG BIẾT LÀ PHẢI LÀM THẾ NÀO BỞI VÌ EM KHÔNG MUỐN CHỈ CHỌN BẤT KỲ MỘT CÁI VAN YÊU BÌNH THƯỜNG NÀO VÀ LÚC ĐẤY THÌ CÓ MỘT NGƯỜI MỚI NÓI VỚI EM LÀ WARRET CENTER CHUẨN BỊ ĐƯỢC",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 5904,
+      "source": "To_chuc_show_thoi_trang_o_nhung_noi_khong_tuong_-_Jessica_Minh_Anh_Founder_cua_JMA_GLOBAL.mp4",
+      "duration_s": 15.0,
+      "pseudo_label": "EM ĐÃ LÀM Ở TRÊN IPO RỒI THÌ NẾU NHƯ MÀ MỘT CÁI BRAND RẤT LÀ NỔI TIẾNG LÀM Ở ĐẤY THÌ HỌ SẼ BẢO À LẦN TRƯỚC GIỐNG NHƯ ASIA ĐÃ LÀM Ở IPHONE RỒI THÌ EM NGHĨ LÀ MỘT CÁI BRAND RẤT LỚN NHƯ LÀ CHANEL HANDIO THÌ HỌ CŨNG SẼ KHÔNG MUỐN LÀM NHƯ THẾ BÊN CẠNH ĐẤY",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 5915,
+      "source": "To_nghiep_linh_thieng_luon_cho_che_nghe_si_-_Nghe_si_Xuan_Lan_Tram_Nam_San_Khau_SS2_Ep3.mp4",
+      "duration_s": 10.8,
+      "pseudo_label": "CÔ MỚI MỚI VỀ VỚI BÊN VIỆT NAM CÔ NHỚ ĐÓ LÀ CÁI BẾN ĐÓ LÀ ĐANG DIỄN TẠI RẠP CỦA QUY NHƠN Á DẠ QUY NHƠN THÌ CÔ MỚI MỚI VỀ ĐÓ",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 5973,
+      "source": "Toi_la_ai_giua_muon_van_dinh_nghia_-_Azura_Sang_Khoa_Chim_Le_Nhat_Quyen_Coi_Mo_SS3_Ep1.mp4",
+      "duration_s": 15.0,
+      "pseudo_label": "MÌNH SẼ GẬT ĐẦU HOẶC LÀ MÌNH SẼ BIỂU DIỄN BIỂU HIỆN BẰNG CÁI BIỂU CẢM CỦA MÌNH HƠN LÀ SO VỚI CÁI CHUYỆN LÀ TỤI MÌNH Ừ MẶC DÙ LÀ ĐI THEO NẾU NHƯ MÀ ĐI THEO CÁI PHONG CÁCH NÓI CHUYỆN BÌNH THƯỜNG KHI Ở NGOÀI THÌ CÁI VIỆC MÀ CÁC BẠN Ừ CÁC BẠN SẼ LÀM CHO CÁI NGƯỜI NÓI HỌ ĐANG NÓI HỌ NHƯ LÀ MỘT CÁI LỜI",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 5977,
+      "source": "Toi_la_ai_neu_mat_di_cong_viec_cua_minh_-_Bac_si_Viet_Thanh_Khang_Thuong_SS1_EP2.mp4",
+      "duration_s": 12.8,
+      "pseudo_label": "NGƯỜI TA KHÔNG TIẾP TỤC CAN THIỆP NGƯỜI TA KHÔNG TIẾP TỤC HƯỚNG DẪN KHÔNG TIẾP TỤC ĐÀO SÂU VỀ CHUYÊN MÔN ĐỂ CÓ THỂ GIÚP CHO NHỮNG CÁI BẠN ĐÓ CÓ KIẾN THỨC TỐT ĐỂ CÁC BẠN ĐÓ AN TOÀN HƠN THÌ LIỆU RẰNG BAO LÂU NỮA THÌ CÁI DỊCH HIV NÀY NÓ MỚI BIẾN MẤT",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 5979,
+      "source": "Tomatito_Saigon_A_Tribute_To_Spanish_Vintage_Tapas_Bars_Vietcetera_SPACES.mp4",
+      "duration_s": 13.4,
+      "pseudo_label": "DEPISOTING IT WAIT FACE SO PECTION WHI BEAUTING INSTRATEG CREAT LIKE CẢ COLLEGE BURIAN SOLANTING PIC TOAN HAVE NIGH MY FILE SCANSPACE",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 5995,
+      "source": "Trai_thang_co_that_su_coi_mo_-_HuyMe_Nha_sang_tao_noi_dung_Coi_Mo_SS2_EP03.mp4",
+      "duration_s": 14.7,
+      "pseudo_label": "KHÔNG PHẢI HỎI MÀ LÀ CŨNG MUỐN NÓI MỘT CÁI CHUYỆN LÀ ĐÚNG LÀ HỒI ĐÚNG LÀ TÔI TÔI CHO RẰNG VỀ MẶT SINH HỌC THÌ LÚC NÀO MÌNH CŨNG VẪN RẤT LÀ HAY CÓ CÁI LUỒNG SUY NGHĨ NÓ HƯỚNG VỀ CHUYỆN TÌNH DỤC NHƯNG MÀ HỒI XƯA THÌ TÔI SẼ HÀNH ĐỘNG DỰA TRÊN CÁI SỰ NẮNG TRONG NGƯỜI ĐÓ NHIỀU HƠN",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 6033,
+      "source": "Tran_tro_chung_cua_nganh_truyen_thong_quang_cao_-_Juan_Saldivar_Chief_Digital_Officer_Entravision.mp4",
+      "duration_s": 12.1,
+      "pseudo_label": "THE SEA MUỘN AM THE WALT THE DIGAS PUD OF GEORGE FRANC INS CLIN PRONO WRITIVE YOU",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 6067,
+      "source": "Tren_giuong_chang_ai_giong_ai_-_Tung_BT_Coi_Mo_SS2_EP13.mp4",
+      "duration_s": 13.2,
+      "pseudo_label": "NÊN LÀ MỘT GIAI ĐOẠN ANH CŨNG KHÁ LÀ PHIÊU SỢ ANH CŨNG KHÁ CỞI MỞ VÀ CHUYỆN ĐÓ CHẮC LÀ LÝ DO VÌ SAO THAM GIA CHƯƠNG TRÌNH NÀY DẠ MẶC DÙ LÀ EM CŨNG BIẾT LÀ CŨNG CÓ RẤT LÀ NHIỀU NGƯỜI Á HỌ KHÁ LÀ PHẢN ĐỐI CÁI VIỆC LÀ XU HƯỚNG TÍNH DỤC SẼ CÓ SỰ THAY ĐỔI THEO THỜI GIAN",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 6074,
+      "source": "Tren_giuong_chang_ai_giong_ai_-_Tung_BT_Coi_Mo_SS2_EP13.mp4",
+      "duration_s": 14.2,
+      "pseudo_label": "NHƯNG NẾU EM KHÔNG CÓ ĐỦ CÁI QUYỀN LỰC EM PHẢI PHỤ THUỘC VÀO HỌ DÙ HỌ XÀI SẼ MÌNH DÙ HỌ KỲ THỊ MÌNH MÌNH VẪN PHẢI LÀM VIỆC VỚI HỌ THÌ ĐÂY LÀ MỘT CÁI VÍ DỤ CỦA CHUYỆN LÀ ANH TIN LÀ ĐỂ BẤT CỨ MỘT NGƯỜI NÀO MÀ HỌ ĐẠT ĐƯỢC SỰ TỰ DO CỦA HỌ",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 6102,
+      "source": "Tren_tinh_ban_duoi_tinh_yeu_o_giua_co_don_-_Thay_Minh_Niem_Thuy_Minh_Yeu_Lanh_EP5.mp4",
+      "duration_s": 10.3,
+      "pseudo_label": "THÌ THẦY BỊ THU HÚT NGAY CÁI SỰ TỰ DO CÁI DŨNG KHÍ ĐÓ MỘT CÁI NGƯỜI MÀ SAO THOÁT TỤC NHƯ VẬY LÀ MÌNH ĐAM MÊ MÌNH MUỐN ĐƯỢC GIỐNG NHƯ NGƯỜI ĐÓ THÔI",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 6119,
+      "source": "Trien_vong_cua_he_sinh_thai_khoi_nghiep_Viet_-_Huong_Tran_Venture_Partner_Monks_Hill_Ventures.mp4",
+      "duration_s": 11.6,
+      "pseudo_label": "YES P OT WARSAY OR THEY MEW YOU",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 6151,
+      "source": "Triet_ly_lot_cu_hanh_tay_-_DIVA_Ha_Tran_HaveASip_97.mp4",
+      "duration_s": 15.0,
+      "pseudo_label": "NÓ THAY ĐỔI VÀ ĐÚNG RỒI NÓ CÓ NHỮNG CÁI ĐÚNG RỒI NÓ CÓ NHỮNG CÁI CHINH PHỤC MỚI TỨC LÀ VÍ DỤ NHƯ CÁI MỤC TIÊU CỦA NÓ LÀ VÍ DỤ NHƯ KPOP MỤC TIÊU CỦA HỌ LÀ KHÔNG PHẢI LÀ PHỤC VỤ KHÁN GIẢ HÀN QUỐC MÀ PHỤC VỤ CẢ THẾ GIỚI BÂY GIỜ HIT HOP ĐI CÁC BẠN RAPPER ĐI CÁC BẠN ĐỌC MỘT LOẠT NHỮNG CÂU",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 6187,
+      "source": "Tro_chuyen_ve_dau_tu_mao_hiem_voi_Hoang_Thi_Kim_Dung_-_Genesia_Ventures_Vietnam_Innovators_VN_EP03.mp4",
+      "duration_s": 10.8,
+      "pseudo_label": "TRƯỚC ĐÓ VỚI CÁC NHÀ ĐẦU TƯ CỦA NHẬT BẢN Ở THỊ TRƯỜNG NHẬT BẢN HAY LÀ CHÚNG EM CÓ NHỮNG MỐI QUAN HỆ VỚI CÁC NHÀ ĐẦU TƯ THỊ TRƯỜNG INDONESIA VÀ THỊ TRƯỜNG ĐÔNG Á THÌ CHÚNG EM CÓ THỂ",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 6191,
+      "source": "Tro_chuyen_ve_dau_tu_mao_hiem_voi_Hoang_Thi_Kim_Dung_-_Genesia_Ventures_Vietnam_Innovators_VN_EP03.mp4",
+      "duration_s": 15.0,
+      "pseudo_label": "KIBO TRONG VIỆC SỬ DỤNG NGUỒN TÀI NGUYÊN THỰC RA TẠI VÌ STARTUP CŨNG RẤT LÀ HỮU HẠN TRONG NGUỒN TÀI NGUYÊN ĐÚNG KHÔNG THẾ BÂY GIỜ NÓI ĐẾN CÂU CHUYỆN ĐỔI MỚI TRONG STARTUP BỞI VÌ LÀ VC LÀ MỘT CÁI TỔ CHỨC SẼ LUÔN ĐẦU TƯ VÀO NHỮNG CÔNG TY STARTUP CÓ SỰ ĐỔI MỚI RẤT LÀ CAO",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 6216,
+      "source": "Trong_Cai_luong_khong_phan_biet_Nam_-_Bac_-_Nha_nghien_cuu_Nguyen_Thi_Hau_Tram_Nam_San_Khau_SS2_Ep7.mp4",
+      "duration_s": 14.4,
+      "pseudo_label": "VÀ THỨ HAI LÀ VỞ NÀNG TIÊN MẪU ĐƠN THÌ CÁC CÔ DIỄN VIÊN MÀ MÚA NHỮNG CÁI ĐIỆU MÚA CỦA CẢI LƯƠNG THÌ THÔI RỒI TA MÊ LẮM TRÊN TƯ CÁCH LÀ MỘT MỘT NHÀ LỊCH SỬ MỘT NHÀ NGHIÊN CỨU LỊCH SỬ THÌ THEO CÔ THÌ NHỮNG GÌ DIỄN RA TRÊN SÂN KHẤU ĐÓ",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 6230,
+      "source": "Trong_Cai_luong_khong_phan_biet_Nam_-_Bac_-_Nha_nghien_cuu_Nguyen_Thi_Hau_Tram_Nam_San_Khau_SS2_Ep7.mp4",
+      "duration_s": 10.2,
+      "pseudo_label": "CỦA ĐẤT NƯỚC LÀ HÒA HỢP HÒA GIẢI VÍ DỤ NHỮNG VỞ DIỄN RỒI TƯ CÁCH CÁC ĐẠO ĐỨC PHÁT NGÔN CỦA CÁC NGHỆ SĨ HOÀN TOÀN LÀ ĐÓNG GÓP RẤT TÍCH CỰC",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 6241,
+      "source": "Trong_bar_khong_noi_ve_nguoi_thu_ba_Coi_Mo_Happy_Hour_EP10_coimohappyhour.mp4",
+      "duration_s": 13.2,
+      "pseudo_label": "ĐỂ ĐƯỢC NÓI CHUYỆN ĐỂ ĐƯỢC GIAO TIẾP CHỨ CHƯA PHẢI CHẮC CHẮN LÀ ĐỂ ĐẾN TÌM RƯỢU UỐNG MÀ RƯỢU LÀ CHẤT XÚC TÁC CÁI CONCEPT ĐI BO NÀY KHI MÀ DISTIN BÂY GIỜ ĐẾN BÂY GIỜ LÂU LÂU MÌNH VẪN NGHĨ LÀ BUỒN QUÁ NÊN MÌNH ĐI BO",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 6246,
+      "source": "Trong_bar_khong_noi_ve_nguoi_thu_ba_Coi_Mo_Happy_Hour_EP10_coimohappyhour.mp4",
+      "duration_s": 10.9,
+      "pseudo_label": "XE CÓ CỞI HƠN NHIỀU KHÔNG HÔM ĐÓ GIỜ EM CỞI LẮM RỒI MỌI NGƯỜI ƠI GIỜ EM KHOE THÂN LUÔN RỒI ANH NÀY ANH LEO CỠ NHIỀU NÈ ANH THẤY KHÁCH ANH ĐÔNG HƠN RỒI OK",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 6254,
+      "source": "Trong_mot_kiep_nguoi_co_nhieu_thoi_dai_-_Dao_dien_Nguyen_Thi_Minh_Ngoc_HaveASip_184.mp4",
+      "duration_s": 10.4,
+      "pseudo_label": "V TỐT NGHIỆP Ở TRÊN SÂN KHẤU NHIỀU KỊCH BẢN HAY LẮM MÀ HỒI ĐÓ LÀ MÌNH QUEN NHIỀU NGƯỜI BẠN TỐT HỌ DỊCH NHỮNG KỊCH BẢN HAY CỦA THẾ GIỚI DĨ NHIÊN CŨNG CÓ NHỮNG VỞ BỊ",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 6273,
+      "source": "Trong_mot_kiep_nguoi_co_nhieu_thoi_dai_-_Dao_dien_Nguyen_Thi_Minh_Ngoc_HaveASip_184.mp4",
+      "duration_s": 15.0,
+      "pseudo_label": "DIỄN Ở TRÊN SÂN KHẤU RỒI MẤY NGƯỜI ƯA DIỄN NGOÀI ĐỜI LẮM NGƯỜI TA NGHĨ ĐIỀU ĐÓ VỚI MỘT CÁI NGHĨA XẤU LÀ PHẢI THAY ĐỔI NHƯ CON CÁT KÈ HAY TẤT CẢ MỌI CHUYỆN ĐỂ MÀ CHO NÓ ĐẠT CÁI MỤC ĐÍCH MÌNH THÌ MÌNH NGHĨ LÀ MÌNH TIN VÀO CÁI CHUYỆN",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 6294,
+      "source": "Trong_su_nghiep_nen_lam_tho_hay_nen_lam_nguoi_choi_-_Duy_Manh_HaveASip_222.mp4",
+      "duration_s": 13.5,
+      "pseudo_label": "CÃI NHAU TRUY XÉ THẾ KỂ CẢ TRONG GIA ĐÌNH EM THẤY Ở NGAY HÀNG XÓM LÁNG GIỀNG VỚI NHAU NGÀY XƯA CÃI NHAU TRUY XÉ NHƯ THẾ NHÁ NHƯNG MÀ CHỈ CẦN CÓ MẪU ĂN TRỘM ĂN CẮP Ở NHÀ CẢ LÀNG CẢ XÓM THẬM CHÍ CÓ NHỮNG NGƯỜI BỊ SAO NHẤT CẢ HÀNG XÓM SẴN SÀNG HIẾN MÁU",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 6296,
+      "source": "Trong_ta_luon_co_hai_nguoi_can_cham_soc_-_Nha_bao_Phan_Dang_HaveASip_104.mp4",
+      "duration_s": 12.4,
+      "pseudo_label": "PHẢI LUÔN Ý THỨC ĐƯỢC RẰNG ĐÓ TRONG TA LUÔN CÓ HAI CON NGƯỜI CẦN CHĂM SÓC THỨ NHẤT LÀ CON NGƯỜI VẬT CHẤT CỦA CHÚNG TA NÀY TA CHO NÓ VẮC XIN NÀY TA CHO NÓ THUỐC NÀY TA CHO NÓ THỨC ĂN NÀY NHƯNG CÓ MỘT CON NGƯỜI THỨ HAI",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 6332,
+      "source": "True_love_-_Thai_Van_Linh_Thuy_Minh_Yeu_Lanh_SS2_Ep4.mp4",
+      "duration_s": 14.4,
+      "pseudo_label": "Ở ĐÚNG VỊ TRÍ TRONG THỜI ĐIỂM ĐÓ LÀ MÌNH ĐÃ PHẢI HOẠT ĐỘNG CÔNG TY NHIỀU NĂM RỒI MÌNH MỚI CÓ ĐỦ KINH NGHIỆM ĐỦ CÓ KHÁCH HÀNG NỀN TẢNG ĐỂ MÌNH CÓ THỂ TĂNG TRƯỞNG RẤT NHANH THÊM MỘT ĐIỀU VỀ ĐẦU TƯ LÀ CÓ LÚC THỊ TRƯỜNG SẼ THAY ĐỔI RẤT NHANH",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 6356,
+      "source": "Truong_bao_chay_la_minh_bam_may_-_YouTuber_Meichan_GenZTruyen_S2Ep2.mp4",
+      "duration_s": 14.6,
+      "pseudo_label": "TẠI VÌ KHI MÀ MÌNH THỰC SỰ YÊU MỘT CÁI GÌ ĐẤY THÌ MÌNH SẼ KHÔNG CẢM THẤY MỆT KHI MÀ LÀM NÓ ĐƯƠNG NHIÊN LÀ LÀM VIỆC GÌ CŨNG MỆT THÔI NHƯNG MÀ KHI MÀ MÌNH YÊU NÓ RỒI THÌ MÌNH SẼ KHÔNG CẢM THẤY NÓ THOẢI MÁI HƠN CẢM THẤY LÀM MỌI THỨ DỄ DÀNG HƠN VÀ SẢN PHẨM MÌNH TẠO RA ẤY",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 6378,
+      "source": "Truyen_thong_doc_dao_tu_mot_tam_hon_tre_-_Vo_Khanh_Duy_Marcom_Manager_New_World_Saigon_Hotel.mp4",
+      "duration_s": 14.8,
+      "pseudo_label": "NẾU PHẢI MIÊU TẢ CÔNG VIỆC CỦA MÌNH Ở NHU SÀI GÒN THÌ TRONG MỘT CÂU THÌ DUY SẼ MIÊU TẢ BẰNG CÂU NÀO THÚ VỊ GIẢ DỤ MÀ DUY ĐANG CHỌN MỘT KHÁCH SẠN ĐỂ Ở TRONG CHUYẾN ĐI SÀI GÒN THÌ LÝ DO GÌ MÀ MÌNH SẼ CHỌN NHU SÀI GÒN ĐƯỜNG TRUNG TÂM DỊCH VỤ TỐT TRUYỀN THÔNG XUẤT SẮC",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 6488,
+      "source": "Tuong_lai_cua_vu_tru_noi_dung_Vietcetera_-_Hao_Tran_CEO_Vietcetera_MAD_S2_EP09.mp4",
+      "duration_s": 12.0,
+      "pseudo_label": "YOU THE COPER MINING CATHER WOOTION SUC OF CLASS OF SON TORON MASCOW CARBON THE BU",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 6594,
+      "source": "Uu_diem_khi_theo_hoc_tai_cac_truong_don_gioi_o_My_EduStation_Ep21.mp4",
+      "duration_s": 14.9,
+      "pseudo_label": "WARTING SCHO SPIENS THE U AS TO GET A WE TRAVER OF AME TO YOU NICE COVERTING MOOD AND TODY FIVE SOTHENS PYR AN A MORTIM FITING HINIT ON THE RUL TO MAKE IZALITHUR",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 6601,
+      "source": "Vai_tro_cua_giao_duc_trong_vong_lap_giau_ngheo_-_Chi_Nguyen_The_Present_Writer_HaveASip_152.mp4",
+      "duration_s": 15.0,
+      "pseudo_label": "VÀO NHỮNG CÁI ĐIỂM MẠNH CỦA MÌNH THAY VÌ MÌNH CHỈ KHỎA LẤP ĐIỂM YẾU TRONG CÁI NÓ CÓ CÁI KHÔN ẤY TRONG CÁI KHỔ CỦA MÌNH NÓ CŨNG CÓ NHỮNG CÁI BÀI HỌC ĐỂ GIÚP CHO MÌNH TRƯỞNG THÀNH VÀ PHÁT TRIỂN HƠN THÌ ĐẤY CŨNG LÀ MỘT CÁI ĐIỀU MÀ EM HAY CHIA SẺ TRÊN KÊNH APP PRESENTWRITER ĐẤY LÀ MÌNH NGHĨ XEM LÀ",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 6609,
+      "source": "Vai_tro_cua_giao_duc_trong_vong_lap_giau_ngheo_-_Chi_Nguyen_The_Present_Writer_HaveASip_152.mp4",
+      "duration_s": 15.0,
+      "pseudo_label": "CÁI NGƯỜI TRONG TIM BỞI VÌ MÌNH LÀ CÁI TÊN CỦA MÌNH Ở ĐẤY CHI NGUYỄN THE PRESSI ĐẤY THÌ MÌNH PHẢI BẢN THÂN MÌNH MÌNH CŨNG PHẢI TRƯỞNG THÀNH HƠN NẾU MÌNH CÓ ĐỘI NHÓM MÌNH PHẢI CÓ NHỮNG CÁI THAY ĐỔI ĐỂ MÌNH TRƯỞNG THÀNH HƠN VÀ EM VẪN LUÔN NGHĨ RẰNG LÀ QUAN TRỌNG LÀ CÁI HÀNH TRÌNH CỦA MÌNH ẤY MÌNH VẪN CẢM",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 6611,
+      "source": "Vai_tro_cua_giao_duc_trong_vong_lap_giau_ngheo_-_Chi_Nguyen_The_Present_Writer_HaveASip_152.mp4",
+      "duration_s": 15.0,
+      "pseudo_label": "NHẬP LỚP MỘT Á MÌNH CỨ CHƠI HOÀI NHƯ VẬY MÌNH THẤY CŨNG CHÁN RỒI KIỂU DẠO NÀY MÌNH NGHĨ LINH TINH CŨNG CHÁN ẤY EM NGHĨ SAO HAY LÀ NGÀY MAI MÌNH SẼ QUYẾT ĐỊNH LÀ MÌNH SẼ HỌC KIỂU ĐẦU TẬP TRUNG TẬP TRUNG EM ĐẤY TỰ NHIÊN ANH NGHĨ THẾ THẾ XONG RỒI EM VẪN CÒN NHỚ LÀ TRONG CÁI MÙI",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 6630,
+      "source": "Vao_bar_dung_de_cai_net_di_choi_xa_Coi_Mo_Happy_Hour_EP09_coimohappyhour.mp4",
+      "duration_s": 14.6,
+      "pseudo_label": "CHÍNH XÁC RỒI ĐÚNG RỒI TẠI VÌ ĐỒ UỐNG VÀ COCKTAIL LÀ THỨC UỐNG CÓ CỒN À ĐỀU LÀ THỨC UỐNG THÌ NÓ NẰM TRONG PHẦN ẨM MÀ ẨM THỰC THÌ LẠI LÀ KHẨU VỊ CÁ NHÂN RỒI NGON NÓ NGON VỚI MÌNH NHƯNG MÀ CHẮC GÌ NÓ NGON VỚI NGƯỜI KHÁC ĐÂU OK KHÔNG ĐỒNG Ý CÓ ĐẦU LỜI ĐỒN THỨ HAI",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 6684,
+      "source": "Vi_sao_tinh_duc_lam_ta_ca_them_chong_chan_-_BS_Van_Hien_-_Chuyen_khoa_Tam_Than_Coi_Mo_SS3_Ep16.mp4",
+      "duration_s": 15.0,
+      "pseudo_label": "LUÂN SA CỦA CHÚNG TA THÌ NÓ CŨNG RÁO HẲN MỘT CÁI LUÂN XA NGAY CÁI VỊ TRÍ ĐÓ LUÔN ĐÓ LÀ CÁI KẾT NỐI VỀ GÓC RỄ CỦA MÌNH NÊN LÀ CÁI CÁCH MÀ MÌNH DÁM ĐỐI MẶT VÀ MÌNH KIỂU MÌNH HIỂU VÀ MÌNH TRÒ CHUYỆN ĐƯỢC Á THÌ CHẮC CHẮN LÀ NÓ SẼ GIÚP ÍCH ĐƯỢC CHO MỌI NGƯỜI RẤT LÀ NHIỀU TRONG VIỆC",
+      "corrected_text": "",
+      "notes": ""
+    },
+    {
+      "index": 6732,
+      "source": "Viet_Nam_lan_dau_chao_don_giai_golf_hang_dau_the_gioi_-_Ryan_Howsam_Chairman_The_EU_Legends_Tour.mp4",
+      "duration_s": 10.7,
+      "pseudo_label": "THEN THANG THE SOUND TRAN OF DINI COMFORM MOTHER PLATION THE SPO THA OUT SOI THE TO NON SUM SAU",
+      "corrected_text": "",
+      "notes": ""
+    }
+  ]
+}
