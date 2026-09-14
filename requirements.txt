@@ -1,4 +1,4 @@
-# Core (đã có sẵn trên Colab, ghi rõ để tái lập môi trường)
+# Core (đã có sẵn trên Kaggle, ghi rõ để tái lập môi trường)
 torch>=2.1
 torchaudio>=2.1
 
@@ -10,7 +10,7 @@ soundfile
 sentencepiece
 tokenizers
 
-# Mamba encoder (xem notebooks/00_setup_environment.ipynb để cài đúng cách trên Colab T4)
+# Mamba encoder (xem notebooks/00_setup_environment.ipynb để cài đúng cách trên Kaggle T4)
 mamba-ssm
 causal-conv1d>=1.4.0
 

@@ -1,8 +1,14 @@
-# Log cài đặt mamba-ssm trên Colab T4
+# Log cài đặt mamba-ssm trên Kaggle T4
 
 Ghi lại kết quả từng lần chạy `notebooks/00_setup_environment.ipynb`, theo
 đúng nhắc nhở trong chính notebook — để không phải dò lại từ đầu mỗi lần mở
-máy Colab mới.
+máy Kaggle mới.
+
+> **Đính chính (2026-09-14):** môi trường thực tế của cả 3 lần dưới đây là
+> **Kaggle** (2x T4), không phải Google Colab như ghi nhầm ban đầu — dấu
+> hiệu là `nvidia-smi` luôn trả về 2 GPU (Colab free-tier chỉ cấp 1x T4).
+> Không ảnh hưởng đến các chẩn đoán kỹ thuật (build isolation, Mamba-3/
+> tilelang) vì chúng độc lập với nền tảng Colab hay Kaggle.
 
 ## Lần 1 — 2026-09-14
 

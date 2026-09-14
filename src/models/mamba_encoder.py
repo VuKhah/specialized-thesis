@@ -1,9 +1,13 @@
-"""Mamba (Selective State Space Model) encoder.
+"""Mamba (Selective State Space Model / S6) encoder — kiến trúc Mamba-1 cổ
+điển (mamba_ssm.Mamba, pin tag v2.3.1), đúng như trích dẫn trong đề cương
+(Gu & Dao, arXiv:2312.00752). KHÔNG dùng Mamba-2/Mamba-3 (khác kiến trúc,
+khác mục tiêu thiết kế, ngoài phạm vi đề cương đã đăng ký — xem
+docs/notes/mamba_versions.md).
 
 Xem notebooks/00_setup_environment.ipynb để xác nhận `mamba-ssm` CUDA kernel
-có chạy được trên T4 hay không. Nếu không, đặt use_cuda_kernel=False để dùng
-selective_scan_ref (thuần PyTorch, chậm hơn nhưng không cần build kernel) —
-đúng phương án dự phòng đã ghi trong đề cương.
+có chạy được trên T4 hay không. Nếu không, dùng selective_scan_ref (thuần
+PyTorch, chậm hơn nhưng không cần build kernel) — đúng phương án dự phòng
+đã ghi trong đề cương.
 """
 
 import torch
@@ -32,7 +36,7 @@ class MambaEncoder(ASREncoder):
         if not MAMBA_SSM_AVAILABLE:
             raise ImportError(
                 "mamba-ssm chưa được cài. Chạy notebooks/00_setup_environment.ipynb "
-                "trên Colab T4 trước, hoặc cài theo hướng dẫn trong README.md."
+                "trên Kaggle T4 trước, hoặc cài theo hướng dẫn trong README.md."
             )
 
         self._d_model = d_model

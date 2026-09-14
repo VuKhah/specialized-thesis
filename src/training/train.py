@@ -57,7 +57,7 @@ def main():
 
     optimizer = torch.optim.AdamW(model.parameters(), lr=cfg["training"]["lr"])
 
-    # TODO (Tuần 4-5): scheduler warmup, checkpoint/resume (quan trọng vì Colab
+    # TODO (Tuần 4-5): scheduler warmup, checkpoint/resume (quan trọng vì Kaggle
     # free-tier bị ngắt session), logging (tensorboard), eval loop định kỳ.
     for epoch in range(cfg["training"]["epochs"]):
         model.train()

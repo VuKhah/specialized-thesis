@@ -26,7 +26,7 @@ class VietSuperSpeechDataset(Dataset):
 
     def __getitem__(self, idx: int):
         item = self.hf_dataset[idx]
-        # Schema xác nhận qua notebooks/00_setup_environment.ipynb (Colab, 2026-09-14):
+        # Schema xác nhận qua notebooks/00_setup_environment.ipynb (Kaggle, 2026-09-14):
         # dict_keys(['audio', 'text', 'duration', 'source']) — source = tên file video gốc.
         waveform = torch.tensor(item["audio"]["array"], dtype=torch.float32)
         text = item["text"]

@@ -16,7 +16,7 @@ tokenizer:
   vocab_size: 1000
 
 training:
-  batch_size: 16 # điều chỉnh theo VRAM thực tế trên Colab T4 (16GB)
+  batch_size: 16 # điều chỉnh theo VRAM thực tế (Kaggle: 2x T4 16GB — có thể tăng nếu dùng cả 2 GPU)
   lr: 3e-4
   epochs: 30
   warmup_steps: 1000

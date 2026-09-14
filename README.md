@@ -12,6 +12,11 @@ thống ASR tiếng Việt hội thoại tự nhiên, trên bộ dữ liệu **V
 
 Đề cương đầy đủ: [`docs/de_cuong/De_Cuong_Chi_Tiet_Mamba_ASR.docx`](docs/de_cuong/De_Cuong_Chi_Tiet_Mamba_ASR.docx)
 
+> **Lưu ý:** đề cương đã nộp ghi hạ tầng là Google Colab free-tier; trên
+> thực tế đang chạy trên **Kaggle** (2x T4). Tài liệu làm việc (README này,
+> notebook, config) phản ánh đúng Kaggle — bản đề cương chính thức giữ
+> nguyên như đã đăng ký với GVHD.
+
 ## Câu hỏi nghiên cứu
 
 1. **RQ1 (WER)** — Cùng số tham số, cùng pipeline: Mamba hay Conformer cho WER thấp hơn?
@@ -45,7 +50,7 @@ encoder thay đổi. Đây là điều kiện bắt buộc để so sánh công 
 
 ```
 docs/          đề cương, biểu mẫu KLTN, ghi chú lịch sử lựa chọn đề tài
-notebooks/     notebook chạy trên Google Colab (T4 free-tier)
+notebooks/     notebook chạy trên Kaggle (2x T4, 30 giờ GPU/tuần)
 src/
   data/        load & tiền xử lý VietSuperSpeech
   features/    trích xuất log-mel spectrogram
@@ -64,12 +69,13 @@ data/          dữ liệu audio (không commit vào git — quá lớn cho GitH
 
 - [x] Đề cương chi tiết + tóm lược đã hoàn thiện, đã đăng ký với GVHD.
 - [x] Cấu trúc project + skeleton code.
-- [ ] **Kiểm tra rủi ro kỹ thuật cao nhất: cài `mamba-ssm` trên Colab T4.**
-      Chạy [`notebooks/00_setup_environment.ipynb`](notebooks/00_setup_environment.ipynb)
-      trên Colab để xác nhận. Notebook có sẵn 3 phương án cài đặt theo thứ tự
-      ưu tiên + fallback thuần PyTorch nếu build CUDA kernel thất bại
-      (xem phần "Rủi ro" bên dưới).
-- [ ] Tải & khảo sát thống kê VietSuperSpeech.
+- [ ] **Kiểm tra rủi ro kỹ thuật cao nhất: cài `mamba-ssm` trên Kaggle T4.**
+      Đã cài được (build từ source, pin tag `v2.3.1`) và xác nhận fallback
+      thuần PyTorch hoạt động; **chưa verify CUDA kernel thật chạy đúng sau
+      khi pin** — xem phần "Rủi ro" bên dưới và log chi tiết trong
+      [`docs/notes/mamba_ssm_install_log.md`](docs/notes/mamba_ssm_install_log.md).
+- [x] Xác nhận schema VietSuperSpeech (`audio`, `text`, `duration`, `source`).
+- [ ] Tải & khảo sát thống kê đầy đủ VietSuperSpeech.
 - [ ] Xây tokenizer BPE tiếng Việt.
 
 Xem kế hoạch chi tiết theo tuần trong đề cương (Tuần 1–15).
@@ -77,20 +83,31 @@ Xem kế hoạch chi tiết theo tuần trong đề cương (Tuần 1–15).
 ## Rủi ro kỹ thuật lớn nhất: cài đặt `mamba-ssm`
 
 `mamba-ssm` cần biên dịch CUDA kernel (`causal-conv1d` + `selective_scan`).
-Đây là lỗi build phổ biến trên Colab do version PyTorch/CUDA thay đổi liên tục
-(xác nhận qua khảo sát các issue trên GitHub state-spaces/mamba, 2026-09).
-Notebook setup thử theo thứ tự:
+Lịch sử 3 lần thử trên Kaggle T4 (chi tiết đầy đủ, kèm log lỗi thật:
+[`docs/notes/mamba_ssm_install_log.md`](docs/notes/mamba_ssm_install_log.md)):
 
-1. Cài qua pip bình thường (`pip install mamba-ssm`).
-2. Nếu build wheel lỗi: cài từ source với `--no-build-isolation`, pin đúng
-   version torch có sẵn trên Colab.
-3. **Phương án dự phòng bắt buộc phải verify sớm**: `mamba_ssm` có sẵn
-   implementation thuần PyTorch không cần CUDA kernel custom
-   (`selective_scan_ref`, chậm hơn nhưng đúng về mặt số học) — dùng để không
-   bị chặn tiến độ nếu build kernel thất bại trên T4.
+1. **Cài qua pip thẳng — thất bại**: lỗi build metadata do PEP517 build
+   isolation không thấy torch cài sẵn.
+2. **Build từ source (`--no-build-isolation`), nhánh `main` — cài được**,
+   nhưng import lỗi `AttributeError: __dict__ of 'type' objects is not
+   writable`.
+3. **Chẩn đoán bằng full traceback → xác định nguyên nhân thật**: nhánh
+   `main` (từ v2.3.2) gộp thêm kiến trúc **Mamba-3** mới, và
+   `mamba_ssm/__init__.py` luôn import nó dù không dùng tới — kéo theo
+   `tilelang` → `tvm`, và `tvm` có bug không tương thích Python 3.12.
+   **Fix**: pin cài đặt về tag `v2.3.1` (bản cuối trước Mamba-3) — đề tài
+   chỉ cần Mamba/S6 cổ điển nên không mất gì. Xem
+   [`docs/notes/mamba_versions.md`](docs/notes/mamba_versions.md) để hiểu
+   rõ khác biệt Mamba/S6 vs Mamba-2 vs Mamba-3 và vì sao chọn bản cổ điển.
 
-Việc này **phải xác nhận trong Tuần 1–2** theo đúng kế hoạch trong đề cương —
-đây là rủi ro cao nhất của toàn bộ đề tài.
+**Phương án dự phòng đã xác nhận hoạt động**: `mamba_ssm` có sẵn
+implementation thuần PyTorch không cần CUDA kernel custom
+(`selective_scan_ref`, chậm hơn nhưng đúng về mặt số học) — đề tài không bị
+chặn ngay cả khi CUDA kernel thật còn vấn đề.
+
+Việc này **phải xác nhận xong trong Tuần 1–2** theo đúng kế hoạch trong đề
+cương — đây là rủi ro cao nhất của toàn bộ đề tài. Còn thiếu: verify lại
+CUDA kernel thật chạy đúng sau khi pin `v2.3.1` (Lần 4, chưa chạy).
 
 ## Dataset
 
