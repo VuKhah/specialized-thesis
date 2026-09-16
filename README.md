@@ -88,7 +88,14 @@ data/          dữ liệu audio (không commit vào git — quá lớn cho GitH
       đã kiểm thử chạy thật trước khi giao.
 - [x] Phát hiện & sửa bug: cột `audio` của dataset là đường dẫn tương đối
       (string), không tự giải mã — `src/data/vietsuperspeech_dataset.py` đã
-      sửa, nhưng còn TODO hiệu năng (xem mục "Việc cần làm" bên dưới).
+      sửa.
+- [x] Chiến lược tải audio hàng loạt trước khi train —
+      `src/data/prefetch_audio.py` (`python -m src.data.prefetch_audio`).
+      Tải song song đúng 67.405 file được train+validation tham chiếu (phát
+      hiện repo HF có tới 118.259 file trong `audio/`, tải hết theo
+      `snapshot_download` sẽ thừa ~43% dung lượng nên không dùng cách đó).
+      `VietSuperSpeechDataset.__getitem__` giờ đọc thẳng từ cache, tự fallback
+      tải lẻ nếu chưa prefetch (vd. dùng nhanh trong EDA).
 - [ ] ⚠️ **VẤN ĐỀ MỞ, CHƯA QUYẾT ĐỊNH HƯỚNG XỬ LÝ**: số liệu dataset thật
       khác đáng kể so với đề cương đã đăng ký (67.405 mẫu/245,42h thực đo
       so với 52.023/267,39h trong đề cương; tên split đúng là
@@ -109,27 +116,22 @@ Xem kế hoạch chi tiết theo tuần trong đề cương (Tuần 1–15).
    4 phương án trong
    [`docs/notes/dataset_discrepancy.md`](docs/notes/dataset_discrepancy.md),
    chưa chọn phương án nào.
-2. **Chiến lược tải audio hàng loạt trước khi train** — hiện
-   `VietSuperSpeechDataset.__getitem__` tải từng file qua HTTP
-   (~1-4s/file), không khả thi cho 60k+ mẫu. Cần dùng
-   `huggingface_hub.snapshot_download` (tải song song, một lần, chỉ thư
-   mục `audio/`) trước khi bắt đầu vòng lặp train — xem TODO trong
-   `src/data/vietsuperspeech_dataset.py`.
+**Tuần 4-5 theo kế hoạch đề cương (sau khi việc trên có hướng):**
 
-**Tuần 4-5 theo kế hoạch đề cương (sau khi 2 việc trên có hướng):**
-
-3. Hoàn thiện training loop thật trong `src/training/train.py` (hiện là
+2. Hoàn thiện training loop thật trong `src/training/train.py` (hiện là
    skeleton) — thêm checkpoint/resume (quan trọng vì Kaggle giới hạn
    session ~9-12h), eval loop tính WER định kỳ, logging (tensorboard).
-4. Chạy `python -m src.models.param_count` (cần mamba-ssm đã cài, tag
+   Trước khi chạy, nhớ `python -m src.data.prefetch_audio` để tải audio
+   hàng loạt (xem mục Tuần 3 bên trên).
+3. Chạy `python -m src.models.param_count` (cần mamba-ssm đã cài, tag
    `v2.3.1`) để tinh chỉnh `configs/model_mamba.yaml` khớp số tham số với
    `configs/model_conformer.yaml` (chênh lệch mục tiêu < 5%).
-5. Cài đặt & train baseline Conformer-CTC trước (theo đúng thứ tự trong
+4. Cài đặt & train baseline Conformer-CTC trước (theo đúng thứ tự trong
    đề cương, Tuần 6-7).
 
 **Việc tay, có thể làm song song bất cứ lúc nào (không chặn code):**
 
-6. Nghe & hiệu đính thủ công 250 câu trong
+5. Nghe & hiệu đính thủ công 250 câu trong
    `data/processed/clean_test_manifest.json` (cột `corrected_text` còn
    trống) — dùng mục 5 của `notebooks/02_dataset_eda.ipynb` để nghe từng
    mẫu theo đúng index.
