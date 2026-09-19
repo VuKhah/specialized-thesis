@@ -1,6 +1,6 @@
 # TODO tổng — Mamba vs Conformer ASR
 
-Cập nhật lần cuối: **2026-09-16**. File này là danh sách việc tổng, cập nhật
+Cập nhật lần cuối: **2026-09-19**. File này là danh sách việc tổng, cập nhật
 theo tiến độ thật (không phải kế hoạch tĩnh) — xem thêm README.md mục
 "Trạng thái hiện tại" cho chi tiết từng tuần.
 
@@ -20,9 +20,6 @@ theo tiến độ thật (không phải kế hoạch tĩnh) — xem thêm README
       *chưa chạy full*. Cần quyết định chạy ở đâu: máy local (đã xác nhận
       có internet trực tiếp) hay để dành chạy trên Kaggle lúc train thật
       (Tuần 4-5) — cache tải ở local không tự chuyển sang Kaggle được.
-- [ ] **Hoàn thiện training loop thật** trong `src/training/train.py` (hiện
-      là skeleton): checkpoint/resume (quan trọng — Kaggle session cap
-      ~9-12h), eval loop tính WER định kỳ, logging (tensorboard).
 - [ ] **Tune tham số Mamba khớp Conformer**: chạy
       `python -m src.models.param_count` (cần mamba-ssm tag v2.3.1 đã cài)
       để chỉnh `configs/model_mamba.yaml`, mục tiêu chênh lệch < 5% so với
@@ -47,9 +44,31 @@ theo tiến độ thật (không phải kế hoạch tĩnh) — xem thêm README
       tự lưu khi file đang mở (thấy file khóa `~$...` cùng thư mục trước
       đó). Kiểm tra nội dung trước khi commit để tránh mất/ghi đè bản edit
       tay của bạn.
+- [ ] `train.py` mới hoàn thiện (checkpoint/resume, eval WER, tensorboard)
+      mới test thật được với **ConformerEncoder** trên CPU local (máy này
+      không có CUDA/mamba-ssm). Logic checkpoint/eval là kiến trúc-agnostic
+      (chỉ động vào `model.state_dict()`/optimizer/scheduler) nên về lý
+      thuyết áp dụng được cho MambaEncoder, nhưng **chưa xác nhận thật trên
+      Kaggle** — cần chạy `python -m src.training.train --config
+      configs/model_mamba.yaml` trên Kaggle trước khi coi encoder Mamba
+      dùng được với training loop mới (đúng yêu cầu Definition of Done ở
+      Plan.md mục 9).
 
 ## ✅ Đã hoàn thành
 
+- [x] **Hoàn thiện training loop thật** trong `src/training/train.py`:
+      checkpoint/resume tự động (mỗi epoch ghi `checkpoints/<experiment_name>/
+      latest.pt` + `best.pt` theo eval WER thấp nhất), eval loop tính WER
+      định kỳ (`src.evaluation.wer`, decode qua `CTCASRModel.greedy_decode`
+      mới thêm), logging tensorboard (loss/lr theo step, eval WER theo
+      epoch). Test thật với dữ liệu thật (audio cache có sẵn, offline mode)
+      trên ConformerEncoder — xác nhận resume tiếp đúng epoch/global_step,
+      không train lại từ đầu. Tiện thể sửa 1 bug thật phát hiện khi test:
+      `lr: 3e-4` trong 2 file yaml bị PyYAML đọc thành string (thiếu dấu
+      chấm thập phân) thay vì float, đã sửa thành `3.0e-4`. **Xem mục ⚠️ bên
+      trên — nhánh Mamba chưa test được trên máy này (không có CUDA), cần
+      xác nhận trên Kaggle trước khi coi là xong hoàn toàn cho cả 2 kiến
+      trúc.**
 - [x] Đề cương chi tiết + tóm lược, đăng ký với GVHD (Tuần 1-2).
 - [x] Cấu trúc project + skeleton code cho toàn bộ pipeline.
 - [x] **Rủi ro kỹ thuật lớn nhất**: cài `mamba-ssm` CUDA kernel trên Kaggle

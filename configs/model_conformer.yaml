@@ -17,7 +17,7 @@ tokenizer:
 
 training:
   batch_size: 16 # điều chỉnh theo VRAM thực tế (Kaggle: 2x T4 16GB — có thể tăng nếu dùng cả 2 GPU)
-  lr: 3e-4
+  lr: 3.0e-4 # PyYAML doc "3e-4" (khong co dau cham) thanh string, khong phai float
   epochs: 30
   warmup_steps: 1000
   grad_clip: 5.0

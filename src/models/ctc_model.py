@@ -37,3 +37,21 @@ class CTCASRModel(torch.nn.Module):
             blank=blank_id,
             zero_infinity=True,
         )
+
+    @torch.no_grad()
+    def greedy_decode(self, waveform: torch.Tensor, waveform_lengths: torch.Tensor, blank_id: int = 0) -> list[list[int]]:
+        """Greedy CTC decode (argmax + collapse repeat + bỏ blank) — dùng cho
+        eval loop (WER định kỳ khi train) và demo. Không phải beam search,
+        chỉ đủ để theo dõi xu hướng WER qua các epoch."""
+        log_probs, out_lengths = self.forward(waveform, waveform_lengths)
+        pred_ids = log_probs.argmax(dim=-1)  # [B, T]
+        results = []
+        for ids, length in zip(pred_ids, out_lengths):
+            collapsed = []
+            prev = None
+            for i in ids[:length].tolist():
+                if i != prev and i != blank_id:
+                    collapsed.append(i)
+                prev = i
+            results.append(collapsed)
+        return results

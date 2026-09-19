@@ -17,7 +17,7 @@ tokenizer:
 
 training:
   batch_size: 16
-  lr: 3e-4
+  lr: 3.0e-4 # PyYAML doc "3e-4" (khong co dau cham) thanh string, khong phai float
   epochs: 30
   warmup_steps: 1000
   grad_clip: 5.0
