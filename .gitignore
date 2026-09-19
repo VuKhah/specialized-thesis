@@ -22,11 +22,53 @@ checkpoints/*
 *.wav
 *.flac
 
+# Audio/dữ liệu đuôi khác (rule trên chỉ chặn .wav/.flac)
+*.mp3
+*.m4a
+*.ogg
+*.opus
+*.mp4
+*.webm
+*.parquet
+*.arrow
+*.npy
+*.npz
+*.safetensors
+*.onnx
+
+# Cache ở bất kỳ cấp nào — chạy notebook từ notebooks/ đã từng đẻ ra
+# notebooks/data/raw/..., không khớp rule gốc `data/raw/*` ở trên.
+**/audio_cache/
+**/eda_audio_cache/
+**/.cache/
+
+# Bí mật / thông tin đăng nhập
+.env
+.env.*
+kaggle.json
+hf_token*
+
+# Tài liệu nhị phân: lưu trên Google Drive, không đưa lên GitHub (repo public,
+# có họ tên/MSSV và biểu mẫu nội bộ của khoa). Chỉ giữ ghi chú .md trong
+# docs/notes/ trên git.
+docs/de_cuong/
+docs/bieu_mau/
+docs/khoa_luan/
+*.docx
+*.doc
+docs/notes/TLCN_*
+~$*
+
 # Logs
 *.log
 runs/
 wandb/
 outputs/
+lightning_logs/
+events.out.tfevents.*
+
+# Notebook nháp/output chạy thử — Plan.md quy định không commit
+notebooks/temp/
 
 # OS / editor
 .DS_Store

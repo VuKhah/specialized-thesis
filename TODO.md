@@ -1,89 +1,143 @@
 # TODO tổng — Mamba vs Conformer ASR
 
-Cập nhật lần cuối: **2026-09-19**. File này là danh sách việc tổng, cập nhật
-theo tiến độ thật (không phải kế hoạch tĩnh) — xem thêm README.md mục
-"Trạng thái hiện tại" cho chi tiết từng tuần.
+Cập nhật lần cuối: **2026-09-19**. **Nguồn sự thật duy nhất cho việc cần làm /
+đang chặn / đã xong.** Kế hoạch tuần + quyết định + nhật ký phiên ở
+[`Plan.md`](Plan.md); kiến trúc ở [`ARCHITECTURE.md`](ARCHITECTURE.md).
 
 ## 🔴 Đang chặn — chờ quyết định từ GVHD
 
 - [ ] **Hướng xử lý sai lệch số liệu dataset ảnh hưởng RQ2**: số liệu thật
-      (67.405 mẫu/245,42h, độ dài audio gần như đồng nhất 10-15s) khác đề
-      cương đã đăng ký (52.023/267,39h, dải 3-30s) — làm RQ2 (RTF theo độ
-      dài audio) không còn đủ dải để chứng minh ưu thế O(n) của Mamba. 4
-      phương án trong `docs/notes/dataset_discrepancy.md`, đang chờ ý kiến
-      thầy Hoàng Văn Dũng. **Không tự chọn phương án khi chưa có ý kiến.**
+      (67.405 mẫu/245,42h, audio gần như đồng nhất 10-15s) khác đề cương đã
+      đăng ký (52.023/267,39h, dải 3-30s) — RQ2 (RTF theo độ dài audio) không
+      còn đủ dải để chứng minh ưu thế O(n) của Mamba. 4 phương án trong
+      `docs/notes/dataset_discrepancy.md`, đang chờ ý kiến thầy Hoàng Văn
+      Dũng. **Không tự chọn phương án khi chưa có ý kiến.**
 
-## 🟡 Sẵn sàng làm ngay — không phụ thuộc quyết định trên
+## ⏸ Treo — người dùng chủ động hoãn quyết định
 
-- [ ] **Chạy prefetch audio đầy đủ** (67.405 file, ước tính ~27GB) — script
-      đã viết xong và test logic (`src/data/prefetch_audio.py`), nhưng
-      *chưa chạy full*. Cần quyết định chạy ở đâu: máy local (đã xác nhận
-      có internet trực tiếp) hay để dành chạy trên Kaggle lúc train thật
-      (Tuần 4-5) — cache tải ở local không tự chuyển sang Kaggle được.
-- [ ] **Tune tham số Mamba khớp Conformer**: chạy
-      `python -m src.models.param_count` (cần mamba-ssm tag v2.3.1 đã cài)
-      để chỉnh `configs/model_mamba.yaml`, mục tiêu chênh lệch < 5% so với
-      `configs/model_conformer.yaml`.
-- [ ] **Train baseline Conformer-CTC** trước (đúng thứ tự đề cương, Tuần
-      6-7) — cần 2 việc trên xong trước.
-- [ ] **Hoàn tất upload file doc/báo cáo lên Google Drive** — mới tạo xong
-      cấu trúc thư mục (`specialized-thesis/docs/{de_cuong,bieu_mau,notes}`,
-      `specialized-thesis/reports`), **chưa upload file nào** (bị ngắt giữa
-      chừng khi đang lấy base64 các file .docx + json).
+- [ ] **Prefetch audio đầy đủ** (67.405 file, ~27GB): hướng nêu 2026-09-19 là
+      chạy trên Kaggle, nhưng quyết định cuối đang treo. Cần xác nhận trước
+      khi chốt: hạn mức đĩa Kaggle (`/kaggle/working` — nhớ ~20GB, **chưa kiểm
+      chứng**), cách lưu cache (thư mục tạm / đóng gói Kaggle Dataset riêng /
+      tải lại mỗi phiên), chi phí GPU-giờ nếu tải lại. Cache local không
+      chuyển sang Kaggle được. Script đã xong (`src/data/prefetch_audio.py`,
+      test 5 file thật + 1 lỗi cố ý), chỉ thiếu bước chạy full. Chặn: train
+      Conformer thật.
 
-## 🟢 Việc tay — làm song song bất cứ lúc nào, không chặn code
+## 🟡 Sẵn sàng làm ngay
 
-- [ ] Nghe & hiệu đính thủ công 250 câu trong
-      `data/processed/clean_test_manifest.json` (cột `corrected_text` còn
-      trống) — dùng mục 5 của `notebooks/02_dataset_eda.ipynb`.
+- [ ] **Push commit tài liệu lên GitHub** — *chờ người dùng yêu cầu.* Đã
+      commit local (2026-09-19): `.gitignore` mới, 12 file nhị phân gỡ khỏi
+      index (file còn trên đĩa, trừ file TLCN người dùng đã tự xoá), bộ tài liệu
+      gốc mới + mục Khóa luận. **Chưa push** → GitHub vẫn đang hiển thị các
+      file `.docx` cũ cho tới khi push (và chúng vẫn nằm trong lịch sử kể cả
+      sau đó — xem ⚠️ Repo public). Trước khi push: upload Drive xong (mục dưới).
+- [ ] **Upload tài liệu lên Google Drive** (`docs/de_cuong/*.docx`,
+      `docs/bieu_mau/*.docx`, `docs/notes/de_cuong_phowhisper_vietsuperspeech.docx`)
+      — mới tạo cấu trúc thư mục `specialized-thesis/docs/{de_cuong,bieu_mau,notes}`
+      + `reports`, **chưa upload file nào**. Ưu tiên cao hơn trước vì sau khi
+      commit, bản trên đĩa + Drive là chỗ lưu duy nhất. Xong thì cho link để
+      sửa README.
+- [ ] **Sửa `param_count.py` để đọc yaml, rồi tune Mamba khớp Conformer**
+      (< 5%). Hiện script gọi `MambaEncoder()`/`ConformerEncoder()` bằng tham
+      số mặc định trong code (Mamba mặc định `n_layers=8`, yaml đặt 10) nên
+      chỉnh yaml không đổi kết quả (`ARCHITECTURE.md` mục 8-f). Conformer mặc
+      định = 12.204.288 tham số (đã đo). Đo Mamba cần mamba-ssm → chạy trên
+      Kaggle.
+- [ ] **Viết script đo WER trên clean-test** (`clean_test_manifest.json`) —
+      chưa có; cần cho Tuần 8/12. Cân nhắc điểm ⚠️ "clean-test ⊂ validation".
+- [ ] **Train baseline Conformer-CTC** (Tuần 6-7) — sau khi prefetch xong (⏸).
 
-## ⚠️ Cần kiểm tra riêng (không phải việc cần làm, mà là điểm bất thường)
+## 🟢 Việc tay — song song bất cứ lúc nào, không chặn code
 
-- [ ] `docs/de_cuong/De_Cuong_Chi_Tiet_Mamba_ASR.docx` đang hiện là đã sửa
-      (`git status`) nhưng không phải do session này chỉnh — có thể do Word
-      tự lưu khi file đang mở (thấy file khóa `~$...` cùng thư mục trước
-      đó). Kiểm tra nội dung trước khi commit để tránh mất/ghi đè bản edit
-      tay của bạn.
-- [ ] `train.py` mới hoàn thiện (checkpoint/resume, eval WER, tensorboard)
-      mới test thật được với **ConformerEncoder** trên CPU local (máy này
-      không có CUDA/mamba-ssm). Logic checkpoint/eval là kiến trúc-agnostic
-      (chỉ động vào `model.state_dict()`/optimizer/scheduler) nên về lý
-      thuyết áp dụng được cho MambaEncoder, nhưng **chưa xác nhận thật trên
-      Kaggle** — cần chạy `python -m src.training.train --config
-      configs/model_mamba.yaml` trên Kaggle trước khi coi encoder Mamba
-      dùng được với training loop mới (đúng yêu cầu Definition of Done ở
-      Plan.md mục 9).
+- [ ] Nghe & hiệu đính 250 câu trong `data/processed/clean_test_manifest.json`
+      (cột `corrected_text` còn trống) — dùng mục 5 của
+      `notebooks/02_dataset_eda.ipynb`.
+
+## 📘 Khóa luận (bản viết) — kế hoạch, mốc và quy cách ở `Plan.md` mục 6
+
+**Làm ngay / sớm**
+- [ ] **Gặp GVHD (tối đa 2 tuần/lần, GVHD ký logbook)**: cho AI biết ngày gặp
+      gần nhất + ngày hẹn kế tiếp để ghi vào bảng ở `Plan.md` mục 6. Nên hỏi:
+      🔴 quyết định RQ2 · hình thức nộp hiện hành (biểu mẫu 2018) · dạng "thiết
+      kế" ở Chương 2. *(việc tay của người dùng)*
+- [ ] **Dựng file Word khóa luận đúng Mẫu 5** trong `docs/khoa_luan/` (A4,
+      Times New Roman 1,5 dòng, lề 2/2/3/2 cm, style Heading 1/2/3 đúng cỡ chữ,
+      khung chương theo đề cương: Mở đầu · Ch1-Ch4 · Kết luận). Sao lưu Drive
+      `specialized-thesis/khoa_luan/`. Chỉ một bản làm việc.
+- [ ] **Viết Chương 1 (Cơ sở lý thuyết)** — không phụ thuộc kết quả; lấy từ
+      `docs/notes/mamba_versions.md` + tài liệu đã đọc Tuần 1-2. Mục tiêu xong
+      trước Tuần 7.
+- [ ] **Bắt đầu ghi Tài liệu tham khảo** ngay khi trích dẫn (chỉ tài liệu thực
+      sự trích dẫn; quy ước ghi ở Mẫu 5).
+
+**Theo tuần (chưa đến hạn)**
+- [ ] Tuần 6-7: Ch2 Phân tích & thiết kế (từ `ARCHITECTURE.md`).
+- [ ] Sau Tuần 8/12/13: Ch3 Thực nghiệm — chèn kết quả từ `reports/`; phần mô
+      tả dữ liệu chờ 🔴.
+- [ ] Tuần 14: Ch4 Demo & tổng kết. Tuần 15: Mở đầu, Kết luận, Tóm tắt, Phụ lục.
+- [ ] **Trước hết đợt Kaggle:** sao lưu `best.pt` của cả hai thí nghiệm lên
+      Drive (cần cho đĩa CD, mục `SETUP`).
+- [ ] Khi nộp: danh sách kiểm tra ở `Plan.md` mục 6 (2 cuốn + 2 CD, đề cương có
+      chữ ký, GVHD duyệt trước khi in).
+
+## ⚠️ Cần kiểm tra / rủi ro đã biết (không phải việc làm ngay)
+
+**Repo public**
+- [ ] `notebooks/02_dataset_eda.ipynb` nhúng audio YouTube (20 output
+      `<audio>`, ~5MB) — trong repo public và lịch sử git. Người dùng chọn bỏ
+      qua (2026-09-19). Chưa kiểm license VietSuperSpeech. Khi xử lý: xoá
+      output (`nbstripout`); muốn gỡ khỏi lịch sử phải viết lại lịch sử + force
+      push (hỏi trước).
+- [ ] Lịch sử git vẫn chứa các file đã gỡ index: `.docx` (đề cương, biểu mẫu
+      khoa) và file TLCN có tên+MSSV người thứ ba trong tên file. Chưa quyết
+      định có viết lại lịch sử không.
+- [ ] `docs/de_cuong/De_Cuong_Chi_Tiet_Mamba_ASR.docx` trên đĩa **khác bản đã
+      commit** (trước đó `git status` báo modified; nghi Word tự lưu). Giờ file
+      không còn track nên git không hiện diff nữa — mở kiểm tra nội dung trước
+      khi upload Drive, đừng để mất bản edit tay. Không sửa nội dung file.
+
+**Code / thiết kế** (chi tiết ở `ARCHITECTURE.md` mục 8)
+- [ ] `MambaEncoder` + `train.py` **chưa xác nhận trên Kaggle** (máy local
+      không CUDA). Cần chạy vài step
+      `python -m src.training.train --config configs/model_mamba.yaml` trên
+      Kaggle trước khi coi training loop dùng được cho cả hai kiến trúc.
+- [ ] Mamba đơn hướng, chưa mask padding (TODO trong `mamba_encoder.py`); hai
+      encoder không subsampling (T'=T ≈ 1000-1500 khung). Cần nêu trong phần
+      thảo luận; kiểm tra đề cương đã đề cập chưa.
+- [ ] `train.py`: 1 GPU (Kaggle có 2x T4), không AMP — ảnh hưởng thời gian
+      train so với hạn mức 30 GPU-giờ/tuần. Chưa quyết định có tối ưu không
+      (sửa training loop là sửa code dùng chung, phải áp dụng cho cả hai).
+- [ ] `best.pt` chọn theo WER `validation`, mà clean-test lấy từ `validation`
+      → lưu ý khi diễn giải kết quả cuối.
+- [ ] `rtf.py`/`survey.py` chia bucket độ dài theo đề cương (3-30s), không
+      khớp dữ liệu thật — **không sửa** khi 🔴 chưa có quyết định.
+- [ ] Docstring lỗi thời (chỉ chữ): `vietsuperspeech_dataset.py` nhắc
+      `snapshot_download`; `wer.py` ghi "dev-test". Sửa gọn khi tiện.
 
 ## ✅ Đã hoàn thành
 
-- [x] **Hoàn thiện training loop thật** trong `src/training/train.py`:
-      checkpoint/resume tự động (mỗi epoch ghi `checkpoints/<experiment_name>/
-      latest.pt` + `best.pt` theo eval WER thấp nhất), eval loop tính WER
-      định kỳ (`src.evaluation.wer`, decode qua `CTCASRModel.greedy_decode`
-      mới thêm), logging tensorboard (loss/lr theo step, eval WER theo
-      epoch). Test thật với dữ liệu thật (audio cache có sẵn, offline mode)
-      trên ConformerEncoder — xác nhận resume tiếp đúng epoch/global_step,
-      không train lại từ đầu. Tiện thể sửa 1 bug thật phát hiện khi test:
-      `lr: 3e-4` trong 2 file yaml bị PyYAML đọc thành string (thiếu dấu
-      chấm thập phân) thay vì float, đã sửa thành `3.0e-4`. **Xem mục ⚠️ bên
-      trên — nhánh Mamba chưa test được trên máy này (không có CUDA), cần
-      xác nhận trên Kaggle trước khi coi là xong hoàn toàn cho cả 2 kiến
-      trúc.**
+- [x] **Chuẩn hoá tài liệu gốc (2026-09-19)**: tách `Plan.md` (kế hoạch/trạng
+      thái/quyết định/nhật ký), `ARCHITECTURE.md` (sơ đồ, luồng dữ liệu, bản đồ
+      file), `docs/CONVENTIONS.md` (quy ước), rút gọn `README.md`, cập nhật
+      `CLAUDE.md`. Rà repo public, bổ sung `.gitignore`, gỡ 12 file nhị phân
+      khỏi index. *(Đã commit local, chưa push — xem 🟡.)*
+- [x] **Training loop thật** (`139f018`): checkpoint/resume tự động
+      (`checkpoints/<experiment_name>/{latest,best}.pt`), eval WER định kỳ,
+      tensorboard. Test thật với dữ liệu thật trên ConformerEncoder (CPU) — resume
+      đúng epoch/global_step. Sửa bug: `lr: 3e-4` bị PyYAML đọc thành string →
+      `3.0e-4`. Nhánh Mamba chưa test (xem ⚠️).
 - [x] Đề cương chi tiết + tóm lược, đăng ký với GVHD (Tuần 1-2).
-- [x] Cấu trúc project + skeleton code cho toàn bộ pipeline.
-- [x] **Rủi ro kỹ thuật lớn nhất**: cài `mamba-ssm` CUDA kernel trên Kaggle
-      T4 (pin tag v2.3.1) — xác nhận forward pass thật chạy được (Tuần 1).
-- [x] Khảo sát thống kê đầy đủ VietSuperSpeech (`src/data/survey.py`),
-      phát hiện sai lệch số liệu so với đề cương (Tuần 3).
-- [x] Train tokenizer BPE tiếng Việt (vocab_size=1000, 60.656 transcript).
-- [x] Lấy mẫu clean-test manifest 250 câu (seed=42).
-- [x] Notebook EDA (xem waveform/spectrogram, nghe audio, thống kê),
-      `notebooks/02_dataset_eda.ipynb`, đã test chạy thật.
+- [x] Cấu trúc project + skeleton code toàn bộ pipeline.
+- [x] **Rủi ro kỹ thuật lớn nhất**: cài `mamba-ssm` CUDA kernel trên Kaggle T4
+      (pin tag v2.3.1), forward pass thật chạy được (Tuần 1).
+- [x] Khảo sát thống kê VietSuperSpeech (`src/data/survey.py`), phát hiện sai
+      lệch số liệu so với đề cương (Tuần 3).
+- [x] Tokenizer BPE tiếng Việt (vocab_size=1000, 60.656 transcript).
+- [x] Clean-test manifest 250 câu (seed=42).
+- [x] Notebook EDA `notebooks/02_dataset_eda.ipynb` (đã test chạy thật).
 - [x] Sửa bug decode audio: cột `audio` là string path, không tự giải mã.
-- [x] Viết `src/data/prefetch_audio.py` — tải hàng loạt song song đúng
-      67.405 file cần dùng (không tải thừa như snapshot_download cả thư
-      mục), resume qua session, lỗi từng file không sập cả batch. Đã test
-      logic (5 file thật + 1 file lỗi cố ý) — *chỉ còn thiếu bước chạy full*
-      (xem mục 🟡 ở trên).
-- [x] Push toàn bộ code lên GitHub:
-      https://github.com/VuKhah/specialized-thesis
+- [x] `src/data/prefetch_audio.py`: tải song song đúng 67.405 file cần dùng,
+      resume qua session, lỗi từng file không sập cả batch (test logic xong,
+      chưa chạy full — xem ⏸).
+- [x] Push code lên GitHub: https://github.com/VuKhah/specialized-thesis
