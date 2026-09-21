@@ -71,9 +71,9 @@ cập nhật `ARCHITECTURE.md`. Bảng "sự kiện → file nào" ở
   `snapshot_download` cả repo — thừa ~43%); đừng để `__getitem__` tự tải lẻ khi
   train (~1-4 s/file × 60k+ mẫu). *Chạy ở đâu và lưu cache thế nào: đang treo,
   xem `Plan.md` mục 5.*
-- **Trong code:** `param_count.py` không đọc yaml; hai encoder không
-  subsampling; Mamba chưa mask padding; `train.py` 1 GPU không AMP; docstring
-  vài file còn cũ — đầy đủ ở `ARCHITECTURE.md` mục 8.
+- **Trong code:** hai encoder không subsampling; Mamba chưa mask padding;
+  `train.py` 1 GPU không AMP; docstring vài file còn cũ — đầy đủ ở
+  `ARCHITECTURE.md` mục 8.
 
 ## Ngôn ngữ & phong cách
 

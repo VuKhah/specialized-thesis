@@ -1,6 +1,6 @@
 # TODO tổng — Mamba vs Conformer ASR
 
-Cập nhật lần cuối: **2026-09-19**. **Nguồn sự thật duy nhất cho việc cần làm /
+Cập nhật lần cuối: **2026-09-21**. **Nguồn sự thật duy nhất cho việc cần làm /
 đang chặn / đã xong.** Kế hoạch tuần + quyết định + nhật ký phiên ở
 [`Plan.md`](Plan.md); kiến trúc ở [`ARCHITECTURE.md`](ARCHITECTURE.md).
 
@@ -17,8 +17,9 @@ Cập nhật lần cuối: **2026-09-19**. **Nguồn sự thật duy nhất cho 
 
 - [ ] **Prefetch audio đầy đủ** (67.405 file, ~27GB): hướng nêu 2026-09-19 là
       chạy trên Kaggle, nhưng quyết định cuối đang treo. Cần xác nhận trước
-      khi chốt: hạn mức đĩa Kaggle (`/kaggle/working` — nhớ ~20GB, **chưa kiểm
-      chứng**), cách lưu cache (thư mục tạm / đóng gói Kaggle Dataset riêng /
+      khi chốt: hạn mức đĩa Kaggle (`/kaggle/working` = **20GB, người dùng xác nhận
+      2026-09-21** → 27GB **không vừa**; các vị trí đĩa khác chưa kiểm chứng),
+      cách lưu cache (thư mục tạm / đóng gói Kaggle Dataset riêng /
       tải lại mỗi phiên), chi phí GPU-giờ nếu tải lại. Cache local không
       chuyển sang Kaggle được. Script đã xong (`src/data/prefetch_audio.py`,
       test 5 file thật + 1 lỗi cố ý), chỉ thiếu bước chạy full. Chặn: train
@@ -38,14 +39,11 @@ Cập nhật lần cuối: **2026-09-19**. **Nguồn sự thật duy nhất cho 
       + `reports`, **chưa upload file nào**. Ưu tiên cao hơn trước vì sau khi
       commit, bản trên đĩa + Drive là chỗ lưu duy nhất. Xong thì cho link để
       sửa README.
-- [ ] **Sửa `param_count.py` để đọc yaml, rồi tune Mamba khớp Conformer**
-      (< 5%). Hiện script gọi `MambaEncoder()`/`ConformerEncoder()` bằng tham
-      số mặc định trong code (Mamba mặc định `n_layers=8`, yaml đặt 10) nên
-      chỉnh yaml không đổi kết quả (`ARCHITECTURE.md` mục 8-f). Conformer mặc
-      định = 12.204.288 tham số (đã đo). Đo Mamba cần mamba-ssm → chạy trên
-      Kaggle.
-- [ ] **Viết script đo WER trên clean-test** (`clean_test_manifest.json`) —
-      chưa có; cần cho Tuần 8/12. Cân nhắc điểm ⚠️ "clean-test ⊂ validation".
+- [ ] **Tune Mamba khớp Conformer** (< 5%). `param_count.py` đã đọc yaml
+      (sửa 2026-09-21). Conformer theo yaml = 12.204.288 tham số. Còn lại: chạy
+      `python -m src.models.param_count` trên Kaggle (cần mamba-ssm), chỉnh
+      `d_model`/`n_layers`/`expand` trong `configs/model_mamba.yaml` tới khi
+      chênh < 5%. Lưu ý `d_model` của Mamba nên giữ 256 để CTC head giống hệt.
 - [ ] **Train baseline Conformer-CTC** (Tuần 6-7) — sau khi prefetch xong (⏸).
 
 ## 🟢 Việc tay — song song bất cứ lúc nào, không chặn code
@@ -61,13 +59,17 @@ Cập nhật lần cuối: **2026-09-19**. **Nguồn sự thật duy nhất cho 
       gần nhất + ngày hẹn kế tiếp để ghi vào bảng ở `Plan.md` mục 6. Nên hỏi:
       🔴 quyết định RQ2 · hình thức nộp hiện hành (biểu mẫu 2018) · dạng "thiết
       kế" ở Chương 2. *(việc tay của người dùng)*
-- [ ] **Dựng file Word khóa luận đúng Mẫu 5** trong `docs/khoa_luan/` (A4,
-      Times New Roman 1,5 dòng, lề 2/2/3/2 cm, style Heading 1/2/3 đúng cỡ chữ,
-      khung chương theo đề cương: Mở đầu · Ch1-Ch4 · Kết luận). Sao lưu Drive
-      `specialized-thesis/khoa_luan/`. Chỉ một bản làm việc.
-- [ ] **Viết Chương 1 (Cơ sở lý thuyết)** — không phụ thuộc kết quả; lấy từ
-      `docs/notes/mamba_versions.md` + tài liệu đã đọc Tuần 1-2. Mục tiêu xong
-      trước Tuần 7.
+- [ ] **Sao lưu file Word khóa luận lên Drive** `specialized-thesis/khoa_luan/`
+      (`docs/khoa_luan/KhoaLuan_Mamba_vs_Conformer_ASR.docx`, gitignore). Đây là
+      **bản làm việc duy nhất**; script sinh file đã bỏ — đừng dựng lại kẻo mất
+      bản sửa tay.
+- [ ] **Điền chỗ trống trên bìa** (tô vàng): Bộ môn, Khóa, logo khoa. Xác nhận
+      tên đề tài trên bìa: bìa ghi `Conformer`, đề cương đã nộp ghi
+      `Con-Former` — hỏi GVHD nên theo bản nào.
+- [ ] **Rà bản nháp Chương 1** (~9 trang, đoạn tô vàng = ghi chú cần xử lý):
+      đối chiếu 12 trích dẫn với nguồn gốc (điền từ trí nhớ AI, chưa kiểm),
+      đọc lại 3 bài Mamba-ASR (số liệu AISHELL-1 lấy từ đề cương), chuyển công
+      thức sang Word Equation, vẽ Hình 1.1-1.3. Mục tiêu xong trước Tuần 7.
 - [ ] **Bắt đầu ghi Tài liệu tham khảo** ngay khi trích dẫn (chỉ tài liệu thực
       sự trích dẫn; quy ước ghi ở Mẫu 5).
 
@@ -112,10 +114,19 @@ Cập nhật lần cuối: **2026-09-19**. **Nguồn sự thật duy nhất cho 
       → lưu ý khi diễn giải kết quả cuối.
 - [ ] `rtf.py`/`survey.py` chia bucket độ dài theo đề cương (3-30s), không
       khớp dữ liệu thật — **không sửa** khi 🔴 chưa có quyết định.
-- [ ] Docstring lỗi thời (chỉ chữ): `vietsuperspeech_dataset.py` nhắc
-      `snapshot_download`; `wer.py` ghi "dev-test". Sửa gọn khi tiện.
 
 ## ✅ Đã hoàn thành
+
+- [x] **Script đo WER clean-test (2026-09-21)**:
+      `python -m src.evaluation.eval_clean_test --config configs/model_<x>.yaml`.
+      Test thật với 250 câu thật (Conformer, CPU, trọng số ngẫu nhiên: chạy hết
+      pipeline, WER vô nghĩa). Còn: chạy với checkpoint thật khi có; Mamba chưa
+      test (Kaggle); reference hiện là `pseudo_label` cho cả 250 câu vì
+      `corrected_text` chưa hiệu đính (🟢) — script in rõ số câu mỗi loại.
+
+- [x] **`param_count.py` đọc yaml (2026-09-21)**: dùng `build_encoder` của
+      `train.py`; test local: Conformer 12.204.288 khớp số đã đo, đổi
+      `n_layers` trong yaml thì số đổi theo. Nhánh Mamba chưa chạy (không CUDA).
 
 - [x] **Chuẩn hoá tài liệu gốc (2026-09-19)**: tách `Plan.md` (kế hoạch/trạng
       thái/quyết định/nhật ký), `ARCHITECTURE.md` (sơ đồ, luồng dữ liệu, bản đồ

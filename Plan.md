@@ -1,6 +1,6 @@
 # Plan.md — Kế hoạch, trạng thái & quyết định
 
-Cập nhật lần cuối: **2026-09-19**. Đây là nơi để **nối tiếp giữa các phiên làm
+Cập nhật lần cuối: **2026-09-21**. Đây là nơi để **nối tiếp giữa các phiên làm
 việc**: kế hoạch theo tuần, trạng thái mức tuần, quyết định đã chốt/đang treo,
 nhật ký phiên. Việc chi tiết ở [`TODO.md`](TODO.md); kiến trúc ở
 [`ARCHITECTURE.md`](ARCHITECTURE.md); luật cho AI ở [`CLAUDE.md`](CLAUDE.md);
@@ -49,7 +49,7 @@ theo độ dài audio) đang bị chặn bởi quyết định 🔴 ở mục 5.
 | 8 | ⬜ Chưa | Bị 🔴 (RQ2) một phần |
 | 9-15 | ⬜ Chưa | — |
 
-Song song các tuần: **viết khóa luận** (⬜ chưa tạo file — mục 6) và **gặp GVHD
+Song song các tuần: **viết khóa luận** (🔄 đã có file khung + nháp Ch1 — mục 6) và **gặp GVHD
 tối đa 2 tuần/lần** (mục 6, chưa có lịch ghi).
 
 ## 4. Quyết định đã chốt
@@ -70,18 +70,18 @@ tối đa 2 tuần/lần** (mục 6, chưa có lịch ghi).
 | Trạng thái | Vấn đề | Chi tiết |
 |---|---|---|
 | 🔴 **Chờ GVHD** | Hướng xử lý sai lệch số liệu dataset ảnh hưởng RQ2 (67.405 mẫu/245,42h, audio 10-15 s vs đề cương 3-30 s) | 4 phương án trong `docs/notes/dataset_discrepancy.md`. **Không tự chọn.** |
-| ⏸ **Treo (2026-09-19)** | Prefetch full: hướng nêu là chạy trên Kaggle, nhưng cách lưu cache chưa chốt | ~27 GB; cần xác nhận hạn mức đĩa Kaggle (chưa kiểm chứng) và việc mỗi phiên bắt đầu trống, cache local không chuyển sang được. Lưu ý: nếu phải tải lại mỗi phiên sẽ tốn GPU-giờ |
+| ⏸ **Treo (2026-09-19)** | Prefetch full: hướng nêu là chạy trên Kaggle, nhưng cách lưu cache chưa chốt | ~27 GB; hạn mức `/kaggle/working` = 20 GB (người dùng xác nhận 2026-09-21) → 27 GB không vừa, các vị trí đĩa khác chưa kiểm chứng và việc mỗi phiên bắt đầu trống, cache local không chuyển sang được. Lưu ý: nếu phải tải lại mỗi phiên sẽ tốn GPU-giờ |
 | ⚠️ Biết, chưa xử lý | `notebooks/02_dataset_eda.ipynb` nhúng audio YouTube (20 output `<audio>`, ~5 MB) trong repo **public**, có cả trong lịch sử git | Người dùng chọn bỏ qua (2026-09-19). Chưa kiểm license VietSuperSpeech |
 | ⚠️ Chưa quyết | Tên người thứ ba + MSSV trong tên file TLCN (đã gỡ index, còn trong lịch sử git); xoá khỏi lịch sử cần viết lại lịch sử + force push | Chỉ làm khi người dùng yêu cầu |
 
 ## 6. Khóa luận (bản viết) và làm việc với GVHD
 
 Bản khóa luận viết theo các biểu mẫu của khoa (Mẫu 0/3/5, ban hành 2018, lưu ở
-`docs/bieu_mau/` trên máy + Drive). **Chưa tạo file.** Đề cương chỉ ghi Tuần 14
+`docs/bieu_mau/` trên máy + Drive). Đề cương chỉ ghi Tuần 14
 (Chương 1-4) và Tuần 15 (Mở đầu, Kết luận, TLTK, nộp GVHD); Mẫu 3 dặn *"vừa
 làm vừa viết"* và Mẫu 5 yêu cầu **50-100 trang** nội dung → viết song song theo
 chương từ sớm (đề xuất được người dùng đồng ý 2026-09-19; không đổi kế hoạch đã
-đăng ký).
+đăng ký). **Đã dựng file khung + bản nháp Chương 1 (2026-09-21)** — xem nhật ký.
 
 **Lưu ở đâu:** Word `.docx` (+ xuất PDF) trong `docs/khoa_luan/` trên máy
 (gitignore, không lên GitHub), sao lưu Drive `specialized-thesis/khoa_luan/`.
@@ -92,13 +92,13 @@ vào `reports/`, rồi mới chèn vào Word.
 
 | Phần | Lấy từ | Khi nào | Trạng thái |
 |---|---|---|---|
-| Mở đầu | Phần Mở đầu trong đề cương | Dựng khung sớm, hoàn thiện Tuần 15 | ⬜ |
-| Ch1 Cơ sở lý thuyết | `docs/notes/mamba_versions.md`, tài liệu đã đọc Tuần 1-2 | Từ nay đến Tuần 7 (không phụ thuộc kết quả) | ⬜ |
-| Ch2 Phân tích và thiết kế hệ thống | `ARCHITECTURE.md`, `docs/CONVENTIONS.md` | Tuần 6-7 (lúc chờ máy train) | ⬜ |
+| Mở đầu | Phần Mở đầu trong đề cương | Dựng khung sớm, hoàn thiện Tuần 15 | 🔄 khung 6 mục, chưa có nội dung |
+| Ch1 Cơ sở lý thuyết | `docs/notes/mamba_versions.md`, tài liệu đã đọc Tuần 1-2 | Từ nay đến Tuần 7 (không phụ thuộc kết quả) | 🔄 bản nháp đầu, chờ rà |
+| Ch2 Phân tích và thiết kế hệ thống | `ARCHITECTURE.md`, `docs/CONVENTIONS.md` | Tuần 6-7 (lúc chờ máy train) | ⬜ (đã có khung mục) |
 | Ch3 Thực nghiệm và đánh giá | `reports/`, `docs/notes/dataset_discrepancy.md` | Mô tả dữ liệu khi 🔴 có quyết định; chèn kết quả sau Tuần 8, 12, 13 | ⬜ |
 | Ch4 Ứng dụng minh họa và tổng kết | `src/demo/` | Tuần 14 | ⬜ |
 | Kết luận, Tóm tắt, Phụ lục | — | Tuần 15 | ⬜ |
-| Tài liệu tham khảo | — | **Ghi dần từ bây giờ** (chỉ liệt kê tài liệu thực sự được trích dẫn) | ⬜ |
+| Tài liệu tham khảo | — | **Ghi dần từ bây giờ** (chỉ liệt kê tài liệu thực sự được trích dẫn) | 🔄 12 mục, chưa đối chiếu nguồn |
 
 ### Hình thức (Mẫu 5, tóm tắt)
 
@@ -175,3 +175,60 @@ khảo sát dataset, phát hiện sai lệch số liệu, prefetch script, train
   đọc yaml trước); (3) khi có quyết định: prefetch trên Kaggle; (4) **khóa
   luận:** người dùng cho biết ngày gặp GVHD gần nhất để điền bảng ở mục 6, rồi
   dựng file Word đúng Mẫu 5 và bắt đầu Ch1.
+
+### 2026-09-21
+- **Làm:** sửa `src/models/param_count.py` để đọc `configs/model_*.yaml` và dựng
+  encoder qua `build_encoder` của `train.py` (trước đó gọi constructor bằng
+  tham số mặc định nên chỉnh yaml không đổi kết quả). Cập nhật `CLAUDE.md`,
+  `ARCHITECTURE.md` (bảng file + mục 8-f), `TODO.md`.
+- **Test:** local (không CUDA) — Conformer theo yaml = 12.204.288, khớp số đã đo;
+  đổi `n_layers` 8→4 trong yaml tạm thì ra 6.112.512 (script thật sự đọc yaml).
+  **Nhánh Mamba chưa chạy** (cần `mamba-ssm`, chỉ có trên Kaggle).
+- **Phiên sau bắt đầu từ:** chạy `python -m src.models.param_count` trên Kaggle
+  để có số Mamba, chỉnh `configs/model_mamba.yaml` tới chênh < 5%; các mục còn
+  lại của phiên 2026-09-19 (Drive/push, prefetch, khóa luận, bảng GVHD) vẫn mở.
+- **Làm (tiếp):** viết `src/evaluation/eval_clean_test.py` — đo WER 1 checkpoint
+  trên clean-test, dùng chung cho hai encoder (`--config`), ghi
+  `reports/results/<exp>_clean_test.json` gồm ref/hyp từng câu cho RQ3. Sửa hai
+  docstring lỗi thời (`wer.py`, `vietsuperspeech_dataset.py`).
+- **Test:** chạy thật 250 câu clean-test (tải audio thật), Conformer, CPU, trọng
+  số ngẫu nhiên (`--allow_random_init`) → chạy hết pipeline, WER 4,34 (vô nghĩa,
+  chỉ chứng minh script chạy). Chưa test với checkpoint đã train (chưa có) và
+  chưa test Mamba (cần CUDA). Suy luận CPU batch 1 mất ~13 phút cho 250 câu.
+- **Chốt trong code:** reference = `corrected_text` nếu có, không thì
+  `pseudo_label` (hiện 0/250 câu đã hiệu đính); `batch_size` mặc định 1 vì
+  Mamba chưa mask padding.
+- **Ghi nhận (cuối phiên):** người dùng xác nhận hạn mức `/kaggle/working` = 20 GB,
+  nhỏ hơn ~27 GB audio → prefetch nguyên bản không vừa. Quyết định ⏸ vẫn treo,
+  chưa chọn phương án; xem `TODO.md` ⏸.
+
+### 2026-09-21 (khóa luận)
+- **Làm:** dựng file Word `docs/khoa_luan/KhoaLuan_Mamba_vs_Conformer_ASR.docx`
+  (gitignore) theo Mẫu 5: A4, Times New Roman, dãn 1,5, lề 2/2/3/2 cm, số trang
+  giữa dưới, style chương/mục đúng cỡ chữ, đánh số tự động `Chương n:` / `n.m` /
+  `n.m.k`, mục lục tự sinh, bảng viết tắt. Trang trước nội dung: bìa chính + bìa
+  phụ, chỗ đóng phiếu GVHD/GVPB, lời cám ơn, đề cương có chữ ký, mục lục, danh
+  mục, tóm tắt. Khung Mở đầu, Ch2-4, Kết luận, TLTK, Phụ lục. **Viết bản nháp
+  Chương 1** (~9 trang: ASR/log-mel/CTC, Transformer/Conformer, SSM/S4/Mamba,
+  Bảng 1.1 so sánh độ phức tạp, 12 mục TLTK).
+- **Kiểm tra:** validate schema OK; mở bằng Word, cập nhật mục lục, xuất PDF (26
+  trang) và xem lại bìa, mục lục, trang công thức, trang bảng.
+- **Chốt / lưu ý:** file Word là **bản làm việc duy nhất** — script sinh đã bỏ,
+  đừng dựng lại. Chưa điền: Bộ môn, Khóa, logo (tô vàng). Bìa ghi `Conformer`,
+  đề cương đã nộp ghi `Con-Former` — chờ người dùng/GVHD quyết định. 12 trích
+  dẫn điền từ trí nhớ AI, **chưa đối chiếu nguồn**. Ba hình (1.1-1.3) chỉ là ô
+  giữ chỗ.
+- **Phát hiện khi viết Ch1 (ghi vào bản nháp, chưa vào `ARCHITECTURE.md`):**
+  `torchaudio.models.Conformer` (2.8.0) dùng `MultiheadAttention` thường, **không
+  có mã hóa vị trí tương đối** như bài báo Conformer gốc, và encoder của dự án
+  cũng không cộng mã hóa vị trí nào → vị trí chỉ đến từ tích chập. Cùng với
+  việc không subsampling, cần thảo luận ở Ch2/Hạn chế.
+- **Phát hiện khác:** `docs/de_cuong/De_Cuong_Chi_Tiet_Mamba_ASR.docx` trên đĩa
+  ghi 67.405 mẫu/245,42 h, **khác** con số 52.023/267,39 h mà `TODO.md` 🔴 nói
+  là đề cương đã đăng ký (phạm vi vẫn ghi Colab, `dev-test`). Nhiều khả năng
+  bản trên đĩa đã được sửa tay sau khi đăng ký (khớp cảnh báo "khác bản đã
+  commit" ở `TODO.md`). Chưa sửa/kiểm chứng — người dùng cần xác nhận bản nào là
+  bản đã nộp GVHD trước khi dựa vào con số nào.
+- **Phiên sau bắt đầu từ:** sao lưu file Word lên Drive; điền bìa; rà Ch1 theo
+  đoạn tô vàng; Mở đầu chờ ý kiến GVHD; các mục treo khác (🔴 RQ2, ⏸ prefetch —
+  hạn mức Kaggle 20 GB < 27 GB) vẫn mở.

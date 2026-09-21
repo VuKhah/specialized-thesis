@@ -1,6 +1,6 @@
 # ARCHITECTURE.md — Sơ đồ & luồng dữ liệu
 
-Cập nhật lần cuối: 2026-09-19, đối chiếu với code tại commit `139f018`. Các
+Cập nhật lần cuối: 2026-09-21, đối chiếu với code tại commit `139f018`. Các
 shape/số liệu dưới đây lấy từ code và từ lần chạy thử thật, không suy đoán.
 Đổi luồng dữ liệu, shape hay interface thì sửa file này (xem
 `docs/CONVENTIONS.md` mục 1). Trạng thái tiến độ ở `Plan.md`/`TODO.md`, không
@@ -89,7 +89,7 @@ và là chỗ *duy nhất* khác nhau giữa hai nhánh.
 | Ngữ cảnh | self-attention toàn chuỗi (2 chiều), chi phí O(T²) | quét **một chiều** trái→phải, chi phí O(T) |
 | Padding | torchaudio tự mask theo `feat_lengths` | **không mask** (TODO trong code); trả `feat_lengths` nguyên vẹn |
 | Cần | torch, torchaudio | GPU + kernel CUDA (`mamba-ssm`, `causal-conv1d`) — chỉ có trên Kaggle |
-| Tham số | 12.204.288 với tham số mặc định của code | **chưa đo** (cần mamba-ssm); yaml đang đặt `n_layers: 10` để tiến tới khớp |
+| Tham số | 12.204.288 (theo yaml, đo bằng `param_count.py`) | **chưa đo** (cần mamba-ssm); yaml đang đặt `n_layers: 10` để tiến tới khớp |
 
 ## 5. Vòng đời một thí nghiệm
 
@@ -151,12 +151,13 @@ Ký hiệu: ✅ đã chạy thật · 🟡 chạy được một phần · ⬜ c
 | `src/models/conformer_encoder.py` | Encoder Conformer | ✅ (CPU) |
 | `src/models/mamba_encoder.py` | Encoder Mamba | 🟡 kernel `mamba_ssm` chạy được trên T4; `MambaEncoder` + `train.py` **chưa** chạy qua |
 | `src/models/ctc_model.py` | Front-end + encoder + CTC head, loss, greedy decode | ✅ (với Conformer) |
-| `src/models/param_count.py` | So số tham số hai encoder | 🟡 chỉ nhánh Conformer; xem mục 8-f |
+| `src/models/param_count.py` | So số tham số hai encoder, đọc yaml qua `build_encoder` | 🟡 Conformer ✅ (12.204.288) · Mamba chưa đo (cần CUDA); xem mục 8-f |
 | `src/training/train.py` | Vòng train chung: checkpoint/resume, eval WER, tensorboard | ✅ Conformer (CPU) · ⬜ Mamba |
 | `src/evaluation/wer.py` | `compute_wer`, `compute_wer_report` (jiwer) | ✅ (dùng trong eval loop) |
 | `src/evaluation/rtf.py` | `measure_rtf` + bucket độ dài | ⬜ chưa chạy thật |
 | `src/demo/` | Demo Gradio | ⬜ chỉ có `__init__.py` |
-| *(chưa có)* | Script đo WER trên clean-test; script phân tích lỗi (error taxonomy, RQ3) | ⬜ |
+| `src/evaluation/eval_clean_test.py` | Đo WER checkpoint trên clean-test → `reports/results/<exp>_clean_test.json` (ref/hyp từng câu) | 🟡 chạy thật với dữ liệu thật (Conformer, CPU, trọng số ngẫu nhiên — chưa có checkpoint train) · Mamba ⬜ |
+| *(chưa có)* | Script phân tích lỗi (error taxonomy, RQ3) | ⬜ |
 | `configs/model_{conformer,mamba}.yaml` | 1 file = 1 thí nghiệm | ✅ |
 | `notebooks/00_setup_environment.ipynb` | Kiểm tra/cài `mamba-ssm` trên Kaggle | ✅ |
 | `notebooks/02_dataset_eda.ipynb` | EDA: waveform, spectrogram, nghe audio | ✅ |
@@ -175,22 +176,22 @@ Ký hiệu: ✅ đã chạy thật · 🟡 chạy được một phần · ⬜ c
 - **e. Mamba đơn hướng, không mask padding.** Khác biệt về ngữ cảnh giữa hai
   encoder là thuộc tính kiến trúc, cần nêu trong phần thảo luận (chưa thấy repo
   ghi lại). TODO mask padding trong `mamba_encoder.py` vẫn mở.
-- **f. `param_count.py` không đọc yaml.** Nó gọi `MambaEncoder()` /
-  `ConformerEncoder()` với tham số mặc định (Mamba mặc định `n_layers=8`, yaml
-  đặt 10). Chỉnh yaml **không** đổi kết quả của script → phải sửa script để đọc
-  yaml trước khi dùng nó tune (đang ở `TODO.md` 🟡).
+- **f. `param_count.py` đọc yaml (sửa 2026-09-21).** Dựng encoder bằng
+  `build_encoder` của `train.py` nên số đo = dòng "encoder params" của lúc
+  train. Import `train.py` kéo theo tensorboard/tensorflow (~vài chục giây khởi
+  động). Nhánh Mamba chỉ chạy khi có `mamba-ssm` (Kaggle); local chỉ ra số
+  Conformer. Chỉ đếm encoder, không gồm CTC head.
 - **g. `train.py` còn đơn giản.** 1 GPU (không DataParallel/DDP — dù Kaggle có 2
   T4), không AMP, không bucketing theo độ dài, không SpecAugment. Loss in ra mỗi
   epoch là loss của batch cuối, không phải trung bình. Eval = greedy trên toàn
   bộ `validation` (6.749 mẫu) mỗi epoch.
 - **h. Chọn model và báo cáo chung một nguồn.** `best.pt` chọn theo WER
   `validation`; clean-test (250) lại được lấy từ chính `validation`. Số WER báo
-  cáo cuối nên đo bằng script riêng trên clean-test (chưa có), lưu ý điều này khi
+  cáo cuối nên đo bằng `eval_clean_test.py` trên clean-test, lưu ý điều này khi
   diễn giải.
 - **i. Bucket độ dài theo đề cương, không theo dữ liệu.** `rtf.py`
   (`3–30 s`) và `survey.py` chia bucket theo giả định của đề cương, trong khi
   dữ liệu thật chỉ 10–15 s. **Không sửa** khi quyết định 🔴 về RQ2 chưa có
   (`docs/notes/dataset_discrepancy.md`).
-- **j. Docstring lỗi thời (chỉ là chữ, chưa sửa).**
-  `vietsuperspeech_dataset.py` còn nhắc `snapshot_download` (đã bỏ, xem mục 2);
-  `wer.py` ghi "dev-test" (tên thật: `validation`).
+- **j. Docstring lỗi thời — đã sửa 2026-09-21** (`vietsuperspeech_dataset.py`,
+  `wer.py`).

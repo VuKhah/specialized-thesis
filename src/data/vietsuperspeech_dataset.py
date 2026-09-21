@@ -10,11 +10,11 @@ QUAN TRỌNG — cấu trúc audio (phát hiện khi xây notebooks/02_dataset_e
 là chuỗi đường dẫn tương đối (vd. "audio/asr_segments_.../xxx_seg047.wav").
 Phải tự tải bằng `hf_hub_download` rồi đọc bằng soundfile.
 
-Tải hàng loạt trước khi train (Tuần 4-5, ĐÃ GIẢI QUYẾT): chạy
-`python -m src.data.prefetch_audio` trước khi train — tải song song toàn bộ
-thư mục audio/ về AUDIO_CACHE_DIR một lần bằng `snapshot_download`, thay vì
-tải từng file qua HTTP trong __getitem__ (~1-4s/file, không khả thi cho 60k+
-mẫu). __getitem__ dưới đây đọc thẳng từ cache nếu đã prefetch; nếu chưa (vd.
+Tải hàng loạt trước khi train (Tuần 4-5): chạy
+`python -m src.data.prefetch_audio` trước khi train — tải song song đúng các
+file audio mà train/validation dùng về AUDIO_CACHE_DIR một lần (không dùng
+`snapshot_download` cả thư mục vì thừa ~43%), thay vì tải từng file qua HTTP
+trong __getitem__ (~1-4s/file, không khả thi cho 60k+ mẫu). __getitem__ dưới đây đọc thẳng từ cache nếu đã prefetch; nếu chưa (vd.
 dùng nhanh trong EDA) sẽ tự động fallback tải lẻ qua hf_hub_download.
 """
 

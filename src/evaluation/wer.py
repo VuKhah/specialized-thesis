@@ -1,4 +1,5 @@
-"""Tính WER trên dev-test gốc và clean-test (200-300 câu hiệu đính thủ công)."""
+"""Tính WER: trên `validation` (eval loop trong train.py) và trên clean-test
+(250 câu, xem eval_clean_test.py)."""
 
 import jiwer
 
