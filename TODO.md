@@ -1,6 +1,6 @@
 # TODO tổng — Mamba vs Conformer ASR
 
-Cập nhật lần cuối: **2026-09-21**. **Nguồn sự thật duy nhất cho việc cần làm /
+Cập nhật lần cuối: **2026-09-24**. **Nguồn sự thật duy nhất cho việc cần làm /
 đang chặn / đã xong.** Kế hoạch tuần + quyết định + nhật ký phiên ở
 [`Plan.md`](Plan.md); kiến trúc ở [`ARCHITECTURE.md`](ARCHITECTURE.md).
 
@@ -39,11 +39,13 @@ Cập nhật lần cuối: **2026-09-21**. **Nguồn sự thật duy nhất cho 
       + `reports`, **chưa upload file nào**. Ưu tiên cao hơn trước vì sau khi
       commit, bản trên đĩa + Drive là chỗ lưu duy nhất. Xong thì cho link để
       sửa README.
-- [ ] **Tune Mamba khớp Conformer** (< 5%). `param_count.py` đã đọc yaml
-      (sửa 2026-09-21). Conformer theo yaml = 12.204.288 tham số. Còn lại: chạy
-      `python -m src.models.param_count` trên Kaggle (cần mamba-ssm), chỉnh
-      `d_model`/`n_layers`/`expand` trong `configs/model_mamba.yaml` tới khi
-      chênh < 5%. Lưu ý `d_model` của Mamba nên giữ 256 để CTC head giống hệt.
+- [ ] **Xác nhận trên Kaggle: số tham số Mamba + chạy thử `train.py`**. Yaml
+      đã đặt `n_layers: 28`, `expand: 2` (2026-09-24) → 12.292.352 tham số,
+      +0,72% so với Conformer — số này đếm bằng bản sao shape của
+      `mamba_ssm.Mamba` v2.3.1 trên CPU. Trên Kaggle: chạy
+      `python -m src.models.param_count` (phải in ĐẠT, đúng 12.292.352) rồi
+      vài step `python -m src.training.train --config configs/model_mamba.yaml`
+      (28 layer, T≈1000-1500 khung, batch 16 — để ý VRAM T4).
 - [ ] **Train baseline Conformer-CTC** (Tuần 6-7) — sau khi prefetch xong (⏸).
 
 ## 🟢 Việc tay — song song bất cứ lúc nào, không chặn code

@@ -63,6 +63,7 @@ tối đa 2 tuần/lần** (mục 6, chưa có lịch ghi).
 | — | Train **Conformer baseline trước**, Mamba sau | Đúng thứ tự đề cương |
 | 2026-09-19 | **Tài liệu nhị phân (`.docx`, biểu mẫu) lưu trên Google Drive, không đưa lên GitHub** (repo public). Đã gỡ 12 file khỏi index, thêm rule `.gitignore` | Đã commit local, **chưa push**. `docs/CONVENTIONS.md` mục 7 |
 | 2026-09-19 | **Khóa luận viết bằng Word (`.docx` + PDF) theo Mẫu 5**, lưu `docs/khoa_luan/` (gitignore) + sao lưu Drive, không lên GitHub; **viết song song theo chương từ sớm** thay vì dồn Tuần 14-15 | Mẫu 3 "vừa làm vừa viết", Mẫu 5 yêu cầu 50-100 trang. Mục 6 |
+| 2026-09-24 | Mamba khớp tham số bằng **tăng độ sâu**: `n_layers: 28`, `expand: 2`, `d_model: 256`, `d_state: 16` → 12.292.352 vs Conformer 12.204.288 (+0,72%). Phương án khác đã cân nhắc: 14 layer × `expand: 4` (+0,66%) | Giữ siêu tham số mặc định bài Mamba gốc, dễ biện luận. Chưa xác nhận trên Kaggle (`TODO.md`) |
 | 2026-09-19 | Chuẩn tài liệu gốc: `CLAUDE.md` (luật AI) · `Plan.md` (kế hoạch/trạng thái) · `ARCHITECTURE.md` (sơ đồ) · `TODO.md` · `README.md` (người ngoài) · quy ước → `docs/CONVENTIONS.md` | Chống lệch trạng thái giữa nhiều file |
 
 ## 5. Quyết định đang mở / treo / rủi ro đã biết
@@ -232,3 +233,15 @@ khảo sát dataset, phát hiện sai lệch số liệu, prefetch script, train
 - **Phiên sau bắt đầu từ:** sao lưu file Word lên Drive; điền bìa; rà Ch1 theo
   đoạn tô vàng; Mở đầu chờ ý kiến GVHD; các mục treo khác (🔴 RQ2, ⏸ prefetch —
   hạn mức Kaggle 20 GB < 27 GB) vẫn mở.
+
+### 2026-09-24
+- **Làm:** tune số tham số Mamba khớp Conformer. Không có CUDA local nên đếm
+  bằng bản sao shape của `mamba_ssm.Mamba` (đọc `mamba_simple.py` tag v2.3.1
+  trên GitHub): mỗi block 437.760 + LayerNorm 512, `input_proj` 20.736. Cấu
+  hình cũ (10 layer) chỉ 4,40 M (−64 %).
+- **Chốt (người dùng chọn):** `n_layers: 28`, `expand: 2` → 12.292.352 tham số
+  (+0,72 %). Đã sửa `configs/model_mamba.yaml`, `ARCHITECTURE.md`.
+- **Chưa kiểm chứng:** chưa chạy `param_count.py` với mamba-ssm thật; chưa chạy
+  forward/train với 28 layer (VRAM, tốc độ trên T4).
+- **Phiên sau bắt đầu từ:** trên Kaggle chạy `param_count` + vài step
+  `train.py` cho Mamba; các mục 🔴/⏸ vẫn mở.

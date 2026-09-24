@@ -1,13 +1,15 @@
-# Mamba-CTC. d_model/n_layers/expand là giá trị khởi điểm — PHẢI tinh chỉnh
-# bằng `python -m src.models.param_count` để khớp số tham số với
-# model_conformer.yaml (< 5% chênh lệch) trước khi bắt đầu train (Tuần 9-10).
+# Mamba-CTC. n_layers=28 chọn 2026-09-24 để khớp tham số với
+# model_conformer.yaml: 12.292.352 vs 12.204.288 (+0,72%, mục tiêu < 5%) — số
+# đếm theo shape của mamba_ssm.Mamba v2.3.1, cần xác nhận lại bằng
+# `python -m src.models.param_count` trên Kaggle. Giữ expand=2 mặc định bài
+# gốc, chỉ tăng độ sâu; d_model=256 để CTC head giống hệt Conformer.
 experiment_name: mamba_ctc
 
 encoder:
   type: mamba
   input_dim: 80
   d_model: 256
-  n_layers: 10 # Mamba block thường nhẹ hơn 1 Conformer block -> cần nhiều layer hơn để khớp param
+  n_layers: 28 # 1 Mamba block ~0,44M tham số, 1 Conformer block ~1,5M
   d_state: 16
   d_conv: 4
   expand: 2
