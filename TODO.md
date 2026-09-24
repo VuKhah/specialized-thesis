@@ -27,12 +27,6 @@ Cập nhật lần cuối: **2026-09-24**. **Nguồn sự thật duy nhất cho 
 
 ## 🟡 Sẵn sàng làm ngay
 
-- [ ] **Push commit tài liệu lên GitHub** — *chờ người dùng yêu cầu.* Đã
-      commit local (2026-09-19): `.gitignore` mới, 12 file nhị phân gỡ khỏi
-      index (file còn trên đĩa, trừ file TLCN người dùng đã tự xoá), bộ tài liệu
-      gốc mới + mục Khóa luận. **Chưa push** → GitHub vẫn đang hiển thị các
-      file `.docx` cũ cho tới khi push (và chúng vẫn nằm trong lịch sử kể cả
-      sau đó — xem ⚠️ Repo public). Điều kiện "upload Drive trước khi push" đã bỏ (2026-09-24).
 - [ ] **Xác nhận trên Kaggle: số tham số Mamba + chạy thử `train.py`**. Yaml
       đã đặt `n_layers: 28`, `expand: 2` (2026-09-24) → 12.292.352 tham số,
       +0,72% so với Conformer — số này đếm bằng bản sao shape của
@@ -112,6 +106,9 @@ Cập nhật lần cuối: **2026-09-24**. **Nguồn sự thật duy nhất cho 
       khớp dữ liệu thật — **không sửa** khi 🔴 chưa có quyết định.
 
 ## ✅ Đã hoàn thành
+
+- [x] **Push lên GitHub (2026-09-24)**: 6 commit (`f101acb`..`f8d5af4`), gồm
+      gỡ 12 file `.docx` khỏi index. File cũ vẫn nằm trong lịch sử git (xem ⚠️).
 
 - [x] ~~Upload tài liệu `.docx` (đề cương, biểu mẫu, notes) lên Google Drive~~
       — **người dùng bỏ qua (2026-09-24)**. Các file chỉ còn trên đĩa local

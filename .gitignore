@@ -78,3 +78,6 @@ Thumbs.db
 
 # Local Claude Code session state
 .claude/
+
+# Cấu hình kernel Kaggle chứa username tài khoản — giữ local (repo public)
+scripts/kaggle/kernel-metadata.json

@@ -248,3 +248,11 @@ khảo sát dataset, phát hiện sai lệch số liệu, prefetch script, train
 - **Chốt thêm (người dùng):** bỏ qua việc upload tài liệu `.docx` lên Google
   Drive; push không còn phụ thuộc việc này. Sửa `README.md` (bỏ câu "lưu trên
   Drive"), `TODO.md`. Mục sao lưu file Word khóa luận vẫn giữ.
+- **Push:** đã push 6 commit lên `origin/master` (`98406d9..f8d5af4`) theo yêu cầu
+  người dùng. Phiên sau: lên Kaggle `git pull` rồi chạy `param_count` + vài step
+  `train.py` cho Mamba.
+- **Kaggle từ máy local:** cài Kaggle CLI (khoá `~/.kaggle/kaggle.json` có sẵn),
+  viết `scripts/kaggle/verify_mamba.py` (build wheel `causal-conv1d` v1.5.4 +
+  `mamba-ssm` v2.3.1, `param_count`, 5 step train + eval cho cả hai encoder) và
+  gửi chạy bằng `kaggle kernels push`. `kernel-metadata.json` gitignore vì chứa
+  username. Kết quả lần chạy đầu: chờ.
