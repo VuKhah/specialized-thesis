@@ -245,3 +245,6 @@ khảo sát dataset, phát hiện sai lệch số liệu, prefetch script, train
   forward/train với 28 layer (VRAM, tốc độ trên T4).
 - **Phiên sau bắt đầu từ:** trên Kaggle chạy `param_count` + vài step
   `train.py` cho Mamba; các mục 🔴/⏸ vẫn mở.
+- **Chốt thêm (người dùng):** bỏ qua việc upload tài liệu `.docx` lên Google
+  Drive; push không còn phụ thuộc việc này. Sửa `README.md` (bỏ câu "lưu trên
+  Drive"), `TODO.md`. Mục sao lưu file Word khóa luận vẫn giữ.

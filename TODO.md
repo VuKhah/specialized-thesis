@@ -32,13 +32,7 @@ Cập nhật lần cuối: **2026-09-24**. **Nguồn sự thật duy nhất cho 
       index (file còn trên đĩa, trừ file TLCN người dùng đã tự xoá), bộ tài liệu
       gốc mới + mục Khóa luận. **Chưa push** → GitHub vẫn đang hiển thị các
       file `.docx` cũ cho tới khi push (và chúng vẫn nằm trong lịch sử kể cả
-      sau đó — xem ⚠️ Repo public). Trước khi push: upload Drive xong (mục dưới).
-- [ ] **Upload tài liệu lên Google Drive** (`docs/de_cuong/*.docx`,
-      `docs/bieu_mau/*.docx`, `docs/notes/de_cuong_phowhisper_vietsuperspeech.docx`)
-      — mới tạo cấu trúc thư mục `specialized-thesis/docs/{de_cuong,bieu_mau,notes}`
-      + `reports`, **chưa upload file nào**. Ưu tiên cao hơn trước vì sau khi
-      commit, bản trên đĩa + Drive là chỗ lưu duy nhất. Xong thì cho link để
-      sửa README.
+      sau đó — xem ⚠️ Repo public). Điều kiện "upload Drive trước khi push" đã bỏ (2026-09-24).
 - [ ] **Xác nhận trên Kaggle: số tham số Mamba + chạy thử `train.py`**. Yaml
       đã đặt `n_layers: 28`, `expand: 2` (2026-09-24) → 12.292.352 tham số,
       +0,72% so với Conformer — số này đếm bằng bản sao shape của
@@ -118,6 +112,10 @@ Cập nhật lần cuối: **2026-09-24**. **Nguồn sự thật duy nhất cho 
       khớp dữ liệu thật — **không sửa** khi 🔴 chưa có quyết định.
 
 ## ✅ Đã hoàn thành
+
+- [x] ~~Upload tài liệu `.docx` (đề cương, biểu mẫu, notes) lên Google Drive~~
+      — **người dùng bỏ qua (2026-09-24)**. Các file chỉ còn trên đĩa local
+      (gitignore) + bản cũ trong lịch sử git.
 
 - [x] **Script đo WER clean-test (2026-09-21)**:
       `python -m src.evaluation.eval_clean_test --config configs/model_<x>.yaml`.

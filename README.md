@@ -10,8 +10,7 @@ So sánh có kiểm soát (matched-parameter, cùng pipeline CTC) giữa kiến 
 **Mamba (Selective State Space Model)** và **Conformer** làm encoder cho hệ
 thống ASR tiếng Việt hội thoại tự nhiên, trên bộ dữ liệu **VietSuperSpeech**.
 
-Đề cương và các biểu mẫu (`.docx`) lưu trên Google Drive của tác giả, không
-đưa lên repo công khai này.
+Đề cương và các biểu mẫu (`.docx`) không đưa lên repo công khai này.
 
 > **Lưu ý:** đề cương đã nộp ghi hạ tầng là Google Colab free-tier; thực tế
 > chạy trên **Kaggle** (2x T4). Tài liệu làm việc (README, notebook, config)
