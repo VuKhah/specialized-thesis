@@ -255,4 +255,12 @@ khảo sát dataset, phát hiện sai lệch số liệu, prefetch script, train
   viết `scripts/kaggle/verify_mamba.py` (build wheel `causal-conv1d` v1.5.4 +
   `mamba-ssm` v2.3.1, `param_count`, 5 step train + eval cho cả hai encoder) và
   gửi chạy bằng `kaggle kernels push`. `kernel-metadata.json` gitignore vì chứa
-  username. Kết quả lần chạy đầu: chờ.
+  username. **Kết quả (kernel ~18 phút):** `param_count` 0,72% ĐẠT; smoke test 5
+  step batch 16 cả hai encoder chạy qua — Conformer 1,35 s/step, 7,76 GiB;
+  Mamba 1,29 s/step, 5,95 GiB. Build `causal-conv1d` mất ~13 phút, `mamba-ssm`
+  lấy wheel dựng sẵn. Ghi vào `mamba_ssm_install_log.md` (Lần 5).
+- **Phát hiện:** ước lượng ~80 phút/epoch → 30 epoch ≈ 40 GPU-giờ/mô hình, vượt
+  hạn mức 30 GPU-giờ/tuần. Ghi ⚠️ `TODO.md`, chưa quyết hướng xử lý (AMP / 2 GPU
+  / giảm epoch).
+- **Phiên sau bắt đầu từ:** quyết định chi phí train (mục trên) và ⏸ prefetch —
+  hai việc này cùng chặn train Conformer thật.

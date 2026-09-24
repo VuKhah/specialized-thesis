@@ -158,3 +158,18 @@ Dùng `from mamba_ssm import Mamba` bình thường trong `src/models/mamba_enco
 giữ như phương án dự phòng nếu môi trường Kaggle thay đổi version sau này).
 Có thể tiếp tục sang Tuần 3 (khảo sát VietSuperSpeech, xây tokenizer) theo
 đúng kế hoạch trong đề cương.
+
+## Lần 5 — 2026-09-24 (kernel Kaggle chạy từ local, `scripts/kaggle/verify_mamba.py`)
+
+**Môi trường:** Kaggle 2x T4, Python 3.12, `torch 2.10.0+cu128`.
+
+Pin thêm `causal-conv1d` về tag **v1.5.4** (trước đây dùng `main`). Dùng
+`pip wheel --no-build-isolation --no-deps` để giữ lại wheel:
+- `causal-conv1d` 1.5.4: build từ source **~13 phút** (`MAX_JOBS=4`), wheel 135 MB.
+- `mamba-ssm` 2.3.1: **~15 giây** — `setup.py` tìm được wheel dựng sẵn trên
+  GitHub release khớp torch/CUDA nên không phải build; wheel 534 MB.
+- `from mamba_ssm import Mamba` OK; forward + backward thật chạy được
+  (smoke test 5 step train).
+
+Hai wheel nằm trong output của kernel `verify-mamba-asr` — lần sau có thể gắn
+output đó làm input và `pip install --no-deps` thẳng, bỏ qua 13 phút build.

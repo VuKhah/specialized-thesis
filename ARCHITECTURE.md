@@ -89,7 +89,7 @@ và là chỗ *duy nhất* khác nhau giữa hai nhánh.
 | Ngữ cảnh | self-attention toàn chuỗi (2 chiều), chi phí O(T²) | quét **một chiều** trái→phải, chi phí O(T) |
 | Padding | torchaudio tự mask theo `feat_lengths` | **không mask** (TODO trong code); trả `feat_lengths` nguyên vẹn |
 | Cần | torch, torchaudio | GPU + kernel CUDA (`mamba-ssm`, `causal-conv1d`) — chỉ có trên Kaggle |
-| Tham số | 12.204.288 (theo yaml, đo bằng `param_count.py`) | 12.292.352 (+0,72%) với `n_layers: 28`, `expand: 2` — đếm theo shape `mamba_ssm.Mamba` v2.3.1, **chưa xác nhận bằng `param_count.py` trên Kaggle** |
+| Tham số | 12.204.288 (theo yaml, đo bằng `param_count.py`) | 12.292.352 (+0,72%) với `n_layers: 28`, `expand: 2` — đo bằng `param_count.py` trên Kaggle T4 (2026-09-24) |
 
 ## 5. Vòng đời một thí nghiệm
 

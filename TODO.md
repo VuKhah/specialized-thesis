@@ -27,13 +27,6 @@ Cập nhật lần cuối: **2026-09-24**. **Nguồn sự thật duy nhất cho 
 
 ## 🟡 Sẵn sàng làm ngay
 
-- [ ] **Xác nhận trên Kaggle: số tham số Mamba + chạy thử `train.py`**. Yaml
-      đã đặt `n_layers: 28`, `expand: 2` (2026-09-24) → 12.292.352 tham số,
-      +0,72% so với Conformer — số này đếm bằng bản sao shape của
-      `mamba_ssm.Mamba` v2.3.1 trên CPU. Trên Kaggle: chạy
-      `python -m src.models.param_count` (phải in ĐẠT, đúng 12.292.352) rồi
-      vài step `python -m src.training.train --config configs/model_mamba.yaml`
-      (28 layer, T≈1000-1500 khung, batch 16 — để ý VRAM T4).
 - [ ] **Train baseline Conformer-CTC** (Tuần 6-7) — sau khi prefetch xong (⏸).
 
 ## 🟢 Việc tay — song song bất cứ lúc nào, không chặn code
@@ -90,10 +83,14 @@ Cập nhật lần cuối: **2026-09-24**. **Nguồn sự thật duy nhất cho 
       khi upload Drive, đừng để mất bản edit tay. Không sửa nội dung file.
 
 **Code / thiết kế** (chi tiết ở `ARCHITECTURE.md` mục 8)
-- [ ] `MambaEncoder` + `train.py` **chưa xác nhận trên Kaggle** (máy local
-      không CUDA). Cần chạy vài step
-      `python -m src.training.train --config configs/model_mamba.yaml` trên
-      Kaggle trước khi coi training loop dùng được cho cả hai kiến trúc.
+- [ ] Hàm `main()` của `train.py` (vòng epoch, checkpoint, tensorboard) **chưa
+      chạy trên Kaggle** — smoke test 2026-09-24 dùng cùng `build_encoder`,
+      `CTCASRModel`, dataset, `evaluate` nhưng tự viết vòng step. Sẽ lộ ra ở
+      lần train thật đầu tiên.
+- [ ] **Ước lượng thời gian train vượt hạn mức**: ~1,3 s/step (batch 16, T4,
+      chưa tính tải dữ liệu) × 3.791 step/epoch ≈ 80 phút/epoch → 30 epoch ≈
+      40 GPU-giờ **mỗi mô hình**, trong khi hạn mức Kaggle 30 GPU-giờ/tuần.
+      Liên quan mục `train.py` không AMP/1 GPU bên dưới — chưa quyết.
 - [ ] Mamba đơn hướng, chưa mask padding (TODO trong `mamba_encoder.py`); hai
       encoder không subsampling (T'=T ≈ 1000-1500 khung). Cần nêu trong phần
       thảo luận; kiểm tra đề cương đã đề cập chưa.
@@ -106,6 +103,14 @@ Cập nhật lần cuối: **2026-09-24**. **Nguồn sự thật duy nhất cho 
       khớp dữ liệu thật — **không sửa** khi 🔴 chưa có quyết định.
 
 ## ✅ Đã hoàn thành
+
+- [x] **Xác nhận Mamba trên Kaggle T4 (2026-09-24)**, chạy từ local qua Kaggle
+      CLI (`scripts/kaggle/verify_mamba.py`): `param_count` in Mamba
+      12.292.352 vs Conformer 12.204.288 → **0,72% ĐẠT**. 5 step train batch 16
+      (audio 15 s) + eval 16 câu, cả hai encoder chạy qua: Conformer 1,35 s/step,
+      VRAM đỉnh 7,76 GiB; Mamba 1,29 s/step, 5,95 GiB. Wheel `causal-conv1d`
+      1.5.4 + `mamba-ssm` 2.3.1 (cp312, torch 2.10+cu128) nằm trong output của
+      kernel.
 
 - [x] **Push lên GitHub (2026-09-24)**: 6 commit (`f101acb`..`f8d5af4`), gồm
       gỡ 12 file `.docx` khỏi index. File cũ vẫn nằm trong lịch sử git (xem ⚠️).
