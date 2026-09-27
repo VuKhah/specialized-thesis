@@ -1,8 +1,10 @@
 # TODO tổng — Mamba vs Conformer ASR
 
-Cập nhật lần cuối: **2026-09-24**. **Nguồn sự thật duy nhất cho việc cần làm /
+Cập nhật lần cuối: **2026-09-26**. **Nguồn sự thật duy nhất cho việc cần làm /
 đang chặn / đã xong.** Kế hoạch tuần + quyết định + nhật ký phiên ở
 [`Plan.md`](Plan.md); kiến trúc ở [`ARCHITECTURE.md`](ARCHITECTURE.md).
+
+Câu hỏi cần mang đi hỏi (người dùng/GVHD): [`QA.md`](QA.md).
 
 ## 🔴 Đang chặn — chờ quyết định từ GVHD
 
@@ -15,7 +17,7 @@ Cập nhật lần cuối: **2026-09-24**. **Nguồn sự thật duy nhất cho 
 
 ## ⏸ Treo — người dùng chủ động hoãn quyết định
 
-- [ ] **Prefetch audio đầy đủ** (67.405 file, ~27GB): hướng nêu 2026-09-19 là
+- [ ] *(2026-09-26: hướng đã chốt — 3 Kaggle Dataset + 2 tài khoản + chạy nền; chi tiết chờ duyệt ở 🟠)* **Prefetch audio đầy đủ** (67.405 file, **28,27 GB = 26,33 GiB** WAV, FLAC ~17,1 GB — đo 2026-09-26; so sánh 5 phương án ở `docs/notes/prefetch_storage_review.md`): hướng nêu 2026-09-19 là
       chạy trên Kaggle, nhưng quyết định cuối đang treo. Cần xác nhận trước
       khi chốt: hạn mức đĩa Kaggle (`/kaggle/working` = **20GB, người dùng xác nhận
       2026-09-21** → 27GB **không vừa**; các vị trí đĩa khác chưa kiểm chứng),
@@ -24,6 +26,17 @@ Cập nhật lần cuối: **2026-09-24**. **Nguồn sự thật duy nhất cho 
       chuyển sang Kaggle được. Script đã xong (`src/data/prefetch_audio.py`,
       test 5 file thật + 1 lỗi cố ý), chỉ thiếu bước chạy full. Chặn: train
       Conformer thật.
+
+## 🟠 Chờ người dùng duyệt đề xuất (2026-09-26)
+
+- [ ] **Đề xuất D1-D14** trong `docs/notes/training_plan_kaggle.md` mục 3:
+      mỗi tài khoản Kaggle train 1 mô hình; WAV chia 3 shard (vòng tròn theo
+      video, seed 42) + 1 dataset val = validation trừ clean-test; checkpoint
+      theo step + `--max_minutes`; `num_workers` → AMP → DDP theo benchmark;
+      pin revision HF `cbf624ae9b`. **Bước đầu cần đồng ý:** kernel CPU
+      (`df -h`, tốc độ tải, tar > 500 file) + kernel GPU benchmark (~30-40 phút).
+      Đã chốt 2026-09-26: không subsampling, 3 dataset, 2 tài khoản (của 2
+      người khác nhau — đã xác nhận), chạy nền.
 
 ## 🟡 Sẵn sàng làm ngay
 

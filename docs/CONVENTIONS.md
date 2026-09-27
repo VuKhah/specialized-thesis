@@ -18,6 +18,7 @@ Cập nhật lần cuối: 2026-09-19 (tách ra từ `Plan.md` bản cũ).
 | `ARCHITECTURE.md` | Luồng dữ liệu, luồng tensor, interface, bản đồ file, hai môi trường. | Tiến độ, việc cần làm. |
 | `TODO.md` | Việc đang chặn / sẵn sàng / đã xong, nhãn 🔴🟡🟢⏸. | Giải thích kiến trúc/lịch sử quyết định. |
 | `README.md` | Giới thiệu, RQ, cài đặt, cách chạy — cho người ngoài (GVHD, hội đồng). | Trạng thái chi tiết (chỉ trỏ sang `Plan.md`/`TODO.md`). |
+| `QA.md` | Câu hỏi đang chờ người dùng/GVHD trả lời, mỗi mục 1-2 dòng + trỏ nguồn. Trả lời xong → ghi `Plan.md`, xoá mục. | Chép trạng thái chi tiết. |
 | `docs/notes/*.md` | Điều tra/quyết định có chiều sâu, mỗi vấn đề 1 file, viết một lần, không xoá. | Việc cần làm ngắn hạn. |
 | `docs/CONVENTIONS.md` | Quy ước (file này). Thay đổi hiếm. | Tiến độ. |
 

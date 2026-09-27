@@ -1,6 +1,6 @@
 # Plan.md — Kế hoạch, trạng thái & quyết định
 
-Cập nhật lần cuối: **2026-09-21**. Đây là nơi để **nối tiếp giữa các phiên làm
+Cập nhật lần cuối: **2026-09-26**. Đây là nơi để **nối tiếp giữa các phiên làm
 việc**: kế hoạch theo tuần, trạng thái mức tuần, quyết định đã chốt/đang treo,
 nhật ký phiên. Việc chi tiết ở [`TODO.md`](TODO.md); kiến trúc ở
 [`ARCHITECTURE.md`](ARCHITECTURE.md); luật cho AI ở [`CLAUDE.md`](CLAUDE.md);
@@ -64,6 +64,8 @@ tối đa 2 tuần/lần** (mục 6, chưa có lịch ghi).
 | 2026-09-19 | **Tài liệu nhị phân (`.docx`, biểu mẫu) lưu trên Google Drive, không đưa lên GitHub** (repo public). Đã gỡ 12 file khỏi index, thêm rule `.gitignore` | Đã commit local, **chưa push**. `docs/CONVENTIONS.md` mục 7 |
 | 2026-09-19 | **Khóa luận viết bằng Word (`.docx` + PDF) theo Mẫu 5**, lưu `docs/khoa_luan/` (gitignore) + sao lưu Drive, không lên GitHub; **viết song song theo chương từ sớm** thay vì dồn Tuần 14-15 | Mẫu 3 "vừa làm vừa viết", Mẫu 5 yêu cầu 50-100 trang. Mục 6 |
 | 2026-09-24 | Mamba khớp tham số bằng **tăng độ sâu**: `n_layers: 28`, `expand: 2`, `d_model: 256`, `d_state: 16` → 12.292.352 vs Conformer 12.204.288 (+0,72%). Phương án khác đã cân nhắc: 14 layer × `expand: 4` (+0,66%) | Giữ siêu tham số mặc định bài Mamba gốc, dễ biện luận. Chưa xác nhận trên Kaggle (`TODO.md`) |
+| 2026-09-26 | **Giữ không subsampling** (`T' = T`) | Subsampling rút ngắn chuỗi → làm yếu RQ2. Không đề xuất lại làm cách tăng tốc. `docs/notes/training_plan_kaggle.md` |
+| 2026-09-26 | Dữ liệu train chia **3 Kaggle Dataset** (shard); dùng **2 tài khoản Kaggle của 2 người khác nhau** (người dùng xác nhận); train ở **chế độ nền** (batch, ≤ 9 h/phiên), không chia phiên 2 h | Chi tiết + đề xuất D1-D14 chờ duyệt: `docs/notes/training_plan_kaggle.md` |
 | 2026-09-19 | Chuẩn tài liệu gốc: `CLAUDE.md` (luật AI) · `Plan.md` (kế hoạch/trạng thái) · `ARCHITECTURE.md` (sơ đồ) · `TODO.md` · `README.md` (người ngoài) · quy ước → `docs/CONVENTIONS.md` | Chống lệch trạng thái giữa nhiều file |
 
 ## 5. Quyết định đang mở / treo / rủi ro đã biết
@@ -71,6 +73,7 @@ tối đa 2 tuần/lần** (mục 6, chưa có lịch ghi).
 | Trạng thái | Vấn đề | Chi tiết |
 |---|---|---|
 | 🔴 **Chờ GVHD** | Hướng xử lý sai lệch số liệu dataset ảnh hưởng RQ2 (67.405 mẫu/245,42h, audio 10-15 s vs đề cương 3-30 s) | 4 phương án trong `docs/notes/dataset_discrepancy.md`. **Không tự chọn.** |
+| 🟠 **Chờ duyệt (2026-09-26)** | Đề xuất D1-D14: mỗi tài khoản 1 mô hình, WAV 3 shard vòng tròn + 1 dataset val (trừ clean-test), checkpoint theo step + `--max_minutes`, `num_workers`/AMP/DDP sau benchmark, pin revision HF | Bảng tóm tắt: `docs/notes/training_plan_kaggle.md` **mục 0**; đầy đủ mục 3 |
 | ⏸ **Treo (2026-09-19)** | Prefetch full: hướng nêu là chạy trên Kaggle, nhưng cách lưu cache chưa chốt | ~27 GB; hạn mức `/kaggle/working` = 20 GB (người dùng xác nhận 2026-09-21) → 27 GB không vừa, các vị trí đĩa khác chưa kiểm chứng và việc mỗi phiên bắt đầu trống, cache local không chuyển sang được. Lưu ý: nếu phải tải lại mỗi phiên sẽ tốn GPU-giờ |
 | ⚠️ Biết, chưa xử lý | `notebooks/02_dataset_eda.ipynb` nhúng audio YouTube (20 output `<audio>`, ~5 MB) trong repo **public**, có cả trong lịch sử git | Người dùng chọn bỏ qua (2026-09-19). Chưa kiểm license VietSuperSpeech |
 | ⚠️ Chưa quyết | Tên người thứ ba + MSSV trong tên file TLCN (đã gỡ index, còn trong lịch sử git); xoá khỏi lịch sử cần viết lại lịch sử + force push | Chỉ làm khi người dùng yêu cầu |
@@ -264,3 +267,41 @@ khảo sát dataset, phát hiện sai lệch số liệu, prefetch script, train
   / giảm epoch).
 - **Phiên sau bắt đầu từ:** quyết định chi phí train (mục trên) và ⏸ prefetch —
   hai việc này cùng chặn train Conformer thật.
+- **Kết phiên:** tạo `QA.md` (9 câu hỏi mở: 3 chặn tiến độ — RQ2, prefetch, chi
+  phí train; 6 cần xác nhận), đăng ký vai trò trong `docs/CONVENTIONS.md` mục 1.
+- **Phiên sau bắt đầu từ:** đọc `QA.md` xem câu nào đã có trả lời. Nếu chưa có:
+  đề xuất đo AMP / 2 GPU / thời gian tải dữ liệu trên Kaggle (Q3, cần người
+  dùng đồng ý), hoặc làm trích dẫn + hình Chương 1. Wheel `mamba-ssm` +
+  `causal-conv1d` nằm trong output kernel `verify-mamba-asr` — tái dùng thay vì
+  build lại.
+
+### 2026-09-26
+- **Làm:** review dataset cho Q2 (người dùng yêu cầu, có tra web) →
+  `docs/notes/prefetch_storage_review.md`. Đo bằng HF API: cần đúng 67.405
+  file = **28,27 GB (26,33 GiB)**; FLAC lossless ~60,5 % (~17,1 GB, đo 300
+  file); HF rate limit 3.000 (ẩn danh)/5.000 (token) resolver/5 phút ⇒ tải
+  lại mỗi phiên tốn ≥ 67-112 phút. So sánh 5 phương án A-E, **chưa chọn**.
+- **Phát hiện (liên quan Q1/Q4):** train+dev chỉ gồm kênh **vietcetera**
+  (manifest liệt kê 4 nguồn); README card HF đã cũ (32.267 mẫu/103 h). Repo HF
+  đứng yên từ 2026-02-22 (`cbf624ae9b`), code chưa pin revision.
+- **Thảo luận tiếp (cùng phiên):** chia dữ liệu nhiều tài khoản / gộp trọng
+  số kiểu LLM (DiLoCo) → với 2 tài khoản không lợi, đề xuất mỗi tài khoản 1 mô
+  hình; nguyên nhân ~80 phút/epoch; chạy nền khi tắt máy; chia 3 shard phân
+  tầng (mô phỏng thật: lệch ≤ 0,1 điểm %); phát hiện val gần như toàn bộ từ
+  video đã có trong train (Q10); độ liền mạch các đoạn cho phương án ghép RQ2.
+- **Chốt (người dùng):** giữ không subsampling; chia train thành 3 Kaggle
+  Dataset; dùng 2 tài khoản; train chế độ nền. Ghi ở mục 4.
+- **Tổng hợp + đề xuất D1-D14 (chờ duyệt):** `docs/notes/training_plan_kaggle.md`.
+  Chưa sửa code, chưa tạo dataset.
+- **Xác nhận (người dùng):** 2 tài khoản Kaggle thuộc 2 người khác nhau → D14
+  đã giải quyết (Q11 đóng).
+- **Phiên sau bắt đầu từ:** người dùng duyệt D1-D13 (nhất là D9: chạy kernel
+  CPU + GPU benchmark). D12/D13 mang đi hỏi GVHD.
+
+### 2026-09-27
+- **Làm:** tổng hợp các câu hỏi cần thầy Dũng giải đáp vào `Report.md` (gốc
+  repo): A — cần quyết định (RQ2/Q1 → đề xuất phương án 2; val trùng video/Q10
+  → giữ split, nêu hạn chế; hạn chế kiến trúc/Q9; số epoch/Q3 → giữ 30),
+  B — hình thức (Q5, Q6), C — lệch đề cương đã xử lý. `QA.md` trỏ tới file này.
+- **Phiên sau bắt đầu từ:** ghi câu trả lời của GVHD vào `Plan.md` mục 4/6,
+  xoá mục tương ứng khỏi `QA.md`/`Report.md`; người dùng duyệt D1-D13.
