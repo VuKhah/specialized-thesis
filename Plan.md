@@ -44,7 +44,7 @@ theo độ dài audio) đang bị chặn bởi quyết định 🔴 ở mục 5.
 |---|---|---|
 | 1-2 | ✅ Xong | Đề cương đã đăng ký. `mamba-ssm` v2.3.1 chạy được kernel CUDA trên Kaggle T4 |
 | 3 | ✅ Xong, trừ việc tay | Khảo sát, tokenizer (vocab 1000), clean-test 250 mẫu. **Còn:** hiệu đính tay cột `corrected_text` |
-| 4-5 | 🔄 Đang làm | Xong: dataset, front-end, CTC head, train loop (checkpoint/resume, eval WER, tensorboard, test thật với Conformer), script prefetch. **Còn:** chạy prefetch full (⏸ treo), xác nhận `MambaEncoder` + `train.py` trên Kaggle, khớp tham số hai encoder |
+| 4-5 | 🔄 Đang làm (cập nhật 2026-09-30) | Xong: dataset, front-end, CTC head, train loop (checkpoint/resume, eval WER, tensorboard), khớp tham số (Mamba 12.292.864 vs 12.204.288, +0,73%), `MambaEncoder` chạy thật trên Kaggle T4, sửa theo khuyến nghị tác giả Mamba, benchmark GPU (D8 chốt: 2 GPU + SyncBN + AMP → ước Conformer 23,2 h, Mamba 16,0 h), manifest 4 shard + val, kernel tạo dataset (tar). **Còn:** chạy kernel tạo 5 dataset (CPU); sửa code dùng chung theo D5/D7/D8/D10 (bước 3 `TODO.md`); chạy thử `train.py` `main()` trên Kaggle |
 | 6-7 | ⬜ Chưa | Train Conformer baseline |
 | 8 | ⬜ Chưa | Bị 🔴 (RQ2) một phần |
 | 9-15 | ⬜ Chưa | — |
@@ -367,3 +367,12 @@ khảo sát dataset, phát hiện sai lệch số liệu, prefetch script, train
   sửa code dùng chung (bước 3), chạy `make_dataset` 5 lần.
 - **Chốt (người dùng):** D8 = 2 GPU + SyncBN + AMP; `PACK_TAR = True`; commit
   + push (mục 4).
+- **Commit + push (người dùng yêu cầu):** `64dc53a` (sửa theo khuyến nghị
+  Mamba), `256396c` (manifest, kernel Kaggle, chốt D8/tar). Lệnh push đã chạy
+  xong trước khi người dùng kịp huỷ để yêu cầu kiểm tra khoá; quét *sau* push
+  toàn bộ 61 file trên GitHub: không có khoá Kaggle/Claude/HF/GitHub, không có
+  username Kaggle (metadata kernel vẫn gitignore). **Từ nay quét nội dung
+  trước mỗi lần push.** Commit cập nhật tiến độ này quét trước rồi mới push.
+- **Phiên sau bắt đầu từ:** chạy `make_dataset` (CPU, sửa `PART`) lần lượt 5
+  phần → tạo Dataset từ output, chia sẻ sang tài khoản B; song song sửa code
+  dùng chung bước 3 (D5, D7, D8, D10) cho cả hai encoder.

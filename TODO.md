@@ -1,6 +1,6 @@
 # TODO tổng — Mamba vs Conformer ASR
 
-Cập nhật lần cuối: **2026-09-30**. **Nguồn sự thật duy nhất cho việc cần làm /
+Cập nhật lần cuối: **2026-09-30** (sau push `256396c`). **Nguồn sự thật duy nhất cho việc cần làm /
 đang chặn / đã xong.** Kế hoạch tuần + quyết định + nhật ký phiên ở
 [`Plan.md`](Plan.md); kiến trúc ở [`ARCHITECTURE.md`](ARCHITECTURE.md).
 
