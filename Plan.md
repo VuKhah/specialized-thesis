@@ -66,6 +66,11 @@ tối đa 2 tuần/lần** (mục 6, chưa có lịch ghi).
 | 2026-09-24 | Mamba khớp tham số bằng **tăng độ sâu**: `n_layers: 28`, `expand: 2`, `d_model: 256`, `d_state: 16` → 12.292.352 vs Conformer 12.204.288 (+0,72%). Phương án khác đã cân nhắc: 14 layer × `expand: 4` (+0,66%) | Giữ siêu tham số mặc định bài Mamba gốc, dễ biện luận. Chưa xác nhận trên Kaggle (`TODO.md`) |
 | 2026-09-26 | **Giữ không subsampling** (`T' = T`) | Subsampling rút ngắn chuỗi → làm yếu RQ2. Không đề xuất lại làm cách tăng tốc. `docs/notes/training_plan_kaggle.md` |
 | 2026-09-26 | Dữ liệu train chia **3 Kaggle Dataset** (shard); dùng **2 tài khoản Kaggle của 2 người khác nhau** (người dùng xác nhận); train ở **chế độ nền** (batch, ≤ 9 h/phiên), không chia phiên 2 h | Chi tiết + đề xuất D1-D14 chờ duyệt: `docs/notes/training_plan_kaggle.md` |
+| 2026-09-28 | **Duyệt D1-D11** (`docs/notes/training_plan_kaggle.md` mục 5): A train Conformer / B train Mamba; WAV; **4 shard** (không phải 3) vòng tròn theo video seed 42 + 1 dataset val; gắn cả shard, xáo chung; val = `validation` trừ 250 câu clean-test (**ghi rõ ở Chương 3**); notebook CPU tạo dataset; `--max_minutes` + checkpoint theo step; `num_workers` → AMP → DDP theo benchmark; pin HF `cbf624ae9b`; giữ 30 epoch | 4 shard để đĩa đỉnh lúc tạo (nếu phải tar) ~12,7 GB thay vì ~17 GB / 20 GB |
+| 2026-09-28 | **Train full dữ liệu, lấy kết quả theo epoch**; so sánh hai mô hình ở cùng số epoch. Không train tập con, không train shard lần lượt; bỏ pilot 1 shard | Dừng lúc nào cũng có kết quả hợp lệ. Ràng buộc: lịch LR giữ warmup + hằng số (có decay thì phải xét lại) |
+| 2026-09-30 | **D8: cả hai encoder DDP 2 GPU + SyncBatchNorm + AMP** (fp16 autocast, tham số fp32), batch toàn cục 16 | Benchmark 2 lần: Conformer 23,2 h, Mamba 16,0 h cho 30 epoch, đều < 30 h/tuần/tài khoản; cùng một cách chạy cho cả hai, SyncBN giữ Conformer tương đương 1 GPU batch 16. `docs/notes/training_plan_kaggle.md` mục 5 |
+| 2026-09-30 | **Dataset dạng tar** (`PACK_TAR = True`), giải nén vào `/tmp` đầu mỗi phiên | Số đo tốc độ chỉ đúng khi đọc đĩa local; `/tmp` máy GPU trống 1,1 TB; 4 lõi CPU không bù được I/O mạng |
+| 2026-09-30 | Theo khuyến nghị tác giả Mamba: miễn weight decay `A_log`/`D`, `norm_f`, chia `out_proj` cho √n_layers, residual fp32; **không** LR riêng cho Δ, **không** document packing | Mã nguồn mamba-ssm v2.3.1; nhật ký 2026-09-30 |
 | 2026-09-19 | Chuẩn tài liệu gốc: `CLAUDE.md` (luật AI) · `Plan.md` (kế hoạch/trạng thái) · `ARCHITECTURE.md` (sơ đồ) · `TODO.md` · `README.md` (người ngoài) · quy ước → `docs/CONVENTIONS.md` | Chống lệch trạng thái giữa nhiều file |
 
 ## 5. Quyết định đang mở / treo / rủi ro đã biết
@@ -73,8 +78,8 @@ tối đa 2 tuần/lần** (mục 6, chưa có lịch ghi).
 | Trạng thái | Vấn đề | Chi tiết |
 |---|---|---|
 | 🔴 **Chờ GVHD** | Hướng xử lý sai lệch số liệu dataset ảnh hưởng RQ2 (67.405 mẫu/245,42h, audio 10-15 s vs đề cương 3-30 s) | 4 phương án trong `docs/notes/dataset_discrepancy.md`. **Không tự chọn.** |
-| 🟠 **Chờ duyệt (2026-09-26)** | Đề xuất D1-D14: mỗi tài khoản 1 mô hình, WAV 3 shard vòng tròn + 1 dataset val (trừ clean-test), checkpoint theo step + `--max_minutes`, `num_workers`/AMP/DDP sau benchmark, pin revision HF | Bảng tóm tắt: `docs/notes/training_plan_kaggle.md` **mục 0**; đầy đủ mục 3 |
-| ⏸ **Treo (2026-09-19)** | Prefetch full: hướng nêu là chạy trên Kaggle, nhưng cách lưu cache chưa chốt | ~27 GB; hạn mức `/kaggle/working` = 20 GB (người dùng xác nhận 2026-09-21) → 27 GB không vừa, các vị trí đĩa khác chưa kiểm chứng và việc mỗi phiên bắt đầu trống, cache local không chuyển sang được. Lưu ý: nếu phải tải lại mỗi phiên sẽ tốn GPU-giờ |
+| ✅ **Đã duyệt (2026-09-28)** | D1-D11 (D3 → 4 shard) + train full, đánh giá theo epoch | Mục 4; `docs/notes/training_plan_kaggle.md` mục 5. D12/D13 vẫn chờ GVHD |
+| ✅ **Đã chốt (2026-09-28)** | Prefetch full: không tải về máy/`/kaggle/working` để train, mà notebook CPU tải từ HF rồi đóng thành 5 Kaggle Dataset (4 shard train + 1 val), train gắn qua `/kaggle/input` | Theo D6 đã duyệt; `docs/notes/training_plan_kaggle.md` mục 5 |
 | ⚠️ Biết, chưa xử lý | `notebooks/02_dataset_eda.ipynb` nhúng audio YouTube (20 output `<audio>`, ~5 MB) trong repo **public**, có cả trong lịch sử git | Người dùng chọn bỏ qua (2026-09-19). Chưa kiểm license VietSuperSpeech |
 | ⚠️ Chưa quyết | Tên người thứ ba + MSSV trong tên file TLCN (đã gỡ index, còn trong lịch sử git); xoá khỏi lịch sử cần viết lại lịch sử + force push | Chỉ làm khi người dùng yêu cầu |
 
@@ -305,3 +310,60 @@ khảo sát dataset, phát hiện sai lệch số liệu, prefetch script, train
   B — hình thức (Q5, Q6), C — lệch đề cương đã xử lý. `QA.md` trỏ tới file này.
 - **Phiên sau bắt đầu từ:** ghi câu trả lời của GVHD vào `Plan.md` mục 4/6,
   xoá mục tương ứng khỏi `QA.md`/`Report.md`; người dùng duyệt D1-D13.
+
+### 2026-09-28
+- **Làm:** giải thích D1-D11 cho người dùng; so sánh 3 vs 4 shard, các loại
+  lộ dữ liệu (giữa shard: không; clean-test trong tập chọn `best.pt`: có, D5
+  sửa; val cùng video train: có, do split gốc, D13 chờ GVHD); so sánh train
+  tập con / shard lần lượt / cộng dồn / full theo epoch.
+- **Chốt (người dùng):** D1-D11 đồng ý, D3 đổi sang **4 shard**; D4/D5 đồng ý
+  với điều kiện minh bạch (ghi rõ val trừ clean-test ở Chương 3); **train full,
+  đánh giá theo epoch**. Ghi ở mục 4 và `docs/notes/training_plan_kaggle.md` mục 5.
+- **Làm (tiếp):** kernel CPU `check-env-asr` chạy xong trên Kaggle (kết quả ở
+  `docs/notes/training_plan_kaggle.md` mục 5); viết kernel GPU benchmark
+  `scripts/kaggle/benchmark/benchmark.py` (AMP giữ front-end log-mel fp32),
+  dry-run CPU nhánh không-AMP qua (265 s/step trên CPU — chỉ để kiểm luồng
+  code). `.gitignore` đổi thành `scripts/kaggle/**/kernel-metadata.json`.
+- **Phiên sau bắt đầu từ:** người dùng đồng ý → chạy benchmark GPU (~30-40
+  phút quota), rồi chọn tăng tốc theo D8 và sửa code dùng chung (bước 3).
+
+### 2026-09-30
+- **Làm:** chạy kernel GPU `benchmark-asr` (người dùng đồng ý; ~16 phút
+  quota, lần đầu lỗi vì đường dẫn wheel `kernel_sources` đổi thành
+  `/kaggle/input/notebooks/<user>/<kernel>/` → sửa tìm đệ quy). Kết quả đủ 8
+  cấu hình: `docs/notes/training_plan_kaggle.md` mục 5. Viết + chạy full
+  `src/data/make_shards.py` → `data/splits/` (4 shard × 15.164 câu + val
+  6.499; mọi kiểm tra đạt, `--check` đọc lại đạt). Thêm hằng số `HF_REVISION`
+  vào `vietsuperspeech_dataset.py` (chưa dùng trong Dataset). Viết kernel CPU
+  `scripts/kaggle/make_dataset/make_dataset.py`, test local 20 file thật.
+- **Chờ người dùng (D8):** cả hai encoder phải cùng cấu hình train.
+  (a) AMP, 1 GPU: Conformer 17,7 h, Mamba 32,1 h (> 30 h/tuần → Mamba sang
+  tuần 2); huấn luyện giống hệt fp32 1 GPU về batch/BN. (b) AMP + DDP 2 GPU:
+  Conformer 24,4 h, Mamba 15,0 h, cả hai vừa quota; nhưng BN của Conformer
+  tính trên 8 câu/GPU (cần SyncBatchNorm để tương đương) và Conformer chậm đi
+  chưa rõ lý do. (c) đo thêm DDP (SyncBN, ít worker/GPU) ~10 phút quota rồi
+  mới chọn. **AI đề xuất (c)** rồi nghiêng về (b) + SyncBN nếu Conformer DDP
+  không chậm hơn 1 GPU; mọi số giờ chưa tính eval + đọc `/kaggle/input`.
+- **Cũng chờ:** `PACK_TAR` cho kernel tạo dataset; commit + push manifest.
+- **Phiên sau bắt đầu từ:** quyết định D8 → sửa code dùng chung (bước 3);
+  push manifest → chạy `make_dataset` 5 lần.
+- **Làm (tiếp):** rà khuyến nghị tác giả Mamba (bài báo + README + mã nguồn
+  mamba-ssm v2.3.1) so với code. Đã đúng: tính lại trạng thái ở backward
+  (kernel tự làm), tham số fp32 + autocast, khởi tạo Δ/A. **Sửa (người dùng
+  duyệt):** miễn weight decay `A_log`/`D` (`build_optimizer`, code dùng chung —
+  Conformer không đổi, kiểm từng bit), `norm_f`, chia `out_proj` cho
+  √n_layers, residual fp32. Tham số Mamba 12.292.864 (+0,73%). Xác nhận không
+  mask padding là đúng với Mamba đơn hướng. Xem xét tài liệu người dùng dán về
+  "khuyến nghị của tác giả": LR riêng cho Δ là thực hành của S4, không phải
+  mamba-ssm; document packing không áp dụng cho ASR theo câu — không đổi code.
+- **Phiên sau (bổ sung):** chạy khối Mamba thật trên Kaggle cùng lần GPU kế tiếp.
+- **Làm (tiếp):** D8 phương án (c) — người dùng chọn. Benchmark lần 2 xong
+  (kernel v4, ~13 phút; v3 hỏng do AI quên nhúng yaml, mất ~9 phút). Bảng ở
+  `training_plan_kaggle.md` mục 5. Khối Mamba thật với các sửa hôm nay chạy
+  được, tham số 12.292.864. Máy GPU: 4 lõi CPU, `/tmp` trống 1,1 TB.
+- **Đề xuất chờ duyệt:** D8 = cả hai encoder DDP 2 GPU + SyncBN + AMP
+  (Conformer 23,2 h, Mamba 16,0 h); `PACK_TAR = True`, giải nén vào `/tmp`.
+- **Phiên sau bắt đầu từ:** người dùng duyệt D8 + `PACK_TAR` + commit/push →
+  sửa code dùng chung (bước 3), chạy `make_dataset` 5 lần.
+- **Chốt (người dùng):** D8 = 2 GPU + SyncBN + AMP; `PACK_TAR = True`; commit
+  + push (mục 4).

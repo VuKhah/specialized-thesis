@@ -1,6 +1,6 @@
 # TODO tổng — Mamba vs Conformer ASR
 
-Cập nhật lần cuối: **2026-09-26**. **Nguồn sự thật duy nhất cho việc cần làm /
+Cập nhật lần cuối: **2026-09-30**. **Nguồn sự thật duy nhất cho việc cần làm /
 đang chặn / đã xong.** Kế hoạch tuần + quyết định + nhật ký phiên ở
 [`Plan.md`](Plan.md); kiến trúc ở [`ARCHITECTURE.md`](ARCHITECTURE.md).
 
@@ -15,32 +15,49 @@ Câu hỏi cần mang đi hỏi (người dùng/GVHD): [`QA.md`](QA.md).
       `docs/notes/dataset_discrepancy.md`, đang chờ ý kiến thầy Hoàng Văn
       Dũng. **Không tự chọn phương án khi chưa có ý kiến.**
 
-## ⏸ Treo — người dùng chủ động hoãn quyết định
+## 🟡 Sẵn sàng làm ngay — kế hoạch Kaggle đã duyệt 2026-09-28
 
-- [ ] *(2026-09-26: hướng đã chốt — 3 Kaggle Dataset + 2 tài khoản + chạy nền; chi tiết chờ duyệt ở 🟠)* **Prefetch audio đầy đủ** (67.405 file, **28,27 GB = 26,33 GiB** WAV, FLAC ~17,1 GB — đo 2026-09-26; so sánh 5 phương án ở `docs/notes/prefetch_storage_review.md`): hướng nêu 2026-09-19 là
-      chạy trên Kaggle, nhưng quyết định cuối đang treo. Cần xác nhận trước
-      khi chốt: hạn mức đĩa Kaggle (`/kaggle/working` = **20GB, người dùng xác nhận
-      2026-09-21** → 27GB **không vừa**; các vị trí đĩa khác chưa kiểm chứng),
-      cách lưu cache (thư mục tạm / đóng gói Kaggle Dataset riêng /
-      tải lại mỗi phiên), chi phí GPU-giờ nếu tải lại. Cache local không
-      chuyển sang Kaggle được. Script đã xong (`src/data/prefetch_audio.py`,
-      test 5 file thật + 1 lỗi cố ý), chỉ thiếu bước chạy full. Chặn: train
-      Conformer thật.
+Chi tiết + lý do: `docs/notes/training_plan_kaggle.md` mục 5 (D1-D11 đã
+duyệt, D3 → **4 shard**, train full + đánh giá theo epoch).
 
-## 🟠 Chờ người dùng duyệt đề xuất (2026-09-26)
-
-- [ ] **Đề xuất D1-D14** trong `docs/notes/training_plan_kaggle.md` mục 3:
-      mỗi tài khoản Kaggle train 1 mô hình; WAV chia 3 shard (vòng tròn theo
-      video, seed 42) + 1 dataset val = validation trừ clean-test; checkpoint
-      theo step + `--max_minutes`; `num_workers` → AMP → DDP theo benchmark;
-      pin revision HF `cbf624ae9b`. **Bước đầu cần đồng ý:** kernel CPU
-      (`df -h`, tốc độ tải, tar > 500 file) + kernel GPU benchmark (~30-40 phút).
-      Đã chốt 2026-09-26: không subsampling, 3 dataset, 2 tài khoản (của 2
-      người khác nhau — đã xác nhận), chạy nền.
-
-## 🟡 Sẵn sàng làm ngay
-
-- [ ] **Train baseline Conformer-CTC** (Tuần 6-7) — sau khi prefetch xong (⏸).
+- [x] **1. Kernel CPU (D9) — xong 2026-09-28** (`scripts/kaggle/check_env/`):
+      `/tmp` trống ~1.200 GB, tải HF ẩn danh ~2,4 h cho 67.405 file (0 lỗi),
+      output giữ đủ 600 file, tar 590 MB/s. Chi tiết: `training_plan_kaggle.md` mục 5.
+- [x] **2. Kernel GPU benchmark (D9) — xong 2026-09-30** (~16 phút quota):
+      bảng đủ 8 cấu hình ở `training_plan_kaggle.md` mục 5. Tóm tắt: workers
+      không giúp; AMP Conformer 0,56 s/step (17,7 h/30 epoch), Mamba 1,02
+      (32,1 h); DDP+AMP Conformer **chậm đi** 0,77 (24,4 h), Mamba 0,48 (15,0 h).
+- [x] **D8 chốt 2026-09-30: cả hai encoder DDP 2 GPU + SyncBN + AMP**, batch
+      toàn cục 16 (8/GPU). Ước 30 epoch: Conformer 23,2 h, Mamba 16,0 h (chưa
+      tính eval). Số đo: `training_plan_kaggle.md` mục 5.
+- [x] **`PACK_TAR = True` chốt 2026-09-30**: 5 dataset đều là tar; đầu mỗi phiên
+      train giải nén vào `/tmp/audio_cache` (**không** `/kaggle/working`).
+- [ ] **3. Sửa code dùng chung (D5, D7, D8, D10)** cho cả hai encoder: val trừ
+      clean-test (đọc `data/splits/val.tsv`); `--max_minutes` + checkpoint
+      theo step, resume giữa epoch; D8: `torchrun` DDP + `SyncBatchNorm` +
+      `torch.autocast` fp16/GradScaler (front-end log-mel giữ fp32, như
+      benchmark), `DistributedSampler` có `set_epoch`, 2 worker/tiến trình;
+      bước giải nén tar vào `/tmp/audio_cache`; `VietSuperSpeechDataset` dùng
+      `HF_REVISION` (hằng số đã có).
+      **Giữ lịch LR warmup + hằng số** (để dừng ở epoch bất kỳ vẫn hợp lệ).
+- [x] **Theo khuyến nghị tác giả Mamba — sửa 2026-09-30** (người dùng duyệt):
+      `build_optimizer` miễn weight decay cho `A_log`/`D`, `weight_decay: 0.01`
+      ghi rõ trong 2 yaml; `MambaEncoder` thêm `norm_f`, chia `out_proj` cho
+      √n_layers, residual fp32. Test local: Conformer giống hệt từng bit so với
+      trước; Mamba kiểm bằng khối giả (không CUDA). **Còn: chạy khối Mamba thật
+      trên Kaggle** (gộp vào lần chạy GPU kế tiếp) + đo lại `param_count`
+      (dự kiến 12.292.864, +0,73%).
+- [x] **4. Manifest 4 shard + val — xong 2026-09-30** (`src/data/make_shards.py`
+      → `data/splits/`, ~9 MB TSV): kiểm rời nhau, hợp = 60.656, không lẫn
+      validation, val 6.499 + clean-test 250 (đối chiếu nội dung theo index).
+      Mỗi shard 15.164 câu / 55,21 h / 6,36 GB, lệch phân bố ≤ 0,1 điểm %, phủ
+      996/998 token BPE. Đã commit + push 2026-09-30.
+- [ ] **5. Kernel CPU tạo 5 dataset** (4 train + 1 val), private —
+      `scripts/kaggle/make_dataset/make_dataset.py` (`PACK_TAR = True`), test
+      local 20 file thật. Còn: chạy 5 lần (sửa `PART`), mỗi lần ~40 phút CPU
+      (không tốn GPU); tạo Dataset từ output; chia sẻ sang tài khoản B (D6).
+- [ ] **6. Train full song song**: tài khoản A Conformer, B Mamba; báo cáo
+      theo epoch, so hai mô hình ở cùng số epoch.
 
 ## 🟢 Việc tay — song song bất cứ lúc nào, không chặn code
 
@@ -104,6 +121,8 @@ Câu hỏi cần mang đi hỏi (người dùng/GVHD): [`QA.md`](QA.md).
       chưa tính tải dữ liệu) × 3.791 step/epoch ≈ 80 phút/epoch → 30 epoch ≈
       40 GPU-giờ **mỗi mô hình**, trong khi hạn mức Kaggle 30 GPU-giờ/tuần.
       Liên quan mục `train.py` không AMP/1 GPU bên dưới — chưa quyết.
+      *2026-09-30: đã đo (fp32 1 GPU: Conformer 42,5 h, Mamba 48,7 h); lựa
+      chọn tăng tốc là mục ⏸ D8 ở trên.*
 - [ ] Mamba đơn hướng, chưa mask padding (TODO trong `mamba_encoder.py`); hai
       encoder không subsampling (T'=T ≈ 1000-1500 khung). Cần nêu trong phần
       thảo luận; kiểm tra đề cương đã đề cập chưa.

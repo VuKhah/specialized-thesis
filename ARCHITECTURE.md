@@ -50,6 +50,8 @@ flowchart LR
 | Train tokenizer | `BPETokenizer.train` (gọi từ `survey.py`) | `train_transcripts.txt` → SentencePiece BPE | `configs/tokenizer.model` + `configs/tokenizer.vocab` (**track git**) |
 | Liệt kê file cần tải | `prefetch_audio.needed_audio_paths` | 2 split → 67.405 đường dẫn | `data/processed/audio_manifest.json` (không track) |
 | Tải audio | `prefetch_audio.prefetch_audio` | đường dẫn → file `.wav` (bỏ qua file đã có; lỗi từng file được gom, chạy lại là retry) | `data/raw/audio_cache/` |
+| Chia shard + val (D3, D5) | `src/data/make_shards.py` | 2 split ở `HF_REVISION` + clean-test → 4 shard train (vòng tròn qua video, seed 42) + val = `validation` trừ clean-test; kiểm bất biến rồi mới ghi; `--check` đọc lại | `data/splits/*.tsv` (`index`, `audio`, `duration` theo index split) + `summary.json` (**track git**) |
+| Tạo Kaggle Dataset (D6) | `scripts/kaggle/make_dataset/make_dataset.py` | 1 phần manifest → tải HF, kiểm (đủ file, 16 kHz mono, duration) | output kernel CPU |
 | Đọc mẫu | `VietSuperSpeechDataset.__getitem__` | idx → `{waveform, text, token_ids}` (đọc cache; không có thì tải lẻ, chậm) | — |
 | Gom batch | `collate_fn` | list mẫu → `waveform [B,S]` pad 0, `waveform_lengths [B]`, `targets` 1D nối, `target_lengths [B]`, `text` | — |
 
@@ -89,7 +91,7 @@ và là chỗ *duy nhất* khác nhau giữa hai nhánh.
 | Ngữ cảnh | self-attention toàn chuỗi (2 chiều), chi phí O(T²) | quét **một chiều** trái→phải, chi phí O(T) |
 | Padding | torchaudio tự mask theo `feat_lengths` | **không mask** (TODO trong code); trả `feat_lengths` nguyên vẹn |
 | Cần | torch, torchaudio | GPU + kernel CUDA (`mamba-ssm`, `causal-conv1d`) — chỉ có trên Kaggle |
-| Tham số | 12.204.288 (theo yaml, đo bằng `param_count.py`) | 12.292.352 (+0,72%) với `n_layers: 28`, `expand: 2` — đo bằng `param_count.py` trên Kaggle T4 (2026-09-24) |
+| Tham số | 12.204.288 (theo yaml, đo bằng `param_count.py`) | 12.292.864 (+0,73%) với `n_layers: 28`, `expand: 2` — đo 12.292.352 bằng `param_count.py` trên Kaggle T4 (2026-09-24), +512 của `norm_f` thêm 2026-09-30 (chưa đo lại) |
 
 ## 5. Vòng đời một thí nghiệm
 
@@ -145,6 +147,7 @@ Ký hiệu: ✅ đã chạy thật · 🟡 chạy được một phần · ⬜ c
 | `src/data/vietsuperspeech_dataset.py` | Dataset + `collate_fn`; `AUDIO_CACHE_DIR` | ✅ |
 | `src/data/prefetch_audio.py` | Tải song song đúng 67.405 file; resume; `--verify` | 🟡 test 5 file thật + 1 lỗi cố ý; **chưa chạy full** |
 | `src/data/survey.py` | Khảo sát, corpus transcript, clean-test, train tokenizer | ✅ |
+| `src/data/make_shards.py` | Manifest 4 shard + val, kiểm rời nhau/đủ/không lẫn val; `--check` | ✅ 2026-09-30 chạy full dữ liệu thật |
 | `src/features/log_mel.py` | Front-end log-mel | ✅ |
 | `src/tokenizer/bpe_tokenizer.py` | BPE SentencePiece + blank id 0 | ✅ |
 | `src/models/encoder_base.py` | Interface `ASREncoder` | ✅ |
@@ -161,6 +164,11 @@ Ký hiệu: ✅ đã chạy thật · 🟡 chạy được một phần · ⬜ c
 | `configs/model_{conformer,mamba}.yaml` | 1 file = 1 thí nghiệm | ✅ |
 | `notebooks/00_setup_environment.ipynb` | Kiểm tra/cài `mamba-ssm` trên Kaggle | ✅ |
 | `notebooks/02_dataset_eda.ipynb` | EDA: waveform, spectrogram, nghe audio | ✅ |
+| `scripts/kaggle/verify_mamba.py` | Kernel GPU: build wheel mamba, `param_count`, smoke test cả hai encoder | ✅ 2026-09-24 |
+| `scripts/kaggle/check_env/check_env.py` | Kernel CPU (D9): đĩa, tốc độ tải HF, số file output, tốc độ tar | ✅ 2026-09-28 |
+| `scripts/kaggle/benchmark/benchmark.py` | Kernel GPU (D9): s/step theo `num_workers` / AMP / 2 GPU × 2 encoder; tự viết vòng step, không gọi `train.py` | ✅ 2026-09-30 chạy đủ 8 cấu hình trên Kaggle (kết quả: `docs/notes/training_plan_kaggle.md` mục 5) |
+| `scripts/kaggle/make_dataset/make_dataset.py` | Kernel CPU (D6): tạo 1 trong 5 dataset (sửa `PART`), kiểm WAV sau tải | 🟡 test local 20 file thật · chưa chạy trên Kaggle (cần push manifest) |
+| `scripts/kaggle/**/kernel-metadata.json` | Cấu hình kernel (chứa username) — **gitignore**, giữ local | — |
 
 ## 8. Điều cần biết trước khi đụng code (đã xác minh từ code)
 
@@ -175,7 +183,15 @@ Ký hiệu: ✅ đã chạy thật · 🟡 chạy được một phần · ⬜ c
   VRAM/`batch_size`, chi phí attention của Conformer, và cách đọc kết quả RQ2.
 - **e. Mamba đơn hướng, không mask padding.** Khác biệt về ngữ cảnh giữa hai
   encoder là thuộc tính kiến trúc, cần nêu trong phần thảo luận (chưa thấy repo
-  ghi lại). TODO mask padding trong `mamba_encoder.py` vẫn mở.
+  ghi lại). Không mask là **đúng** khi còn đơn hướng (conv1d + scan nhân quả,
+  padding ở cuối không lan ngược; CTC chỉ tính trên `feat_lengths`) — chuyển
+  sang hai chiều thì phải mask.
+- **e2. Theo khuyến nghị tác giả Mamba (rà 2026-09-30, mamba-ssm v2.3.1).**
+  `MambaEncoder` tự thêm những gì `MixerModel` có mà khối `Mamba` lẻ không có:
+  `norm_f`, chia `out_proj` cho √n_layers, residual fp32. `build_optimizer`
+  miễn weight decay cho tham số `_no_weight_decay` (`A_log`, `D`); Conformer
+  không bị ảnh hưởng (đã kiểm: tham số giống hệt từng bit so với AdamW cũ).
+  Khi thêm AMP: dùng `torch.autocast` + tham số fp32, **không** `.half()`.
 - **f. `param_count.py` đọc yaml (sửa 2026-09-21).** Dựng encoder bằng
   `build_encoder` của `train.py` nên số đo = dòng "encoder params" của lúc
   train. Import `train.py` kéo theo tensorboard/tensorflow (~vài chục giây khởi

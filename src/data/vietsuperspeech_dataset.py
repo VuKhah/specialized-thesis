@@ -27,6 +27,11 @@ from huggingface_hub import hf_hub_download
 from torch.utils.data import Dataset
 
 HF_DATASET_ID = "thanhnew2001/VietSuperSpeech"
+# Pin revision (D10, docs/notes/training_plan_kaggle.md): repo HF đứng yên từ
+# 2026-02-22, nhưng manifest shard (data/splits/) lưu theo index split — tác giả
+# đẩy commit mới là index lệch. Mới dùng ở make_shards.py; VietSuperSpeechDataset
+# sẽ dùng khi sửa code dùng chung (TODO.md bước 3).
+HF_REVISION = "cbf624ae9b30e1c2793a27e95b262115c69601f3"
 AUDIO_CACHE_DIR = "data/raw/audio_cache"
 
 

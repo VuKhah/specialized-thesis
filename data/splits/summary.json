@@ -1,0 +1,143 @@
+{
+  "hf_dataset": "thanhnew2001/VietSuperSpeech",
+  "hf_revision": "cbf624ae9b30e1c2793a27e95b262115c69601f3",
+  "n_shards": 4,
+  "seed": 42,
+  "method": "vòng tròn liên tục qua video (thứ tự video xáo seed), trong video sắp theo duration",
+  "val": "validation trừ clean-test (data/processed/clean_test_manifest.json)",
+  "stats": [
+    {
+      "name": "train",
+      "n": 60656,
+      "hours": 220.84,
+      "gb_wav": 25.44,
+      "videos": 645,
+      "chars": 96,
+      "bpe_tokens": 998,
+      "mean_s": 13.107,
+      "mean_words": 45.88,
+      "pct_by_second": {
+        "10s": 11.9,
+        "11s": 13.9,
+        "12s": 16.2,
+        "13s": 20.7,
+        "14s": 23.9,
+        "15s": 13.3
+      }
+    },
+    {
+      "name": "shard0",
+      "n": 15164,
+      "hours": 55.21,
+      "gb_wav": 6.36,
+      "videos": 624,
+      "chars": 96,
+      "bpe_tokens": 996,
+      "mean_s": 13.107,
+      "mean_words": 45.83,
+      "pct_by_second": {
+        "10s": 11.9,
+        "11s": 14.0,
+        "12s": 16.2,
+        "13s": 20.7,
+        "14s": 23.9,
+        "15s": 13.4
+      }
+    },
+    {
+      "name": "shard1",
+      "n": 15164,
+      "hours": 55.21,
+      "gb_wav": 6.36,
+      "videos": 626,
+      "chars": 96,
+      "bpe_tokens": 996,
+      "mean_s": 13.106,
+      "mean_words": 45.87,
+      "pct_by_second": {
+        "10s": 11.9,
+        "11s": 13.9,
+        "12s": 16.3,
+        "13s": 20.7,
+        "14s": 23.9,
+        "15s": 13.3
+      }
+    },
+    {
+      "name": "shard2",
+      "n": 15164,
+      "hours": 55.21,
+      "gb_wav": 6.36,
+      "videos": 622,
+      "chars": 96,
+      "bpe_tokens": 996,
+      "mean_s": 13.107,
+      "mean_words": 45.83,
+      "pct_by_second": {
+        "10s": 11.9,
+        "11s": 13.9,
+        "12s": 16.3,
+        "13s": 20.7,
+        "14s": 23.9,
+        "15s": 13.3
+      }
+    },
+    {
+      "name": "shard3",
+      "n": 15164,
+      "hours": 55.21,
+      "gb_wav": 6.36,
+      "videos": 622,
+      "chars": 95,
+      "bpe_tokens": 996,
+      "mean_s": 13.108,
+      "mean_words": 46.0,
+      "pct_by_second": {
+        "10s": 11.8,
+        "11s": 14.0,
+        "12s": 16.2,
+        "13s": 20.7,
+        "14s": 23.9,
+        "15s": 13.4
+      }
+    },
+    {
+      "name": "val",
+      "n": 6499,
+      "hours": 23.65,
+      "gb_wav": 2.72,
+      "videos": 560,
+      "chars": 95,
+      "bpe_tokens": 993,
+      "mean_s": 13.103,
+      "mean_words": 45.62,
+      "pct_by_second": {
+        "10s": 12.0,
+        "11s": 14.1,
+        "12s": 16.2,
+        "13s": 20.1,
+        "14s": 24.1,
+        "15s": 13.4
+      }
+    },
+    {
+      "name": "clean_test",
+      "n": 250,
+      "hours": 0.92,
+      "gb_wav": 0.11,
+      "videos": 186,
+      "chars": 93,
+      "bpe_tokens": 938,
+      "mean_s": 13.254,
+      "mean_words": 45.32,
+      "pct_by_second": {
+        "10s": 9.6,
+        "11s": 14.8,
+        "12s": 15.2,
+        "13s": 20.0,
+        "14s": 23.6,
+        "15s": 16.8
+      }
+    }
+  ]
+}

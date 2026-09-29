@@ -69,9 +69,10 @@ cập nhật `ARCHITECTURE.md`. Bảng "sự kiện → file nào" ở
   lệch có chủ đích, đã xác nhận, không phải lỗi.
 - Trước khi train thật: `python -m src.data.prefetch_audio` (không
   `snapshot_download` cả repo — thừa ~43%); đừng để `__getitem__` tự tải lẻ khi
-  train (~1-4 s/file × 60k+ mẫu). *Chạy ở đâu và lưu cache thế nào: đang treo,
-  xem `Plan.md` mục 5.*
-- **Trong code:** hai encoder không subsampling; Mamba chưa mask padding;
+  train (~1-4 s/file × 60k+ mẫu). *Đã chốt 2026-09-28: notebook CPU đóng
+  audio thành 5 Kaggle Dataset (4 shard train + 1 val), xem
+  `docs/notes/training_plan_kaggle.md` mục 5.*
+- **Trong code:** hai encoder không subsampling; Mamba đơn hướng nên không cần mask padding;
   `train.py` 1 GPU không AMP; docstring vài file còn cũ — đầy đủ ở
   `ARCHITECTURE.md` mục 8.
 
