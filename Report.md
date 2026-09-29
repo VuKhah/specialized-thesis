@@ -9,8 +9,8 @@ hội thoại (CTC, train từ đầu trên VietSuperSpeech)
 
 - Pipeline đầy đủ (log-mel → encoder → CTC, tokenizer BPE 1.000, training
   loop có checkpoint/resume, đo WER) đã chạy với dữ liệu thật.
-- Hai encoder đã khớp tham số: Mamba 12.292.352 vs Conformer 12.204.288
-  (chênh **0,72 %**). Cả hai đã chạy thử train + eval trên Kaggle T4.
+- Hai encoder đã khớp tham số: Mamba 12.292.864 vs Conformer 12.204.288
+  (chênh **0,73 %**). Cả hai đã chạy thử train + eval trên Kaggle T4.
 - Chưa train chính thức: đang chuẩn bị lưu trữ dữ liệu (~28 GB) trên Kaggle.
 
 ---

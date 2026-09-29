@@ -21,6 +21,9 @@ training:
   epochs: 30
   warmup_steps: 1000
   grad_clip: 5.0
+  # = mặc định AdamW trước 2026-09-30, ghi rõ ra. Tham số `_no_weight_decay`
+  # (A_log, D của Mamba) được miễn — xem build_optimizer trong train.py.
+  weight_decay: 0.01
 
 data:
   train_split: train

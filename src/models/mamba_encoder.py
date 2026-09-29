@@ -10,6 +10,8 @@ PyTorch, chậm hơn nhưng không cần build kernel) — đúng phương án d
 đã ghi trong đề cương.
 """
 
+import math
+
 import torch
 
 from src.models.encoder_base import ASREncoder
@@ -48,16 +50,28 @@ class MambaEncoder(ASREncoder):
             ]
         )
         self.norms = torch.nn.ModuleList([torch.nn.LayerNorm(d_model) for _ in range(n_layers)])
+        # Ba chỗ dưới theo MixerModel/_init_weights của mamba-ssm v2.3.1 (rà
+        # 2026-09-30): dùng khối Mamba lẻ thì không tự có. norm_f: chồng pre-norm
+        # để residual chưa chuẩn hoá đi thẳng vào CTC head — Conformer torchaudio
+        # thì mỗi lớp đã kết thúc bằng LayerNorm.
+        self.norm_f = torch.nn.LayerNorm(d_model)
+        # rescale_prenorm_residual: 28 nhánh cộng dồn vào residual → chia out_proj
+        # (đã khởi tạo kaiming_uniform a=√5, giống _init_weights) cho √n_layers.
+        with torch.no_grad():
+            for layer in self.layers:
+                layer.out_proj.weight /= math.sqrt(n_layers)
 
     @property
     def output_dim(self) -> int:
         return self._d_model
 
     def forward(self, feats: torch.Tensor, feat_lengths: torch.Tensor):
-        x = self.input_proj(feats)  # [B, T, d_model]
-        # TODO: mask theo feat_lengths trước mỗi layer nếu batch có padding —
-        # cần xác nhận cách selective_scan xử lý padding (mask hay không mask
-        # ảnh hưởng recurrent state) khi bắt đầu Tuần 4-5 (xây pipeline CTC).
+        # residual_in_fp32: dưới autocast, input_proj trả fp16 → cộng dồn 28 lớp
+        # ở fp16. Ép fp32 ở đây là đủ: LayerNorm chạy fp32 và fp32 + fp16 → fp32.
+        x = self.input_proj(feats).float()  # [B, T, d_model]
+        # Không mask padding là đúng *với Mamba đơn hướng*: conv1d và scan đều
+        # nhân quả, padding nằm cuối chuỗi nên không lan ngược về khung thật;
+        # CTC chỉ tính trên feat_lengths. Chuyển sang hai chiều thì phải mask.
         for layer, norm in zip(self.layers, self.norms):
             x = x + layer(norm(x))
-        return x, feat_lengths
+        return self.norm_f(x), feat_lengths

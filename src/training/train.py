@@ -43,6 +43,27 @@ def build_encoder(cfg: dict):
     raise ValueError(f"Encoder type không hỗ trợ: {enc_type}")
 
 
+def build_optimizer(model: torch.nn.Module, cfg: dict) -> torch.optim.AdamW:
+    """AdamW, trừ weight decay cho tham số gắn cờ `_no_weight_decay`.
+
+    mamba_ssm.Mamba gắn cờ này lên `A_log`, `D` (phạt về 0 là kéo A = -exp(A_log)
+    về -1, làm lệch tốc độ "quên" của trạng thái). Conformer không có tham số
+    nào mang cờ → với Conformer, kết quả y hệt AdamW trên toàn bộ tham số.
+    Rà 2026-09-30 theo mã nguồn mamba-ssm v2.3.1 (TODO.md).
+    """
+    decay, no_decay = [], []
+    for p in model.parameters():
+        if p.requires_grad:
+            (no_decay if getattr(p, "_no_weight_decay", False) else decay).append(p)
+    return torch.optim.AdamW(
+        [
+            {"params": decay, "weight_decay": cfg["training"]["weight_decay"]},
+            {"params": no_decay, "weight_decay": 0.0},
+        ],
+        lr=cfg["training"]["lr"],
+    )
+
+
 def warmup_lr_lambda(step: int, warmup_steps: int) -> float:
     if warmup_steps <= 0:
         return 1.0
@@ -110,7 +131,7 @@ def main():
     model = CTCASRModel(encoder=encoder, vocab_size=tokenizer.vocab_size).to(device)
     print(f"[{experiment_name}] encoder params: {encoder.num_parameters():,}")
 
-    optimizer = torch.optim.AdamW(model.parameters(), lr=cfg["training"]["lr"])
+    optimizer = build_optimizer(model, cfg)
     scheduler = torch.optim.lr_scheduler.LambdaLR(
         optimizer,
         lr_lambda=lambda step: warmup_lr_lambda(step, cfg["training"]["warmup_steps"]),

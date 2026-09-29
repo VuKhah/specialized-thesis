@@ -1,5 +1,6 @@
 # Mamba-CTC. n_layers=28 chọn 2026-09-24 để khớp tham số với
-# model_conformer.yaml: 12.292.352 vs 12.204.288 (+0,72%, mục tiêu < 5%) — số
+# model_conformer.yaml: 12.292.864 vs 12.204.288 (+0,73%, mục tiêu < 5%; 2026-09-30
+# thêm norm_f +512 so với 12.292.352 đo trên Kaggle 2026-09-24) — số
 # đếm theo shape của mamba_ssm.Mamba v2.3.1, cần xác nhận lại bằng
 # `python -m src.models.param_count` trên Kaggle. Giữ expand=2 mặc định bài
 # gốc, chỉ tăng độ sâu; d_model=256 để CTC head giống hệt Conformer.
@@ -23,6 +24,9 @@ training:
   epochs: 30
   warmup_steps: 1000
   grad_clip: 5.0
+  # = mặc định AdamW trước 2026-09-30, ghi rõ ra. Tham số `_no_weight_decay`
+  # (A_log, D của Mamba) được miễn — xem build_optimizer trong train.py.
+  weight_decay: 0.01
 
 data:
   train_split: train
