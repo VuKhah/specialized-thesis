@@ -38,7 +38,7 @@ theo độ dài audio) đang bị chặn bởi quyết định 🔴 ở mục 5.
 
 ## 3. Trạng thái hiện tại (mức tuần — chi tiết ở `TODO.md`)
 
-Đang ở **Tuần 4-5**.
+Đang ở **Tuần 6** (người dùng đính chính 2026-10-01; việc kỹ thuật vẫn ở mức Tuần 4-5 của lộ trình cũ, lộ trình sẽ viết lại theo định hướng mới).
 
 | Tuần | Trạng thái | Ghi chú |
 |---|---|---|
@@ -71,13 +71,18 @@ tối đa 2 tuần/lần** (mục 6, chưa có lịch ghi).
 | 2026-09-30 | **D8: cả hai encoder DDP 2 GPU + SyncBatchNorm + AMP** (fp16 autocast, tham số fp32), batch toàn cục 16 | Benchmark 2 lần: Conformer 23,2 h, Mamba 16,0 h cho 30 epoch, đều < 30 h/tuần/tài khoản; cùng một cách chạy cho cả hai, SyncBN giữ Conformer tương đương 1 GPU batch 16. `docs/notes/training_plan_kaggle.md` mục 5 |
 | 2026-09-30 | **Dataset dạng tar** (`PACK_TAR = True`), giải nén vào `/tmp` đầu mỗi phiên | Số đo tốc độ chỉ đúng khi đọc đĩa local; `/tmp` máy GPU trống 1,1 TB; 4 lõi CPU không bù được I/O mạng |
 | 2026-09-30 | Theo khuyến nghị tác giả Mamba: miễn weight decay `A_log`/`D`, `norm_f`, chia `out_proj` cho √n_layers, residual fp32; **không** LR riêng cho Δ, **không** document packing | Mã nguồn mamba-ssm v2.3.1; nhật ký 2026-09-30 |
+| 2026-10-02 | **Định hướng khảo sát, đội hình 5 mô hình**: Mamba-CTC (trọng tâm) + Conformer-CTC ~12M (baseline) train từ đầu; Parakeet-CTC-0.6B-vi; PhoWhisper-small; wav2vec2-base-vi (zero-shot trước, fine-tune sau). Loại `kyle/vi-asr-fastconformer-114m` (đã train trên VietSuperSpeech) và Zipformer-30M (mô hình sinh nhãn, license ND) | Sau buổi GVHD lần 1. `docs/notes/gvhd_buoi_1.md`, `survey_model_candidates.md`. Mục 1, `CLAUDE.md` (luật "chỉ encoder khác nhau") cần viết lại |
+| 2026-10-02 | **Mamba hai chiều** (B1: 14 lớp × 2 khối xuôi/ngược, cộng; 12.285.696 tham số) | `docs/notes/mamba_bidirectional.md`. Chưa sửa code |
+| 2026-10-02 | **Duyệt thay đổi phép đo**: RQ2 thành so hiệu quả giữa mô hình (RTF, VRAM, tham số, GPU-giờ) + ghép đoạn liên tiếp chỉ để đo RTF theo độ dài; chuẩn hóa văn bản chung trước WER; A3 giữ nguyên + nêu hạn chế, tách nhóm zero-shot/fine-tune khi bàn | `survey_model_candidates.md` |
 | 2026-09-19 | Chuẩn tài liệu gốc: `CLAUDE.md` (luật AI) · `Plan.md` (kế hoạch/trạng thái) · `ARCHITECTURE.md` (sơ đồ) · `TODO.md` · `README.md` (người ngoài) · quy ước → `docs/CONVENTIONS.md` | Chống lệch trạng thái giữa nhiều file |
 
 ## 5. Quyết định đang mở / treo / rủi ro đã biết
 
 | Trạng thái | Vấn đề | Chi tiết |
 |---|---|---|
+| 🔴 **Đã chốt phần lớn (2026-10-02, xem mục 4); còn A1 lọc nhãn + đề cương mới** | **Đổi định hướng sau buổi GVHD lần 1**: từ so sánh có kiểm soát Mamba vs Conformer (train từ đầu, khớp tham số) sang **khảo sát** Mamba vs nhiều mô hình (Conformer pre-train, 2-3 mô hình khác, baseline). Ảnh hưởng mục 1 (mục tiêu), ràng buộc "chỉ encoder khác nhau", RQ, lộ trình mục 2 | `docs/notes/gvhd_buoi_1.md` mục 4 (Q-a…Q-g). Chưa sửa mục 1/`CLAUDE.md` cho tới khi chốt |
 | 🔴 **Chờ GVHD** | Hướng xử lý sai lệch số liệu dataset ảnh hưởng RQ2 (67.405 mẫu/245,42h, audio 10-15 s vs đề cương 3-30 s) | 4 phương án trong `docs/notes/dataset_discrepancy.md`. **Không tự chọn.** |
+| ✅ **Chốt hai chiều (2026-10-02)** | Mamba một chiều vs hai chiều (biến gây nhiễu RQ1); người dùng nghiêng về cân nhắc hai chiều | `docs/notes/mamba_bidirectional.md`; hỏi GVHD (A4); chốt trước khi train |
 | ✅ **Đã duyệt (2026-09-28)** | D1-D11 (D3 → 4 shard) + train full, đánh giá theo epoch | Mục 4; `docs/notes/training_plan_kaggle.md` mục 5. D12/D13 vẫn chờ GVHD |
 | ✅ **Đã chốt (2026-09-28)** | Prefetch full: không tải về máy/`/kaggle/working` để train, mà notebook CPU tải từ HF rồi đóng thành 5 Kaggle Dataset (4 shard train + 1 val), train gắn qua `/kaggle/input` | Theo D6 đã duyệt; `docs/notes/training_plan_kaggle.md` mục 5 |
 | ⚠️ Biết, chưa xử lý | `notebooks/02_dataset_eda.ipynb` nhúng audio YouTube (20 output `<audio>`, ~5 MB) trong repo **public**, có cả trong lịch sử git | Người dùng chọn bỏ qua (2026-09-19). Chưa kiểm license VietSuperSpeech |
@@ -146,7 +151,7 @@ giấy do GVHD giữ; bảng này chỉ để không quên lịch và để phi�
 
 | Ngày gặp | Đã báo cáo | GVHD dặn / quyết định | Hẹn buổi sau (≤ 2 tuần) |
 |---|---|---|---|
-| *(chưa ghi — cần người dùng cung cấp buổi gần nhất)* | | | |
+| Tuần 6 (≈ 2026-10-01) — buổi báo cáo lần 1 | Tiến độ Tuần 4-5, câu hỏi A1-A4/B1/C1-C4 (`docs/tong_ket/2026-09-30/`) | **Đổi định hướng:** khảo sát so sánh nhiều mô hình, Mamba là trọng tâm; đối chứng không cần giống hệt, Conformer nên dùng bản pre-train + fine-tune; thêm 2-3 mô hình khác + 1 baseline; nhận xét theo đánh đổi độ chính xác/tốc độ/tài nguyên. A1 nhãn tiếng Anh: "tự đọc rồi làm" (xét theo ngôn ngữ pre-train). "Đừng ôm đồm". **Sẽ sửa đề cương** (bản mới). Chi tiết `docs/notes/gvhd_buoi_1.md` | Dự kiến **Tuần 9** (> 2 tuần — lưu ý Mẫu 3) |
 
 **Câu hỏi nên hỏi ở buổi gặp tới:** (1) 🔴 hướng xử lý sai lệch dataset/RQ2
 (`docs/notes/dataset_discrepancy.md`); (2) hình thức nộp hiện hành (biểu mẫu
@@ -376,3 +381,97 @@ khảo sát dataset, phát hiện sai lệch số liệu, prefetch script, train
 - **Phiên sau bắt đầu từ:** chạy `make_dataset` (CPU, sửa `PART`) lần lượt 5
   phần → tạo Dataset từ output, chia sẻ sang tài khoản B; song song sửa code
   dùng chung bước 3 (D5, D7, D8, D10) cho cả hai encoder.
+- **Chốt cuối phiên (người dùng):** RQ2 **không chặn train** — cả 4 phương án
+  chỉ đổi phần đo RTF sau train (RTF không phụ thuộc trọng số, đo được song
+  song lúc train). Cứ tạo dataset + train; buổi gặp GVHD tới hỏi thêm "RQ2 chỉ
+  cần RTF hay cần cả WER trên audio dài?" (ghi ở 🔴 `TODO.md`).
+- **Đóng phiên 2026-09-30.** Quota GPU đã dùng hôm nay ~38 phút (benchmark v1
+  lỗi ~1, v2 ~15, v3 lỗi ~9, v4 ~13). GitHub ở `93c8132`; `Plan.md`/`TODO.md`
+  có sửa sau commit đó (mục này + ghi chú RQ2) — chưa commit.
+- **Phiên sau bắt đầu từ:** (1) push kernel `make_dataset` với
+  `PART = "train_shard0"` (CPU, ~40 phút), kiểm output tar → tạo Kaggle
+  Dataset private, lặp cho shard1-3 + val; hỏi cách chia sẻ sang tài khoản B
+  (D6). (2) Song song: sửa code dùng chung bước 3 (val trừ clean-test,
+  `--max_minutes` + checkpoint theo step, DDP + SyncBN + AMP, giải nén tar vào
+  `/tmp/audio_cache`, pin `HF_REVISION`) cho cả hai encoder. (3) Chạy thử
+  `train.py` `main()` trên Kaggle (tốn GPU → hỏi trước).
+
+### 2026-09-30 (tổng kết)
+- **Làm:** rà lại toàn bộ dự án (TODO, Plan, ARCHITECTURE, notes, git log) và
+  viết bản tổng kết tiến độ + dashboard HTML mô phỏng kết quả cuối (RQ1/RQ2/RQ3)
+  vào `docs/tong_ket/2026-09-30/` (ban đầu tạo ngoài repo, người dùng yêu cầu chuyển vào; chưa commit). Số trên
+  dashboard có nhãn "Mô phỏng" là số giả lập để hình dung bố cục Chương 3,
+  **không** dùng trong khóa luận. Không đổi code.
+- **Phiên sau bắt đầu từ:** như mục 2026-09-30 ở trên (kernel `make_dataset`
+  5 lần; sửa code dùng chung bước 3).
+- **Làm (tiếp):** theo yêu cầu người dùng (buổi gặp GVHD đầu tiên sau 6 tuần),
+  hỏi đáp rồi dựng `docs/tong_ket/2026-09-30/trinh_bay_gvhd.html` (trang cuộn:
+  đề tài, sản phẩm cuối, bản phác demo Gradio đầy đủ, luồng, kiến trúc, dữ liệu,
+  huấn luyện, mục lục khóa luận, tiến độ, hạn chế) và `cau_hoi_gvhd.html` (9
+  câu: A1-A4 thiết kế thí nghiệm, B1 lệch đề cương, C1-C4 hình thức; có ô ghi
+  quyết định). `docs/tong_ket/` đưa vào `.gitignore` (người dùng chọn).
+- **Phát hiện:** ~19,4% transcript train và 58/250 câu clean-test là tiếng Anh
+  phiên sai → 🔴 mới trong `TODO.md`, có thể chặn train nếu GVHD chọn lọc.
+- **Phiên sau bắt đầu từ:** ghi câu trả lời của GVHD (nút "Chép tất cả câu trả
+  lời" trên trang câu hỏi) vào `Plan.md` mục 4/5, `TODO.md`, `QA.md`; rồi tiếp
+  kernel `make_dataset` + sửa code dùng chung.
+
+### 2026-10-01
+- **Làm:** phiên hỏi đáp để người dùng hiểu kỹ dự án (chặng 1 bức tranh lớn,
+  chặng 2 CTC, tiền xử lý, kiến trúc; so sánh ASR vs TTS). In cấu trúc Conformer
+  thật từ code (tham số từng khối). Vẽ 2 hình cho báo cáo/khóa luận:
+  `reports/figures/kien_truc_tong_the.{svg,png}`,
+  `reports/figures/khoi_conformer_vs_mamba.{svg,png}` (PNG ×2 để chèn Word).
+  Thêm `mamba_tong_the.{svg,png}` (Mamba-CTC phóng to 3 tầng: mô hình → khối
+  Mamba → quét S6 kèm công thức) và `kien_truc_tung_lop.{svg,png}` (AI hiểu
+  nhầm yêu cầu "từng layer"; người dùng chưa quyết giữ hay xoá).
+- **Ghi nhận mới (chưa quyết):** Mamba không dropout vs Conformer 0,1; không
+  CMVN — `TODO.md` ⚠️.
+- **Phiên sau bắt đầu từ:** tiếp hỏi đáp (chặng 5 khớp tham số → 8 đánh giá)
+  nếu người dùng muốn; các mục của 2026-09-30 vẫn mở.
+- **Đánh giá đề cương** (người dùng yêu cầu, chỉ đọc 2 file `.docx`, không sửa):
+  điểm mạnh là thiết kế ablation; vấn đề chính: số liệu dữ liệu sai và hai bản
+  mâu thuẫn, Mamba một chiều là biến gây nhiễu chưa nêu, TLTK chỉ 3 mục, tuyên
+  bố mới lạ quá mạnh, taxonomy RQ3 chưa vận hành được ("nhiễu nền" là nguyên
+  nhân, thiếu "dấu thanh"), không có kiểm định thống kê (gợi ý bootstrap CI).
+  Chưa ghi thành file — chỉ mục Mamba một chiều được ghi (dưới).
+- **Chốt (người dùng):** ghi nhận nghi vấn Mamba một chiều, **cân nhắc hai
+  chiều** → `docs/notes/mamba_bidirectional.md`, 🔴 `TODO.md`, mục 5. Chưa đổi
+  code.
+
+
+### 2026-10-01 → 2026-10-02 (sau buổi GVHD lần 1)
+- **Ghi ý kiến GVHD** (Tuần 6, buổi sau dự kiến Tuần 9): đổi định hướng sang
+  **khảo sát**, Mamba là trọng tâm, đối chứng không cần giống hệt, Conformer nên
+  pre-train; "đừng ôm đồm"; A1 người dùng tự quyết; **sẽ sửa đề cương** (bản
+  mới). `docs/notes/gvhd_buoi_1.md`.
+- **Tra ứng viên** → `docs/notes/survey_model_candidates.md`. Loại
+  `kyle/vi-asr-fastconformer-114m` (đã train trên VietSuperSpeech) và Zipformer-30M
+  (sinh nhãn, license ND). Đính chính: nhãn hỏng là chuỗi giả tiếng Anh (không
+  phải âm tiết Việt); Parakeet là Việt–Anh CS (không phải chỉ tiếng Việt).
+- **Chốt (người dùng 2026-10-02):** đội hình 5 mô hình; Mamba hai chiều B1;
+  duyệt thay đổi phép đo (mục 4).
+- **A1:** người dùng hỏi căn cứ ngưỡng 20% → **không có căn cứ tài liệu**, AI tự
+  đặt; số liệu: phân bố hai đỉnh, ngưỡng 10-50% chỉ đổi ~1.100 câu; chưa chứng
+  minh audio là tiếng Anh. Kiểm bằng cột ngôn ngữ audio khi hiệu đính
+  clean-test. Chưa chốt lọc.
+- **3 tác nhân song song:**
+  1. Mamba B1 xong (`mamba_encoder.py`, yaml `n_layers: 14`, `bidirectional:
+     true`): 12.285.696 tham số, 6 test CPU khối giả đạt; `out_proj` chia √28
+     (tác nhân tự quyết, AI đồng ý — người dùng chưa xác nhận). Benchmark lần 3
+     (`CHECK_CODE` + đo Mamba B1) sửa sẵn, **chưa chạy**.
+  2. Kernel `scripts/kaggle/zero_shot/` (Parakeet, PhoWhisper-small,
+     wav2vec2-base-vi; greedy không LM; WER 2 mức + RTF + VRAM) chạy thật CPU
+     local 4 câu cả 3 mô hình, **chưa chạy Kaggle** (~0,5 GPU-h). Code dùng
+     chung mới: `src/evaluation/text_normalize.py`, `wer.py` tự chuẩn hóa (WER
+     cũ không đổi). Card Parakeet không liệt kê T4.
+  3. Tạo 5 dataset: 5 kernel CPU riêng `make-dataset-asr-{shard0..3,val}`; lúc
+     đóng phiên 4/5 COMPLETE, shard2 RUNNING; **chưa kiểm log, chưa tạo Dataset**
+     (tác nhân dừng giữa chừng khi đóng phiên).
+- **Chưa commit/push** (người dùng chưa duyệt). Benchmark + zero-shot cần push
+  code lên GitHub trước (kernel clone repo).
+- **Phiên sau bắt đầu từ:** (1) xin duyệt commit + push + chạy 2 kernel GPU;
+  (2) kiểm log 5 kernel `make-dataset-asr-*` (đủ số file, 16 kHz, duration),
+  tạo 5 Kaggle Dataset từ output (có thể phải qua UI); (3) cập nhật mục 1 +
+  lộ trình mục 2 + `CLAUDE.md` theo định hướng khảo sát; (4) khung đề cương mới
+  trước Tuần 9.

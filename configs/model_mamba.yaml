@@ -1,16 +1,20 @@
-# Mamba-CTC. n_layers=28 chọn 2026-09-24 để khớp tham số với
-# model_conformer.yaml: 12.292.864 vs 12.204.288 (+0,73%, mục tiêu < 5%; 2026-09-30
-# thêm norm_f +512 so với 12.292.352 đo trên Kaggle 2026-09-24) — số
-# đếm theo shape của mamba_ssm.Mamba v2.3.1, cần xác nhận lại bằng
-# `python -m src.models.param_count` trên Kaggle. Giữ expand=2 mặc định bài
-# gốc, chỉ tăng độ sâu; d_model=256 để CTC head giống hệt Conformer.
+# Mamba-CTC. 2026-10-02 chuyển sang hai chiều phương án B1
+# (docs/notes/mamba_bidirectional.md): 14 lớp × 2 khối Mamba (xuôi + ngược,
+# chung LayerNorm) = vẫn 28 khối như bản một chiều n_layers=28 chọn
+# 2026-09-24 để khớp tham số với model_conformer.yaml. Tính theo shape
+# mamba_ssm.Mamba v2.3.1: 12.285.696 vs 12.204.288 (+0,67%, mục tiêu < 5%) —
+# cần xác nhận bằng `python -m src.models.param_count` trên Kaggle. Giữ
+# expand=2 mặc định bài gốc, chỉ tăng độ sâu; d_model=256 để CTC head giống
+# hệt Conformer. Bản một chiều (ablation/thảo luận): bidirectional: false,
+# n_layers: 28 → 12.292.864.
 experiment_name: mamba_ctc
 
 encoder:
   type: mamba
   input_dim: 80
   d_model: 256
-  n_layers: 28 # 1 Mamba block ~0,44M tham số, 1 Conformer block ~1,5M
+  n_layers: 14 # số lớp; mỗi lớp 2 khối khi bidirectional. 1 khối Mamba ~0,44M tham số, 1 Conformer block ~1,5M
+  bidirectional: true
   d_state: 16
   d_conv: 4
   expand: 2

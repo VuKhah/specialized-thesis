@@ -74,7 +74,11 @@ Repo HF có 118.259 file trong `audio/` nhưng train+validation chỉ dùng 67.4
 Tokenizer: `encode` dịch mọi id SentencePiece lên +1 để id 0 dành cho CTC blank;
 `decode` bỏ blank rồi dịch ngược. `vocab_size` (thuộc tính) = `get_piece_size() + 1`.
 Transcript dataset **toàn chữ HOA, không dấu câu**; tokenizer train trên chính
-nó nên hypothesis cũng chữ HOA — WER tính trực tiếp, không cần chuẩn hoá thêm.
+nó nên hypothesis cũng chữ HOA. Từ 2026-10-02 **mọi WER đi qua
+`normalize_text`** (`src/evaluation/text_normalize.py`, gọi bên trong
+`compute_wer`/`compute_wer_report`): NFC, chữ thường, dấu câu → khoảng trắng —
+để so được với mô hình pre-train ra chữ hoa/dấu câu. Với nhãn hiện có chỉ đổi
+hoa/thường (+29 dấu `-`, 5 ký tự `<` trên 60.656 câu) nên WER không đổi.
 
 ## 4. Điểm hoán đổi: `ASREncoder`
 
@@ -87,11 +91,11 @@ và là chỗ *duy nhất* khác nhau giữa hai nhánh.
 |---|---|---|
 | Nguồn | `torchaudio.models.Conformer` | `mamba_ssm.Mamba` (Mamba-1/S6, pin tag `v2.3.1`) |
 | Đầu vào | `Linear(80 → 256)` | `Linear(80 → 256)` |
-| Thân | 8 lớp, 4 head, ffn 1024, conv kernel 31, dropout 0,1 | 10 lớp (yaml): `x + Mamba(LayerNorm(x))`; d_state 16, d_conv 4, expand 2 |
-| Ngữ cảnh | self-attention toàn chuỗi (2 chiều), chi phí O(T²) | quét **một chiều** trái→phải, chi phí O(T) |
-| Padding | torchaudio tự mask theo `feat_lengths` | **không mask** (TODO trong code); trả `feat_lengths` nguyên vẹn |
+| Thân | 8 lớp, 4 head, ffn 1024, conv kernel 31, dropout 0,1 | 14 lớp hai chiều B1 (yaml, từ 2026-10-02): `h = LN(x); x = x + Mamba_xuôi(h) + rev(Mamba_ngược(rev(h)))`, `rev` = đảo theo `feat_lengths` từng mẫu (`reverse_padded`); rồi `norm_f`. d_state 16, d_conv 4, expand 2. Cờ `bidirectional: false` → bản một chiều cũ `x + Mamba(LN(x))` |
+| Ngữ cảnh | self-attention toàn chuỗi (2 chiều), chi phí O(T²) | quét **hai chiều** (2 lần quét/lớp, 28 khối), chi phí O(T) |
+| Padding | torchaudio tự mask theo `feat_lengths` | không mask tường minh: nhánh ngược đảo theo độ dài thật nên padding luôn ở cuối theo chiều quét (mục 8-e); trả `feat_lengths` nguyên vẹn |
 | Cần | torch, torchaudio | GPU + kernel CUDA (`mamba-ssm`, `causal-conv1d`) — chỉ có trên Kaggle |
-| Tham số | 12.204.288 (theo yaml, đo bằng `param_count.py`) | 12.292.864 (+0,73%) với `n_layers: 28`, `expand: 2` — đo 12.292.352 bằng `param_count.py` trên Kaggle T4 (2026-09-24), +512 của `norm_f` thêm 2026-09-30 (chưa đo lại) |
+| Tham số | 12.204.288 (theo yaml, đo bằng `param_count.py`) | 12.285.696 (+0,67%) với B1 `n_layers: 14` — đếm bằng khối giả cùng shape `mamba_ssm.Mamba` v2.3.1 (2026-10-02), **chưa đo trên Kaggle**. Bản một chiều 28 lớp: 12.292.864 (đo 12.292.352 trên T4 2026-09-24 + 512 `norm_f`) |
 
 ## 5. Vòng đời một thí nghiệm
 
@@ -152,11 +156,12 @@ Ký hiệu: ✅ đã chạy thật · 🟡 chạy được một phần · ⬜ c
 | `src/tokenizer/bpe_tokenizer.py` | BPE SentencePiece + blank id 0 | ✅ |
 | `src/models/encoder_base.py` | Interface `ASREncoder` | ✅ |
 | `src/models/conformer_encoder.py` | Encoder Conformer | ✅ (CPU) |
-| `src/models/mamba_encoder.py` | Encoder Mamba | 🟡 kernel `mamba_ssm` chạy được trên T4; `MambaEncoder` + `train.py` **chưa** chạy qua |
+| `src/models/mamba_encoder.py` | Encoder Mamba (hai chiều B1 + cờ một chiều) | 🟡 B1 test CPU bằng khối giả (shape, padding, tham số, weight decay) 2026-10-02; **chưa** chạy với kernel CUDA thật |
 | `src/models/ctc_model.py` | Front-end + encoder + CTC head, loss, greedy decode | ✅ (với Conformer) |
 | `src/models/param_count.py` | So số tham số hai encoder, đọc yaml qua `build_encoder` | 🟡 Conformer ✅ (12.204.288) · Mamba chưa đo (cần CUDA); xem mục 8-f |
 | `src/training/train.py` | Vòng train chung: checkpoint/resume, eval WER, tensorboard | ✅ Conformer (CPU) · ⬜ Mamba |
-| `src/evaluation/wer.py` | `compute_wer`, `compute_wer_report` (jiwer) | ✅ (dùng trong eval loop) |
+| `src/evaluation/wer.py` | `compute_wer`, `compute_wer_report` (jiwer), tự chuẩn hóa ref/hyp qua `normalize_text` | ✅ (dùng trong eval loop) |
+| `src/evaluation/text_normalize.py` | Chuẩn hóa văn bản dùng chung cho **mọi** mô hình trước WER; `is_vietnamese_label` (heuristic < 20% từ có dấu, **chưa kiểm chứng** — A1) | ✅ 2026-10-02 test local |
 | `src/evaluation/rtf.py` | `measure_rtf` + bucket độ dài | ⬜ chưa chạy thật |
 | `src/demo/` | Demo Gradio | ⬜ chỉ có `__init__.py` |
 | `src/evaluation/eval_clean_test.py` | Đo WER checkpoint trên clean-test → `reports/results/<exp>_clean_test.json` (ref/hyp từng câu) | 🟡 chạy thật với dữ liệu thật (Conformer, CPU, trọng số ngẫu nhiên — chưa có checkpoint train) · Mamba ⬜ |
@@ -166,7 +171,8 @@ Ký hiệu: ✅ đã chạy thật · 🟡 chạy được một phần · ⬜ c
 | `notebooks/02_dataset_eda.ipynb` | EDA: waveform, spectrogram, nghe audio | ✅ |
 | `scripts/kaggle/verify_mamba.py` | Kernel GPU: build wheel mamba, `param_count`, smoke test cả hai encoder | ✅ 2026-09-24 |
 | `scripts/kaggle/check_env/check_env.py` | Kernel CPU (D9): đĩa, tốc độ tải HF, số file output, tốc độ tar | ✅ 2026-09-28 |
-| `scripts/kaggle/benchmark/benchmark.py` | Kernel GPU (D9): s/step theo `num_workers` / AMP / 2 GPU × 2 encoder; tự viết vòng step, không gọi `train.py` | ✅ 2026-09-30 chạy đủ 8 cấu hình trên Kaggle (kết quả: `docs/notes/training_plan_kaggle.md` mục 5) |
+| `scripts/kaggle/zero_shot/zero_shot.py` | Kernel GPU: zero-shot Parakeet-CTC-0.6B-vi / PhoWhisper-small / wav2vec2-base-vi trên 250 câu clean-test (tải từ HF), greedy không LM, WER 2 mức + RTF + VRAM → `results.json`, `predictions.tsv` | 🟡 2026-10-02 chạy thật CPU local 4 câu cả 3 mô hình · **chưa chạy Kaggle** |
+| `scripts/kaggle/benchmark/benchmark.py` | Kernel GPU (D9): s/step theo `num_workers` / AMP / 2 GPU × 2 encoder; tự viết vòng step, không gọi `train.py` | ✅ 2026-09-30 chạy đủ 8 cấu hình trên Kaggle (kết quả: `docs/notes/training_plan_kaggle.md` mục 5) · lần 3 (Mamba B1 + `CHECK_CODE` kiểm padding/tham số bằng kernel thật) sửa sẵn 2026-10-02, **chưa chạy** |
 | `scripts/kaggle/make_dataset/make_dataset.py` | Kernel CPU (D6): tạo 1 trong 5 dataset (sửa `PART`), kiểm WAV sau tải | 🟡 test local 20 file thật · chưa chạy trên Kaggle (cần push manifest) |
 | `scripts/kaggle/**/kernel-metadata.json` | Cấu hình kernel (chứa username) — **gitignore**, giữ local | — |
 
@@ -181,14 +187,20 @@ Ký hiệu: ✅ đã chạy thật · 🟡 chạy được một phần · ⬜ c
   và không kiểm tra.
 - **d. Không subsampling.** `T' = T` ≈ 1000–1500 khung cho mỗi mẫu. Ảnh hưởng
   VRAM/`batch_size`, chi phí attention của Conformer, và cách đọc kết quả RQ2.
-- **e. Mamba đơn hướng, không mask padding.** Khác biệt về ngữ cảnh giữa hai
-  encoder là thuộc tính kiến trúc, cần nêu trong phần thảo luận (chưa thấy repo
-  ghi lại). Không mask là **đúng** khi còn đơn hướng (conv1d + scan nhân quả,
-  padding ở cuối không lan ngược; CTC chỉ tính trên `feat_lengths`) — chuyển
-  sang hai chiều thì phải mask.
+- **e. Mamba hai chiều B1, padding xử lý bằng đảo theo độ dài (2026-10-02).**
+  Lý do chuyển và phương án: `docs/notes/mamba_bidirectional.md`. Nhánh ngược
+  dùng `reverse_padded` (gather theo `feat_lengths`), **không** `torch.flip` cả
+  tensor — flip đưa padding lên đầu chuỗi, lọt vào trạng thái scan (test đối
+  chứng: lệch ~1e-1). Nhờ vậy với mọi khối padding luôn nằm *sau* khung thật
+  theo chiều quét, conv1d + scan nhân quả → không cần mask; CTC chỉ tính trên
+  `feat_lengths`. Ai sửa forward phải giữ bất biến này (vd. thêm subsampling
+  thì phải tính lại `feat_lengths` *trước* khi đảo). Với cờ một chiều, lập
+  luận cũ vẫn đúng.
 - **e2. Theo khuyến nghị tác giả Mamba (rà 2026-09-30, mamba-ssm v2.3.1).**
   `MambaEncoder` tự thêm những gì `MixerModel` có mà khối `Mamba` lẻ không có:
-  `norm_f`, chia `out_proj` cho √n_layers, residual fp32. `build_optimizer`
+  `norm_f`, chia `out_proj` cho √(số khối cộng vào residual) — B1: √(2 × 14)
+  = √28, cả hai nhánh — residual fp32. `n_layers` trong yaml là số *lớp*;
+  B1 mỗi lớp 2 khối nên 14 lớp = 28 khối, 56 tham số miễn weight decay. `build_optimizer`
   miễn weight decay cho tham số `_no_weight_decay` (`A_log`, `D`); Conformer
   không bị ảnh hưởng (đã kiểm: tham số giống hệt từng bit so với AdamW cũ).
   Khi thêm AMP: dùng `torch.autocast` + tham số fp32, **không** `.half()`.
@@ -209,5 +221,8 @@ Ký hiệu: ✅ đã chạy thật · 🟡 chạy được một phần · ⬜ c
   (`3–30 s`) và `survey.py` chia bucket theo giả định của đề cương, trong khi
   dữ liệu thật chỉ 10–15 s. **Không sửa** khi quyết định 🔴 về RQ2 chưa có
   (`docs/notes/dataset_discrepancy.md`).
+- **k. Bản chép `text_normalize.py` trong kernel `zero_shot`.** Kernel chỉ
+  upload 1 file nên nhúng nguyên văn module dạng chuỗi; sửa module thì phải chép
+  lại (kernel tự so khớp với repo local/GitHub và báo nếu lệch).
 - **j. Docstring lỗi thời — đã sửa 2026-09-21** (`vietsuperspeech_dataset.py`,
   `wer.py`).

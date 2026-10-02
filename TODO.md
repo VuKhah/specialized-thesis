@@ -1,6 +1,6 @@
 # TODO tổng — Mamba vs Conformer ASR
 
-Cập nhật lần cuối: **2026-09-30** (sau push `256396c`). **Nguồn sự thật duy nhất cho việc cần làm /
+Cập nhật lần cuối: **2026-10-01** (sau buổi GVHD lần 1). **Nguồn sự thật duy nhất cho việc cần làm /
 đang chặn / đã xong.** Kế hoạch tuần + quyết định + nhật ký phiên ở
 [`Plan.md`](Plan.md); kiến trúc ở [`ARCHITECTURE.md`](ARCHITECTURE.md).
 
@@ -8,12 +8,59 @@ Câu hỏi cần mang đi hỏi (người dùng/GVHD): [`QA.md`](QA.md).
 
 ## 🔴 Đang chặn — chờ quyết định từ GVHD
 
+- [ ] **ĐỔI ĐỊNH HƯỚNG sau buổi GVHD lần 1 (ghi 2026-10-01) — ưu tiên số 1**:
+      khảo sát Mamba (trọng tâm) vs Conformer pre-train + fine-tune vs 2-3 mô
+      hình khác vs 1 baseline; không cần giống hệt cấu hình; nhận xét theo đánh
+      đổi WER/tốc độ/tài nguyên. Cần làm rõ Q-a…Q-g trong
+      `docs/notes/gvhd_buoi_1.md` mục 4 (danh sách mô hình, Mamba train từ đầu
+      hay fine-tune, baseline, fine-tune hay zero-shot, đề cương/tên đề tài).
+      **Chờ chốt trước bước 6 (train) và trước khi sửa phần riêng Conformer.**
+      Bước 5 (tạo dataset) và hiệu đính clean-test vẫn làm được.
+      Đã biết thêm: thầy không gợi ý mô hình, dặn **"đừng ôm đồm"**; **sẽ sửa
+      đề cương** (làm bản mới, không sửa docx cũ); buổi sau dự kiến Tuần 9.
+      A1 (nhãn tiếng Anh) thầy giao **người dùng tự quyết** sau khi tìm hiểu
+      ngôn ngữ pre-train của từng mô hình. A2-A4: chưa được trả lời.
+      **AI đã tra ứng viên + phân tích A1:** `docs/notes/survey_model_candidates.md`
+      (đề xuất 4 mô hình: Mamba + Conformer nhỏ train từ đầu, Parakeet-CTC-0.6B-vi,
+      PhoWhisper-small; A1 nghiêng lọc khỏi train + báo clean-test 2 mức).
+      **Chốt 2026-10-02: đủ 5 mô hình** (Mamba hai chiều + Conformer nhỏ train
+      từ đầu, Parakeet-CTC-0.6B-vi, PhoWhisper-small, wav2vec2-base-vi); **duyệt
+      mọi thay đổi phép đo** (RQ2 = so hiệu quả giữa mô hình + ghép đoạn đo RTF
+      theo độ dài; chuẩn hóa văn bản chung trước WER; A3 giữ + nêu hạn chế,
+      tách nhóm zero-shot/fine-tune khi bàn). **Còn chờ: A1.** Sau đó: viết đề cương điều chỉnh
+      (bản mới) trước buổi Tuần 9.
+
 - [ ] **Hướng xử lý sai lệch số liệu dataset ảnh hưởng RQ2**: số liệu thật
       (67.405 mẫu/245,42h, audio gần như đồng nhất 10-15s) khác đề cương đã
       đăng ký (52.023/267,39h, dải 3-30s) — RQ2 (RTF theo độ dài audio) không
       còn đủ dải để chứng minh ưu thế O(n) của Mamba. 4 phương án trong
       `docs/notes/dataset_discrepancy.md`, đang chờ ý kiến thầy Hoàng Văn
       Dũng. **Không tự chọn phương án khi chưa có ý kiến.**
+      *Không chặn train (rà 2026-09-30):* cả 4 phương án chỉ đổi phần đo RTF
+      sau train (RTF không phụ thuộc trọng số → đo được song song lúc train).
+      Chỉ ảnh hưởng train nếu GVHD muốn WER trên audio dài hoặc thêm dữ liệu
+      train — nên hỏi thêm: "RQ2 chỉ cần RTF hay cần cả WER audio dài?"
+
+- [ ] **Nhãn tiếng Anh phiên sai (phát hiện 2026-09-30)**: câu có < 20% từ
+      mang dấu tiếng Việt (heuristic, chưa nghe kiểm) — train 11.784/60.656
+      (19,4%), clean-test 58/250 (23,2%). Đoạn khách mời nói tiếng Anh bị nhãn
+      máy phiên thành chuỗi vô nghĩa. Phương án: (a) giữ, nêu hạn chế; (b) giữ
+      train, báo WER clean-test hai mức (toàn bộ / chỉ tiếng Việt); (c) lọc khỏi
+      train + clean-test. **Nếu chọn (c) phải chốt trước khi tạo dataset/train.**
+      Đã đưa vào `docs/tong_ket/2026-09-30/cau_hoi_gvhd.html` (A1). Không tự chọn.
+      **2026-10-02:** GVHD giao người dùng tự quyết. Ngưỡng 20% **không có
+      căn cứ tài liệu** (AI tự đặt); số liệu cho thấy phân bố hai đỉnh, ngưỡng
+      10-50% chỉ đổi ~1.100 câu, nhưng chưa chứng minh audio là tiếng Anh →
+      kiểm bằng cách gắn nhãn ngôn ngữ audio khi hiệu đính clean-test.
+      Chi tiết: `docs/notes/survey_model_candidates.md` mục 4. **Còn chờ người
+      dùng chốt lọc hay không** (sau khi kiểm chứng).
+
+- [x] **Mamba hai chiều — CHỐT 2026-10-02 (người dùng), phương án B1**; việc
+      sửa code chuyển xuống 🟡. Ghi chú gốc: Mamba hiện chỉ nhìn quá khứ, Conformer nhìn cả câu →
+      biến gây nhiễu cho RQ1. Phương án B1 (hai chiều, 14 lớp × 2 khối, cộng) =
+      12.285.696 tham số (+0,67%), vẫn 28 khối như cũ; cần đảo chuỗi theo độ dài
+      thật, benchmark lại. Chi tiết: `docs/notes/mamba_bidirectional.md`. **Chốt
+      trước khi train; hỏi GVHD (A4). Chưa đổi code.**
 
 ## 🟡 Sẵn sàng làm ngay — kế hoạch Kaggle đã duyệt 2026-09-28
 
@@ -52,14 +99,34 @@ duyệt, D3 → **4 shard**, train full + đánh giá theo epoch).
       validation, val 6.499 + clean-test 250 (đối chiếu nội dung theo index).
       Mỗi shard 15.164 câu / 55,21 h / 6,36 GB, lệch phân bố ≤ 0,1 điểm %, phủ
       996/998 token BPE. Đã commit + push 2026-09-30.
-- [ ] **5. Kernel CPU tạo 5 dataset** (4 train + 1 val), private —
+- [ ] **5. Kernel CPU tạo 5 dataset** — *2026-10-02: đã push 5 kernel riêng
+      `make-dataset-asr-{shard0..3,val}`; lúc đóng phiên 4/5 xong, shard2 đang
+      chạy. Còn: kiểm log từng kernel, tạo Dataset từ output, chia sẻ B.*
+      (4 train + 1 val), private —
       `scripts/kaggle/make_dataset/make_dataset.py` (`PACK_TAR = True`), test
       local 20 file thật. Còn: chạy 5 lần (sửa `PART`), mỗi lần ~40 phút CPU
       (không tốn GPU); tạo Dataset từ output; chia sẻ sang tài khoản B (D6).
 - [ ] **6. Train full song song**: tài khoản A Conformer, B Mamba; báo cáo
       theo epoch, so hai mô hình ở cùng số epoch.
 
+## 🟡 Mới 2026-10-02 — chờ duyệt chạy
+
+- [ ] **Commit + push** thay đổi 2026-10-01/02 (Mamba B1, chuẩn hóa văn bản,
+      kernel zero_shot, notes) — người dùng chưa duyệt; cần trước khi chạy kernel.
+- [ ] **Kernel GPU benchmark lần 3** (Mamba B1, `CHECK_CODE` kiểm CUDA thật;
+      ~10-15 phút) — xin duyệt quota.
+- [ ] **Kernel GPU zero_shot** 3 mô hình trên 250 câu clean-test (~0,5 GPU-h)
+      — xin duyệt quota. Kiểm Parakeet chạy được trên T4.
+- [ ] Xác nhận các thiết lập tác nhân tự chọn: `out_proj` chia √28; greedy
+      không LM; chữ số giữ nguyên; đo batch 1 fp16.
+- [ ] Viết lại `Plan.md` mục 1-2, `CLAUDE.md` (luật "chỉ encoder khác nhau"),
+      `README.md` theo định hướng khảo sát; khung **đề cương mới** trước Tuần 9.
+
 ## 🟢 Việc tay — song song bất cứ lúc nào, không chặn code
+
+- [ ] **Khi hiệu đính clean-test: thêm cột nhãn ngôn ngữ audio** (Việt / Anh /
+      chen / nhạc-ồn) — dùng làm căn cứ kiểm chứng ngưỡng lọc A1
+      (`survey_model_candidates.md` mục 4). Nay là việc **ưu tiên** vì chặn A1.
 
 - [ ] Nghe & hiệu đính 250 câu trong `data/processed/clean_test_manifest.json`
       (cột `corrected_text` còn trống) — dùng mục 5 của
@@ -123,12 +190,18 @@ duyệt, D3 → **4 shard**, train full + đánh giá theo epoch).
       Liên quan mục `train.py` không AMP/1 GPU bên dưới — chưa quyết.
       *2026-09-30: đã đo (fp32 1 GPU: Conformer 42,5 h, Mamba 48,7 h); lựa
       chọn tăng tốc là mục ⏸ D8 ở trên.*
-- [ ] Mamba đơn hướng, chưa mask padding (TODO trong `mamba_encoder.py`); hai
+- [ ] Mamba đơn hướng (đang cân nhắc hai chiều — 🔴 ở trên), chưa mask padding; hai
       encoder không subsampling (T'=T ≈ 1000-1500 khung). Cần nêu trong phần
       thảo luận; kiểm tra đề cương đã đề cập chưa.
 - [ ] `train.py`: 1 GPU (Kaggle có 2x T4), không AMP — ảnh hưởng thời gian
       train so với hạn mức 30 GPU-giờ/tuần. Chưa quyết định có tối ưu không
       (sửa training loop là sửa code dùng chung, phải áp dụng cho cả hai).
+- [ ] **Chênh ngoài lõi encoder (ghi 2026-10-01, chưa quyết):** Conformer có
+      dropout 0,1 (FFN, conv, attention), Mamba **không có dropout** (đúng như
+      mamba-ssm gốc) → nếu Mamba overfit hơn, đây là một nguyên nhân cần thảo
+      luận. Front-end **không CMVN** (log-mel vào thẳng `Linear 80→256`), không
+      SpecAugment — giống nhau cho cả hai nên vẫn công bằng; muốn thêm CMVN thì
+      là sửa code dùng chung, phải làm **trước khi train**. Người dùng quyết.
 - [ ] `best.pt` chọn theo WER `validation`, mà clean-test lấy từ `validation`
       → lưu ý khi diễn giải kết quả cuối.
 - [ ] `rtf.py`/`survey.py` chia bucket độ dài theo đề cương (3-30s), không

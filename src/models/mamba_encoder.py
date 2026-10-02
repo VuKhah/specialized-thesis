@@ -4,6 +4,11 @@
 khác mục tiêu thiết kế, ngoài phạm vi đề cương đã đăng ký — xem
 docs/notes/mamba_versions.md).
 
+Mặc định hai chiều kiểu "ngoài" (phương án B1, chốt 2026-10-02 — lý do và
+cách tính tham số ở docs/notes/mamba_bidirectional.md): Conformer nhìn cả câu,
+Mamba một chiều chỉ nhìn quá khứ → RQ1 lẫn biến "ngữ cảnh một phía". Cờ
+`bidirectional=False` giữ lại đường một chiều cũ (28 lớp) cho phần thảo luận.
+
 Xem notebooks/00_setup_environment.ipynb để xác nhận `mamba-ssm` CUDA kernel
 có chạy được trên T4 hay không. Nếu không, dùng selective_scan_ref (thuần
 PyTorch, chậm hơn nhưng không cần build kernel) — đúng phương án dự phòng
@@ -24,6 +29,19 @@ except ImportError:
     MAMBA_SSM_AVAILABLE = False
 
 
+def reverse_padded(x: torch.Tensor, lengths: torch.Tensor) -> torch.Tensor:
+    """Đảo [B, T, D] theo trục thời gian trong phạm vi độ dài thật của từng mẫu,
+    padding giữ nguyên ở cuối. Phép đảo là tự nghịch đảo: gọi hai lần ra x.
+
+    Không dùng torch.flip cả tensor: padding (ở cuối) sẽ thành đầu chuỗi và
+    lọt vào trạng thái của nhánh quét ngược trước khi gặp khung thật.
+    """
+    t = torch.arange(x.size(1), device=x.device)
+    lengths = lengths.to(x.device).unsqueeze(1)
+    index = torch.where(t < lengths, lengths - 1 - t, t)  # [B, T]
+    return torch.gather(x, 1, index.unsqueeze(-1).expand_as(x))
+
+
 class MambaEncoder(ASREncoder):
     def __init__(
         self,
@@ -33,6 +51,7 @@ class MambaEncoder(ASREncoder):
         d_state: int = 16,
         d_conv: int = 4,
         expand: int = 2,
+        bidirectional: bool = False,
     ):
         super().__init__()
         if not MAMBA_SSM_AVAILABLE:
@@ -42,36 +61,61 @@ class MambaEncoder(ASREncoder):
             )
 
         self._d_model = d_model
+        self.bidirectional = bidirectional
+
+        def make_blocks():
+            return torch.nn.ModuleList(
+                [
+                    _MambaBlock(d_model=d_model, d_state=d_state, d_conv=d_conv, expand=expand)
+                    for _ in range(n_layers)
+                ]
+            )
+
         self.input_proj = torch.nn.Linear(input_dim, d_model)
-        self.layers = torch.nn.ModuleList(
-            [
-                _MambaBlock(d_model=d_model, d_state=d_state, d_conv=d_conv, expand=expand)
-                for _ in range(n_layers)
-            ]
-        )
+        # Nhánh xuôi giữ tên `layers` để checkpoint/state_dict của bản một chiều
+        # vẫn nạp được khi tắt cờ.
+        self.layers = make_blocks()
+        # B1: khối ngược có tham số riêng nhưng dùng chung LayerNorm với khối
+        # xuôi — đúng con số 12.285.696 đã chốt trong note.
+        self.layers_bwd = make_blocks() if bidirectional else None
         self.norms = torch.nn.ModuleList([torch.nn.LayerNorm(d_model) for _ in range(n_layers)])
         # Ba chỗ dưới theo MixerModel/_init_weights của mamba-ssm v2.3.1 (rà
         # 2026-09-30): dùng khối Mamba lẻ thì không tự có. norm_f: chồng pre-norm
         # để residual chưa chuẩn hoá đi thẳng vào CTC head — Conformer torchaudio
         # thì mỗi lớp đã kết thúc bằng LayerNorm.
         self.norm_f = torch.nn.LayerNorm(d_model)
-        # rescale_prenorm_residual: 28 nhánh cộng dồn vào residual → chia out_proj
-        # (đã khởi tạo kaiming_uniform a=√5, giống _init_weights) cho √n_layers.
+        # rescale_prenorm_residual: _init_weights chia out_proj cho
+        # √(n_residuals_per_layer × n_layer), tức √(số đầu ra khối độc lập cộng
+        # vào residual). B1 cộng 2 out_proj mỗi lớp (phương sai cộng dồn như 2
+        # nhánh) → √(2 × 14) = √28, trùng hệ số của bản một chiều 28 lớp.
+        # out_proj đã khởi tạo kaiming_uniform a=√5, giống _init_weights.
+        n_branches = 2 if bidirectional else 1
+        scale = math.sqrt(n_branches * n_layers)
         with torch.no_grad():
-            for layer in self.layers:
-                layer.out_proj.weight /= math.sqrt(n_layers)
+            for blocks in (self.layers, self.layers_bwd or []):
+                for block in blocks:
+                    block.out_proj.weight /= scale
 
     @property
     def output_dim(self) -> int:
         return self._d_model
 
     def forward(self, feats: torch.Tensor, feat_lengths: torch.Tensor):
-        # residual_in_fp32: dưới autocast, input_proj trả fp16 → cộng dồn 28 lớp
-        # ở fp16. Ép fp32 ở đây là đủ: LayerNorm chạy fp32 và fp32 + fp16 → fp32.
+        # residual_in_fp32: dưới autocast, input_proj trả fp16 → cộng dồn 28
+        # khối ở fp16. Ép fp32 ở đây là đủ: LayerNorm chạy fp32 và fp32 + fp16 → fp32.
         x = self.input_proj(feats).float()  # [B, T, d_model]
-        # Không mask padding là đúng *với Mamba đơn hướng*: conv1d và scan đều
-        # nhân quả, padding nằm cuối chuỗi nên không lan ngược về khung thật;
-        # CTC chỉ tính trên feat_lengths. Chuyển sang hai chiều thì phải mask.
-        for layer, norm in zip(self.layers, self.norms):
-            x = x + layer(norm(x))
+        # Không cần mask padding vì padding luôn nằm *sau* khung thật theo chiều
+        # quét của mọi khối: nhánh xuôi nhân quả (conv1d + scan) nên padding ở
+        # cuối không lan ngược; nhánh ngược đảo theo feat_lengths nên padding vẫn
+        # ở cuối. Giá trị rác ở vị trí padding qua các lớp cũng không lan vào
+        # khung thật vì cùng lý do; CTC chỉ tính trên feat_lengths.
+        if not self.bidirectional:
+            for block, norm in zip(self.layers, self.norms):
+                x = x + block(norm(x))
+            return self.norm_f(x), feat_lengths
+
+        for block_fwd, block_bwd, norm in zip(self.layers, self.layers_bwd, self.norms):
+            h = norm(x)
+            h_bwd = reverse_padded(block_bwd(reverse_padded(h, feat_lengths)), feat_lengths)
+            x = x + block_fwd(h) + h_bwd
         return self.norm_f(x), feat_lengths

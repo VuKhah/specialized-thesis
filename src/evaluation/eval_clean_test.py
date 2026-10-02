@@ -14,13 +14,15 @@ Cạm bẫy khi đọc kết quả:
   `corrected_text`.
 - clean-test lấy từ `validation`, mà `best.pt` cũng chọn theo WER `validation`
   → số này lạc quan hơn WER trên dữ liệu chưa từng dùng để chọn model.
+- ref/hyp đi qua `text_normalize.normalize_text` (chữ thường, bỏ dấu câu, gạch
+  nối → khoảng trắng; số giữ nguyên) — cùng hàm với kernel zero-shot của các
+  mô hình pre-train, nên WER so được với nhau.
 - batch_size mặc định 1: Mamba chưa mask padding nên kết quả sẽ phụ thuộc cách
   ghép batch. `train.py` eval theo batch nên số ở đây có thể lệch nhẹ số đó.
 """
 
 import argparse
 import json
-import re
 import sys
 from pathlib import Path
 
@@ -29,6 +31,7 @@ import yaml
 from torch.utils.data import DataLoader, Subset
 
 from src.data.vietsuperspeech_dataset import VietSuperSpeechDataset, collate_fn
+from src.evaluation.text_normalize import normalize_text
 from src.evaluation.wer import compute_wer_report
 from src.models.ctc_model import CTCASRModel
 from src.tokenizer.bpe_tokenizer import BPETokenizer
@@ -37,21 +40,17 @@ from src.training.train import CHECKPOINT_ROOT, build_encoder
 RESULTS_DIR = Path("reports/results")
 
 
-def normalize(text: str) -> str:
-    # Transcript gốc và tokenizer đều viết HOA; hiệu đính tay có thể lệch hoa/thường
-    # hoặc thừa khoảng trắng — không nên tính là lỗi nhận dạng.
-    return re.sub(r"\s+", " ", text).strip().upper()
-
-
 def load_references(samples: list[dict]) -> tuple[list[str], list[str]]:
+    # Chuẩn hóa sẵn (dù compute_wer_report chuẩn hóa lại — hàm idempotent) để
+    # ref/hyp lưu trong file kết quả đúng là chuỗi đã đem đi tính WER.
     refs, sources = [], []
     for s in samples:
         corrected = s["corrected_text"].strip()
         if corrected:
-            refs.append(normalize(corrected))
+            refs.append(normalize_text(corrected))
             sources.append("corrected_text")
         else:
-            refs.append(normalize(s["pseudo_label"]))
+            refs.append(normalize_text(s["pseudo_label"]))
             sources.append("pseudo_label")
     return refs, sources
 
@@ -114,7 +113,7 @@ def main() -> None:
     hypotheses = []
     for batch in loader:
         pred_ids = model.greedy_decode(batch["waveform"].to(device), batch["waveform_lengths"].to(device))
-        hypotheses.extend(normalize(tokenizer.decode(ids)) for ids in pred_ids)
+        hypotheses.extend(normalize_text(tokenizer.decode(ids)) for ids in pred_ids)
 
     report = compute_wer_report(references, hypotheses)
     n_empty = sum(1 for h in hypotheses if not h)

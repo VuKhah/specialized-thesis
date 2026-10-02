@@ -28,16 +28,53 @@ REPO_URL = "https://github.com/VuKhah/specialized-thesis"
 REPO_DIR = Path("/tmp/specialized-thesis")
 HF_REVISION = "cbf624ae9b30e1c2793a27e95b262115c69601f3"
 WARMUP, STEPS = 3, 40
-CONFIGS = ["configs/model_conformer.yaml", "configs/model_mamba.yaml"]
+# Lần 3 (2026-10-02): chỉ đo lại Mamba sau khi chuyển hai chiều B1
+# (docs/notes/mamba_bidirectional.md) — Conformer không đổi, mốc ở lần 2.
+CONFIGS = ["configs/model_mamba.yaml"]
 # (workers mỗi tiến trình, amp, ddp, sync_bn). Lần 1 (2026-09-30, 20 step):
 # workers 0/4 × fp32/AMP × 1/2 GPU — kết quả ở training_plan_kaggle.md mục 5.
 # Lần 2 (D8 phương án c): chỉ AMP; tách nguyên nhân Conformer DDP chậm
-# (worker tranh CPU? SyncBN?) và đo lại 1 GPU làm mốc với 40 step.
-VARIANTS = [(4, True, False, False), (2, True, True, False), (2, True, True, True)]
+# (worker tranh CPU? SyncBN?) và đo lại 1 GPU làm mốc với 40 step:
+# [(4, True, False, False), (2, True, True, False), (2, True, True, True)].
+# Lần 3: hai cấu hình Mamba của lần 2 (SyncBN tự bỏ qua với Mamba).
+VARIANTS = [(4, True, False, False), (2, True, True, False)]
 # Ghi đè file của repo sau khi clone: {đường dẫn tương đối: nội dung}. Để trống
 # khi code cần đo đã có trên GitHub; khi chưa push thì điền lúc đẩy kernel
 # (không sửa tay ở đây) — xem nhật ký Plan.md 2026-09-30.
 OVERLAY: dict[str, str] = {}
+
+# Kiểm MambaEncoder hai chiều bằng kernel CUDA thật — local chỉ test được với
+# khối giả thuần PyTorch. Bất biến padding: phần khung thật của 1 mẫu không đổi
+# khi chạy riêng hay trong batch với padding rác; nhánh ngược phải nhìn thấy
+# tương lai. Sai thì dừng trước khi tốn quota benchmark.
+CHECK_CODE = r'''
+import sys, yaml, torch
+from src.training.train import build_encoder, build_optimizer
+sys.stdout.reconfigure(encoding="utf-8")
+cfg = yaml.safe_load(open("configs/model_mamba.yaml", encoding="utf-8"))
+torch.manual_seed(0)
+enc = build_encoder(cfg).cuda().eval()
+n_no_decay = len(build_optimizer(enc, cfg).param_groups[1]["params"])
+print(f"encoder {enc.num_parameters():,} tham số (kỳ vọng 12,285,696), no_decay {n_no_decay} (kỳ vọng 56)")
+T = 1500
+feats = torch.randn(3, T, 80, device="cuda")
+lengths = torch.tensor([T, 1100, 900], device="cuda")
+feats[1, 1100:] = 1e3 * torch.randn(T - 1100, 80, device="cuda")
+ok = enc.num_parameters() == 12_285_696 and n_no_decay == 56
+for amp in (False, True):
+    with torch.no_grad(), torch.autocast("cuda", dtype=torch.float16, enabled=amp):
+        batch, _ = enc(feats, lengths)
+        alone, _ = enc(feats[1:2, :1100].contiguous(), lengths[1:2])
+        f2 = feats.clone(); f2[0, 1000] += 1.0
+        moved, _ = enc(f2, lengths)
+    d_pad = (batch[1, :1100] - alone[0]).abs().max().item()
+    d_future = (moved[0, 500] - batch[0, 500]).abs().max().item()
+    tol = 5e-2 if amp else 1e-3
+    print(f"amp={amp}: |riêng - trong batch| = {d_pad:.2e} (< {tol}), đổi khung 1000 → khung 500 lệch {d_future:.2e} (> 0)")
+    ok = ok and d_pad < tol and d_future > 0
+print("CHECK " + ("OK" if ok else "FAIL"), flush=True)
+sys.exit(0 if ok else 1)
+'''
 
 # Chép nguyên văn vào repo lúc chạy: kernel dạng script chỉ upload 1 file.
 WORKER_CODE = r'''"""Đo tốc độ train 1 cấu hình (gọi từ benchmark.py, chạy trong thư mục repo).
@@ -216,6 +253,7 @@ def main():
     run(pip + ["--no-deps"] + wheels)
     run([sys.executable, "-c", "from mamba_ssm import Mamba; print('import mamba_ssm OK')"])
 
+    run([sys.executable, "-c", CHECK_CODE], cwd=REPO_DIR)
     (REPO_DIR / "bench_worker.py").write_text(WORKER_CODE, encoding="utf-8")
     sys.path.insert(0, str(REPO_DIR))
     prefetch(16 * (WARMUP + STEPS))
