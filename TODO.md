@@ -126,10 +126,15 @@ duyệt, D3 → **4 shard**, train full + đánh giá theo epoch).
 - [ ] **Commit** thay đổi 2026-10-03: `scripts/kaggle/lid/lid.py`,
       `src/data/filter_language.py`, `data/splits/excluded.tsv` (2,2 MB), notes,
       `Plan.md`/`TODO.md`/`ARCHITECTURE.md` — chờ người dùng duyệt.
-- [ ] **Tokenizer BPE train trên cả 60.656 nhãn** gồm ~11.800 nhãn rác (chuỗi giả
-      tiếng Anh) → một phần vocab 1000 là mảnh từ tiếng Anh vô nghĩa. Có train
-      lại tokenizer trên 48.340 nhãn đã lọc không? Sửa code dùng chung (cả hai
-      encoder), phải trước khi train. **Người dùng quyết.**
+- [x] **Train lại tokenizer BPE trên 48.340 nhãn đã lọc — xong 2026-10-03**
+      (người dùng duyệt; `python -m src.data.filter_language --train-tokenizer`).
+      Cùng tham số, vocab vẫn 1001 (gồm blank) → số tham số hai mô hình không
+      đổi. 121/1000 piece đổi: bỏ mảnh giả tiếng Anh (`AND`, `ATION`, `KING`…),
+      thêm âm tiết Việt; piece có dấu 663 → 771. Val sạch: 59,7 token/câu (cũ
+      60,7), 0 unk, decode khớp 5.332/5.332. Conformer: 2 bước train thật CPU,
+      loss 136,7 → 80,1. Mamba chưa test (cần CUDA; tokenizer không chạm
+      encoder). `data/splits/summary.json` (`bpe_tokens`) còn tính theo
+      tokenizer cũ — chạy lại thống kê khi sửa `make_shards`.
 - [ ] Kernel zero_shot: sau A1 chỉ cần **một mức WER trên 192 câu** (bỏ
       `wer_vi_label` hoặc đọc `excluded.tsv`) — sửa trước khi chạy.
 - [ ] **Kernel GPU benchmark lần 3** (Mamba B1, `CHECK_CODE` kiểm CUDA thật;

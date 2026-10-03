@@ -500,10 +500,29 @@ khảo sát dataset, phát hiện sai lệch số liệu, prefetch script, train
 - **RQ2 (vẫn chờ GVHD, AI chỉ phân tích):** đoạn liền số seg không liền thời
   gian; ghép vẫn hợp lệ cho RTF/VRAM theo độ dài, không đo được WER audio dài
   vì validation rải từ chính video train (chi tiết `TODO.md` 🔴 RQ2).
-- **Đã push `df72f11`.** Chưa commit thay đổi phiên này.
-- **Phiên sau bắt đầu từ:** (1) duyệt commit phiên này; (2) người dùng quyết
-  có train lại tokenizer BPE trên nhãn đã lọc không (`TODO.md` 🟡); (3) bước 3
-  sửa code dùng chung (DDP/AMP/`--max_minutes` + đọc `excluded.tsv`); (4) tạo 5
-  Kaggle Dataset trên UI (có thể không cần nếu dùng `kernel_sources` như
-  `lid-asr`); (5) benchmark lần 3 + zero-shot (sửa một mức WER trước); (6) đề
-  cương mới trước Tuần 9.
+- **Đã push `df72f11`; commit `9d137a7`** (A1, chưa push).
+- **Train lại tokenizer BPE** trên 48.340 nhãn đã lọc (người dùng duyệt):
+  121/1000 piece đổi (bỏ mảnh giả tiếng Anh, thêm âm tiết Việt), vocab và số
+  tham số không đổi; Conformer train thật 2 bước CPU đạt; Mamba chưa test
+  (CUDA). Chưa commit.
+- **Lịch phiên sau (theo thứ tự; ⛔ = cần người dùng duyệt trước):**
+  1. ⛔ **Push** `9d137a7` + commit tokenizer — mọi kernel Kaggle clone repo,
+     không push thì kernel chạy code/tokenizer cũ.
+  2. **Bước 3 — sửa code dùng chung** (việc lớn nhất, cả hai encoder):
+     `VietSuperSpeechDataset` dùng `HF_REVISION` + đọc `data/splits/*.tsv` + bỏ
+     `excluded.tsv`; `eval_clean_test` chỉ 192 câu; DDP `torchrun` + SyncBN +
+     AMP fp16 (front-end fp32); `DistributedSampler.set_epoch`; `--max_minutes`
+     + checkpoint theo step, resume giữa epoch; giải nén tar vào
+     `/tmp/audio_cache`. Kiểm: Conformer vài step thật trên CPU local.
+  3. **Kernel zero_shot:** đổi sang một mức WER trên 192 câu (đọc `excluded.tsv`).
+  4. ⛔ **Kernel GPU benchmark lần 3** (~15 phút): Mamba B1 chạy CUDA thật +
+     code bước 3 + tokenizer mới; đo lại `param_count` Mamba.
+  5. ⛔ **Kernel GPU zero_shot** (~0,5 GPU-h): Parakeet/PhoWhisper/wav2vec2 trên
+     192 câu; xác nhận Parakeet chạy trên T4.
+  6. **Tài khoản B:** thử gắn output kernel của A (`kernel_sources`); không được
+     thì người dùng tạo 5 Dataset trên UI rồi chia sẻ.
+  7. **Viết:** `Plan.md` mục 1-2, `CLAUDE.md` (luật "chỉ encoder khác nhau"),
+     `README.md` theo định hướng khảo sát; khung đề cương mới (trước Tuần 9).
+  - Chờ người dùng/GVHD, không tự làm: RQ2 (phân tích đã có ở `TODO.md`);
+    xác nhận `out_proj` chia √28, greedy không LM, chữ số giữ nguyên, batch 1
+    fp16; dropout Mamba / CMVN (phải quyết trước train).

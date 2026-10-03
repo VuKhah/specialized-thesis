@@ -47,7 +47,7 @@ flowchart LR
 | Bước | File | Vào → ra | Lưu ở |
 |---|---|---|---|
 | Khảo sát + tạo dữ liệu phụ | `src/data/survey.py` | stream 2 split → thống kê, corpus transcript, mẫu clean-test (250, seed 42, lấy từ `validation`) | `reports/results/`, `data/processed/` |
-| Train tokenizer | `BPETokenizer.train` (gọi từ `survey.py`) | `train_transcripts.txt` → SentencePiece BPE | `configs/tokenizer.model` + `configs/tokenizer.vocab` (**track git**) |
+| Train tokenizer | `BPETokenizer.train` (gọi từ `filter_language.py --train-tokenizer`; bản đầu từ `survey.py`) | nhãn train đã lọc A1 (`data/processed/train_transcripts_filtered.txt`, 48.340 dòng) → SentencePiece BPE | `configs/tokenizer.model` + `configs/tokenizer.vocab` (**track git**) |
 | Liệt kê file cần tải | `prefetch_audio.needed_audio_paths` | 2 split → 67.405 đường dẫn | `data/processed/audio_manifest.json` (không track) |
 | Tải audio | `prefetch_audio.prefetch_audio` | đường dẫn → file `.wav` (bỏ qua file đã có; lỗi từng file được gom, chạy lại là retry) | `data/raw/audio_cache/` |
 | Chia shard + val (D3, D5) | `src/data/make_shards.py` | 2 split ở `HF_REVISION` + clean-test → 4 shard train (vòng tròn qua video, seed 42) + val = `validation` trừ clean-test; kiểm bất biến rồi mới ghi; `--check` đọc lại | `data/splits/*.tsv` (`index`, `audio`, `duration` theo index split) + `summary.json` (**track git**) |

@@ -18,9 +18,15 @@ BẤT KỲ lý do nào:
 Không sửa manifest shard (data/splits/train_shard*.tsv, val.tsv) hay tar trên
 Kaggle: loại ở bước đọc dữ liệu, nên 5 Kaggle Dataset giữ nguyên.
 
-    python -m src.data.filter_language    # cần data/processed/lid.csv (output kernel lid-asr)
+    python -m src.data.filter_language                    # cần data/processed/lid.csv (output kernel lid-asr)
+    python -m src.data.filter_language --train-tokenizer  # + train lại BPE trên nhãn train đã lọc
+
+Tokenizer train lại 2026-10-03 (người dùng duyệt): bản cũ học cả ~11.800 nhãn
+rác nên một phần vocab là mảnh từ giả tiếng Anh. Giữ nguyên tham số
+(`BPETokenizer.train`, vocab 1000) để số tham số CTC head không đổi.
 """
 
+import argparse
 import csv
 import json
 import re
@@ -35,15 +41,18 @@ from datasets import load_dataset
 
 from src.data.vietsuperspeech_dataset import HF_DATASET_ID, HF_REVISION
 from src.evaluation.text_normalize import is_vietnamese_label
+from src.tokenizer.bpe_tokenizer import BPETokenizer
 
 LID_PATH = Path("data/processed/lid.csv")
 CLEAN_TEST_PATH = Path("data/processed/clean_test_manifest.json")
 OUT_PATH = Path("data/splits/excluded.tsv")
+CORPUS_PATH = Path("data/processed/train_transcripts_filtered.txt")
+TOKENIZER_PREFIX = "configs/tokenizer"
 VIDEO_BAD_FRACTION = 0.8
 _VIDEO = re.compile(r"([^/]*)_seg\d+\.wav$")
 
 
-def main():
+def main(train_tokenizer: bool = False):
     lid = {}
     with open(LID_PATH, encoding="utf-8") as f:
         for r in csv.DictReader(f):
@@ -54,7 +63,7 @@ def main():
         ds = load_dataset(HF_DATASET_ID, split=split, revision=HF_REVISION)
         for i, (a, t, d) in enumerate(zip(ds["audio"], ds["text"], ds["duration"])):
             rows.append({"split": split, "index": i, "audio": a, "duration": d,
-                         "video": _VIDEO.search(a)[1], "vi_label": is_vietnamese_label(t)})
+                         "video": _VIDEO.search(a)[1], "vi_label": is_vietnamese_label(t), "text": t})
     missing = [(r["split"], r["index"]) for r in rows if (r["split"], r["index"]) not in lid]
     assert not missing, f"lid.csv thiếu {len(missing)} đoạn, vd. {missing[:3]}"
 
@@ -91,6 +100,14 @@ def main():
         h = lambda xs: sum(r["duration"] for r in xs) / 3600
         print(f"  {name:32s} {len(part):6d} câu {h(part):7.2f} h → còn {len(kept):6d} câu {h(kept):7.2f} h")
 
+    if train_tokenizer:
+        lines = [r["text"].strip() for r in rows if r["split"] == "train" and ("train", r["index"]) not in ex]
+        CORPUS_PATH.write_text("\n".join(l for l in lines if l) + "\n", encoding="utf-8")
+        BPETokenizer.train(str(CORPUS_PATH), TOKENIZER_PREFIX, vocab_size=1000)
+        print(f"tokenizer: {len(lines)} nhãn → {TOKENIZER_PREFIX}.model/.vocab")
+
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--train-tokenizer", action="store_true")
+    main(parser.parse_args().train_tokenizer)
