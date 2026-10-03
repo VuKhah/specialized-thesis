@@ -74,13 +74,14 @@ tối đa 2 tuần/lần** (mục 6, chưa có lịch ghi).
 | 2026-10-02 | **Định hướng khảo sát, đội hình 5 mô hình**: Mamba-CTC (trọng tâm) + Conformer-CTC ~12M (baseline) train từ đầu; Parakeet-CTC-0.6B-vi; PhoWhisper-small; wav2vec2-base-vi (zero-shot trước, fine-tune sau). Loại `kyle/vi-asr-fastconformer-114m` (đã train trên VietSuperSpeech) và Zipformer-30M (mô hình sinh nhãn, license ND) | Sau buổi GVHD lần 1. `docs/notes/gvhd_buoi_1.md`, `survey_model_candidates.md`. Mục 1, `CLAUDE.md` (luật "chỉ encoder khác nhau") cần viết lại |
 | 2026-10-02 | **Mamba hai chiều** (B1: 14 lớp × 2 khối xuôi/ngược, cộng; 12.285.696 tham số) | `docs/notes/mamba_bidirectional.md`. Chưa sửa code |
 | 2026-10-02 | **Duyệt thay đổi phép đo**: RQ2 thành so hiệu quả giữa mô hình (RTF, VRAM, tham số, GPU-giờ) + ghép đoạn liên tiếp chỉ để đo RTF theo độ dài; chuẩn hóa văn bản chung trước WER; A3 giữ nguyên + nêu hạn chế, tách nhóm zero-shot/fine-tune khi bàn | `survey_model_candidates.md` |
+| 2026-10-03 | **A1: lọc C ∩ L** — loại đoạn có LID Whisper-small ≠ `vi`, 149 video phỏng vấn nước ngoài (≥ 80% nhãn < 20% dấu), hoặc nhãn < 20% dấu. Train 175,77 h (48.340 câu), val 18,65 h, clean-test 192 câu. Khóa luận coi dữ liệu là tiếng Việt, một mức WER, không bàn tiếng Anh | Người dùng nghe kiểm (tiếng Anh + tiếng Nhật). `survey_model_candidates.md` mục 6, `data/splits/excluded.tsv` |
 | 2026-09-19 | Chuẩn tài liệu gốc: `CLAUDE.md` (luật AI) · `Plan.md` (kế hoạch/trạng thái) · `ARCHITECTURE.md` (sơ đồ) · `TODO.md` · `README.md` (người ngoài) · quy ước → `docs/CONVENTIONS.md` | Chống lệch trạng thái giữa nhiều file |
 
 ## 5. Quyết định đang mở / treo / rủi ro đã biết
 
 | Trạng thái | Vấn đề | Chi tiết |
 |---|---|---|
-| 🔴 **Đã chốt phần lớn (2026-10-02, xem mục 4); còn A1 lọc nhãn + đề cương mới** | **Đổi định hướng sau buổi GVHD lần 1**: từ so sánh có kiểm soát Mamba vs Conformer (train từ đầu, khớp tham số) sang **khảo sát** Mamba vs nhiều mô hình (Conformer pre-train, 2-3 mô hình khác, baseline). Ảnh hưởng mục 1 (mục tiêu), ràng buộc "chỉ encoder khác nhau", RQ, lộ trình mục 2 | `docs/notes/gvhd_buoi_1.md` mục 4 (Q-a…Q-g). Chưa sửa mục 1/`CLAUDE.md` cho tới khi chốt |
+| 🔴 **Đã chốt (2026-10-02/03, xem mục 4); còn đề cương mới** | **Đổi định hướng sau buổi GVHD lần 1**: từ so sánh có kiểm soát Mamba vs Conformer (train từ đầu, khớp tham số) sang **khảo sát** Mamba vs nhiều mô hình (Conformer pre-train, 2-3 mô hình khác, baseline). Ảnh hưởng mục 1 (mục tiêu), ràng buộc "chỉ encoder khác nhau", RQ, lộ trình mục 2 | `docs/notes/gvhd_buoi_1.md` mục 4 (Q-a…Q-g). Chưa sửa mục 1/`CLAUDE.md` cho tới khi chốt |
 | 🔴 **Chờ GVHD** | Hướng xử lý sai lệch số liệu dataset ảnh hưởng RQ2 (67.405 mẫu/245,42h, audio 10-15 s vs đề cương 3-30 s) | 4 phương án trong `docs/notes/dataset_discrepancy.md`. **Không tự chọn.** |
 | ✅ **Chốt hai chiều (2026-10-02)** | Mamba một chiều vs hai chiều (biến gây nhiễu RQ1); người dùng nghiêng về cân nhắc hai chiều | `docs/notes/mamba_bidirectional.md`; hỏi GVHD (A4); chốt trước khi train |
 | ✅ **Đã duyệt (2026-09-28)** | D1-D11 (D3 → 4 shard) + train full, đánh giá theo epoch | Mục 4; `docs/notes/training_plan_kaggle.md` mục 5. D12/D13 vẫn chờ GVHD |
@@ -475,3 +476,34 @@ khảo sát dataset, phát hiện sai lệch số liệu, prefetch script, train
   tạo 5 Kaggle Dataset từ output (có thể phải qua UI); (3) cập nhật mục 1 +
   lộ trình mục 2 + `CLAUDE.md` theo định hướng khảo sát; (4) khung đề cương mới
   trước Tuần 9.
+- **Bổ sung sau khi đóng phiên (2026-10-02):** đã commit `df72f11` (chưa
+  push). 5 kernel `make-dataset-asr-*` đều COMPLETE, kiểm đạt (0 lỗi tải dù
+  32-40 lỗi HTTP 429/shard được retry tự xử lý). CLI/API không tạo được Dataset
+  từ output kernel → người dùng tạo trên UI (hướng dẫn ở `TODO.md` bước 5).
+
+### 2026-10-03
+- **Đầu phiên:** rà trạng thái; chỉ ra `TODO.md` lệch thực tế (commit `df72f11`
+  đã có, code Mamba B1 đã xong). Người dùng xóa 8 hình trong `reports/figures/`
+  (chưa từng commit; không dùng được). Còn trỏ tới hình: `docs/tong_ket/2026-09-30/bao_cao_gvhd.html`
+  (báo cáo đã gửi, giữ nguyên), `docs/notes/mamba_bidirectional.md` dòng 51.
+- **A1 — nguyên nhân nhãn sai:** nhãn do Zipformer chỉ-tiếng-Việt sinh; gặp
+  audio nước ngoài thì ghép mảnh từ Latin trong vocab thành chuỗi giả tiếng
+  Anh. Nhãn hỏng dồn theo video (97% trong 150 video, toàn phỏng vấn khách nước
+  ngoài). Người dùng nghe mẫu đầu/giữa/cuối 149 video (`data/raw/en_video_samples/`,
+  gitignore) → đúng tiếng Anh; nghe 30 câu hỏng còn sót → train#15087 là
+  **tiếng Nhật** (nhãn cả video sai, kể cả câu trông như tiếng Việt).
+- **LID trên audio:** kernel `scripts/kaggle/lid/lid.py` (`tieunhi/lid-asr`, gắn
+  output 5 kernel `make-dataset-asr-*` làm `kernel_sources`, đọc tar tuần tự),
+  Whisper-small, 67.405 đoạn, ~65 phút T4 (gấp đôi ước). Khớp mọi nhóm đã nghe.
+  **Chốt C ∩ L** (mục 4) → `src/data/filter_language.py` → `data/splits/excluded.tsv`
+  (13.733 đoạn). `lid.csv` ở `data/processed/` (không track).
+- **RQ2 (vẫn chờ GVHD, AI chỉ phân tích):** đoạn liền số seg không liền thời
+  gian; ghép vẫn hợp lệ cho RTF/VRAM theo độ dài, không đo được WER audio dài
+  vì validation rải từ chính video train (chi tiết `TODO.md` 🔴 RQ2).
+- **Đã push `df72f11`.** Chưa commit thay đổi phiên này.
+- **Phiên sau bắt đầu từ:** (1) duyệt commit phiên này; (2) người dùng quyết
+  có train lại tokenizer BPE trên nhãn đã lọc không (`TODO.md` 🟡); (3) bước 3
+  sửa code dùng chung (DDP/AMP/`--max_minutes` + đọc `excluded.tsv`); (4) tạo 5
+  Kaggle Dataset trên UI (có thể không cần nếu dùng `kernel_sources` như
+  `lid-asr`); (5) benchmark lần 3 + zero-shot (sửa một mức WER trước); (6) đề
+  cương mới trước Tuần 9.

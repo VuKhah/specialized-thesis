@@ -1,6 +1,6 @@
 # TODO tổng — Mamba vs Conformer ASR
 
-Cập nhật lần cuối: **2026-10-01** (sau buổi GVHD lần 1). **Nguồn sự thật duy nhất cho việc cần làm /
+Cập nhật lần cuối: **2026-10-03** (chốt A1 lọc dữ liệu). **Nguồn sự thật duy nhất cho việc cần làm /
 đang chặn / đã xong.** Kế hoạch tuần + quyết định + nhật ký phiên ở
 [`Plan.md`](Plan.md); kiến trúc ở [`ARCHITECTURE.md`](ARCHITECTURE.md).
 
@@ -27,7 +27,7 @@ Câu hỏi cần mang đi hỏi (người dùng/GVHD): [`QA.md`](QA.md).
       từ đầu, Parakeet-CTC-0.6B-vi, PhoWhisper-small, wav2vec2-base-vi); **duyệt
       mọi thay đổi phép đo** (RQ2 = so hiệu quả giữa mô hình + ghép đoạn đo RTF
       theo độ dài; chuẩn hóa văn bản chung trước WER; A3 giữ + nêu hạn chế,
-      tách nhóm zero-shot/fine-tune khi bàn). **Còn chờ: A1.** Sau đó: viết đề cương điều chỉnh
+      tách nhóm zero-shot/fine-tune khi bàn). **A1 chốt 2026-10-03** (mục dưới). Còn: viết đề cương điều chỉnh
       (bản mới) trước buổi Tuần 9.
 
 - [ ] **Hướng xử lý sai lệch số liệu dataset ảnh hưởng RQ2**: số liệu thật
@@ -40,27 +40,31 @@ Câu hỏi cần mang đi hỏi (người dùng/GVHD): [`QA.md`](QA.md).
       sau train (RTF không phụ thuộc trọng số → đo được song song lúc train).
       Chỉ ảnh hưởng train nếu GVHD muốn WER trên audio dài hoặc thêm dữ liệu
       train — nên hỏi thêm: "RQ2 chỉ cần RTF hay cần cả WER audio dài?"
+      *AI rà 2026-10-03:* các đoạn số seg liền nhau **không liền về thời gian**
+      (87% đoạn < 15 s kết thúc ở chỗ lặng đã bị cắt bỏ; 13% cắt cứng ở 15,0 s;
+      5,9% số seg khuyết). Ghép vẫn hợp lệ để đo RTF/độ trễ/VRAM theo độ dài
+      (chi phí chỉ phụ thuộc số khung), gọi là "audio ghép nhân tạo". **Không**
+      đo được WER audio dài: validation chỉ là ~10% đoạn rải từ chính video
+      train → chuỗi seg liên tiếp ≥ 60 s chỉ có 1. Đề xuất: RQ2 chỉ đo hiệu quả
+      theo độ dài, ghép từ cả train + val; WER chỉ trên đoạn 10-15 s.
 
-- [ ] **Nhãn tiếng Anh phiên sai (phát hiện 2026-09-30)**: câu có < 20% từ
-      mang dấu tiếng Việt (heuristic, chưa nghe kiểm) — train 11.784/60.656
-      (19,4%), clean-test 58/250 (23,2%). Đoạn khách mời nói tiếng Anh bị nhãn
-      máy phiên thành chuỗi vô nghĩa. Phương án: (a) giữ, nêu hạn chế; (b) giữ
-      train, báo WER clean-test hai mức (toàn bộ / chỉ tiếng Việt); (c) lọc khỏi
-      train + clean-test. **Nếu chọn (c) phải chốt trước khi tạo dataset/train.**
-      Đã đưa vào `docs/tong_ket/2026-09-30/cau_hoi_gvhd.html` (A1). Không tự chọn.
-      **2026-10-02:** GVHD giao người dùng tự quyết. Ngưỡng 20% **không có
-      căn cứ tài liệu** (AI tự đặt); số liệu cho thấy phân bố hai đỉnh, ngưỡng
-      10-50% chỉ đổi ~1.100 câu, nhưng chưa chứng minh audio là tiếng Anh →
-      kiểm bằng cách gắn nhãn ngôn ngữ audio khi hiệu đính clean-test.
-      Chi tiết: `docs/notes/survey_model_candidates.md` mục 4. **Còn chờ người
-      dùng chốt lọc hay không** (sau khi kiểm chứng).
+- [x] **A1 — nhãn sai do audio không phải tiếng Việt — CHỐT 2026-10-03
+      (người dùng): lọc C ∩ L.** Người dùng nghe kiểm: 149 video phỏng vấn khách
+      nước ngoài (tiếng Anh) + video Alive Kicking Ep4 (tiếng Nhật, nhãn trông
+      như tiếng Việt → lọc theo nhãn không đủ). LID Whisper-small trên audio
+      (kernel `lid-asr`, ~65 phút T4) khớp các nhóm đã nghe. Loại nếu LID ≠ `vi`
+      HOẶC thuộc 149 video HOẶC nhãn < 20% dấu → `data/splits/excluded.tsv`
+      (`python -m src.data.filter_language`). Train còn **48.340 câu/175,77 h**
+      (từ 220,84 h), val 5.140/18,65 h, **clean-test 192 câu**. Khóa luận: coi
+      dữ liệu là tiếng Việt, một mức WER trên 192 câu, không bàn tiếng Anh.
+      Chi tiết: `docs/notes/survey_model_candidates.md` mục 6.
 
 - [x] **Mamba hai chiều — CHỐT 2026-10-02 (người dùng), phương án B1**; việc
       sửa code chuyển xuống 🟡. Ghi chú gốc: Mamba hiện chỉ nhìn quá khứ, Conformer nhìn cả câu →
       biến gây nhiễu cho RQ1. Phương án B1 (hai chiều, 14 lớp × 2 khối, cộng) =
       12.285.696 tham số (+0,67%), vẫn 28 khối như cũ; cần đảo chuỗi theo độ dài
       thật, benchmark lại. Chi tiết: `docs/notes/mamba_bidirectional.md`. **Chốt
-      trước khi train; hỏi GVHD (A4). Chưa đổi code.**
+      trước khi train; hỏi GVHD (A4).** Code B1 xong (`df72f11`), chưa chạy CUDA thật.
 
 ## 🟡 Sẵn sàng làm ngay — kế hoạch Kaggle đã duyệt 2026-09-28
 
@@ -85,7 +89,9 @@ duyệt, D3 → **4 shard**, train full + đánh giá theo epoch).
       `torch.autocast` fp16/GradScaler (front-end log-mel giữ fp32, như
       benchmark), `DistributedSampler` có `set_epoch`, 2 worker/tiến trình;
       bước giải nén tar vào `/tmp/audio_cache`; `VietSuperSpeechDataset` dùng
-      `HF_REVISION` (hằng số đã có).
+      `HF_REVISION` (hằng số đã có); **bỏ các đoạn trong
+      `data/splits/excluded.tsv`** ở train, val và `eval_clean_test` (A1, còn
+      192 câu clean-test).
       **Giữ lịch LR warmup + hằng số** (để dừng ở epoch bất kỳ vẫn hợp lệ).
 - [x] **Theo khuyến nghị tác giả Mamba — sửa 2026-09-30** (người dùng duyệt):
       `build_optimizer` miễn weight decay cho `A_log`/`D`, `weight_decay: 0.01`
@@ -99,9 +105,13 @@ duyệt, D3 → **4 shard**, train full + đánh giá theo epoch).
       validation, val 6.499 + clean-test 250 (đối chiếu nội dung theo index).
       Mỗi shard 15.164 câu / 55,21 h / 6,36 GB, lệch phân bố ≤ 0,1 điểm %, phủ
       996/998 token BPE. Đã commit + push 2026-09-30.
-- [ ] **5. Kernel CPU tạo 5 dataset** — *2026-10-02: đã push 5 kernel riêng
-      `make-dataset-asr-{shard0..3,val}`; lúc đóng phiên 4/5 xong, shard2 đang
-      chạy. Còn: kiểm log từng kernel, tạo Dataset từ output, chia sẻ B.*
+- [ ] **5. Kernel CPU tạo 5 dataset** — *2026-10-02: 5 kernel
+      `make-dataset-asr-{shard0..3,val}` **xong cả 5, qua kiểm tra**
+      (15.164×4 + 6.499 file, 0 lỗi, 16 kHz mono, duration ≤ 0,1 s; ~6 GiB/shard,
+      val 2,6 GiB). **Còn (việc tay trên UI):** tab Output của từng kernel →
+      New Dataset, private, tên đề xuất `vss-asr-train-shard{0..3}`,
+      `vss-asr-val`; **không push version mới** các kernel này trước khi tạo
+      xong; chia sẻ sang tài khoản B; ghi slug dataset vào đây.*
       (4 train + 1 val), private —
       `scripts/kaggle/make_dataset/make_dataset.py` (`PACK_TAR = True`), test
       local 20 file thật. Còn: chạy 5 lần (sửa `PART`), mỗi lần ~40 phút CPU
@@ -111,8 +121,17 @@ duyệt, D3 → **4 shard**, train full + đánh giá theo epoch).
 
 ## 🟡 Mới 2026-10-02 — chờ duyệt chạy
 
-- [ ] **Commit + push** thay đổi 2026-10-01/02 (Mamba B1, chuẩn hóa văn bản,
-      kernel zero_shot, notes) — người dùng chưa duyệt; cần trước khi chạy kernel.
+- [x] **Commit + push** `df72f11` (Mamba B1, chuẩn hóa văn bản, kernel
+      zero_shot, notes) — push 2026-10-03.
+- [ ] **Commit** thay đổi 2026-10-03: `scripts/kaggle/lid/lid.py`,
+      `src/data/filter_language.py`, `data/splits/excluded.tsv` (2,2 MB), notes,
+      `Plan.md`/`TODO.md`/`ARCHITECTURE.md` — chờ người dùng duyệt.
+- [ ] **Tokenizer BPE train trên cả 60.656 nhãn** gồm ~11.800 nhãn rác (chuỗi giả
+      tiếng Anh) → một phần vocab 1000 là mảnh từ tiếng Anh vô nghĩa. Có train
+      lại tokenizer trên 48.340 nhãn đã lọc không? Sửa code dùng chung (cả hai
+      encoder), phải trước khi train. **Người dùng quyết.**
+- [ ] Kernel zero_shot: sau A1 chỉ cần **một mức WER trên 192 câu** (bỏ
+      `wer_vi_label` hoặc đọc `excluded.tsv`) — sửa trước khi chạy.
 - [ ] **Kernel GPU benchmark lần 3** (Mamba B1, `CHECK_CODE` kiểm CUDA thật;
       ~10-15 phút) — xin duyệt quota.
 - [ ] **Kernel GPU zero_shot** 3 mô hình trên 250 câu clean-test (~0,5 GPU-h)
@@ -124,11 +143,11 @@ duyệt, D3 → **4 shard**, train full + đánh giá theo epoch).
 
 ## 🟢 Việc tay — song song bất cứ lúc nào, không chặn code
 
-- [ ] **Khi hiệu đính clean-test: thêm cột nhãn ngôn ngữ audio** (Việt / Anh /
-      chen / nhạc-ồn) — dùng làm căn cứ kiểm chứng ngưỡng lọc A1
-      (`survey_model_candidates.md` mục 4). Nay là việc **ưu tiên** vì chặn A1.
+- [x] ~~Khi hiệu đính clean-test: thêm cột nhãn ngôn ngữ audio~~ — thay bằng
+      LID trên audio + người dùng nghe mẫu (A1 chốt 2026-10-03).
 
-- [ ] Nghe & hiệu đính 250 câu trong `data/processed/clean_test_manifest.json`
+- [ ] Nghe & hiệu đính **192 câu còn lại sau A1** (bỏ 58 câu trong
+      `excluded.tsv`) trong `data/processed/clean_test_manifest.json`
       (cột `corrected_text` còn trống) — dùng mục 5 của
       `notebooks/02_dataset_eda.ipynb`.
 

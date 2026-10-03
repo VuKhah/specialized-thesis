@@ -51,6 +51,7 @@ flowchart LR
 | Liệt kê file cần tải | `prefetch_audio.needed_audio_paths` | 2 split → 67.405 đường dẫn | `data/processed/audio_manifest.json` (không track) |
 | Tải audio | `prefetch_audio.prefetch_audio` | đường dẫn → file `.wav` (bỏ qua file đã có; lỗi từng file được gom, chạy lại là retry) | `data/raw/audio_cache/` |
 | Chia shard + val (D3, D5) | `src/data/make_shards.py` | 2 split ở `HF_REVISION` + clean-test → 4 shard train (vòng tròn qua video, seed 42) + val = `validation` trừ clean-test; kiểm bất biến rồi mới ghi; `--check` đọc lại | `data/splits/*.tsv` (`index`, `audio`, `duration` theo index split) + `summary.json` (**track git**) |
+| Lọc ngôn ngữ / nhãn hỏng (A1) | kernel `scripts/kaggle/lid/lid.py` → `src/data/filter_language.py` | LID Whisper-small trên audio 67.405 đoạn + tỉ lệ từ có dấu của nhãn → loại đoạn audio không phải `vi`, 149 video phỏng vấn nước ngoài, nhãn < 20% dấu. **Chưa nối vào đọc dữ liệu/eval** (bước 3 `TODO.md`) | `data/processed/lid.csv` (không track) → `data/splits/excluded.tsv` (`split`, `index`, `audio`, `reason`; **track git**) |
 | Tạo Kaggle Dataset (D6) | `scripts/kaggle/make_dataset/make_dataset.py` | 1 phần manifest → tải HF, kiểm (đủ file, 16 kHz mono, duration) | output kernel CPU |
 | Đọc mẫu | `VietSuperSpeechDataset.__getitem__` | idx → `{waveform, text, token_ids}` (đọc cache; không có thì tải lẻ, chậm) | — |
 | Gom batch | `collate_fn` | list mẫu → `waveform [B,S]` pad 0, `waveform_lengths [B]`, `targets` 1D nối, `target_lengths [B]`, `text` | — |

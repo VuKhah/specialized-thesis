@@ -123,3 +123,48 @@ Chương 3.
   warm-up; RTF không tính đọc đĩa; VRAM = `max_memory_allocated`. Chữ số giữ
   nguyên (nhãn không có chữ số) — kernel đếm số hyp có chữ số để lượng hóa lỗi
   định dạng số.
+
+## 6. A1 — CHỐT 2026-10-03: lọc C ∩ L (nhãn + LID trên audio)
+
+**Kiểm chứng bằng tai (người dùng, 2026-10-03):**
+- 149 video có ≥ 80% đoạn nhãn < 20% dấu (gộp train + validation; 13.147 đoạn,
+  48,15 h) — nghe mẫu đầu/giữa/gần cuối từng video: **đúng là phỏng vấn khách
+  nước ngoài nói tiếng Anh**; nhãn là chuỗi giả tiếng Anh, đôi khi chen vài từ
+  Việt gần âm ("… CỦA TÂY ÂU SOFT AND THE …"). Nhãn hỏng dồn vào video, không
+  rải ngẫu nhiên: 97% câu hỏng nằm trong 150 video, 465/645 video không có câu
+  hỏng nào.
+- Nghe 30 câu ngẫu nhiên trong 380 câu hỏng còn sót ở video khác: train#15087
+  (video `…Alive_Kicking_Ep4`) là **tiếng Nhật**, cả video nhãn sai hoàn toàn,
+  kể cả câu nhãn 100% dấu ("MẮT DỌA NÓ" cho 1 đoạn 10-15 s; mật độ 0,39 từ/s so
+  với trung vị 3,98) → **lọc theo nhãn không đủ**.
+
+**LID trên audio** (kernel `scripts/kaggle/lid/`, Whisper-small, 1 bước giải mã
+sau `<|startoftranscript|>`, softmax trên token ngôn ngữ; 67.405 đoạn, 0 lỗi,
+~65 phút T4). Khớp với các nhóm đã nghe:
+
+| Nhóm | Whisper top1 |
+|---|---|
+| 149 video tiếng Anh (13.147 đoạn) | 12.608 `en`, 254 `ms`, 132 `cy`, 101 `vi` (lời mở đầu tiếng Việt của host) |
+| Alive Kicking Ep4 (32 đoạn) | 31 `ja`, 1 `en` |
+| 427 câu nhãn < 20% dấu ngoài 149 video | 321 `en`, 73 `it`, 22 `ja`, chỉ 30 `vi` |
+| Clean-test 250 câu | 192 `vi` — trùng từng câu với lọc theo nhãn |
+
+LID bắt thêm 170 câu nhãn trông Việt (≥ 50% dấu) mà audio không phải `vi` (124
+`en`, 26 `ja`), gồm video tiếng Nhật thứ hai `Nganh_thiet_ke_do_hoa_o_Viet_Nam_va_Nhat_Ban`
+(27/32 đoạn `ja`). `p_vi` hai đỉnh (phân vị 20% = 0,19, 30% = 0,985).
+
+**Phương án (giờ train còn lại):** C lọc theo nhãn 176,29 h · L LID top1 = `vi`
+176,08 h · L5 `p_vi` ≥ 0,5 176,00 h · **C ∩ L 175,77 h ← chọn** (hai tín hiệu độc
+lập; C giữ mà LID loại = 144 câu `en`/`ja` thật; L giữ mà C loại = 86 câu, gần
+hết là lời host trong video tiếng Anh).
+
+**Kết quả** (`src/data/filter_language.py` → `data/splits/excluded.tsv`, 13.733
+đoạn): train 60.656 câu/220,84 h → **48.340 câu/175,77 h**; val (validation trừ
+clean-test) 6.499/23,65 h → **5.140/18,65 h**; clean-test 250 → **192 câu**
+(0,70 h).
+
+**Cách trình bày trong khóa luận (người dùng quyết 2026-10-03):** dữ liệu coi là
+tiếng Việt; clean-test chỉ báo **một mức WER trên 192 câu**; **không bàn tiếng
+Anh/code-switching** như một hiện tượng. AI lưu ý: bước lọc (~20% dữ liệu) vẫn
+cần 1-2 câu ở phần tiền xử lý Chương 3 (tái lập + hội đồng đối chiếu số liệu
+công bố) — viết như bước làm sạch nhãn tự động, người dùng quyết câu chữ.
