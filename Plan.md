@@ -132,7 +132,6 @@ Theo thứ tự thời gian. Quyết định bị thay thế giữ lại để t
 | ⚠️ Rủi ro | Parakeet chưa chắc chạy được trên T4/NeMo; dữ liệu pre-train có thể trùng VietSuperSpeech (rò rỉ) | `lineup_preparation.md` mục 4; dự bị PhoWhisper |
 | ⚠️ Rủi ro | `train.py` mới chưa chạy trên GPU (DDP/NCCL/SyncBN/AMP), Mamba chưa chạy CUDA thật sau B1 | Kiểm ở bước đầu kernel train thử |
 | ⚠️ Việc tay | 5 Kaggle Dataset trên UI + chia sẻ tài khoản B; hiệu đính 192 câu clean-test | `TODO.md` 🟡 bước 5, 🟢 |
-| ⚠️ Cần viết lại | `CLAUDE.md` (dòng "Đề tài", luật "chỉ encoder khác nhau" → áp cho nhóm train từ đầu), `README.md` theo mục 1 | — |
 | ⚠️ Biết, chưa xử lý | `notebooks/02_dataset_eda.ipynb` nhúng audio YouTube trong repo **public**, có cả trong lịch sử git | Người dùng chọn bỏ qua (2026-09-19). Chưa kiểm license VietSuperSpeech |
 | ⚠️ Chưa quyết | Tên người thứ ba + MSSV trong tên file TLCN (còn trong lịch sử git); xoá cần viết lại lịch sử + force push | Chỉ làm khi người dùng yêu cầu |
 
@@ -607,3 +606,10 @@ khảo sát dataset, phát hiện sai lệch số liệu, prefetch script, train
   làm việc; lộ trình Tuần 6-15 có mốc ngày (suy từ Tuần 6 ≈ 2026-10-01); trạng
   thái theo hạng mục; bảng quyết định theo thời gian, đánh dấu mục bị thay thế;
   mục 5 chỉ còn việc đang mở. Còn viết lại `CLAUDE.md`/`README.md`.
+- **Viết lại `CLAUDE.md` + `README.md`** theo hướng khảo sát (người dùng yêu
+  cầu): đề tài + đội hình + hai mức so sánh; luật "chỉ encoder khác nhau" giờ
+  áp cho nhóm train từ đầu, nhóm pre-train giữ pipeline riêng; thêm luật đề
+  xuất phải có nguồn, quota GPU phải xin duyệt; cạm bẫy cập nhật (manifest/
+  excluded, `HF_HUB_OFFLINE`, tar, DDP không test được local, B1 không cần
+  mask); README thêm lệnh chạy Kaggle và số liệu sau A1. Tên đề tài trên
+  README ghi là "tên làm việc" — tên chính thức theo đề cương mới.

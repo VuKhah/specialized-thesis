@@ -182,8 +182,9 @@ duyệt, D3 → **4 shard**, train full + đánh giá theo epoch).
       (khung Conformer mới cải thiện lớn) — `docs/notes/frontend_decoder_survey.md` mục 5.
 - [ ] Xác nhận các thiết lập tác nhân tự chọn: `out_proj` chia √28; greedy
       không LM; chữ số giữ nguyên; đo batch 1 fp16.
-- [ ] Viết lại `Plan.md` mục 1-2, `CLAUDE.md` (luật "chỉ encoder khác nhau"),
-      `README.md` theo định hướng khảo sát; khung **đề cương mới** trước Tuần 9.
+- [x] Viết lại `Plan.md` mục 1-5, `CLAUDE.md`, `README.md` theo định hướng
+      khảo sát — xong 2026-10-04.
+- [ ] Khung **đề cương mới** (dựa `Plan.md` mục 1-2) trước buổi GVHD Tuần 9.
 
 ## 🟢 Việc tay — song song bất cứ lúc nào, không chặn code
 
