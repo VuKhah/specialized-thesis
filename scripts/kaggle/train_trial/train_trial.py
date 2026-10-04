@@ -6,7 +6,7 @@ ConExtBiMamba và Conformer-12M → xem cả 3 có train ổn định không, r�
 dùng chốt giữ 2 hay 3 mô hình. Đồng thời là lần đầu chạy `train.py` mới trên GPU
 (DDP/NCCL, SyncBN, AMP, khối Mamba thật).
 
-    kaggle kernels push -p scripts/kaggle/train_trial -t 14400
+    kaggle kernels push -p scripts/kaggle/train_trial -t 19800   (trường hợp xấu nhất ~5 h: setup + 3 × trần 90 phút)
     kaggle kernels status <username>/train-trial-asr
     kaggle kernels output <username>/train-trial-asr -p <thư mục>   (PYTHONUTF8=1)
 
@@ -98,10 +98,10 @@ def run(cmd, cwd=None, check=True, env=None) -> tuple[int, str]:
     return proc.returncode, "".join(lines)
 
 
-def train_cmd(config, ckpt_dir, max_minutes, epochs=EPOCHS, extra=()):
+def train_cmd(config, ckpt_dir, max_minutes, epochs=EPOCHS, log_dir=OUT / "runs", extra=()):
     return [sys.executable, "-m", "torch.distributed.run", "--nproc_per_node", "2", "-m", "src.training.train",
             "--config", config, "--train_manifests", *TRAIN_MANIFESTS, "--epochs", str(epochs),
-            "--max_minutes", str(max_minutes), "--ckpt_dir", str(ckpt_dir), "--log_dir", str(OUT / "runs"),
+            "--max_minutes", str(max_minutes), "--ckpt_dir", str(ckpt_dir), "--log_dir", str(log_dir),
             "--ckpt_every_minutes", "10", *extra]
 
 
@@ -129,8 +129,9 @@ def main():
     # Chạy ngắn: dừng giữa epoch 0 rồi resume — kiểm DDP + checkpoint + resume trên GPU.
     smoke = Path("/tmp/smoke")
     conext = "configs/model_conextbimamba.yaml"
-    run(train_cmd(conext, smoke, 3, epochs=1), cwd=REPO_DIR, env=env)
-    _, out = run(train_cmd(conext, smoke, 3, epochs=1), cwd=REPO_DIR, env=env)
+    # TensorBoard của lần chạy ngắn để ở /tmp — cùng experiment_name nên ghi vào OUT/runs sẽ lẫn với train thử.
+    run(train_cmd(conext, smoke, 3, epochs=1, log_dir=smoke / "runs"), cwd=REPO_DIR, env=env)
+    _, out = run(train_cmd(conext, smoke, 3, epochs=1, log_dir=smoke / "runs"), cwd=REPO_DIR, env=env)
     if "resume từ" not in out:
         sys.exit("LỖI: lần chạy thứ hai không resume từ checkpoint")
 

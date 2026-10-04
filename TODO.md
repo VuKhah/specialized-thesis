@@ -165,13 +165,12 @@ duyệt, D3 → **4 shard**, train full + đánh giá theo epoch).
 - [x] **Commit + push** phần giữ riêng video — `f102ee9`, push 2026-10-04.
 - [x] ~~Kernel GPU benchmark lần 3~~ — gộp vào kernel train thử (CHECK_CODE
       kiểm B1 + ConExtBiMamba với CUDA thật, s/step đo trong `metrics.jsonl`).
-- [ ] ⛔ **Kernel train thử** `scripts/kaggle/train_trial/` (viết 2026-10-04):
-      3 mô hình × `train_shard0` × 5 epoch, 1 seed, ~2,5-3,5 GPU-h, tài khoản A.
-      Cần: người dùng duyệt **tiêu chí giữ/bỏ** (cổng G0-G3 + K1-K5 + quy tắc,
-      `lineup_preparation.md` mục Train thử; bảng so sánh tự sinh bởi
-      `src/evaluation/trial_report.py`) + 4 lệch bài ConExtBiMamba + quota;
-      commit + push trước (kernel clone repo). Dữ liệu gắn qua output 5 kernel
-      make-dataset (không chờ 5 Dataset UI).
+- [ ] **Kernel train thử** `scripts/kaggle/train_trial/` — **duyệt 2026-10-04**
+      (tiêu chí G0-G3/K1-K5/C giữ ngưỡng đề xuất, tập chính val_unseen, 4 lệch
+      bài ConExt xác nhận, quota tài khoản A, `-t 19800`). 3 mô hình ×
+      `train_shard0` × 5 epoch, 1 seed, ~2,5-3,5 GPU-h. Còn: theo dõi kernel,
+      tải output (chỉ `trial_report.*`, `metrics.jsonl`, eval jsonl — không tải
+      checkpoint), người dùng chốt giữ 2 hay 3.
 - [ ] **Kernel GPU zero_shot** Parakeet + PhoWhisper trên 203 câu clean-test (~0,5 GPU-h)
       — xin duyệt quota. Kiểm Parakeet chạy được trên T4.
 - [ ] **RQ2 (chốt 2026-10-03, chưa code):** script ghép đoạn liên tiếp cùng

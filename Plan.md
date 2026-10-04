@@ -737,3 +737,16 @@ khảo sát dataset, phát hiện sai lệch số liệu, prefetch script, train
      xếp lại lịch train full (Plan mục 2).
   5. Song song: kernel zero-shot một mức WER (bỏ `wer_vi_label`); RQ2; khung đề
      cương mới (trước Tuần 9).
+
+### 2026-10-04 (khuya) — duyệt và chạy train thử
+- **Người dùng duyệt:** tiêu chí giữ/bỏ G0-G3 + K1-K5 + quy tắc C; ngưỡng giao
+  AI → giữ nguyên đề xuất (ngưỡng của dự án, chốt trước khi có số); **tập đánh
+  giá chính = val_unseen**; xác nhận 4 lệch bài ConExtBiMamba; push + quota
+  tài khoản A, timeout kernel 19.800 s (xấu nhất ~5 h: setup + 3 × trần 90 phút
+  — 14.400 s cũ có thể cắt Conformer chạy cuối và bước `trial_report`).
+- **Sửa kernel:** lần chạy ngắn (smoke) ghi TensorBoard vào `/tmp/smoke/runs`,
+  không lẫn với `runs/conextbimamba` của train thử.
+- **Phiên sau bắt đầu từ:** kiểm trạng thái kernel `train-trial-asr`; nếu
+  CHECK_CODE/smoke lỗi → sửa code, không chạy lại khi chưa hỏi; nếu xong → tải
+  output nhỏ, đọc `trial_report.md`, người dùng chốt giữ 2 hay 3 mô hình, xếp
+  lại lịch train full (mục 2). Song song: kernel zero-shot một mức WER; RQ2.

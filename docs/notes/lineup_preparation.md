@@ -115,8 +115,11 @@ chuẩn bị** cho từng mô hình; trạng thái làm/chưa làm theo dõi ở
       arXiv:1912.09508). Kernel `scripts/kaggle/train_trial/`: CHECK_CODE CUDA
       thật → chạy ngắn DDP + resume → 3 mô hình tuần tự, trần 90 phút/mô hình,
       mô hình lỗi không chặn mô hình sau → `trial_summary.json`.
-- [ ] **Tiêu chí giữ/bỏ — AI đề xuất 2026-10-04 (bản mở rộng), chờ người dùng duyệt
-      trước khi chạy.** Bảng so sánh sinh tự động: `src/evaluation/trial_report.py`
+- [x] **Tiêu chí giữ/bỏ — DUYỆT 2026-10-04 (người dùng):** G0-G3, K1-K5, quy tắc C
+      như dưới; **tập đánh giá chính = val_unseen** (best.pt vẫn chọn theo val).
+      Ngưỡng: người dùng giao AI chọn → giữ nguyên giá trị đề xuất (ngưỡng của dự
+      án, không có tài liệu); chốt **trước** khi có số, không chỉnh theo kết quả.
+      4 lệch bài ConExtBiMamba (mục 5) người dùng xác nhận cả 4. Bảng so sánh sinh tự động: `src/evaluation/trial_report.py`
       → `trial_report.md` (kernel chạy cuối; chạy lại được ở local trên output).
   **A. Cổng loại cứng** (tự đánh giá; ngưỡng là của dự án, không có tài liệu —
   sửa ở `GATES` trong `trial_report.py`):
