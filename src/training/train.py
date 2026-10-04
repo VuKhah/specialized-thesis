@@ -193,6 +193,10 @@ def main():
     parser.add_argument("--max_minutes", type=float, default=0,
                         help="Lưu rồi thoát sau chừng này phút tính từ lúc khởi động (0 = không giới hạn)")
     parser.add_argument("--ckpt_every_minutes", type=float, default=20)
+    # Chỉ để kiểm đường code trên GPU trước khi train dài (kernel train thử, sau sự cố 2026-10-04):
+    # 1 epoch tí hon vẫn đi qua train → eval DDP → best.pt → metrics.jsonl như thật.
+    parser.add_argument("--limit_train", type=int, default=0, help="Chỉ lấy N câu train đầu (0 = đủ) — kiểm tra")
+    parser.add_argument("--limit_eval", type=int, default=0, help="Chỉ lấy N câu đầu mỗi tập eval (0 = đủ) — kiểm tra")
     parser.add_argument("--log_every_steps", type=int, default=50,
                         help="In tiến độ (loss, s/step, ETA epoch, VRAM) mỗi chừng này step; 0 = tắt")
     parser.add_argument("--ckpt_dir", default=str(CHECKPOINT_ROOT))
@@ -230,8 +234,9 @@ def main():
     def items(rows):
         return [(r["split"], r["index"]) for r in rows]
 
+    train_rows = manifest_rows(args.train_manifests or cfg["data"]["train_manifests"])
     train_ds = VietSuperSpeechDataset(
-        tokenizer=tokenizer, items=items(manifest_rows(args.train_manifests or cfg["data"]["train_manifests"])))
+        tokenizer=tokenizer, items=items(train_rows[:args.limit_train] if args.limit_train else train_rows))
     loader_kw = dict(batch_size=batch_size, collate_fn=collate_fn, num_workers=tcfg["num_workers"],
                      pin_memory=device.type == "cuda")
     # Tập đầu (val đã gặp) chọn best.pt; các tập sau (val_unseen — video giữ
@@ -240,6 +245,7 @@ def main():
     eval_sizes, eval_loaders, eval_rows = {}, {}, {}
     for name in eval_names:
         rows = manifest_rows([name])
+        rows = rows[:args.limit_eval] if args.limit_eval else rows
         eval_sizes[name] = len(rows)
         eval_rows[name] = rows[rank::world]  # thứ tự = thứ tự loader → ghép ref/hyp với video
         eval_loaders[name] = DataLoader(VietSuperSpeechDataset(tokenizer=tokenizer, items=items(eval_rows[name])),

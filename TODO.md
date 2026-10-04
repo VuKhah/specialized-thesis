@@ -178,6 +178,8 @@ duyệt, D3 → **4 shard**, train full + đánh giá theo epoch).
       ghim image cũ thất bại trên máy GPU (log 0 dòng, Cancel). Người dùng chọn **A** build
       mamba-ssm v2.3.1 trên image mặc định (Py 3.13, torch 2.11?) hay **B** cài torch 2.10
       + wheel v2.3.2/causal-conv1d ≥1.6.2 dựng sẵn → kernel kiểm tra ngắn `-t 1200` → train thử.
+- [ ] ⛔ **Preflight tài khoản B** (`vuvanduc1/preflight-asr`, ~15 phút GPU của B) → **train thử A**
+      (~2,5 GPU-h). Chuẩn bị xong 2026-10-05 (`training_plan_kaggle.md` mục 6, cuối); chờ duyệt.
 - [ ] **Kernel train thử** — lần 1 **ERROR** (image Py 3.13 không nhận wheel cp312, chưa
       train gì); đã ghim `docker_image` + `dataset_sources`, thêm log tiến độ + watchdog
       treo 20 phút (test xong); **chờ duyệt push + chạy lại** (quota A còn 28,87 h).

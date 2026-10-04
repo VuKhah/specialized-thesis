@@ -245,6 +245,7 @@ def main() -> None:
     root = Path(args.root)
     rep = build_report(root, args.reference)
     out = Path(args.out or root)
+    out.mkdir(parents=True, exist_ok=True)
     md = to_markdown(rep)
     (out / "trial_report.md").write_text(md, encoding="utf-8")
     (out / "trial_report.json").write_text(json.dumps(rep, ensure_ascii=False, indent=2), encoding="utf-8")

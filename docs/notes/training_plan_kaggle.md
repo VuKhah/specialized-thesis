@@ -269,3 +269,17 @@ vì torch mới hay vì batch ngẫu nhiên ngắn hơn — train thử đo lạ
 trong output `env-check-asr`. Tài khoản B cần chúng qua Dataset (thêm version mới cho
 `mamba-wheels`).
 
+**Chuẩn bị train thử lần 3 (2026-10-05) — khoá những phần chưa từng chạy trên GPU:**
+- Wheel cp313 trong dataset **`tieunhi/mamba-wheels-v2`** (người dùng tạo từ output
+  `env-check-asr`, chia sẻ B; cả hai tài khoản liệt kê được, kích thước khớp bản build). Mọi
+  kernel lấy wheel từ dataset này — một nguồn cho cả hai tài khoản.
+- `train.py --limit_train N --limit_eval N` (chỉ để kiểm tra). Kernel train thử chạy
+  **pipeline tí hon** trước khi train: mỗi mô hình 1 epoch 64 câu + eval 64 câu/tập qua đúng
+  đường thật (train → eval DDP gom 2 GPU → `best.pt` → `metrics.jsonl` → `trial_report`),
+  `check=True` → hỏng là dừng sau ~1 phút/mô hình. Test CPU local với manifest thật: đủ file,
+  `trial_report` ra bảng (bắt được lỗi không tạo thư mục output — đã sửa).
+- `PREFLIGHT_ONLY = True` → chỉ chạy phần kiểm tra (môi trường, wheel, CHECK_CODE, chép 27 GB,
+  pipeline tí hon, resume) rồi dừng: kernel kiểm tra cho tài khoản B (`vuvanduc1/preflight-asr`,
+  bản sao `train_trial.py` dựng ở scratchpad lúc đẩy; metadata riêng `id` + `dataset_sources`).
+- Thứ tự đề xuất: preflight B (~15 phút GPU của B) → train thử A (~15 phút preflight + ~2,3 h train).
+

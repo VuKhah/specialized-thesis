@@ -814,4 +814,9 @@ khảo sát dataset, phát hiện sai lệch số liệu, prefetch script, train
 - `train_trial`: bỏ ghim image, wheel từ `kernel_sources` env-check-asr, `EXPECT_* = 3.13/2.11`.
 - **Phiên sau / tiếp theo:** ⛔ duyệt chạy train thử (A, ~2-3 GPU-h); việc tay: thêm version mới
   `mamba-wheels` từ output `env-check-asr` cho tài khoản B (cần trước train full ở B).
+- **Chuẩn bị lần 3 (người dùng: "chuẩn bị thật chuẩn cho cả 2 tài khoản"):** dataset
+  `tieunhi/mamba-wheels-v2` (A + B đọc được); `train.py --limit_train/--limit_eval`; kernel
+  train thử thêm pipeline tí hon 3 mô hình + `trial_report` trước khi train, resume smoke
+  2+2 phút, `PREFLIGHT_ONLY` cho B; `trial_report` tự tạo thư mục output. Test CPU local.
+  **Chưa test:** pipeline tí hon với DDP 2 GPU — đó là việc của preflight B.
 

@@ -58,6 +58,12 @@ SILENCE_MINUTES = 20
 # Môi trường wheel mamba được build cho — kernel env-check-asr 2026-10-04 (phương án A: image mặc
 # định, causal-conv1d 1.5.4 + mamba-ssm 2.3.1 build từ mã nguồn, chỉ sm_75). Image đổi → chạy lại env_check.
 EXPECT_PY, EXPECT_TORCH = "3.13", "2.11"
+# True = chỉ chạy phần kiểm tra (môi trường → CHECK_CODE → dữ liệu → pipeline tí hon → resume) rồi
+# dừng, không train: dùng cho tài khoản mới / môi trường mới (quy trình mục 6, ~15 phút GPU).
+PREFLIGHT_ONLY = False
+# Pipeline tí hon: mỗi mô hình 1 epoch trên N câu, eval N câu/tập — đi qua train → eval DDP →
+# best.pt → metrics.jsonl → trial_report như thật; hỏng thì dừng sau ~1 phút/mô hình.
+PIPELINE_ROWS = 64
 # Ghi đè file của repo sau khi clone (như benchmark.py) — để trống khi code đã push.
 OVERLAY: dict[str, str] = {}
 
@@ -176,7 +182,7 @@ def main():
     wheels = sorted(str(p) for p in Path("/kaggle/input").rglob("*.whl"))
     if not wheels:
         run(["find", "/kaggle/input", "-maxdepth", "4"], check=False)
-        sys.exit("LỖI: không thấy wheel mamba trong /kaggle/input — kiểm tra kernel_sources")
+        sys.exit("LỖI: không thấy wheel mamba trong /kaggle/input — kiểm tra dataset mamba-wheels-v2")
     run(pip + ["--no-deps"] + wheels)
     run([sys.executable, "-c", CHECK_CODE], cwd=REPO_DIR)
 
@@ -185,14 +191,30 @@ def main():
     run([sys.executable, "-m", "src.data.vietsuperspeech_dataset"], cwd=REPO_DIR)  # làm ấm cache HF
     env = {**os.environ, "AUDIO_CACHE_DIR": AUDIO_DIR, "HF_HUB_OFFLINE": "1", "PYTHONIOENCODING": "utf-8"}
 
+    # Pipeline tí hon cho cả 3 mô hình (check=True: hỏng là dừng kernel, chưa tốn giờ train).
+    pipe = Path("/tmp/pipeline")
+    for config in CONFIGS:
+        _, out = run(train_cmd(config, pipe, 10, epochs=1, log_dir=pipe / "runs",
+                               extra=("--limit_train", str(PIPELINE_ROWS), "--limit_eval", str(PIPELINE_ROWS),
+                                      "--log_every_steps", "1", "--no_resume")), cwd=REPO_DIR, env=env)
+        if "eval val" not in out or "WER=" not in out:
+            sys.exit(f"LỖI: pipeline tí hon {config} không đi tới eval")
+    run([sys.executable, "-m", "src.evaluation.trial_report", str(pipe), "--out", str(pipe / "report")],
+        cwd=REPO_DIR, env=env)
+    for exp in sorted(p.name for p in pipe.iterdir() if (p / "metrics.jsonl").exists()):
+        print(f"  pipeline {exp}: " + ", ".join(sorted(f.name for f in (pipe / exp).iterdir())), flush=True)
+
     # Chạy ngắn: dừng giữa epoch 0 rồi resume — kiểm DDP + checkpoint + resume trên GPU.
     smoke = Path("/tmp/smoke")
     conext = "configs/model_conextbimamba.yaml"
     # TensorBoard của lần chạy ngắn để ở /tmp — cùng experiment_name nên ghi vào OUT/runs sẽ lẫn với train thử.
-    run(train_cmd(conext, smoke, 3, epochs=1, log_dir=smoke / "runs"), cwd=REPO_DIR, env=env)
-    _, out = run(train_cmd(conext, smoke, 3, epochs=1, log_dir=smoke / "runs"), cwd=REPO_DIR, env=env)
+    run(train_cmd(conext, smoke, 2, epochs=1, log_dir=smoke / "runs"), cwd=REPO_DIR, env=env)
+    _, out = run(train_cmd(conext, smoke, 2, epochs=1, log_dir=smoke / "runs"), cwd=REPO_DIR, env=env)
     if "resume từ" not in out:
         sys.exit("LỖI: lần chạy thứ hai không resume từ checkpoint")
+    if PREFLIGHT_ONLY:
+        print(f"\n{stamp()} PREFLIGHT OK — dừng, không train (PREFLIGHT_ONLY)", flush=True)
+        return
 
     for config in CONFIGS:
         code, _ = run(train_cmd(config, OUT / "trial", TRIAL_MAX_MINUTES), cwd=REPO_DIR, env=env, check=False)
