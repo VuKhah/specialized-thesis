@@ -56,6 +56,9 @@ TRIAL_MAX_MINUTES = 90  # trần mỗi mô hình; ước 30-45 phút train + ~10
 # Lệnh im lặng quá chừng này phút thì coi là treo (vd. DDP/NCCL kẹt) → kill cả nhóm tiến trình.
 # train.py in tiến độ mỗi 50 step (~0,5-1 phút) và mỗi 50 batch eval, nên 20 phút im lặng là bất thường.
 SILENCE_MINUTES = 20
+# Môi trường mà wheel mamba được build cho (CHƯA CHỐT sau sự cố 2026-10-04 — đổi theo phương án
+# người dùng chọn: A build lại trên image mặc định, B cài torch 2.10 + wheel dựng sẵn).
+EXPECT_PY, EXPECT_TORCH = "3.12", "2.10"
 # Ghi đè file của repo sau khi clone (như benchmark.py) — để trống khi code đã push.
 OVERLAY: dict[str, str] = {}
 
@@ -147,7 +150,22 @@ def train_cmd(config, ckpt_dir, max_minutes, epochs=EPOCHS, log_dir=OUT / "runs"
             "--ckpt_every_minutes", "10", *extra]
 
 
+def check_env() -> None:
+    """Dòng đầu tiên của log: phiên bản môi trường; lệch EXPECT_* thì dừng ngay (vài giây quota)
+    thay vì lỗi ở bước cài wheel. Kaggle tự đổi image mặc định giữa các lần chạy (sự cố 2026-10-04)."""
+    import platform
+    import torch
+    py = ".".join(platform.python_version_tuple()[:2])
+    print(f"{stamp()} MÔI TRƯỜNG: python {platform.python_version()} | torch {torch.__version__} | "
+          f"CUDA torch {torch.version.cuda} | GPU {torch.cuda.device_count()}x "
+          f"{torch.cuda.get_device_name(0) if torch.cuda.is_available() else '-'}", flush=True)
+    if py != EXPECT_PY or not torch.__version__.startswith(EXPECT_TORCH) or torch.cuda.device_count() != 2:
+        sys.exit(f"LỖI MÔI TRƯỜNG: cần python {EXPECT_PY}, torch {EXPECT_TORCH}.*, 2 GPU — "
+                 "image đã đổi hoặc chưa ghim đúng; wheel mamba phải build cho đúng bộ này")
+
+
 def main():
+    check_env()
     run(["nvidia-smi"], check=False)
     run(["git", "clone", "--depth", "1", REPO_URL, str(REPO_DIR)])
     run(["git", "log", "--oneline", "-1"], cwd=REPO_DIR)

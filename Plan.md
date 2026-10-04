@@ -790,3 +790,19 @@ khảo sát dataset, phát hiện sai lệch số liệu, prefetch script, train
      chốt giữ 2 hay 3 mô hình.
   3. Viết kernel train full mỗi tài khoản (`dataset_sources`, resume nhiều phiên).
 
+### 2026-10-05 — sự cố train thử lần 2, nguyên nhân và quy trình
+- **Lần 2 (ghim image Py 3.12):** máy được cấp 17:11, quota tạm tính ~50 phút, log 0
+  dòng; người dùng Cancel 18:02, quota quay về 1,13 h. Image cũ không khởi động được
+  script trên máy GPU (chưa rõ vì sao) → bỏ hướng ghim image cũ.
+- **Nguyên nhân + quy trình mới:** `docs/notes/training_plan_kaggle.md` mục 6 (kernel
+  kiểm tra ngắn `-t 1200` trước khi chạy dài, `check_env` đầu kernel, theo dõi bằng
+  `scripts/kaggle/watch_kernel.py`, cùng một môi trường cho mọi mô hình).
+- **Code:** `train_trial.py` thêm `check_env` (`EXPECT_PY/EXPECT_TORCH` — chưa chốt);
+  `scripts/kaggle/watch_kernel.py` (test trên kernel đã xong: in log, nhận COMPLETE;
+  nhánh báo động chưa test). Chưa commit.
+- **Wheel dựng sẵn (GitHub releases):** mamba-ssm v2.3.1 chỉ có torch 2.9; v2.3.2 có
+  cp313 + torch 2.9/2.10; causal-conv1d ≥ 1.6.2 có cp313 + torch 2.10; **không có torch
+  2.11** (torch của image mặc định — mới thấy ở image CPU, GPU chưa kiểm).
+- **⛔ Chờ người dùng chọn:** A (build v2.3.1 trên image mặc định) hay B (cài torch 2.10 +
+  wheel v2.3.2 dựng sẵn); sau đó kernel kiểm tra ngắn → train thử.
+

@@ -223,3 +223,37 @@ khuyến nghị tác giả Mamba. AMP ở mọi cấu hình, 3 + **40** step, op
   AMP scale giữ 1024 (lần 1 tụt 512); loss cuối 6,6 (lần 1 trước khi sửa:
   10,1). 43 step chỉ là dấu hiệu, chưa phải bằng chứng. Mamba 1 GPU chậm hơn
   lần 1 ~10% (1,113 vs 1,016) — giá của residual fp32 + norm_f.
+
+## 6. Sự cố train thử 2026-10-04 và quy trình chạy kernel GPU
+
+**Diễn biến.** Lần 1 (đẩy 12:44 UTC): CLI báo RUNNING ~3 h nhưng script chỉ bắt
+đầu 15:45 (chờ cấp máy, không tính quota) rồi lỗi sau 16 s — image GPU mặc định đã
+lên **Python 3.13**, pip từ chối wheel mamba cp312. Lần 2 (17:11): ghim
+`docker_image` của `verify-mamba-asr` (Python 3.12) → máy được cấp, quota tạm tính
+~50 phút, **log 0 dòng** (kể cả `nvidia-smi`), người dùng Cancel 18:02; quota quay
+về 1,13 h (không bị trừ). Mất ~5 h thời gian thực, gần như không mất quota.
+
+**Nguyên nhân.**
+1. *Gốc:* môi trường Kaggle tự đổi. Mọi kernel mới (và version mới không ghim) nhận
+   image mặc định mới nhất. `verify-mamba-asr` build wheel 24/09 trên Python 3.12;
+   `lid-asr` 03/10 đã chạy Python 3.13. Kernel train thử viết sau đó không ghim
+   môi trường và không kiểm phiên bản trước khi cài wheel.
+2. *Lần 2:* image cũ ghim được trên máy CPU (kernel thử chạy, cài được wheel) nhưng
+   trên máy GPU không khởi động được script. **Chưa rõ vì sao** (giả thuyết: tải image,
+   hoặc image cũ không hợp driver 580/CUDA 13 của máy GPU hiện tại) — không kiểm được
+   vì log trống. → Không dựa vào ghim image cũ nữa.
+3. *Không thấy được tình trạng:* trạng thái RUNNING của CLI không phân biệt chờ máy /
+   máy đã cấp nhưng script chưa chạy / đang chạy; trước đó không có log tiến độ.
+
+**Quy trình từ nay (mọi kernel GPU):**
+1. **Kernel kiểm tra ngắn trước** mỗi khi đổi môi trường (kernel mới, image mới,
+   wheel mới): `-t 1200` (20 phút trần), chỉ cài + `check_env` + CHECK_CODE + vài step.
+   Qua rồi mới chạy dài.
+2. **`check_env` là dòng đầu tiên**: in python/torch/CUDA/số GPU, lệch `EXPECT_*` thì
+   dừng ngay.
+3. **Theo dõi bằng `scripts/kaggle/watch_kernel.py`** (local): status + log + quota mỗi
+   phút; quota tăng mà 15 phút không có log mới → báo động để người dùng Stop
+   (kaggle.com/code → View Active Events; CLI không có lệnh dừng).
+4. Trong kernel: log tiến độ mỗi 50 step + eval, watchdog 20 phút im lặng (đã có).
+5. Mọi kernel GPU của dự án dùng **cùng một môi trường đã kiểm**, ghi trong `EXPECT_*`
+   — điều kiện để số đo tốc độ giữa các mô hình so được.

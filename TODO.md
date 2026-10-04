@@ -171,6 +171,10 @@ duyệt, D3 → **4 shard**, train full + đánh giá theo epoch).
 - [x] **Commit + push** phần giữ riêng video — `f102ee9`, push 2026-10-04.
 - [x] ~~Kernel GPU benchmark lần 3~~ — gộp vào kernel train thử (CHECK_CODE
       kiểm B1 + ConExtBiMamba với CUDA thật, s/step đo trong `metrics.jsonl`).
+- [ ] ⛔ **Môi trường GPU sau sự cố 2026-10-04/05** (`training_plan_kaggle.md` mục 6):
+      ghim image cũ thất bại trên máy GPU (log 0 dòng, Cancel). Người dùng chọn **A** build
+      mamba-ssm v2.3.1 trên image mặc định (Py 3.13, torch 2.11?) hay **B** cài torch 2.10
+      + wheel v2.3.2/causal-conv1d ≥1.6.2 dựng sẵn → kernel kiểm tra ngắn `-t 1200` → train thử.
 - [ ] **Kernel train thử** — lần 1 **ERROR** (image Py 3.13 không nhận wheel cp312, chưa
       train gì); đã ghim `docker_image` + `dataset_sources`, thêm log tiến độ + watchdog
       treo 20 phút (test xong); **chờ duyệt push + chạy lại** (quota A còn 28,87 h).
