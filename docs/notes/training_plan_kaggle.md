@@ -257,3 +257,15 @@ về 1,13 h (không bị trừ). Mất ~5 h thời gian thực, gần như khôn
 4. Trong kernel: log tiến độ mỗi 50 step + eval, watchdog 20 phút im lặng (đã có).
 5. Mọi kernel GPU của dự án dùng **cùng một môi trường đã kiểm**, ghi trong `EXPECT_*`
    — điều kiện để số đo tốc độ giữa các mô hình so được.
+
+**Kết quả phương án A (kernel `env-check-asr`, 2026-10-04 18:20-18:45 UTC, ~25 phút GPU):**
+image GPU mặc định = Python 3.13.15, torch 2.11.0+cu128, torchaudio 2.11.0+cu128, nvcc 12.8,
+driver 580 / CUDA 13.0, 2 × T4. Build chỉ sm_75: `causal-conv1d` 1.5.4 **3,1 phút**,
+`mamba-ssm` 2.3.1 **6,1 phút** (v2.3.1 biên dịch được với torch 2.11). CHECK_CODE OK (B1 +
+ConExt, fp32 + AMP). DDP 2 GPU + AMP, `train_shard0`, ~3 phút mỗi mô hình, đều thoát đúng
+hạn: B1 0,465 s/step (VRAM đỉnh 2,1 GiB), ConExt 0,416 (2,4), Conformer 0,369 (2,6) — số đo
+trong vài trăm step đầu, **nhanh hơn** benchmark 30/09 (Conformer 0,77, Mamba 0,48); chưa rõ
+vì torch mới hay vì batch ngẫu nhiên ngắn hơn — train thử đo lại theo epoch. Wheel cp313 nằm
+trong output `env-check-asr`. Tài khoản B cần chúng qua Dataset (thêm version mới cho
+`mamba-wheels`).
+

@@ -14,12 +14,11 @@ dùng chốt giữ 2 hay 3 mô hình. Đồng thời là lần đầu chạy `tr
 make-dataset-asr-* (kernel_sources) — đủ 5 tar vì val_unseen nằm rải cả 4 shard.
 Wheel mamba: output kernel verify-mamba-asr.
 
-**Ghim image (2026-10-04):** image GPU mặc định của Kaggle đã lên Python 3.13 → pip từ chối
-wheel cp312 (lần chạy đầu lỗi ở bước cài wheel). `kernel-metadata.json` (gitignore) phải có
-`docker_image` = image của kernel verify-mamba-asr (Python 3.12, torch 2.10+cu128 — lấy bằng
-`kaggle kernels pull <user>/verify-mamba-asr -m`). Dữ liệu + wheel gắn qua `dataset_sources`
-(`vss-asr-*`, `mamba-wheels`). Trạng thái RUNNING của CLI gồm cả lúc chờ cấp máy — không
-suy ra script đã chạy tới đâu.
+**Môi trường (sau sự cố 2026-10-04/05, `docs/notes/training_plan_kaggle.md` mục 6):** image
+mặc định, **không** ghim `docker_image` (ghim image cũ thì máy GPU không chạy được script).
+`kernel-metadata.json` (gitignore): dữ liệu qua `dataset_sources` (`vss-asr-*`), wheel cp313
+qua `kernel_sources` = `<user>/env-check-asr`. `check_env` dừng ngay nếu image lệch EXPECT_*.
+Theo dõi: `python scripts/kaggle/watch_kernel.py <user>/train-trial-asr`.
 
 Thứ tự (dừng sớm nếu lỗi code, không đốt quota):
 1. CHECK_CODE: tham số + bất biến padding với kernel CUDA thật cho B1 và
@@ -56,9 +55,9 @@ TRIAL_MAX_MINUTES = 90  # trần mỗi mô hình; ước 30-45 phút train + ~10
 # Lệnh im lặng quá chừng này phút thì coi là treo (vd. DDP/NCCL kẹt) → kill cả nhóm tiến trình.
 # train.py in tiến độ mỗi 50 step (~0,5-1 phút) và mỗi 50 batch eval, nên 20 phút im lặng là bất thường.
 SILENCE_MINUTES = 20
-# Môi trường mà wheel mamba được build cho (CHƯA CHỐT sau sự cố 2026-10-04 — đổi theo phương án
-# người dùng chọn: A build lại trên image mặc định, B cài torch 2.10 + wheel dựng sẵn).
-EXPECT_PY, EXPECT_TORCH = "3.12", "2.10"
+# Môi trường wheel mamba được build cho — kernel env-check-asr 2026-10-04 (phương án A: image mặc
+# định, causal-conv1d 1.5.4 + mamba-ssm 2.3.1 build từ mã nguồn, chỉ sm_75). Image đổi → chạy lại env_check.
+EXPECT_PY, EXPECT_TORCH = "3.13", "2.11"
 # Ghi đè file của repo sau khi clone (như benchmark.py) — để trống khi code đã push.
 OVERLAY: dict[str, str] = {}
 

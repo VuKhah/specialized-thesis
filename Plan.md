@@ -805,4 +805,13 @@ khảo sát dataset, phát hiện sai lệch số liệu, prefetch script, train
   2.11** (torch của image mặc định — mới thấy ở image CPU, GPU chưa kiểm).
 - **⛔ Chờ người dùng chọn:** A (build v2.3.1 trên image mặc định) hay B (cài torch 2.10 +
   wheel v2.3.2 dựng sẵn); sau đó kernel kiểm tra ngắn → train thử.
+- **Người dùng chọn A** (2026-10-05). Kernel `env-check-asr` ENV CHECK OK (~25 phút GPU):
+  Py 3.13.15 / torch 2.11.0+cu128 / nvcc 12.8; build sm_75 causal-conv1d 1.5.4 (3,1′) +
+  mamba-ssm 2.3.1 (6,1′); CHECK_CODE OK; DDP+AMP 3 mô hình chạy (s/step 0,47 / 0,42 / 0,37,
+  VRAM ≤ 2,6 GiB). Chi tiết `training_plan_kaggle.md` mục 6.
+- `watch_kernel.py`: lúc kernel chạy phải dùng `logs -f` (không -f trả rỗng) → bản đầu báo
+  động sai; sửa: đọc `-f` 20 s, bỏ dòng ptxas, báo động khi quota tính mà chưa có dòng log nào.
+- `train_trial`: bỏ ghim image, wheel từ `kernel_sources` env-check-asr, `EXPECT_* = 3.13/2.11`.
+- **Phiên sau / tiếp theo:** ⛔ duyệt chạy train thử (A, ~2-3 GPU-h); việc tay: thêm version mới
+  `mamba-wheels` từ output `env-check-asr` cho tài khoản B (cần trước train full ở B).
 
