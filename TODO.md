@@ -132,8 +132,9 @@ duyệt, D3 → **4 shard**, train full + đánh giá theo epoch).
       (private, đã chia sẻ `vuvanduc1` — B liệt kê được file). **Kaggle tự giải nén tar
       khi tạo Dataset** → dataset chứa `<part>/audio/...wav` + `<part>.tsv`, không còn tar;
       `extract_audio` đã sửa nhận cả hai dạng (test local wav thật, chưa commit).
-      **Còn:** tạo + chia sẻ `vss-asr-val` (chưa có, 403) và dataset wheel mamba từ
-      output `verify-mamba-asr` (B không đọc được output kernel của A, 403).* — *2026-10-02: 5 kernel
+      **Xong 2026-10-04:** thêm `vss-asr-val` + `mamba-wheels`, chia sẻ B; kernel CPU
+      `vuvanduc1/data-check-asr` gắn 6 dataset → DATA CHECK OK (thiếu audio 0 ở cả 4 tập,
+      chép 27 GB/317 s).* — *2026-10-02: 5 kernel
       `make-dataset-asr-{shard0..3,val}` **xong cả 5, qua kiểm tra**
       (15.164×4 + 6.499 file, 0 lỗi, 16 kHz mono, duration ≤ 0,1 s; ~6 GiB/shard,
       val 2,6 GiB). **Còn (việc tay trên UI):** tab Output của từng kernel →
@@ -170,7 +171,10 @@ duyệt, D3 → **4 shard**, train full + đánh giá theo epoch).
 - [x] **Commit + push** phần giữ riêng video — `f102ee9`, push 2026-10-04.
 - [x] ~~Kernel GPU benchmark lần 3~~ — gộp vào kernel train thử (CHECK_CODE
       kiểm B1 + ConExtBiMamba với CUDA thật, s/step đo trong `metrics.jsonl`).
-- [ ] **Kernel train thử** `scripts/kaggle/train_trial/` — **duyệt 2026-10-04**
+- [ ] **Kernel train thử** — lần 1 **ERROR** (image Py 3.13 không nhận wheel cp312, chưa
+      train gì); đã ghim `docker_image` + `dataset_sources`, thêm log tiến độ + watchdog
+      treo 20 phút (test xong); **chờ duyệt push + chạy lại** (quota A còn 28,87 h).
+      `scripts/kaggle/train_trial/` — **duyệt 2026-10-04**
       (tiêu chí G0-G3/K1-K5/C giữ ngưỡng đề xuất, tập chính val_unseen, 4 lệch
       bài ConExt xác nhận, quota tài khoản A, `-t 19800`). 3 mô hình ×
       `train_shard0` × 5 epoch, 1 seed, ~2,5-3,5 GPU-h. Còn: theo dõi kernel,

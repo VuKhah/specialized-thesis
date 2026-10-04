@@ -139,15 +139,23 @@ def save_checkpoint(path: Path, model, optimizer, scheduler, scaler, **meta) -> 
 
 
 @torch.no_grad()
+def _log(msg: str) -> None:
+    """Kèm giờ (UTC trên Kaggle): `kaggle kernels logs -f` không có mốc thời gian, cần để
+    phân biệt đang chạy chậm với đang treo (lần train thử 1 không thấy gì suốt ~4 h)."""
+    print(f"[{time.strftime('%H:%M:%S')}] {msg}", flush=True)
+
+
 def evaluate(model: CTCASRModel, eval_loader: DataLoader, rows: list[dict], tokenizer: BPETokenizer, device,
-             amp: bool = False) -> tuple[float, float, list[dict]]:
+             amp: bool = False, name: str = "eval", log_every: int = 0) -> tuple[float, float, list[dict]]:
     """WER greedy + CTC loss trên cùng một lần forward; với DDP mỗi rank giải mã
     phần `rows` của mình (đúng thứ tự loader, shuffle=False) rồi gom lại — WER
     tính trên toàn bộ tập, không lặp mẫu nào. Trả về (wer, loss trung bình theo
     câu, ref/hyp từng câu kèm video)."""
     model.eval()
     references, hypotheses, loss_sum, n = [], [], 0.0, 0
-    for batch in eval_loader:
+    is_main = not dist.is_initialized() or dist.get_rank() == 0
+    t0 = time.time()
+    for i, batch in enumerate(eval_loader, 1):
         waveform = batch["waveform"].to(device)
         waveform_lengths = batch["waveform_lengths"].to(device)
         with torch.autocast(torch.device(device).type, dtype=torch.float16, enabled=amp):
@@ -157,6 +165,8 @@ def evaluate(model: CTCASRModel, eval_loader: DataLoader, rows: list[dict], toke
         n += waveform.size(0)
         hypotheses.extend(tokenizer.decode(ids) for ids in greedy_collapse(log_probs, out_lengths))
         references.extend(batch["text"])
+        if is_main and log_every and i % log_every == 0:
+            _log(f"  eval {name}: batch {i}/{len(eval_loader)} ({time.time() - t0:.0f}s)")
     model.train()
     records = [{"split": r["split"], "index": r["index"], "video": video_of(r["audio"]), "ref": ref, "hyp": hyp}
                for r, ref, hyp in zip(rows, references, hypotheses, strict=True)]
@@ -183,6 +193,8 @@ def main():
     parser.add_argument("--max_minutes", type=float, default=0,
                         help="Lưu rồi thoát sau chừng này phút tính từ lúc khởi động (0 = không giới hạn)")
     parser.add_argument("--ckpt_every_minutes", type=float, default=20)
+    parser.add_argument("--log_every_steps", type=int, default=50,
+                        help="In tiến độ (loss, s/step, ETA epoch, VRAM) mỗi chừng này step; 0 = tắt")
     parser.add_argument("--ckpt_dir", default=str(CHECKPOINT_ROOT))
     parser.add_argument("--log_dir", default=str(TENSORBOARD_ROOT))
     args = parser.parse_args()
@@ -355,6 +367,15 @@ def main():
 
             global_step += 1
             step_in_epoch += 1
+            if is_main and args.log_every_steps and step_in_epoch % args.log_every_steps == 0:
+                done = loss_n + nonfinite_loss  # step của phiên này trong epoch (resume giữa epoch thì ít hơn)
+                sps = (time.time() - t_epoch) / done
+                vram = (f", VRAM đỉnh {torch.cuda.max_memory_allocated(device) / 2**30:.1f} GiB"
+                        if device.type == "cuda" else "")
+                _log(f"[{experiment_name}] epoch {epoch} step {step_in_epoch}/{steps_per_epoch} loss tb "
+                     f"{loss_sum / max(loss_n, 1):.3f} | {sps:.3f} s/step, còn ~"
+                     f"{(steps_per_epoch - step_in_epoch) * sps / 60:.1f} phút epoch | "
+                     f"{(time.time() - t_start) / 60:.1f} phút từ đầu phiên | bỏ {nonfinite_loss}+{amp_skipped}{vram}")
             if is_main:
                 writer.add_scalar("train/loss", loss_value, global_step)
                 writer.add_scalar("train/lr", scheduler.get_last_lr()[0], global_step)
@@ -399,7 +420,10 @@ def main():
             wers = {}
             for name, loader in eval_loaders.items():
                 t_eval = time.time()
-                wers[name], eval_loss, records = evaluate(core, loader, eval_rows[name], tokenizer, device, amp)
+                if is_main:
+                    _log(f"[{experiment_name}] epoch {epoch}: eval {name} ({eval_sizes[name]} câu, {len(loader)} batch/GPU)")
+                wers[name], eval_loss, records = evaluate(core, loader, eval_rows[name], tokenizer, device, amp,
+                                                          name=name, log_every=args.log_every_steps)
                 epoch_metrics[f"wer_{name}"] = wers[name]
                 epoch_metrics[f"loss_{name}"] = eval_loss
                 epoch_metrics[f"eval_seconds_{name}"] = time.time() - t_eval

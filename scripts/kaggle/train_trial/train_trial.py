@@ -14,6 +14,13 @@ dùng chốt giữ 2 hay 3 mô hình. Đồng thời là lần đầu chạy `tr
 make-dataset-asr-* (kernel_sources) — đủ 5 tar vì val_unseen nằm rải cả 4 shard.
 Wheel mamba: output kernel verify-mamba-asr.
 
+**Ghim image (2026-10-04):** image GPU mặc định của Kaggle đã lên Python 3.13 → pip từ chối
+wheel cp312 (lần chạy đầu lỗi ở bước cài wheel). `kernel-metadata.json` (gitignore) phải có
+`docker_image` = image của kernel verify-mamba-asr (Python 3.12, torch 2.10+cu128 — lấy bằng
+`kaggle kernels pull <user>/verify-mamba-asr -m`). Dữ liệu + wheel gắn qua `dataset_sources`
+(`vss-asr-*`, `mamba-wheels`). Trạng thái RUNNING của CLI gồm cả lúc chờ cấp máy — không
+suy ra script đã chạy tới đâu.
+
 Thứ tự (dừng sớm nếu lỗi code, không đốt quota):
 1. CHECK_CODE: tham số + bất biến padding với kernel CUDA thật cho B1 và
    ConExtBiMamba (fp32 và AMP).
@@ -28,8 +35,12 @@ Thứ tự (dừng sớm nếu lỗi code, không đốt quota):
 """
 
 import os
+import queue
+import signal
 import subprocess
 import sys
+import threading
+import time
 from pathlib import Path
 
 sys.stdout.reconfigure(encoding="utf-8")
@@ -42,6 +53,9 @@ EPOCHS = 5
 TRAIN_MANIFESTS = ["train_shard0"]
 CONFIGS = ["configs/model_mamba.yaml", "configs/model_conextbimamba.yaml", "configs/model_conformer.yaml"]
 TRIAL_MAX_MINUTES = 90  # trần mỗi mô hình; ước 30-45 phút train + ~10 phút eval
+# Lệnh im lặng quá chừng này phút thì coi là treo (vd. DDP/NCCL kẹt) → kill cả nhóm tiến trình.
+# train.py in tiến độ mỗi 50 step (~0,5-1 phút) và mỗi 50 batch eval, nên 20 phút im lặng là bất thường.
+SILENCE_MINUTES = 20
 # Ghi đè file của repo sau khi clone (như benchmark.py) — để trống khi code đã push.
 OVERLAY: dict[str, str] = {}
 
@@ -81,18 +95,46 @@ sys.exit(0 if ok else 1)
 '''
 
 
+T0 = time.time()
+
+
+def stamp() -> str:
+    return f"[{time.strftime('%H:%M:%S')} +{(time.time() - T0) / 60:.0f}′]"
+
+
 def run(cmd, cwd=None, check=True, env=None) -> tuple[int, str]:
-    """In output ngay khi có (train dài hàng giờ — log Kaggle phải thấy tiến độ), trả về (returncode, output)."""
-    print(f"\n$ {' '.join(map(str, cmd))}", flush=True)
+    """In output ngay khi có (xem trực tiếp bằng `kaggle kernels logs -f`), trả về (returncode, output).
+    Watchdog: im lặng quá SILENCE_MINUTES thì kill cả nhóm tiến trình (torchrun + 2 worker)."""
+    print(f"\n{stamp()} $ {' '.join(map(str, cmd))}", flush=True)
     proc = subprocess.Popen(cmd, cwd=cwd, env=env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True,
-                            encoding="utf-8", errors="replace")
-    lines = []
-    for line in proc.stdout:
+                            encoding="utf-8", errors="replace", start_new_session=True)
+    lines_q: queue.Queue = queue.Queue()
+
+    def pump():
+        for line in proc.stdout:
+            lines_q.put(line)
+        lines_q.put(None)
+
+    threading.Thread(target=pump, daemon=True).start()
+    lines, last = [], time.time()
+    while True:
+        try:
+            line = lines_q.get(timeout=30)
+        except queue.Empty:
+            if time.time() - last > SILENCE_MINUTES * 60:
+                print(f"{stamp()} !!! im lặng {SILENCE_MINUTES} phút — coi là treo, kill nhóm tiến trình", flush=True)
+                os.killpg(proc.pid, signal.SIGKILL)
+                break
+            continue
+        if line is None:
+            break
+        last = time.time()
         # Bỏ cảnh báo lặp của tensorflow/oneDNN khi import tensorboard.
         if "oneDNN" not in line and "tensorflow" not in line:
             print(line, end="", flush=True)
         lines.append(line)
     proc.wait()
+    print(f"{stamp()} → returncode {proc.returncode}", flush=True)
     if check and proc.returncode != 0:
         sys.exit(f"LỖI: lệnh trên trả về {proc.returncode}")
     return proc.returncode, "".join(lines)

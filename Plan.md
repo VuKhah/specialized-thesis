@@ -763,6 +763,30 @@ khảo sát dataset, phát hiện sai lệch số liệu, prefetch script, train
   dùng được; B nhận cùng image GPU.
 - **Rò rỉ dữ liệu:** kiểm trên manifest thật — 0 câu chung giữa 4 tập, 0 video giữ riêng
   trong train/val, tokenizer + CMVN chỉ từ train; val chung video với train (394/395, có chủ đích).
-- **Phiên sau:** commit + push `extract_audio` (khi người dùng cho phép, trước kernel nào
-  của B); kiểm `vss-asr-val` + wheel từ B; đọc kết quả train thử.
+- Đã push `4e00254` (`extract_audio` hai dạng). Người dùng tạo `vss-asr-val` +
+  `mamba-wheels`, chia sẻ B; B thấy đủ 6 dataset (`ready`).
+- **Phiên sau bắt đầu từ** (hai kernel chạy trên Kaggle, độc lập với phiên local):
+  1. ✅ Kernel CPU `vuvanduc1/data-check-asr` (B) — **DATA CHECK OK** (15:00 UTC):
+     `extract_audio` chép 4×15.164 + 6.499 file trong 317 s (27 GB, đủ theo tsv); train
+     45.442 / val 4.824 / val_unseen 3.011 / clean-test 203 câu, thiếu audio 0; 40 file đọc
+     đúng 16 kHz + duration; thấy 2 wheel. Dataset gắn tại `/kaggle/input/datasets/tieunhi/<slug>/`.
+  2. ❌ Lần chạy 1 `train-trial-asr` **ERROR** (16:43 UTC): CLI báo RUNNING ~4 h nhưng
+     script chỉ bắt đầu 15:45 (chờ cấp máy) và lỗi sau ~16 s — image GPU mặc định đã lên
+     Python 3.13, pip từ chối wheel cp312. **Chưa train mô hình nào.** Kết luận trước đó
+     "đã qua bước cài wheel vì RUNNING lâu" là sai. Sửa: ghim `docker_image` của
+     verify-mamba-asr (kernel CPU thử: Py 3.12.13, torch 2.10.0+cu128, pip cài 2 wheel OK)
+     + chuyển sang `dataset_sources`. Chờ người dùng duyệt chạy lại.
+     **Quota (`kaggle quota`, 17:00 UTC):** A dùng 1,13 h/30 (≈ kernel LID 03/10 — lần lỗi
+     gần như không tốn), B 0/30; làm mới 2026-10-10. ~4 h chờ cấp máy **không** tính quota.
+     **Chống "treo không thấy gì" (người dùng yêu cầu):** `train.py --log_every_steps 50`
+     (giờ, step/tổng, loss tb, s/step, ETA epoch, VRAM, step bỏ) + log tiến độ eval; kernel
+     in giờ + phút từ đầu mỗi lệnh, **watchdog** im lặng 20 phút → kill cả nhóm tiến trình
+     rồi chạy mô hình sau. Test: CPU local (Conformer 2 lớp, 8 câu thật) in đúng; watchdog
+     test trên kernel CPU Linux `watchdog-test-asr` — kill sau 60 s kể cả tiến trình con,
+     lệnh in đều không bị kill, check=True vẫn dừng. Xem trực tiếp: `kaggle kernels logs -f
+     <kernel>` (tiếng Việt bị lỗi mã hoá khi stream, log tải sau khi xong thì đúng).
+     Kernel GPU `tieunhi/train-trial-asr` (A, timeout 5,5 h): khi xong tải output
+     nhỏ (`trial_report.*`, `metrics.jsonl`, eval jsonl — không tải checkpoint), người dùng
+     chốt giữ 2 hay 3 mô hình.
+  3. Viết kernel train full mỗi tài khoản (`dataset_sources`, resume nhiều phiên).
 
