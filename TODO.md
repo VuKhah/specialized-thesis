@@ -128,7 +128,12 @@ duyệt, D3 → **4 shard**, train full + đánh giá theo epoch).
       validation, val 6.499 + clean-test 250 (đối chiếu nội dung theo index).
       Mỗi shard 15.164 câu / 55,21 h / 6,36 GB, lệch phân bố ≤ 0,1 điểm %, phủ
       996/998 token BPE. Đã commit + push 2026-09-30.
-- [ ] **5. Kernel CPU tạo 5 dataset** — *2026-10-02: 5 kernel
+- [ ] **5. Kernel CPU tạo 5 dataset** — *2026-10-04: đã tạo `tieunhi/vss-asr-train-shard0..3`
+      (private, đã chia sẻ `vuvanduc1` — B liệt kê được file). **Kaggle tự giải nén tar
+      khi tạo Dataset** → dataset chứa `<part>/audio/...wav` + `<part>.tsv`, không còn tar;
+      `extract_audio` đã sửa nhận cả hai dạng (test local wav thật, chưa commit).
+      **Còn:** tạo + chia sẻ `vss-asr-val` (chưa có, 403) và dataset wheel mamba từ
+      output `verify-mamba-asr` (B không đọc được output kernel của A, 403).* — *2026-10-02: 5 kernel
       `make-dataset-asr-{shard0..3,val}` **xong cả 5, qua kiểm tra**
       (15.164×4 + 6.499 file, 0 lỗi, 16 kHz mono, duration ≤ 0,1 s; ~6 GiB/shard,
       val 2,6 GiB). **Còn (việc tay trên UI):** tab Output của từng kernel →

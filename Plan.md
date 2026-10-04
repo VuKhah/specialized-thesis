@@ -750,3 +750,19 @@ khảo sát dataset, phát hiện sai lệch số liệu, prefetch script, train
   CHECK_CODE/smoke lỗi → sửa code, không chạy lại khi chưa hỏi; nếu xong → tải
   output nhỏ, đọc `trial_report.md`, người dùng chốt giữ 2 hay 3 mô hình, xếp
   lại lịch train full (mục 2). Song song: kernel zero-shot một mức WER; RQ2.
+
+### 2026-10-04 (khuya, tiếp) — kết nối hai tài khoản Kaggle
+- **Tài khoản B = `vuvanduc1`**, khoá ở `~/.kaggle_Duc/kaggle.json`, chọn bằng
+  `KAGGLE_CONFIG_DIR="C:/Users/Dell/.kaggle_Duc"` (đường dẫn Windows). Kernel test CPU
+  `vuvanduc1/connection-test-asr` chạy xong, tải được output.
+- **Dataset:** `vss-asr-train-shard0..3` đã tạo, B đọc được. Kaggle **tự giải nén tar**
+  khi tạo Dataset → `extract_audio` thêm nhánh chép thư mục `<part>/` theo `<part>.tsv`
+  (vẫn chép sang `/tmp`, không symlink). Thiếu `vss-asr-val` + dataset wheel cho B.
+- **Image:** kernel test của B là CPU (Python 3.13) — không phản ánh image GPU. Train thử
+  ở A (image GPU mới nhất, `docker_image` trống) qua bước cài wheel cp312 → wheel hiện có
+  dùng được; B nhận cùng image GPU.
+- **Rò rỉ dữ liệu:** kiểm trên manifest thật — 0 câu chung giữa 4 tập, 0 video giữ riêng
+  trong train/val, tokenizer + CMVN chỉ từ train; val chung video với train (394/395, có chủ đích).
+- **Phiên sau:** commit + push `extract_audio` (khi người dùng cho phép, trước kernel nào
+  của B); kiểm `vss-asr-val` + wheel từ B; đọc kết quả train thử.
+
