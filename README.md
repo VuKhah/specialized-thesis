@@ -36,8 +36,8 @@ Conformer train từ đầu và một mô hình pre-train lớn, rồi nhận x�
 
 ### Câu hỏi nghiên cứu (bản làm việc)
 
-1. **RQ1 — độ chính xác:** WER trên clean-test (192 câu hiệu đính tay) và tập
-   val, theo epoch với các mô hình train từ đầu.
+1. **RQ1 — độ chính xác:** WER trên clean-test (203 câu hiệu đính tay, từ video
+   chưa từng train) và tập val, theo epoch với các mô hình train từ đầu.
 2. **RQ2 — hiệu quả:** RTF, độ trễ, VRAM, số tham số, GPU-giờ train; theo độ
    dài trên **audio ghép nhân tạo** từ các đoạn liên tiếp (dữ liệu gốc chỉ dài
    10-15 s).
@@ -141,13 +141,22 @@ Transcript là pseudo-label (Zipformer-30M-RNNT-6000h), chưa qua kiểm định
 **Lọc dữ liệu (A1):** một phần audio không phải tiếng Việt (phỏng vấn khách
 nước ngoài, một video tiếng Nhật) mà nhãn vẫn bị phiên thành chữ Việt/giả tiếng
 Anh. Loại theo nhận dạng ngôn ngữ trên audio (Whisper-small) và tỉ lệ từ có
-dấu của nhãn → [`data/splits/excluded.tsv`](data/splits/excluded.tsv). Sau lọc:
+dấu của nhãn → [`data/splits/excluded.tsv`](data/splits/excluded.tsv).
 
-| Tập | Câu | Giờ |
-|---|---|---|
-| train (4 shard) | 48.340 | 175,77 |
-| val = `validation` trừ clean-test | 5.140 | 18,65 |
-| clean-test (seed 42, từ `validation`, hiệu đính tay) | 192 | — |
+**Tập test độc lập theo video:** `validation` gốc rải từ chính các video của
+train (561/562 video trùng), nên test lấy từ đó chỉ đo "người nói đã gặp". Vì
+vậy giữ riêng ngẫu nhiên 29 video (~6%, seed 42) khỏi train/val
+([`data/splits/heldout_videos.tsv`](data/splits/heldout_videos.tsv),
+`src/data/make_heldout.py`). Sau lọc và giữ riêng:
 
-Tokenizer BPE (1000 piece) train lại trên nhãn train đã lọc. Clean-test:
+| Tập | Câu | Giờ | Video |
+|---|---|---|---|
+| train (4 shard) | 45.442 | 165,18 | 463 |
+| val (chọn checkpoint; `validation` trừ clean-test cũ, trừ video giữ riêng) | 4.824 | 17,51 | 395 |
+| val_unseen (video giữ riêng, nhãn tự động) | 3.011 | 10,99 | 29 |
+| clean-test (video giữ riêng, 7 câu/video, hiệu đính tay) | 203 | 0,74 | 29 |
+
+Hạn chế: tách theo video chưa chắc tách được người nói — MC của chương trình lớn
+có thể đã xuất hiện ở video khác trong train; khách mời thì chưa. Tokenizer BPE
+(1000 piece) và thống kê CMVN tính trên đúng tập train. Clean-test:
 `data/processed/clean_test_manifest.json` (đang hiệu đính).

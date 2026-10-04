@@ -29,12 +29,12 @@ chuẩn bị** cho từng mô hình; trạng thái làm/chưa làm theo dõi ở
       (`frontend_decoder_survey.md`).
 - [ ] Người dùng xác nhận: `out_proj` chia √28, greedy không LM, chữ số giữ
       nguyên, đo batch 1 fp16.
-- [ ] Hiệu đính tay 192 câu clean-test (`corrected_text`) — reference cho mọi
+- [ ] Hiệu đính tay 203 câu clean-test (`corrected_text`, video giữ riêng) — reference cho mọi
       mô hình.
 - [ ] Chuẩn hóa văn bản chung trước WER (đã có trong `zero_shot.py`) — dùng cho
       cả mô hình train từ đầu khi chấm clean-test.
 - [ ] **Ước lại quota**: số D8 (Conformer 23,2 h, Mamba 16,0 h / 30 epoch) tính
-      trên 60.656 câu; sau A1 còn 48.340 (×0,80) → khoảng 18,5 h / 12,8 h.
+      trên 60.656 câu; sau A1 + giữ riêng video còn 45.442 (×0,75) → khoảng 17,4 h / 12,0 h.
       Kiểm lại bằng số đo thật ở lần chạy thử.
 
 ## 1. Mamba hai chiều B1
@@ -65,7 +65,7 @@ chuẩn bị** cho từng mô hình; trạng thái làm/chưa làm theo dõi ở
 - [ ] ⛔ **Kiểm sớm nhất có thể** (quyết định có cần dùng dự bị không): cài NeMo
       trên Kaggle; tìm file `.nemo` (card không có link trực tiếp); chạy trên
       **T4** (card không liệt kê Turing).
-- [ ] Zero-shot 192 câu: rút `ZS_MODELS` của `scripts/kaggle/zero_shot/` về
+- [ ] Zero-shot 203 câu (manifest bản 2 — đã sửa đọc 2026-10-04): rút `ZS_MODELS` của `scripts/kaggle/zero_shot/` về
       `parakeet,phowhisper` (bỏ wav2vec2); bỏ `wer_vi_label`/đọc
       `excluded.tsv` (một mức WER, A1).
 - [ ] Chuẩn hóa đầu ra (Parakeet ra hoa/thường + dấu câu) — đã có hàm chung.
@@ -101,7 +101,7 @@ chuẩn bị** cho từng mô hình; trạng thái làm/chưa làm theo dõi ở
 
 - **Khi nào dùng:** Parakeet không cài/chạy được trên T4, hoặc kết quả
   zero-shot bất thường không giải thích được. Người dùng quyết chuyển.
-- [ ] Zero-shot chạy kèm Parakeet ở cùng kernel (rẻ, ~vài phút cho 192 câu)
+- [ ] Zero-shot chạy kèm Parakeet ở cùng kernel (rẻ, ~vài phút cho 203 câu)
       — có số sẵn nếu phải chuyển.
 - [ ] Fine-tune LoRA (`peft`) trên T4: ước VRAM/thời gian bằng vài step.
 - [ ] Encoder-decoder, cửa sổ 30 s: đoạn 10-15 s không sao; **RQ2 audio

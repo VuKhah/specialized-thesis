@@ -12,8 +12,10 @@ Cạm bẫy khi đọc kết quả:
   (do Zipformer sinh, không phải người). Số câu thuộc mỗi loại được in ra và
   lưu vào file kết quả — chỉ báo cáo WER "clean-test" khi phần lớn là
   `corrected_text`.
-- clean-test lấy từ `validation`, mà `best.pt` cũng chọn theo WER `validation`
-  → số này lạc quan hơn WER trên dữ liệu chưa từng dùng để chọn model.
+- Từ 2026-10-04 clean-test lấy từ **video giữ riêng** (`src/data/make_heldout.py`)
+  — không video nào của nó có trong train/val, nên không còn lạc quan kiểu "đã
+  nghe người nói". MC của chương trình lớn vẫn có thể đã gặp ở video khác (nêu
+  hạn chế). Câu đến từ cả `train` lẫn `validation` → mỗi câu có `split` riêng.
 - ref/hyp đi qua `text_normalize.normalize_text` (chữ thường, bỏ dấu câu, gạch
   nối → khoảng trắng; số giữ nguyên) — cùng hàm với kernel zero-shot của các
   mô hình pre-train, nên WER so được với nhau.
@@ -79,7 +81,7 @@ def main() -> None:
         manifest = json.load(f)
     # A1 (2026-10-03): bỏ đoạn không phải tiếng Việt / nhãn hỏng → 192/250 câu.
     excluded = load_excluded()
-    samples = [s for s in manifest["samples"] if (manifest["split"], s["index"]) not in excluded]
+    samples = [s for s in manifest["samples"] if (s["split"], s["index"]) not in excluded]
     print(f"clean-test: {len(samples)}/{len(manifest['samples'])} câu sau khi bỏ excluded.tsv")
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -104,7 +106,7 @@ def main() -> None:
     print(f"Reference: {n_corrected}/{len(samples)} câu là corrected_text, còn lại là pseudo_label")
 
     # Manifest lưu `index` trong split gốc; audio tải lẻ nếu chưa có trong cache (chỉ ~250 file).
-    dataset = VietSuperSpeechDataset(split=manifest["split"], tokenizer=None, indices=[s["index"] for s in samples])
+    dataset = VietSuperSpeechDataset(tokenizer=None, items=[(s["split"], s["index"]) for s in samples])
     loader = DataLoader(
         dataset,
         batch_size=args.batch_size,
@@ -135,9 +137,10 @@ def main() -> None:
         "n_corrected_text": n_corrected,
         "batch_size": args.batch_size,
         "metrics": report,
-        "note": "clean-test lấy từ validation, best.pt cũng chọn theo validation (xem docstring eval_clean_test.py)",
+        "note": "clean-test từ video giữ riêng (make_heldout.py), độc lập theo video với train/val",
         "samples": [
             {
+                "split": s["split"],
                 "index": s["index"],
                 "source": s["source"],
                 "duration_s": s["duration_s"],

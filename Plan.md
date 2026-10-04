@@ -13,7 +13,7 @@ quy ước ở [`docs/CONVENTIONS.md`](docs/CONVENTIONS.md).
 ## 1. Mục tiêu
 
 **Khảo sát Mamba (trọng tâm) làm encoder ASR tiếng Việt hội thoại** trên
-VietSuperSpeech (sau lọc A1: train 48.340 câu / 175,77 h), nhận xét theo đánh
+VietSuperSpeech (sau lọc A1 và giữ riêng video test: train 45.442 câu / 165,18 h), nhận xét theo đánh
 đổi **độ chính xác – tốc độ – tài nguyên** (GVHD lần 1, 2026-10-01). Đề cương
 đã nộp (so sánh có kiểm soát Mamba vs Conformer) sẽ được thay bằng **đề cương
 mới** trước buổi Tuần 9; `docs/de_cuong/*.docx` cũ giữ nguyên.
@@ -39,7 +39,9 @@ mới** trước buổi Tuần 9; `docs/de_cuong/*.docx` cũ giữ nguyên.
 
 **Câu hỏi nghiên cứu (bản làm việc, chờ đề cương mới):**
 - **RQ1 — độ chính xác:** WER (greedy, không LM, sau `normalize_text`) trên
-  clean-test 192 câu và val 5.140 câu, theo epoch cho nhóm train từ đầu.
+  clean-test 203 câu (video giữ riêng, hiệu đính tay), val_unseen 3.011 câu
+  (video giữ riêng) và val 4.824 câu (video đã gặp), theo epoch cho nhóm train
+  từ đầu; khoảng tin cậy bằng bootstrap theo khối video.
 - **RQ2 — hiệu quả:** RTF, độ trễ, VRAM, số tham số, GPU-giờ train; theo độ dài
   trên **audio ghép nhân tạo** (chốt 2026-10-03, chỉ để đo, không đo WER audio dài).
 - **RQ3 — phân tích lỗi** định tính trên clean-test.
@@ -74,14 +76,14 @@ lỗi); fine-tune pre-train là phần **bỏ được đầu tiên** nếu thi�
 
 | Hạng mục | Trạng thái | Ghi chú |
 |---|---|---|
-| Dữ liệu | ✅ | Manifest 4 shard + val; A1 lọc (`excluded.tsv`); tokenizer BPE train lại; 5 kernel tạo dataset xong — **còn tạo Dataset trên UI + chia sẻ tài khoản B** (việc tay) |
+| Dữ liệu | ✅ | Manifest 4 shard + val; A1 lọc (`excluded.tsv`); giữ riêng 29 video cho test (`heldout_videos.tsv`); tokenizer BPE + CMVN tính lại; 5 kernel tạo dataset xong — **còn tạo Dataset trên UI + chia sẻ tài khoản B** (việc tay) |
 | Pipeline chung (#1, #2, #5) | ✅ code · 🟡 test | DDP/AMP/resume giữa epoch, CMVN + SpecAugment, dropout Mamba (2026-10-04). Test CPU Conformer đạt; **DDP/NCCL/AMP/Mamba thật chưa chạy** (Kaggle) |
 | #1 Mamba B1 | 🟡 | Code xong, test bằng khối giả; chưa chạy CUDA thật |
 | #5 ConExtBiMamba | ⬜ | Chưa code |
 | #2 Conformer-12M | ✅ code | Train thử CPU đạt |
-| #4 Parakeet / PhoWhisper | 🟡 | Kernel zero-shot có sẵn (test CPU 4 câu); cần rút về 2 mô hình + 192 câu; chưa chạy Kaggle |
+| #4 Parakeet / PhoWhisper | 🟡 | Kernel zero-shot có sẵn (test CPU 4 câu); đã đọc clean-test bản 2 (203 câu); còn rút về 2 mô hình; chưa chạy Kaggle |
 | RQ2 | ⬜ | Đã chốt cách đo, chưa code |
-| clean-test hiệu đính tay | ⬜ | 192 câu, việc tay |
+| clean-test hiệu đính tay | ⬜ | 203 câu từ 29 video giữ riêng (thay bản 192 câu ngày 10-04), việc tay |
 | Đề cương mới | ⬜ | Trước Tuần 9 |
 | Khóa luận | 🔄 | File khung + nháp Ch1 (mục 6) |
 
@@ -120,6 +122,7 @@ Theo thứ tự thời gian. Quyết định bị thay thế giữ lại để t
 | 2026-10-04 | **Front-end: CMVN toàn cục + SpecAugment** (2 freq mask F=27, 10 time mask ≤ 5%, không time warp, chỉ lúc train); giữ log-mel 80 / 25 / 10 ms | SpecAugment Bảng 3/4/6; mọi hệ đối chứng đều chuẩn hoá. Cùng note |
 | 2026-10-04 | **Dropout 0,1 cho Mamba** (đầu ra mỗi khối, trước residual) | 2405.12609 Bảng I-III, ConMamba yaml. Cùng note |
 | 2026-10-04 | **Giữ B1, không làm biến thể B1 + FFN** | 2405.12609 Bảng XVI/XII. Cùng note |
+| 2026-10-04 | **Test độc lập theo video** (thay clean-test 09-14 và một phần D5): giữ riêng ngẫu nhiên 29 video (~6%, seed 42, video ≥ 20 câu) khỏi train/val; clean-test mới 203 câu (7/video) để hiệu đính; phần còn lại = val_unseen 3.011 câu; val chọn checkpoint = 4.824 câu. Train 45.442 câu / 165,18 h. Tokenizer + CMVN tính lại | 561/562 video `validation` trùng train → test cũ chỉ đo "đã gặp", lệch khi so với pre-train. Chuẩn: LibriSpeech, VIVOS tách theo người nói. Chọn theo video (không theo chương trình) để test đại diện phân bố; hạn chế: MC chương trình lớn có thể đã gặp. `src/data/make_heldout.py`, `docs/notes/dataset_discrepancy.md` |
 
 ## 5. Quyết định đang mở / treo / rủi ro đã biết
 
@@ -131,7 +134,7 @@ Theo thứ tự thời gian. Quyết định bị thay thế giữ lại để t
 | 🟡 Chờ người dùng xác nhận | Thiết lập AI tự chọn: `out_proj` chia √28; greedy không LM; chữ số giữ nguyên; đo RTF batch 1 fp16; vị trí dropout trong khối Mamba; 10 time mask (NeMo gợi ý ít hơn cho mô hình nhỏ — núm chỉnh nếu hội tụ chậm) | `docs/notes/frontend_decoder_survey.md` |
 | ⚠️ Rủi ro | Parakeet chưa chắc chạy được trên T4/NeMo; dữ liệu pre-train có thể trùng VietSuperSpeech (rò rỉ) | `lineup_preparation.md` mục 4; dự bị PhoWhisper |
 | ⚠️ Rủi ro | `train.py` mới chưa chạy trên GPU (DDP/NCCL/SyncBN/AMP), Mamba chưa chạy CUDA thật sau B1 | Kiểm ở bước đầu kernel train thử |
-| ⚠️ Việc tay | 5 Kaggle Dataset trên UI + chia sẻ tài khoản B; hiệu đính 192 câu clean-test | `TODO.md` 🟡 bước 5, 🟢 |
+| ⚠️ Việc tay | 5 Kaggle Dataset trên UI + chia sẻ tài khoản B; hiệu đính 203 câu clean-test | `TODO.md` 🟡 bước 5, 🟢 |
 | ⚠️ Biết, chưa xử lý | `notebooks/02_dataset_eda.ipynb` nhúng audio YouTube trong repo **public**, có cả trong lịch sử git | Người dùng chọn bỏ qua (2026-09-19). Chưa kiểm license VietSuperSpeech |
 | ⚠️ Chưa quyết | Tên người thứ ba + MSSV trong tên file TLCN (còn trong lịch sử git); xoá cần viết lại lịch sử + force push | Chỉ làm khi người dùng yêu cầu |
 
@@ -613,3 +616,52 @@ khảo sát dataset, phát hiện sai lệch số liệu, prefetch script, train
   excluded, `HF_HUB_OFFLINE`, tar, DDP không test được local, B1 không cần
   mask); README thêm lệnh chạy Kaggle và số liệu sau A1. Tên đề tài trên
   README ghi là "tên làm việc" — tên chính thức theo đề cương mới.
+- **Tỷ lệ train/val/test (người dùng hỏi):** kích thước hợp lý (clean-test ≈
+  VIVOS test), nhưng 100% clean-test và 99,98% val thuộc video đã train (do
+  `validation` gốc rải từ video train) → đề xuất 3 phương án, **người dùng chọn
+  B: giữ riêng theo video** (mục 4). `make_heldout.py` → 29 video; train 45.442 /
+  val 4.824 / val_unseen 3.011 / clean-test 203, rời nhau từng đôi (đã kiểm).
+  Tokenizer train lại (4/1000 piece đổi; val_unseen + clean-test giải mã khớp
+  100%, 0 unk), CMVN tính lại (|Δ| ≤ 0,08). `train.py` chấm thêm val_unseen mỗi
+  epoch (`extra_eval_manifests`, chỉ log); dataset nhận `(split, index)` trộn hai
+  split; `eval_clean_test`, kernel zero-shot, notebook 02 đọc manifest bản 2. Test
+  CPU: eval_clean_test 203 câu, train 2 epoch có 2 tập eval, zero-shot chuẩn bị
+  mẫu đạt. Train thử 1 shard: `train_shard0` còn 11.364 câu.
+- **Đóng phiên 2026-10-04 — tóm tắt thay đổi trong ngày** (đã push tới `ffecb6f`;
+  phần giữ riêng video **chưa commit**):
+  - Code dùng chung (bước 3): dataset theo manifest + lọc lúc đọc, `train.py`
+    DDP/AMP/resume giữa epoch, `extract_audio.py`; `HF_HUB_OFFLINE` sau khi làm ấm.
+  - Front-end CMVN toàn cục + SpecAugment, dropout Mamba 0,1, giữ CTC, giữ B1
+    (căn cứ `docs/notes/frontend_decoder_survey.md`).
+  - Viết lại `Plan.md` mục 1-5, `CLAUDE.md`, `README.md` theo hướng khảo sát.
+  - Test độc lập theo video: 29 video giữ riêng; train 45.442 / val 4.824 /
+    val_unseen 3.011 / clean-test 203; tokenizer + CMVN tính lại.
+  - Hướng dẫn người dùng tạo 5 Kaggle Dataset trên UI (slug đề xuất
+    `vss-asr-train-shard{0..3}`, `vss-asr-val`, private, chia sẻ tài khoản B
+    quyền xem) — **lọc lúc đọc nên 5 dataset không phải tạo lại** sau thay đổi
+    giữ riêng video.
+- **Lịch phiên sau (thay lịch đầu ngày; ⛔ = cần người dùng duyệt):**
+  1. ⛔ **Commit + push** phần giữ riêng video (`make_heldout.py`,
+     `heldout_videos.tsv`, `val_unseen.tsv`, clean-test bản 2, tokenizer, CMVN,
+     code + tài liệu) — kernel Kaggle clone repo.
+  2. **Kiểm 5 Kaggle Dataset** nếu người dùng đã tạo: `kaggle datasets files
+     tieunhi/<slug>` (đủ `.tar` + `.tsv`, đúng kích thước); ghi slug + username
+     tài khoản B vào `kernel-metadata.json` (gitignore).
+  3. **`ConExtBiMambaEncoder`** (½FFN → ExtBiMamba → conv → ½FFN → LN, dùng lại
+     `reverse_padded` + cặp khối B1, dropout 0,1), khớp ~12M, `configs/model_conextbimamba.yaml`,
+     đăng ký `build_encoder`; đối chiếu chi tiết khối với 2405.12609 Bảng XIV;
+     test CPU khối giả (shape, padding, tham số); cập nhật `ARCHITECTURE.md`.
+  4. **Đề xuất tiêu chí chọn B1 hay ConExtBiMamba** (có căn cứ tài liệu) →
+     người dùng duyệt **trước** khi chạy train thử.
+  5. **Hàm bootstrap theo khối video** cho WER (khoảng tin cậy; dùng cho
+     train thử, clean-test, zero-shot) — Liu và cs. 1912.09508.
+  6. **Kernel train thử** (`train_shard0` = 11.364 câu, ~5 epoch, 3 mô hình):
+     bước đầu chạy ngắn DDP + cắt `--max_minutes` + resume, `param_count` Mamba
+     thật; ⛔ quota ~2-3 GPU-h. Cần bước 2-4.
+  7. **Kernel zero-shot** rút về Parakeet + PhoWhisper, một mức WER trên 203
+     câu, kiểm Parakeet chạy được trên T4; ⛔ quota ~0,5 GPU-h.
+  8. Khung **đề cương mới** (dựa `Plan.md` mục 1-2) trước buổi GVHD Tuần 9.
+  - **Việc tay của người dùng (song song):** tạo 5 Kaggle Dataset + chia sẻ B;
+    hiệu đính 203 câu clean-test (notebook 02 mục 5).
+  - **Chờ người dùng xác nhận:** `out_proj` chia √28; greedy không LM; chữ số
+    giữ nguyên; đo RTF batch 1 fp16; vị trí dropout trong khối Mamba; 10 time mask.

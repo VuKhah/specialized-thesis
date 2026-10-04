@@ -34,7 +34,7 @@ import yaml
 from torch.utils.data import DataLoader, Sampler
 from torch.utils.tensorboard import SummaryWriter
 
-from src.data.vietsuperspeech_dataset import VietSuperSpeechDataset, collate_fn, manifest_indices
+from src.data.vietsuperspeech_dataset import VietSuperSpeechDataset, collate_fn, manifest_rows
 from src.evaluation.wer import compute_wer
 from src.features.log_mel import LogMelFeatureExtractor
 from src.models.conformer_encoder import ConformerEncoder
@@ -196,13 +196,22 @@ def main():
     batch_size = tcfg["batch_size"] // world
 
     tokenizer = BPETokenizer(args.tokenizer_model)
-    train_split, train_indices = manifest_indices(args.train_manifests or cfg["data"]["train_manifests"])
-    eval_split, eval_indices = manifest_indices([cfg["data"]["eval_manifest"]])
-    train_ds = VietSuperSpeechDataset(split=train_split, tokenizer=tokenizer, indices=train_indices)
-    eval_ds = VietSuperSpeechDataset(split=eval_split, tokenizer=tokenizer, indices=eval_indices[rank::world])
+    def items(names):
+        return [(r["split"], r["index"]) for r in manifest_rows(names)]
+
+    train_ds = VietSuperSpeechDataset(tokenizer=tokenizer,
+                                      items=items(args.train_manifests or cfg["data"]["train_manifests"]))
     loader_kw = dict(batch_size=batch_size, collate_fn=collate_fn, num_workers=tcfg["num_workers"],
                      pin_memory=device.type == "cuda")
-    eval_loader = DataLoader(eval_ds, shuffle=False, **loader_kw)
+    # Tập đầu (val đã gặp) chọn best.pt; các tập sau (val_unseen — video giữ
+    # riêng, 2026-10-04) chỉ ghi log để thấy khoảng cách đã gặp / chưa gặp.
+    eval_names = [cfg["data"]["eval_manifest"], *cfg["data"].get("extra_eval_manifests", [])]
+    eval_sizes, eval_loaders = {}, {}
+    for name in eval_names:
+        eval_items = items([name])
+        eval_sizes[name] = len(eval_items)
+        eval_loaders[name] = DataLoader(VietSuperSpeechDataset(tokenizer=tokenizer, items=eval_items[rank::world]),
+                                        shuffle=False, **loader_kw)
     steps_per_epoch = math.ceil(math.ceil(len(train_ds) / world) / batch_size)
 
     torch.manual_seed(seed)
@@ -210,7 +219,7 @@ def main():
     encoder = model.encoder
     if is_main:
         print(f"[{experiment_name}] encoder params: {encoder.num_parameters():,} | train {len(train_ds)} câu "
-              f"({steps_per_epoch} step/epoch), val {len(eval_indices)} câu | {world} tiến trình, "
+              f"({steps_per_epoch} step/epoch), eval {eval_sizes} | {world} tiến trình, "
               f"batch {batch_size}/tiến trình, AMP={amp}", flush=True)
 
     optimizer = build_optimizer(model, cfg)
@@ -331,10 +340,13 @@ def main():
 
         is_last_epoch = epoch == epochs - 1
         if (epoch + 1) % args.eval_every == 0 or is_last_epoch:
-            wer = evaluate(core, eval_loader, tokenizer, device, amp)
+            wers = {name: evaluate(core, loader, tokenizer, device, amp) for name, loader in eval_loaders.items()}
+            wer = wers[eval_names[0]]
             if is_main:
-                print(f"epoch {epoch}: eval WER={wer:.4f}", flush=True)
+                print(f"epoch {epoch}: eval WER " + "  ".join(f"{n}={w:.4f}" for n, w in wers.items()), flush=True)
                 writer.add_scalar("eval/wer", wer, epoch)
+                for name in eval_names[1:]:
+                    writer.add_scalar(f"eval/wer_{name}", wers[name], epoch)
             if wer < best_wer:
                 best_wer = wer
                 checkpoint(best_ckpt, epoch, steps_per_epoch)

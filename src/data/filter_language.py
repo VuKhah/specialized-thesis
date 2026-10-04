@@ -28,7 +28,6 @@ rác nên một phần vocab là mảnh từ giả tiếng Anh. Giữ nguyên th
 
 import argparse
 import csv
-import json
 import re
 import sys
 from collections import defaultdict
@@ -39,12 +38,11 @@ if sys.stdout.encoding != "utf-8":
 
 from datasets import load_dataset
 
-from src.data.vietsuperspeech_dataset import HF_DATASET_ID, HF_REVISION
+from src.data.vietsuperspeech_dataset import HF_DATASET_ID, HF_REVISION, manifest_rows
 from src.evaluation.text_normalize import is_vietnamese_label
 from src.tokenizer.bpe_tokenizer import BPETokenizer
 
 LID_PATH = Path("data/processed/lid.csv")
-CLEAN_TEST_PATH = Path("data/processed/clean_test_manifest.json")
 OUT_PATH = Path("data/splits/excluded.tsv")
 CORPUS_PATH = Path("data/processed/train_transcripts_filtered.txt")
 TOKENIZER_PREFIX = "configs/tokenizer"
@@ -89,19 +87,20 @@ def main(train_tokenizer: bool = False):
         for r in excluded:
             f.write(f"{r['split']}\t{r['index']}\t{r['audio']}\t{r['reason']}\n")
 
-    ct = {s["index"] for s in json.loads(CLEAN_TEST_PATH.read_text(encoding="utf-8"))["samples"]}
     ex = {(r["split"], r["index"]) for r in excluded}
     print(f"video bị loại cả video: {len(bad_videos)}; đoạn bị loại: {len(excluded)} → {OUT_PATH}")
-    for name, sel in (("train", lambda r: r["split"] == "train"),
-                      ("val (validation trừ clean-test)", lambda r: r["split"] == "validation" and r["index"] not in ct),
-                      ("clean-test", lambda r: r["split"] == "validation" and r["index"] in ct)):
-        part = [r for r in rows if sel(r)]
+    # Chia train/val/clean-test sau lọc: xem src/data/make_heldout.py (video giữ riêng, 2026-10-04).
+    for split in ("train", "validation"):
+        part = [r for r in rows if r["split"] == split]
         kept = [r for r in part if (r["split"], r["index"]) not in ex]
-        h = lambda xs: sum(r["duration"] for r in xs) / 3600
-        print(f"  {name:32s} {len(part):6d} câu {h(part):7.2f} h → còn {len(kept):6d} câu {h(kept):7.2f} h")
+        h = lambda xs: sum(r["duration"] for r in xs) / 3600  # noqa: E731
+        print(f"  {split:12s} {len(part):6d} câu {h(part):7.2f} h → còn {len(kept):6d} câu {h(kept):7.2f} h")
 
     if train_tokenizer:
-        lines = [r["text"].strip() for r in rows if r["split"] == "train" and ("train", r["index"]) not in ex]
+        # Đúng tập train lúc học: 4 shard, bỏ excluded + video giữ riêng (nhãn
+        # của video test không được lọt vào vocab).
+        train_keys = {(r["split"], r["index"]) for r in manifest_rows([f"train_shard{i}" for i in range(4)])}
+        lines = [r["text"].strip() for r in rows if (r["split"], r["index"]) in train_keys]
         CORPUS_PATH.write_text("\n".join(l for l in lines if l) + "\n", encoding="utf-8")
         BPETokenizer.train(str(CORPUS_PATH), TOKENIZER_PREFIX, vocab_size=1000)
         print(f"tokenizer: {len(lines)} nhãn → {TOKENIZER_PREFIX}.model/.vocab")

@@ -79,3 +79,34 @@ lặng bị cắt, một số seg khuyết) — vẫn hợp lệ vì chi phí su
 số khung; phải nêu rõ cách ghép trong khóa luận. WER chỉ báo trên đoạn gốc
 10-15 s; **không** đo WER audio dài (validation rải từ chính video train, gần
 như không có chuỗi seg liên tiếp dài). Ghi vào đề cương mới, không sửa docx cũ.
+
+## Test độc lập theo video (chốt 2026-10-04, người dùng chọn phương án B)
+
+**Vấn đề:** `validation` của VietSuperSpeech không phải tập tách riêng — nó rải
+~10% đoạn từ chính các video của `train` (561/562 video trùng). Sau A1, 100%
+câu clean-test cũ (192/192, 142 video) và 99,98% câu val thuộc video đã train
+→ WER chỉ đo "người nói đã gặp"; so với mô hình pre-train (chưa nghe các video
+này) bị lệch. Chuẩn công bố tách theo người nói: LibriSpeech ("each speaker is
+assigned to exactly one subset"), VIVOS (46 người train / 19 người test khác).
+
+**Đã cân nhắc:** A giữ nguyên + nêu hạn chế; **B giữ riêng video** (chọn); C
+thêm test ngoài miền (VIVOS…) — có thể bổ sung sau. Trong B: theo video (chọn)
+vs theo chương trình (MC + khách đều chưa gặp nhưng test lệch về 2-3 chương
+trình) vs kết hợp.
+
+**Thực hiện:** `python -m src.data.make_heldout` — nguồn là câu có trong 5
+Kaggle Dataset, bỏ A1; video ≥ 20 câu, xáo seed 42, lấy tới ~6% giờ → 29 video.
+
+| Tập | Câu | Giờ | % | Video |
+|---|---|---|---|---|
+| train | 45.442 | 165,18 | 85,0 | 463 |
+| val (chọn checkpoint) | 4.824 | 17,51 | 9,0 | 395 |
+| val_unseen (nhãn tự động) | 3.011 | 10,99 | 5,7 | 29 |
+| clean-test (7 câu/video, hiệu đính tay) | 203 | 0,74 | 0,4 | 29 |
+
+**Hạn chế cần nêu ở Chương 3:** tách theo video ≠ tách theo người nói (MC của
+chương trình lớn như HaveASip có thể đã gặp ở video khác; khách mời thì chưa);
+val vẫn trùng video với train nên WER val lạc quan hơn val_unseen — khoảng cách
+hai số này chính là một kết quả đáng báo. Câu trong cùng video không độc lập →
+khoảng tin cậy WER dùng bootstrap theo khối video (Liu và cs., arXiv:1912.09508;
+bootstrap thường: Bisani & Ney 2004).

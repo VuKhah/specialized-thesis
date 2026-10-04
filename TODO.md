@@ -1,6 +1,6 @@
 # TODO tổng — Mamba vs Conformer ASR
 
-Cập nhật lần cuối: **2026-10-04** (bước 3 code dùng chung; chốt front-end CMVN + SpecAugment, dropout Mamba, giữ CTC). **Nguồn sự thật duy nhất cho việc cần làm /
+Cập nhật lần cuối: **2026-10-04** (bước 3 code dùng chung; front-end CMVN + SpecAugment, dropout Mamba, giữ CTC; test độc lập theo video). **Nguồn sự thật duy nhất cho việc cần làm /
 đang chặn / đã xong.** Kế hoạch tuần + quyết định + nhật ký phiên ở
 [`Plan.md`](Plan.md); kiến trúc ở [`ARCHITECTURE.md`](ARCHITECTURE.md).
 
@@ -88,7 +88,7 @@ duyệt, D3 → **4 shard**, train full + đánh giá theo epoch).
 - [x] **`PACK_TAR = True` chốt 2026-09-30**: 5 dataset đều là tar; đầu mỗi phiên
       train giải nén vào `/tmp/audio_cache` (**không** `/kaggle/working`).
 - [x] **3. Sửa code dùng chung (D5, D7, D8, D10) — code xong 2026-10-04,
-      chưa commit.** `manifest_indices` đọc `data/splits/*.tsv` + bỏ
+      chưa commit.** `manifest_indices` (nay là `manifest_rows`) đọc `data/splits/*.tsv` + bỏ
       `excluded.tsv` (train 48.340, `train_shard0` 12.086, val 5.140,
       clean-test 192); `HF_REVISION`; `AUDIO_CACHE_DIR` từ biến môi trường;
       `train.py`: `torchrun` DDP + SyncBN + AMP (front-end + CTC loss fp32),
@@ -103,6 +103,11 @@ duyệt, D3 → **4 shard**, train full + đánh giá theo epoch).
       Khởi động: `load_dataset` ~45 s/lần kể cả đã cache → làm ấm bằng
       `python -m src.data.vietsuperspeech_dataset` rồi chạy `HF_HUB_OFFLINE=1`
       (0,2 s).
+- [x] **Test độc lập theo video — chốt + code 2026-10-04** (người dùng chọn B,
+      theo video): `src/data/make_heldout.py` giữ riêng 29 video (~6%, seed 42);
+      train 45.442 / val 4.824 / val_unseen 3.011 / clean-test 203, rời nhau.
+      Tokenizer + CMVN tính lại; `train.py` log thêm WER val_unseen. Không phải
+      tạo lại 5 Kaggle Dataset (lọc lúc đọc). Chi tiết `Plan.md` mục 4.
 - [x] **Front-end + dropout — chốt và code 2026-10-04** (người dùng duyệt, căn
       cứ `docs/notes/frontend_decoder_survey.md`): giữ CTC; CMVN toàn cục
       (`configs/cmvn_stats.json`, 2000 câu train seed 42); SpecAugment 2 freq
@@ -152,8 +157,12 @@ duyệt, D3 → **4 shard**, train full + đánh giá theo epoch).
       loss 136,7 → 80,1. Mamba chưa test (cần CUDA; tokenizer không chạm
       encoder). `data/splits/summary.json` (`bpe_tokens`) còn tính theo
       tokenizer cũ — chạy lại thống kê khi sửa `make_shards`.
-- [ ] Kernel zero_shot: sau A1 chỉ cần **một mức WER trên 192 câu** (bỏ
+- [ ] Kernel zero_shot: đọc clean-test bản 2 (203 câu) — **đã sửa 2026-10-04**; còn **một mức WER** (bỏ
       `wer_vi_label` hoặc đọc `excluded.tsv`) — sửa trước khi chạy.
+- [ ] **Hàm bootstrap theo khối video** cho khoảng tin cậy WER (clean-test 203
+      câu / 29 video; val_unseen; zero-shot) — câu cùng video không độc lập
+      (Liu và cs., arXiv:1912.09508). Làm trước khi báo số train thử.
+- [ ] **Commit + push** phần giữ riêng video (chờ người dùng duyệt) — kernel Kaggle clone repo.
 - [ ] **Kernel GPU benchmark lần 3** (Mamba B1, `CHECK_CODE` kiểm CUDA thật;
       ~10-15 phút) — xin duyệt quota.
 - [ ] **Kernel GPU zero_shot** 3 mô hình trên 250 câu clean-test (~0,5 GPU-h)
@@ -191,8 +200,8 @@ duyệt, D3 → **4 shard**, train full + đánh giá theo epoch).
 - [x] ~~Khi hiệu đính clean-test: thêm cột nhãn ngôn ngữ audio~~ — thay bằng
       LID trên audio + người dùng nghe mẫu (A1 chốt 2026-10-03).
 
-- [ ] Nghe & hiệu đính **192 câu còn lại sau A1** (bỏ 58 câu trong
-      `excluded.tsv`) trong `data/processed/clean_test_manifest.json`
+- [ ] Nghe & hiệu đính **203 câu clean-test mới** (29 video giữ riêng, 7 câu/video —
+      thay bản 192 câu ngày 2026-10-04) trong `data/processed/clean_test_manifest.json`
       (cột `corrected_text` còn trống) — dùng mục 5 của
       `notebooks/02_dataset_eda.ipynb`.
 

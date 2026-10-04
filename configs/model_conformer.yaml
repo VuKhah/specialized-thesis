@@ -42,5 +42,6 @@ data:
   # data/splits/*.tsv (make_shards.py), đã bỏ excluded.tsv (A1) khi đọc.
   # Train thử 1 shard: --train_manifests train_shard0.
   train_manifests: [train_shard0, train_shard1, train_shard2, train_shard3]
-  eval_manifest: val # validation trừ clean-test (D5)
+  eval_manifest: val # chọn best.pt: validation trừ clean-test cũ (D5), trừ video giữ riêng
+  extra_eval_manifests: [val_unseen] # video giữ riêng (make_heldout.py), chỉ ghi log
   sample_rate: 16000

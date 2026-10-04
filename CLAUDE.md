@@ -53,7 +53,7 @@ cập nhật `ARCHITECTURE.md`. Bảng "sự kiện → file nào" ở
     (đọc mục `features` của yaml), đừng tự gọi `CTCASRModel(...)`.
   - *Nhóm pre-train* (Parakeet, dự bị PhoWhisper): giữ pipeline/front-end riêng
     của mô hình; chỉ dùng chung `normalize_text` trước WER và tập đánh giá
-    (clean-test 192 câu). Khi kết luận phải tách nhóm, nêu điều kiện khác nhau.
+    (clean-test 203 câu từ video giữ riêng). Khi kết luận phải tách nhóm, nêu điều kiện khác nhau.
 - **Repo GitHub là PUBLIC.** Không commit: `data/raw/`, `data/processed/*` (trừ
   `clean_test_manifest.json`), `checkpoints/*`, audio/model, **file `.docx` /
   biểu mẫu / bản nháp khóa luận `docs/khoa_luan/` (lưu Google Drive)**, khoá/token, họ tên-MSSV người thứ ba. Không
@@ -76,8 +76,10 @@ cập nhật `ARCHITECTURE.md`. Bảng "sự kiện → file nào" ở
   `datasets.Audio` tự giải mã — phải có file local rồi đọc bằng `soundfile`
   (đã xử lý trong `src/data/vietsuperspeech_dataset.py`).
 - Tên split thật trên HF Hub: `train` / `validation` — **không phải**
-  `dev-test` như đề cương ghi nhầm. Chọn mẫu qua `manifest_indices` (đọc
-  `data/splits/*.tsv`, **đã bỏ `excluded.tsv`** — A1), index theo `HF_REVISION`.
+  `dev-test` như đề cương ghi nhầm. Chọn mẫu qua `manifest_rows` (đọc
+  `data/splits/*.tsv`, **đã bỏ `excluded.tsv`** — A1 — và với manifest shard bỏ
+  thêm **video giữ riêng** `heldout_videos.tsv`), index theo `HF_REVISION`. Câu
+  của val_unseen/clean-test đến từ cả hai split → luôn mang theo `split`.
 - `load_dataset` mất ~45 s/lần kể cả đã cache → làm ấm
   (`python -m src.data.vietsuperspeech_dataset`) rồi chạy `HF_HUB_OFFLINE=1`.
 - Cài `mamba-ssm`: pin tag `v2.3.1`, build `--no-build-isolation`. Nhánh `main`

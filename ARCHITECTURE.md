@@ -48,16 +48,17 @@ flowchart LR
 | Bước | File | Vào → ra | Lưu ở |
 |---|---|---|---|
 | Khảo sát + tạo dữ liệu phụ | `src/data/survey.py` | stream 2 split → thống kê, corpus transcript, mẫu clean-test (250, seed 42, lấy từ `validation`) | `reports/results/`, `data/processed/` |
-| Train tokenizer | `BPETokenizer.train` (gọi từ `filter_language.py --train-tokenizer`; bản đầu từ `survey.py`) | nhãn train đã lọc A1 (`data/processed/train_transcripts_filtered.txt`, 48.340 dòng) → SentencePiece BPE | `configs/tokenizer.model` + `configs/tokenizer.vocab` (**track git**) |
+| Train tokenizer | `BPETokenizer.train` (gọi từ `filter_language.py --train-tokenizer`; bản đầu từ `survey.py`) | nhãn đúng tập train — 4 shard, bỏ A1 + video giữ riêng (`data/processed/train_transcripts_filtered.txt`, 45.442 dòng) → SentencePiece BPE | `configs/tokenizer.model` + `configs/tokenizer.vocab` (**track git**) |
 | Liệt kê file cần tải | `prefetch_audio.needed_audio_paths` | 2 split → 67.405 đường dẫn | `data/processed/audio_manifest.json` (không track) |
 | Tải audio | `prefetch_audio.prefetch_audio` | đường dẫn → file `.wav` (bỏ qua file đã có; lỗi từng file được gom, chạy lại là retry) | `data/raw/audio_cache/` |
 | Chia shard + val (D3, D5) | `src/data/make_shards.py` | 2 split ở `HF_REVISION` + clean-test → 4 shard train (vòng tròn qua video, seed 42) + val = `validation` trừ clean-test; kiểm bất biến rồi mới ghi; `--check` đọc lại | `data/splits/*.tsv` (`index`, `audio`, `duration` theo index split) + `summary.json` (**track git**) |
-| Lọc ngôn ngữ / nhãn hỏng (A1) | kernel `scripts/kaggle/lid/lid.py` → `src/data/filter_language.py` | LID Whisper-small trên audio 67.405 đoạn + tỉ lệ từ có dấu của nhãn → loại đoạn audio không phải `vi`, 149 video phỏng vấn nước ngoài, nhãn < 20% dấu. Áp ở bước đọc (`manifest_indices`, `eval_clean_test`), **không** sửa manifest/tar | `data/processed/lid.csv` (không track) → `data/splits/excluded.tsv` (`split`, `index`, `audio`, `reason`; **track git**) |
+| Lọc ngôn ngữ / nhãn hỏng (A1) | kernel `scripts/kaggle/lid/lid.py` → `src/data/filter_language.py` | LID Whisper-small trên audio 67.405 đoạn + tỉ lệ từ có dấu của nhãn → loại đoạn audio không phải `vi`, 149 video phỏng vấn nước ngoài, nhãn < 20% dấu. Áp ở bước đọc (`manifest_rows`, `eval_clean_test`), **không** sửa manifest/tar | `data/processed/lid.csv` (không track) → `data/splits/excluded.tsv` (`split`, `index`, `audio`, `reason`; **track git**) |
 | Tạo Kaggle Dataset (D6) | `scripts/kaggle/make_dataset/make_dataset.py` | 1 phần manifest → tải HF, kiểm (đủ file, 16 kHz mono, duration) → `<part>.tar` + `<part>.tsv` | output kernel CPU |
 | Giải nén tar (Kaggle) | `src/data/extract_audio.py` | `*.tar` dưới `/kaggle/input` → `/tmp/audio_cache/audio/...`, kiểm đủ file theo `<part>.tsv`, bỏ qua tar đã giải nén | `/tmp/audio_cache` (đặt `AUDIO_CACHE_DIR`) |
-| Chọn mẫu | `manifest_indices(names)` | tên manifest (`train_shard0..3`, `val`) → (split, index), **đã bỏ `excluded.tsv`**: 4 shard = 48.340, `train_shard0` = 12.086, val = 5.140 | — |
+| Giữ riêng video test (2026-10-04) | `src/data/make_heldout.py` | câu có trong 5 dataset, bỏ A1 → 29 video ngẫu nhiên (seed 42, ≥ 20 câu, ~6% giờ) → clean-test 7 câu/video + phần còn lại val_unseen; kiểm rời nhau | `data/splits/heldout_videos.tsv`, `data/splits/val_unseen.tsv` (có cột `split`), `data/processed/clean_test_manifest.json` bản 2 (mỗi câu có `split`) — **track git** |
+| Chọn mẫu | `manifest_rows(names)` | tên manifest → `[{split, index, audio, duration}]`; luôn bỏ `excluded.tsv`; manifest shard (`train_shard*`, `val`) bỏ thêm video giữ riêng: 4 shard = 45.442, `train_shard0` = 11.364, val = 4.824, `val_unseen` = 3.011 |
 | Thống kê CMVN | `src/features/compute_cmvn.py` | 2000 câu ngẫu nhiên (seed 42) từ train đã lọc → mean/std 80 kênh | `configs/cmvn_stats.json` (**track git**) |
-| Đọc mẫu | `VietSuperSpeechDataset(split, tokenizer, indices)` | vị trí → index HF → `{waveform, text, token_ids}`; HF pin `HF_REVISION`; audio đọc từ `AUDIO_CACHE_DIR` (biến môi trường, mặc định `data/raw/audio_cache`), thiếu thì tải lẻ (chậm) | — |
+| Đọc mẫu | `VietSuperSpeechDataset(tokenizer=…, items=[(split, index)])` (vẫn nhận `split` + `indices` kiểu cũ) | vị trí → (split, index) HF, trộn được hai split → `{waveform, text, token_ids}`; HF pin `HF_REVISION`; audio đọc từ `AUDIO_CACHE_DIR` (biến môi trường, mặc định `data/raw/audio_cache`), thiếu thì tải lẻ (chậm) | — |
 | Gom batch | `collate_fn` | list mẫu → `waveform [B,S]` pad 0, `waveform_lengths [B]`, `targets` 1D nối, `target_lengths [B]`, `text` | — |
 
 Repo HF có 118.259 file trong `audio/` nhưng train+validation chỉ dùng 67.405
@@ -114,7 +115,7 @@ flowchart TD
     R -->|"có (mặc định)"| RES["resume: model + optimizer + scheduler + GradScaler<br/>epoch + step_in_epoch + global_step + best_wer"]
     R -->|"không / --no_resume"| NEW["train từ đầu (seed trong yaml)"]
     RES --> LOOP
-    NEW --> LOOP["mỗi epoch: thứ tự = hoán vị(seed + epoch), bỏ step đã học<br/>train DDP + AMP → eval WER trên val (5.140 câu, chia đều GPU)"]
+    NEW --> LOOP["mỗi epoch: thứ tự = hoán vị(seed + epoch), bỏ step đã học<br/>train DDP + AMP → eval WER trên val (4.824 câu, chọn best.pt) + val_unseen (3.011, chỉ log), chia đều GPU"]
     LOOP -->|"mỗi --ckpt_every_minutes, hoặc hết --max_minutes (lưu rồi thoát)"| LATEST
     LOOP --> LATEST["ghi đè latest.pt (ghi file tạm rồi đổi tên)"]
     LOOP --> BEST["nếu WER thấp nhất: ghi checkpoints/{experiment_name}/best.pt"]
@@ -229,10 +230,12 @@ Ký hiệu: ✅ đã chạy thật · 🟡 chạy được một phần · ⬜ c
   `module.compute_loss` (bỏ qua đồng bộ gradient). Quyết định theo đồng hồ
   (checkpoint/dừng) do rank 0 phát cho mọi rank, nếu không DDP treo. Không
   bucketing theo độ dài. Loss in mỗi epoch là trung bình các step của phiên.
-  Eval = greedy trên val (`validation` trừ clean-test, trừ excluded: 5.140 câu).
+  Eval = greedy trên val (4.824 câu, chọn `best.pt`) và `extra_eval_manifests`
+  (val_unseen 3.011 câu, log `eval/wer_val_unseen`).
 - **h. Chọn model và báo cáo tách tập (D5).** `best.pt` chọn theo WER val =
-  `validation` trừ clean-test; clean-test (192 sau A1) chỉ dùng báo cáo. Cả hai
-  vẫn rải từ cùng các video với train. Số WER báo
+  `validation` trừ clean-test cũ, trừ video giữ riêng; clean-test (203 câu) và
+  val_unseen lấy từ **29 video giữ riêng** — không video nào có trong train/val
+  (từ 2026-10-04). val vẫn rải từ video train nên WER val lạc quan hơn. Số WER báo
   cáo cuối nên đo bằng `eval_clean_test.py` trên clean-test, lưu ý điều này khi
   diễn giải.
 - **i. Bucket độ dài theo đề cương, không theo dữ liệu.** `rtf.py`

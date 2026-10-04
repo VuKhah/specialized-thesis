@@ -27,6 +27,7 @@ Cache gắn theo revision (thư mục tên `HF_REVISION`) nên offline vẫn đ�
 
 import csv
 import os
+import re
 from pathlib import Path
 
 import soundfile as sf
@@ -45,57 +46,82 @@ HF_REVISION = "cbf624ae9b30e1c2793a27e95b262115c69601f3"
 AUDIO_CACHE_DIR = os.environ.get("AUDIO_CACHE_DIR", "data/raw/audio_cache")
 SPLITS_DIR = Path("data/splits")
 EXCLUDED_PATH = SPLITS_DIR / "excluded.tsv"
+HELDOUT_PATH = SPLITS_DIR / "heldout_videos.tsv"
+# Manifest của make_shards.py = đúng nội dung 5 Kaggle Dataset (tar).
+SHARD_MANIFESTS = ["train_shard0", "train_shard1", "train_shard2", "train_shard3", "val"]
 
 
 def manifest_split(name: str) -> str:
-    """Split HF mà cột `index` của manifest trỏ vào (make_shards.py: train_shard* / val)."""
+    """Split HF mà cột `index` của manifest shard trỏ vào (make_shards.py: train_shard* / val)."""
     return "train" if name.startswith("train") else "validation"
+
+
+def video_of(audio: str) -> str:
+    return re.sub(r"_seg\d+\.wav$", "", audio.rsplit("/", 1)[-1])
 
 
 def load_excluded(path: Path = EXCLUDED_PATH) -> set[tuple[str, int]]:
     """(split, index) bị loại theo A1 (src/data/filter_language.py)."""
     with open(path, encoding="utf-8", newline="") as f:
-        return {(r["split"], int(r["index"])) for r in csv.DictReader(f, delimiter="	")}
+        return {(r["split"], int(r["index"])) for r in csv.DictReader(f, delimiter="\t")}
 
 
-def manifest_indices(names: list[str], drop_excluded: bool = True) -> tuple[str, list[int]]:
-    """Gộp index của các manifest cùng split, bỏ đoạn trong excluded.tsv (A1).
+def load_heldout_videos(path: Path = HELDOUT_PATH) -> set[str]:
+    """Video giữ riêng cho test độc lập (src/data/make_heldout.py, chốt 2026-10-04)."""
+    with open(path, encoding="utf-8", newline="") as f:
+        return {r["video"] for r in csv.DictReader(f, delimiter="\t")}
 
-    Không lọc sẵn trong manifest/tar (5 Kaggle Dataset đã tạo trước A1) — lọc ở
-    đây để mọi đường đọc dữ liệu (train, val, clean-test) dùng chung một danh sách.
+
+def manifest_rows(names: list[str]) -> list[dict]:
+    """Gộp các manifest `data/splits/<name>.tsv` → [{split, index, audio, duration}].
+
+    Lọc ở bước đọc (manifest/tar đã tạo trước, giữ nguyên): luôn bỏ excluded.tsv
+    (A1); với manifest shard (train_shard*, val) bỏ thêm video giữ riêng — để
+    train và val "đã gặp" không chứa video của clean-test/val_unseen. File có cột
+    `split` (val_unseen.tsv) lấy split theo từng dòng.
     """
-    splits = {manifest_split(n) for n in names}
-    if len(splits) != 1:
-        raise ValueError(f"Manifest khác split: {names}")
-    split = splits.pop()
-    excluded = load_excluded() if drop_excluded else set()
-    indices = []
+    excluded = load_excluded()
+    heldout = load_heldout_videos()
+    rows = []
     for name in names:
+        drop_heldout = name in SHARD_MANIFESTS
         with open(SPLITS_DIR / f"{name}.tsv", encoding="utf-8", newline="") as f:
-            indices += [int(r["index"]) for r in csv.DictReader(f, delimiter="	")
-                        if (split, int(r["index"])) not in excluded]
-    return split, indices
+            for r in csv.DictReader(f, delimiter="\t"):
+                split = r.get("split") or manifest_split(name)
+                key = (split, int(r["index"]))
+                if key in excluded or (drop_heldout and video_of(r["audio"]) in heldout):
+                    continue
+                rows.append({"split": split, "index": key[1], "audio": r["audio"], "duration": float(r["duration"])})
+    return rows
 
 
 class VietSuperSpeechDataset(Dataset):
-    def __init__(self, split: str = "train", tokenizer=None, indices: list[int] | None = None):
+    def __init__(self, split: str = "train", tokenizer=None, indices: list[int] | None = None,
+                 items: list[tuple[str, int]] | None = None):
         """split: "train" hoặc "validation" — tên split thật trên HF Hub
         (KHÔNG phải "dev-test" như ghi trong đề cương, xác nhận qua
         src/data/survey.py, Tuần 3 — xem docs/notes/dataset_discrepancy.md
         cho chênh lệch số liệu đầy đủ so với đề cương).
 
-        indices: index trong split HF (thường từ `manifest_indices`); None = cả
-        split, **chưa** bỏ excluded.tsv."""
-        self.hf_dataset = load_dataset(HF_DATASET_ID, split=split, revision=HF_REVISION)
-        self.indices = list(range(len(self.hf_dataset))) if indices is None else list(indices)
+        items: [(split, index)] — trộn được hai split (val_unseen, clean-test lấy
+        từ cả hai); thường từ `manifest_rows`. Nếu không có: dùng `split` +
+        `indices` (None = cả split, **chưa** lọc excluded/heldout)."""
+        if items is None:
+            ds = load_dataset(HF_DATASET_ID, split=split, revision=HF_REVISION)
+            self.hf = {split: ds}
+            items = [(split, i) for i in (range(len(ds)) if indices is None else indices)]
+        else:
+            self.hf = {s: load_dataset(HF_DATASET_ID, split=s, revision=HF_REVISION) for s in {s for s, _ in items}}
+        self.items = list(items)
         self.tokenizer = tokenizer
         Path(AUDIO_CACHE_DIR).mkdir(parents=True, exist_ok=True)
 
     def __len__(self):
-        return len(self.indices)
+        return len(self.items)
 
     def __getitem__(self, idx: int):
-        item = self.hf_dataset[self.indices[idx]]
+        split, index = self.items[idx]
+        item = self.hf[split][index]
         # Schema: dict_keys(['audio', 'text', 'duration', 'source']) —
         # "audio" là đường dẫn tương đối (string), không tự giải mã, xem docstring đầu file.
         local_path = Path(AUDIO_CACHE_DIR) / item["audio"]

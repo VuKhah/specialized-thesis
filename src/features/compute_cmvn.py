@@ -2,8 +2,8 @@
 
     python -m src.features.compute_cmvn            # 2000 câu, seed 42
 
-Lấy mẫu ngẫu nhiên từ train **đã bỏ excluded.tsv** (4 shard), không dùng
-validation. Không cần cả 48.340 câu: 2000 câu ≈ 2,6 triệu khung, sai số thống
+Lấy mẫu ngẫu nhiên từ train **đã bỏ excluded.tsv và video giữ riêng** (4 shard),
+không dùng validation. Không cần cả 48.340 câu: 2000 câu ≈ 2,6 triệu khung, sai số thống
 kê nhỏ hơn nhiều so với chênh giữa các kênh. Chọn ngẫu nhiên thay vì lấy file
 sẵn có trong cache local (cache tải theo part → lệch theo video). File thiếu thì
 tải song song từ HF ở revision đã pin.
@@ -23,8 +23,7 @@ import soundfile as sf
 import torch
 from huggingface_hub import hf_hub_download
 
-from src.data.vietsuperspeech_dataset import (AUDIO_CACHE_DIR, HF_DATASET_ID, HF_REVISION, SPLITS_DIR,
-                                              load_excluded)
+from src.data.vietsuperspeech_dataset import AUDIO_CACHE_DIR, HF_DATASET_ID, HF_REVISION, manifest_rows
 from src.features.log_mel import CMVN_STATS_PATH, LogMelFeatureExtractor
 
 if sys.stdout.encoding != "utf-8":
@@ -34,12 +33,8 @@ TRAIN_MANIFESTS = [f"train_shard{i}" for i in range(4)]
 
 
 def sample_audio_paths(n: int, seed: int) -> list[str]:
-    excluded = load_excluded()
-    rows = []
-    for name in TRAIN_MANIFESTS:
-        lines = (SPLITS_DIR / f"{name}.tsv").read_text(encoding="utf-8").splitlines()[1:]
-        rows += [a for i, a, _ in (l.split("\t") for l in lines) if ("train", int(i)) not in excluded]
-    rows.sort()  # không phụ thuộc thứ tự shard
+    # manifest_rows: đã bỏ excluded.tsv và video giữ riêng → đúng tập train.
+    rows = sorted(r["audio"] for r in manifest_rows(TRAIN_MANIFESTS))  # không phụ thuộc thứ tự shard
     return random.Random(seed).sample(rows, n)
 
 
@@ -89,7 +84,7 @@ def main() -> None:
     result = {
         "note": "CMVN toàn cục cho LogMelFeatureExtractor (80 mel, 25/10 ms, log clamp 1e-5); "
                 "src/features/compute_cmvn.py",
-        "source": f"{args.n} câu ngẫu nhiên (seed {args.seed}) từ train_shard0-3, đã bỏ excluded.tsv",
+        "source": f"{args.n} câu ngẫu nhiên (seed {args.seed}) từ train_shard0-3, đã bỏ excluded.tsv + video giữ riêng",
         "hf_revision": HF_REVISION,
         "n_utterances": args.n,
         **stats,

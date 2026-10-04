@@ -217,11 +217,12 @@ def prepare_samples(manifest: dict) -> list[dict]:
     from huggingface_hub import hf_hub_download
 
     samples = manifest["samples"][: LIMIT or None]
-    # Manifest chỉ lưu index trong split → tra đường dẫn audio ở đúng revision đã pin;
-    # so luôn text để chắc index không lệch (nếu lệch thì ref sai câu).
-    ds = load_dataset(HF_DATASET_ID, split=manifest["split"], revision=HF_REVISION)
-    rows = [ds[s["index"]] for s in samples]
-    mismatch = [s["index"] for s, r in zip(samples, rows) if r["text"] != s["pseudo_label"]]
+    # Manifest bản 2 (2026-10-04, video giữ riêng): mỗi câu có `split` riêng (câu đến
+    # từ cả train lẫn validation). Tra lại ở đúng revision đã pin; so text để chắc
+    # index không lệch (nếu lệch thì ref sai câu).
+    ds = {sp: load_dataset(HF_DATASET_ID, split=sp, revision=HF_REVISION) for sp in {s["split"] for s in samples}}
+    rows = [ds[s["split"]][s["index"]] for s in samples]
+    mismatch = [(s["split"], s["index"]) for s, r in zip(samples, rows) if r["text"] != s["pseudo_label"]]
     if mismatch:
         sys.exit(f"LỖI: pseudo_label lệch text của HF ở index {mismatch[:10]} — index manifest không khớp revision")
 
@@ -244,6 +245,7 @@ def prepare_samples(manifest: dict) -> list[dict]:
         corrected = s["corrected_text"].strip()
         ref_raw = corrected or s["pseudo_label"]
         out.append({
+            "split": s["split"],
             "index": s["index"],
             "path": path,
             "wave": np.ascontiguousarray(wave),
@@ -474,7 +476,7 @@ def main():
         "device": device,
         "gpu": torch.cuda.get_device_name(0) if device == "cuda" else None,
         "torch": torch.__version__,
-        "dataset": HF_DATASET_ID, "dataset_revision": HF_REVISION, "split": manifest["split"],
+        "dataset": HF_DATASET_ID, "dataset_revision": HF_REVISION, "manifest_version": manifest.get("version", 1),
         "n": len(samples), "limit": LIMIT or None,
         "n_corrected_text": n_corrected, "n_pseudo_label": len(samples) - n_corrected,
         "n_vi_label": n_vi,
