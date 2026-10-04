@@ -141,9 +141,8 @@ duyệt, D3 → **4 shard**, train full + đánh giá theo epoch).
 
 - [x] **Commit + push** `df72f11` (Mamba B1, chuẩn hóa văn bản, kernel
       zero_shot, notes) — push 2026-10-03.
-- [ ] **Commit** thay đổi 2026-10-03: `scripts/kaggle/lid/lid.py`,
-      `src/data/filter_language.py`, `data/splits/excluded.tsv` (2,2 MB), notes,
-      `Plan.md`/`TODO.md`/`ARCHITECTURE.md` — chờ người dùng duyệt.
+- [x] **Commit + push** thay đổi 2026-10-03 + 2026-10-04 (`9d137a7`, `a4fe49e`,
+      `21452f5` code bước 3 + front-end, `7fb8492` Plan) — push 2026-10-04.
 - [x] **Train lại tokenizer BPE trên 48.340 nhãn đã lọc — xong 2026-10-03**
       (người dùng duyệt; `python -m src.data.filter_language --train-tokenizer`).
       Cùng tham số, vocab vẫn 1001 (gồm blank) → số tham số hai mô hình không

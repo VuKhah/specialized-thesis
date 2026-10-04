@@ -15,7 +15,7 @@ chuẩn bị** cho từng mô hình; trạng thái làm/chưa làm theo dõi ở
 
 ## 0. Chung cho mọi mô hình (làm trước)
 
-- [ ] ⛔ Push `9d137a7`, `a4fe49e` + tài liệu hôm nay — kernel Kaggle clone repo.
+- [x] Push `9d137a7`, `a4fe49e`, `21452f5`, `7fb8492` — 2026-10-04.
 - [x] **Bước 3 — code dùng chung** (#1, #2, #5) — code + test CPU 2026-10-04,
       chưa test GPU/DDP (`TODO.md` bước 3): dataset đọc `data/splits/*.tsv`
       + bỏ `excluded.tsv` + `HF_REVISION`; DDP `torchrun` + SyncBN + AMP;
