@@ -1,6 +1,7 @@
 # ARCHITECTURE.md — Sơ đồ & luồng dữ liệu
 
-Cập nhật lần cuối: 2026-09-21, đối chiếu với code tại commit `139f018`. Các
+Cập nhật lần cuối: 2026-10-04 (bước 3 code dùng chung + front-end CMVN/SpecAugment,
+chưa commit; trước đó đối chiếu commit `139f018`). Các
 shape/số liệu dưới đây lấy từ code và từ lần chạy thử thật, không suy đoán.
 Đổi luồng dữ liệu, shape hay interface thì sửa file này (xem
 `docs/CONVENTIONS.md` mục 1). Trạng thái tiến độ ở `Plan.md`/`TODO.md`, không
@@ -12,7 +13,7 @@ Một pipeline CTC duy nhất; hai thí nghiệm chỉ khác nhau ở encoder.
 
 ```mermaid
 flowchart TD
-    W["waveform [B, S] + waveform_lengths"] --> FE["LogMelFeatureExtractor<br/>dùng chung — [B, T, 80]"]
+    W["waveform [B, S] + waveform_lengths"] --> FE["LogMelFeatureExtractor<br/>log-mel + CMVN toàn cục + SpecAugment (train)<br/>dùng chung — [B, T, 80]"]
     FE --> ENC{{"ASREncoder<br/>điểm hoán đổi DUY NHẤT"}}
     ENC -->|"encoder.type = conformer"| C["ConformerEncoder"]
     ENC -->|"encoder.type = mamba"| M["MambaEncoder"]
@@ -51,9 +52,12 @@ flowchart LR
 | Liệt kê file cần tải | `prefetch_audio.needed_audio_paths` | 2 split → 67.405 đường dẫn | `data/processed/audio_manifest.json` (không track) |
 | Tải audio | `prefetch_audio.prefetch_audio` | đường dẫn → file `.wav` (bỏ qua file đã có; lỗi từng file được gom, chạy lại là retry) | `data/raw/audio_cache/` |
 | Chia shard + val (D3, D5) | `src/data/make_shards.py` | 2 split ở `HF_REVISION` + clean-test → 4 shard train (vòng tròn qua video, seed 42) + val = `validation` trừ clean-test; kiểm bất biến rồi mới ghi; `--check` đọc lại | `data/splits/*.tsv` (`index`, `audio`, `duration` theo index split) + `summary.json` (**track git**) |
-| Lọc ngôn ngữ / nhãn hỏng (A1) | kernel `scripts/kaggle/lid/lid.py` → `src/data/filter_language.py` | LID Whisper-small trên audio 67.405 đoạn + tỉ lệ từ có dấu của nhãn → loại đoạn audio không phải `vi`, 149 video phỏng vấn nước ngoài, nhãn < 20% dấu. **Chưa nối vào đọc dữ liệu/eval** (bước 3 `TODO.md`) | `data/processed/lid.csv` (không track) → `data/splits/excluded.tsv` (`split`, `index`, `audio`, `reason`; **track git**) |
-| Tạo Kaggle Dataset (D6) | `scripts/kaggle/make_dataset/make_dataset.py` | 1 phần manifest → tải HF, kiểm (đủ file, 16 kHz mono, duration) | output kernel CPU |
-| Đọc mẫu | `VietSuperSpeechDataset.__getitem__` | idx → `{waveform, text, token_ids}` (đọc cache; không có thì tải lẻ, chậm) | — |
+| Lọc ngôn ngữ / nhãn hỏng (A1) | kernel `scripts/kaggle/lid/lid.py` → `src/data/filter_language.py` | LID Whisper-small trên audio 67.405 đoạn + tỉ lệ từ có dấu của nhãn → loại đoạn audio không phải `vi`, 149 video phỏng vấn nước ngoài, nhãn < 20% dấu. Áp ở bước đọc (`manifest_indices`, `eval_clean_test`), **không** sửa manifest/tar | `data/processed/lid.csv` (không track) → `data/splits/excluded.tsv` (`split`, `index`, `audio`, `reason`; **track git**) |
+| Tạo Kaggle Dataset (D6) | `scripts/kaggle/make_dataset/make_dataset.py` | 1 phần manifest → tải HF, kiểm (đủ file, 16 kHz mono, duration) → `<part>.tar` + `<part>.tsv` | output kernel CPU |
+| Giải nén tar (Kaggle) | `src/data/extract_audio.py` | `*.tar` dưới `/kaggle/input` → `/tmp/audio_cache/audio/...`, kiểm đủ file theo `<part>.tsv`, bỏ qua tar đã giải nén | `/tmp/audio_cache` (đặt `AUDIO_CACHE_DIR`) |
+| Chọn mẫu | `manifest_indices(names)` | tên manifest (`train_shard0..3`, `val`) → (split, index), **đã bỏ `excluded.tsv`**: 4 shard = 48.340, `train_shard0` = 12.086, val = 5.140 | — |
+| Thống kê CMVN | `src/features/compute_cmvn.py` | 2000 câu ngẫu nhiên (seed 42) từ train đã lọc → mean/std 80 kênh | `configs/cmvn_stats.json` (**track git**) |
+| Đọc mẫu | `VietSuperSpeechDataset(split, tokenizer, indices)` | vị trí → index HF → `{waveform, text, token_ids}`; HF pin `HF_REVISION`; audio đọc từ `AUDIO_CACHE_DIR` (biến môi trường, mặc định `data/raw/audio_cache`), thiếu thì tải lẻ (chậm) | — |
 | Gom batch | `collate_fn` | list mẫu → `waveform [B,S]` pad 0, `waveform_lengths [B]`, `targets` 1D nối, `target_lengths [B]`, `text` | — |
 
 Repo HF có 118.259 file trong `audio/` nhưng train+validation chỉ dùng 67.405
@@ -66,10 +70,10 @@ Repo HF có 118.259 file trong `audio/` nhưng train+validation chỉ dùng 67.4
 | Tầng | Vào | Ra | Ghi chú |
 |---|---|---|---|
 | Dataset | file wav | `waveform [S]` float | 10–15 s → S = 160.000–240.000 |
-| `LogMelFeatureExtractor` | `[B, S]`, `[B]` | `feats [B, T, 80]`, `feat_lengths [B]` | `T = S//160 + 1` (hop 10 ms → **100 khung/giây**): 10 s → 1001, 13,4 s → 1341, 15 s → 1501. `log(clamp(mel, 1e-5))`. **Không** CMVN, **không** SpecAugment. |
+| `LogMelFeatureExtractor` | `[B, S]`, `[B]` | `feats [B, T, 80]`, `feat_lengths [B]` | `T = S//160 + 1` (hop 10 ms → **100 khung/giây**): 10 s → 1001, 13,4 s → 1341, 15 s → 1501. `log(clamp(mel, 1e-5))` → CMVN toàn cục `(x − mean)/std` (buffer, lưu trong checkpoint) → SpecAugment **chỉ khi `training`**: 2 mask tần số F=27 + 10 mask thời gian ≤ 5% độ dài thật, điền 0, không time warp. Luôn fp32 kể cả dưới AMP. Cấu hình ở mục `features` của yaml (từ 2026-10-04, căn cứ `docs/notes/frontend_decoder_survey.md`) |
 | `ASREncoder.forward` | `feats`, `feat_lengths` | `hidden [B, T', 256]`, `out_lengths [B]` | **Cả hai encoder không subsampling: `T' = T`.** |
 | `ctc_head` | `hidden` | `logits [B, T', V]` | `V = 1001` = 1000 piece BPE + blank (id 0) |
-| `compute_loss` | `log_probs`, `targets`, lengths | scalar | chuyển thành `[T, B, V]` cho `F.ctc_loss`, `zero_infinity=True` |
+| `ctc_loss` (hàm, `ctc_model.py`) | `log_probs`, `out_lengths`, `targets`, lengths | scalar | ép fp32, chuyển `[T, B, V]` cho `F.ctc_loss`, `zero_infinity=True`. `train.py` gọi `model(...)` (qua DDP) rồi hàm này; `compute_loss` chỉ còn là tiện ích |
 | `greedy_decode` | waveform | `list[list[int]]` | argmax → gộp lặp → bỏ blank. Không beam search, không LM. |
 
 Tokenizer: `encode` dịch mọi id SentencePiece lên +1 để id 0 dành cho CTC blank;
@@ -86,13 +90,16 @@ hoa/thường (+29 dấu `-`, 5 ký tự `<` trên 60.656 câu) nên WER không 
 Hợp đồng (`src/models/encoder_base.py`): `forward(feats [B,T,n_mels], feat_lengths [B])`
 → `(hidden [B,T',d_model], out_lengths [B])`; thuộc tính `output_dim`;
 `num_parameters()`. `train.py::build_encoder` đọc `encoder.type` trong yaml
-và là chỗ *duy nhất* khác nhau giữa hai nhánh.
+và là chỗ *duy nhất* khác nhau giữa hai nhánh. `train.py::build_model` dựng
+model đầy đủ (front-end từ mục `features` + encoder + CTC head) — dùng ở
+`train.py`, `eval_clean_test.py`, kernel benchmark; đừng tự gọi `CTCASRModel(...)`
+ở chỗ mới kẻo thiếu CMVN.
 
 | | `ConformerEncoder` | `MambaEncoder` |
 |---|---|---|
 | Nguồn | `torchaudio.models.Conformer` | `mamba_ssm.Mamba` (Mamba-1/S6, pin tag `v2.3.1`) |
 | Đầu vào | `Linear(80 → 256)` | `Linear(80 → 256)` |
-| Thân | 8 lớp, 4 head, ffn 1024, conv kernel 31, dropout 0,1 | 14 lớp hai chiều B1 (yaml, từ 2026-10-02): `h = LN(x); x = x + Mamba_xuôi(h) + rev(Mamba_ngược(rev(h)))`, `rev` = đảo theo `feat_lengths` từng mẫu (`reverse_padded`); rồi `norm_f`. d_state 16, d_conv 4, expand 2. Cờ `bidirectional: false` → bản một chiều cũ `x + Mamba(LN(x))` |
+| Thân | 8 lớp, 4 head, ffn 1024, conv kernel 31, dropout 0,1 | 14 lớp hai chiều B1 (yaml, từ 2026-10-02): `h = LN(x); x = x + drop(Mamba_xuôi(h)) + drop(rev(Mamba_ngược(rev(h))))`, dropout 0,1 (từ 2026-10-04), `rev` = đảo theo `feat_lengths` từng mẫu (`reverse_padded`); rồi `norm_f`. d_state 16, d_conv 4, expand 2. Cờ `bidirectional: false` → bản một chiều cũ `x + Mamba(LN(x))` |
 | Ngữ cảnh | self-attention toàn chuỗi (2 chiều), chi phí O(T²) | quét **hai chiều** (2 lần quét/lớp, 28 khối), chi phí O(T) |
 | Padding | torchaudio tự mask theo `feat_lengths` | không mask tường minh: nhánh ngược đảo theo độ dài thật nên padding luôn ở cuối theo chiều quét (mục 8-e); trả `feat_lengths` nguyên vẹn |
 | Cần | torch, torchaudio | GPU + kernel CUDA (`mamba-ssm`, `causal-conv1d`) — chỉ có trên Kaggle |
@@ -102,19 +109,22 @@ và là chỗ *duy nhất* khác nhau giữa hai nhánh.
 
 ```mermaid
 flowchart TD
-    Y["configs/model_*.yaml<br/>experiment_name + encoder + training"] --> T["python -m src.training.train --config ..."]
-    T --> R{"checkpoints/{experiment_name}/latest.pt<br/>đã có?"}
-    R -->|"có (mặc định)"| RES["resume: model + optimizer + scheduler<br/>epoch + global_step"]
-    R -->|"không / --no_resume"| NEW["train từ đầu"]
+    Y["configs/model_*.yaml<br/>experiment_name + encoder + features + training + data"] --> T["torchrun --nproc_per_node 2 -m src.training.train --config ...<br/>(1 tiến trình: python -m ...)"]
+    T --> R{"ckpt_dir/{experiment_name}/latest.pt<br/>hoặc --resume_from đã có?"}
+    R -->|"có (mặc định)"| RES["resume: model + optimizer + scheduler + GradScaler<br/>epoch + step_in_epoch + global_step + best_wer"]
+    R -->|"không / --no_resume"| NEW["train từ đầu (seed trong yaml)"]
     RES --> LOOP
-    NEW --> LOOP["mỗi epoch: train → eval WER trên split validation"]
-    LOOP --> LATEST["ghi đè checkpoints/{experiment_name}/latest.pt"]
+    NEW --> LOOP["mỗi epoch: thứ tự = hoán vị(seed + epoch), bỏ step đã học<br/>train DDP + AMP → eval WER trên val (5.140 câu, chia đều GPU)"]
+    LOOP -->|"mỗi --ckpt_every_minutes, hoặc hết --max_minutes (lưu rồi thoát)"| LATEST
+    LOOP --> LATEST["ghi đè latest.pt (ghi file tạm rồi đổi tên)"]
     LOOP --> BEST["nếu WER thấp nhất: ghi checkpoints/{experiment_name}/best.pt"]
     LOOP --> TB["runs/{experiment_name}/ (tensorboard: train/loss, train/lr, eval/wer)"]
 ```
 
-Chạy lại đúng lệnh cũ là tự tiếp tục (Kaggle cắt session ~9–12 h). Đổi kiến trúc
-mà giữ `experiment_name` thì dùng `--no_resume`.
+Chạy lại đúng lệnh cũ là tự tiếp tục, kể cả giữa epoch (Kaggle cắt session
+~9–12 h). Checkpoint lưu `n_train`: resume với tập train khác số câu thì báo
+lỗi. Đổi kiến trúc mà giữ `experiment_name` thì dùng `--no_resume`. Train thử
+1 shard: `--train_manifests train_shard0 --epochs 5` với `--ckpt_dir` riêng.
 
 ## 6. Hai môi trường
 
@@ -153,14 +163,16 @@ Ký hiệu: ✅ đã chạy thật · 🟡 chạy được một phần · ⬜ c
 | `src/data/prefetch_audio.py` | Tải song song đúng 67.405 file; resume; `--verify` | 🟡 test 5 file thật + 1 lỗi cố ý; **chưa chạy full** |
 | `src/data/survey.py` | Khảo sát, corpus transcript, clean-test, train tokenizer | ✅ |
 | `src/data/make_shards.py` | Manifest 4 shard + val, kiểm rời nhau/đủ/không lẫn val; `--check` | ✅ 2026-09-30 chạy full dữ liệu thật |
-| `src/features/log_mel.py` | Front-end log-mel | ✅ |
+| `src/data/extract_audio.py` | Giải nén tar dataset Kaggle vào `/tmp/audio_cache` | 🟡 viết 2026-10-04, test local bằng tar nhỏ; chưa chạy trên Kaggle |
+| `src/features/log_mel.py` | Front-end log-mel + CMVN toàn cục + SpecAugment | ✅ test local 2026-10-04 (CMVN đúng công thức, mask không lọt padding, eval không mask) |
+| `src/features/compute_cmvn.py` | Thống kê CMVN → `configs/cmvn_stats.json` | ✅ chạy thật 2026-10-04 (2000 câu) |
 | `src/tokenizer/bpe_tokenizer.py` | BPE SentencePiece + blank id 0 | ✅ |
 | `src/models/encoder_base.py` | Interface `ASREncoder` | ✅ |
 | `src/models/conformer_encoder.py` | Encoder Conformer | ✅ (CPU) |
 | `src/models/mamba_encoder.py` | Encoder Mamba (hai chiều B1 + cờ một chiều) | 🟡 B1 test CPU bằng khối giả (shape, padding, tham số, weight decay) 2026-10-02; **chưa** chạy với kernel CUDA thật |
 | `src/models/ctc_model.py` | Front-end + encoder + CTC head, loss, greedy decode | ✅ (với Conformer) |
 | `src/models/param_count.py` | So số tham số hai encoder, đọc yaml qua `build_encoder` | 🟡 Conformer ✅ (12.204.288) · Mamba chưa đo (cần CUDA); xem mục 8-f |
-| `src/training/train.py` | Vòng train chung: checkpoint/resume, eval WER, tensorboard | ✅ Conformer (CPU) · ⬜ Mamba |
+| `src/training/train.py` | Vòng train chung: DDP `torchrun` + SyncBN + AMP, sampler resume giữa epoch, `--max_minutes`, checkpoint theo phút, eval chia GPU, tensorboard | 🟡 viết lại 2026-10-04: Conformer CPU (1 tiến trình + DDP gloo 2 tiến trình) · ⬜ GPU/NCCL/AMP · ⬜ Mamba |
 | `src/evaluation/wer.py` | `compute_wer`, `compute_wer_report` (jiwer), tự chuẩn hóa ref/hyp qua `normalize_text` | ✅ (dùng trong eval loop) |
 | `src/evaluation/text_normalize.py` | Chuẩn hóa văn bản dùng chung cho **mọi** mô hình trước WER; `is_vietnamese_label` (heuristic < 20% từ có dấu, **chưa kiểm chứng** — A1) | ✅ 2026-10-02 test local |
 | `src/evaluation/rtf.py` | `measure_rtf` + bucket độ dài | ⬜ chưa chạy thật |
@@ -210,12 +222,17 @@ Ký hiệu: ✅ đã chạy thật · 🟡 chạy được một phần · ⬜ c
   train. Import `train.py` kéo theo tensorboard/tensorflow (~vài chục giây khởi
   động). Nhánh Mamba chỉ chạy khi có `mamba-ssm` (Kaggle); local chỉ ra số
   Conformer. Chỉ đếm encoder, không gồm CTC head.
-- **g. `train.py` còn đơn giản.** 1 GPU (không DataParallel/DDP — dù Kaggle có 2
-  T4), không AMP, không bucketing theo độ dài, không SpecAugment. Loss in ra mỗi
-  epoch là loss của batch cuối, không phải trung bình. Eval = greedy trên toàn
-  bộ `validation` (6.749 mẫu) mỗi epoch.
-- **h. Chọn model và báo cáo chung một nguồn.** `best.pt` chọn theo WER
-  `validation`; clean-test (250) lại được lấy từ chính `validation`. Số WER báo
+- **g. `train.py` (viết lại 2026-10-04, bước 3 `TODO.md`).** DDP khi có
+  `WORLD_SIZE` > 1 (`torchrun`), batch toàn cục = `batch_size` yaml chia đều
+  GPU; SyncBN chỉ khi có CUDA; AMP fp16 (`training.amp`, CPU tự tắt) — front-end
+  và CTC loss luôn fp32. Gọi `model(...)` qua wrapper DDP rồi `ctc_loss`, **không**
+  `module.compute_loss` (bỏ qua đồng bộ gradient). Quyết định theo đồng hồ
+  (checkpoint/dừng) do rank 0 phát cho mọi rank, nếu không DDP treo. Không
+  bucketing theo độ dài. Loss in mỗi epoch là trung bình các step của phiên.
+  Eval = greedy trên val (`validation` trừ clean-test, trừ excluded: 5.140 câu).
+- **h. Chọn model và báo cáo tách tập (D5).** `best.pt` chọn theo WER val =
+  `validation` trừ clean-test; clean-test (192 sau A1) chỉ dùng báo cáo. Cả hai
+  vẫn rải từ cùng các video với train. Số WER báo
   cáo cuối nên đo bằng `eval_clean_test.py` trên clean-test, lưu ý điều này khi
   diễn giải.
 - **i. Bucket độ dài theo đề cương, không theo dữ liệu.** `rtf.py`

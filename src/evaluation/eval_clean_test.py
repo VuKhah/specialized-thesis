@@ -28,14 +28,13 @@ from pathlib import Path
 
 import torch
 import yaml
-from torch.utils.data import DataLoader, Subset
+from torch.utils.data import DataLoader
 
-from src.data.vietsuperspeech_dataset import VietSuperSpeechDataset, collate_fn
+from src.data.vietsuperspeech_dataset import VietSuperSpeechDataset, collate_fn, load_excluded
 from src.evaluation.text_normalize import normalize_text
 from src.evaluation.wer import compute_wer_report
-from src.models.ctc_model import CTCASRModel
 from src.tokenizer.bpe_tokenizer import BPETokenizer
-from src.training.train import CHECKPOINT_ROOT, build_encoder
+from src.training.train import CHECKPOINT_ROOT, build_model
 
 RESULTS_DIR = Path("reports/results")
 
@@ -78,11 +77,14 @@ def main() -> None:
     experiment_name = cfg["experiment_name"]
     with open(args.manifest, encoding="utf-8") as f:
         manifest = json.load(f)
-    samples = manifest["samples"]
+    # A1 (2026-10-03): bỏ đoạn không phải tiếng Việt / nhãn hỏng → 192/250 câu.
+    excluded = load_excluded()
+    samples = [s for s in manifest["samples"] if (manifest["split"], s["index"]) not in excluded]
+    print(f"clean-test: {len(samples)}/{len(manifest['samples'])} câu sau khi bỏ excluded.tsv")
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
     tokenizer = BPETokenizer(args.tokenizer_model)
-    model = CTCASRModel(encoder=build_encoder(cfg), vocab_size=tokenizer.vocab_size).to(device)
+    model = build_model(cfg, tokenizer.vocab_size).to(device)
 
     ckpt_path = Path(args.checkpoint) if args.checkpoint else CHECKPOINT_ROOT / experiment_name / "best.pt"
     ckpt_epoch = None
@@ -102,9 +104,9 @@ def main() -> None:
     print(f"Reference: {n_corrected}/{len(samples)} câu là corrected_text, còn lại là pseudo_label")
 
     # Manifest lưu `index` trong split gốc; audio tải lẻ nếu chưa có trong cache (chỉ ~250 file).
-    dataset = VietSuperSpeechDataset(split=manifest["split"], tokenizer=None)
+    dataset = VietSuperSpeechDataset(split=manifest["split"], tokenizer=None, indices=[s["index"] for s in samples])
     loader = DataLoader(
-        Subset(dataset, [s["index"] for s in samples]),
+        dataset,
         batch_size=args.batch_size,
         shuffle=False,
         collate_fn=collate_fn,

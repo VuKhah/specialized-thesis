@@ -24,8 +24,23 @@ training:
   # = mặc định AdamW trước 2026-09-30, ghi rõ ra. Tham số `_no_weight_decay`
   # (A_log, D của Mamba) được miễn — xem build_optimizer trong train.py.
   weight_decay: 0.01
+  seed: 42 # khởi tạo + thứ tự dữ liệu; giống nhau ở hai tài khoản Kaggle (D10)
+  amp: true # fp16 autocast trên GPU (D8); CPU tự tắt
+  num_workers: 2 # mỗi tiến trình (D8)
+
+# Front-end dùng chung — PHẢI giống hệt nhau ở mọi config train từ đầu
+# (src/features/log_mel.py, thêm 2026-10-04).
+features:
+  cmvn_stats: configs/cmvn_stats.json
+  spec_augment: # chỉ lúc train; theo Conformer (Gulati 2020), không time warping
+    freq_masks: 2
+    freq_width: 27
+    time_masks: 10
+    time_ratio: 0.05
 
 data:
-  train_split: train
-  eval_split: validation
+  # data/splits/*.tsv (make_shards.py), đã bỏ excluded.tsv (A1) khi đọc.
+  # Train thử 1 shard: --train_manifests train_shard0.
+  train_manifests: [train_shard0, train_shard1, train_shard2, train_shard3]
+  eval_manifest: val # validation trừ clean-test (D5)
   sample_rate: 16000

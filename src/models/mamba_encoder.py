@@ -52,6 +52,7 @@ class MambaEncoder(ASREncoder):
         d_conv: int = 4,
         expand: int = 2,
         bidirectional: bool = False,
+        dropout: float = 0.0,
     ):
         super().__init__()
         if not MAMBA_SSM_AVAILABLE:
@@ -84,6 +85,11 @@ class MambaEncoder(ASREncoder):
         # để residual chưa chuẩn hoá đi thẳng vào CTC head — Conformer torchaudio
         # thì mỗi lớp đã kết thúc bằng LayerNorm.
         self.norm_f = torch.nn.LayerNorm(d_model)
+        # Thêm 2026-10-04 (người dùng duyệt): mamba-ssm gốc không dropout (công
+        # thức LM dữ liệu lớn), còn 2405.12609 và ConMamba cấu hình dropout 0,1
+        # cho mô hình ASR có Mamba — bằng Conformer ở đây. Bài không nói vị trí;
+        # đặt trên đầu ra mỗi khối trước khi cộng vào residual là lựa chọn của dự án.
+        self.dropout = torch.nn.Dropout(dropout)
         # rescale_prenorm_residual: _init_weights chia out_proj cho
         # √(n_residuals_per_layer × n_layer), tức √(số đầu ra khối độc lập cộng
         # vào residual). B1 cộng 2 out_proj mỗi lớp (phương sai cộng dồn như 2
@@ -111,11 +117,11 @@ class MambaEncoder(ASREncoder):
         # khung thật vì cùng lý do; CTC chỉ tính trên feat_lengths.
         if not self.bidirectional:
             for block, norm in zip(self.layers, self.norms):
-                x = x + block(norm(x))
+                x = x + self.dropout(block(norm(x)))
             return self.norm_f(x), feat_lengths
 
         for block_fwd, block_bwd, norm in zip(self.layers, self.layers_bwd, self.norms):
             h = norm(x)
             h_bwd = reverse_padded(block_bwd(reverse_padded(h, feat_lengths)), feat_lengths)
-            x = x + block_fwd(h) + h_bwd
+            x = x + self.dropout(block_fwd(h)) + self.dropout(h_bwd)
         return self.norm_f(x), feat_lengths

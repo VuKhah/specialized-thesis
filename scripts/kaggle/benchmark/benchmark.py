@@ -101,9 +101,8 @@ from torch.utils.data import DataLoader, Subset
 from torch.utils.data.distributed import DistributedSampler
 
 from src.data.vietsuperspeech_dataset import VietSuperSpeechDataset, collate_fn
-from src.models.ctc_model import CTCASRModel
 from src.tokenizer.bpe_tokenizer import BPETokenizer
-from src.training.train import build_encoder, build_optimizer
+from src.training.train import build_model, build_optimizer
 
 sys.stdout.reconfigure(encoding="utf-8")
 
@@ -140,7 +139,7 @@ loader = DataLoader(ds, batch_size=bs, sampler=sampler, shuffle=False, collate_f
                     persistent_workers=args.workers > 0)
 
 torch.manual_seed(0)
-model = CTCASRModel(encoder=build_encoder(cfg), vocab_size=tok.vocab_size).to(device)
+model = build_model(cfg, tok.vocab_size).to(device)
 if args.amp:
     # Front-end log-mel giữ fp32: phổ công suất có thể vượt 65504 (max fp16) → inf.
     fe = model.feature_extractor

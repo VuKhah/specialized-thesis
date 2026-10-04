@@ -11,6 +11,20 @@ from src.features.log_mel import LogMelFeatureExtractor
 from src.models.encoder_base import ASREncoder
 
 
+def ctc_loss(log_probs, out_lengths, targets, target_lengths, blank_id: int = 0) -> torch.Tensor:
+    """Tách khỏi `compute_loss` để train.py gọi forward qua wrapper DDP (gọi
+    thẳng `module.compute_loss` là bỏ qua hook đồng bộ gradient của DDP).
+    Ép fp32: dưới AMP, CTC trên fp16 dễ tràn số."""
+    return F.ctc_loss(
+        log_probs.float().transpose(0, 1),  # CTCLoss cần [T, B, C]
+        targets,
+        out_lengths,
+        target_lengths,
+        blank=blank_id,
+        zero_infinity=True,
+    )
+
+
 class CTCASRModel(torch.nn.Module):
     def __init__(self, encoder: ASREncoder, vocab_size: int, feature_extractor: LogMelFeatureExtractor | None = None):
         super().__init__()
@@ -27,16 +41,7 @@ class CTCASRModel(torch.nn.Module):
 
     def compute_loss(self, waveform, waveform_lengths, targets, target_lengths, blank_id: int = 0):
         log_probs, out_lengths = self.forward(waveform, waveform_lengths)
-        # CTCLoss cần [T, B, C]
-        log_probs_tbc = log_probs.transpose(0, 1)
-        return F.ctc_loss(
-            log_probs_tbc,
-            targets,
-            out_lengths,
-            target_lengths,
-            blank=blank_id,
-            zero_infinity=True,
-        )
+        return ctc_loss(log_probs, out_lengths, targets, target_lengths, blank_id)
 
     @torch.no_grad()
     def greedy_decode(self, waveform: torch.Tensor, waveform_lengths: torch.Tensor, blank_id: int = 0) -> list[list[int]]:
