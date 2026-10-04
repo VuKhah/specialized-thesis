@@ -13,7 +13,6 @@ Q9, Q10) để mang đi gặp thầy: [`Report.md`](Report.md) (2026-09-27).
 
 | # | Câu hỏi | Ai trả lời | Chi tiết |
 |---|---|---|---|
-| Q1 | RQ2: audio thật chỉ 10-15 s (đề cương 3-30 s) → chọn phương án nào trong 4 phương án? Đề xuất AI (D12): phương án 2, ghép đoạn liên tiếp chỉ để đo RTF | GVHD | `docs/notes/dataset_discrepancy.md`, `training_plan_kaggle.md` D12 |
 | Q2 | Đã chốt hướng: 3 Kaggle Dataset + 2 tài khoản + chạy nền. Còn duyệt chi tiết D1-D10 (WAV/FLAC, cách chia shard, val trừ clean-test, checkpoint theo step, chạy kernel kiểm chứng) | Người dùng | **`docs/notes/training_plan_kaggle.md`** mục 3; số liệu: `prefetch_storage_review.md` |
 | Q3 | Train 30 epoch ≈ 40 GPU-giờ/mô hình > 30 GPU-giờ/tuần. Đề xuất D8/D9/D11: đo benchmark trước, rồi `num_workers` → AMP → DDP; giữ 30 epoch; **không subsampling (đã chốt)** | Người dùng (+ GVHD nếu giảm epoch) | `TODO.md` ⚠️ |
 

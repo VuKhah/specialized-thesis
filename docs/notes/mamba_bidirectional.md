@@ -96,3 +96,56 @@ Tính B1 (2026-10-01): mỗi khối 437.760 + LN 512 cho mỗi lớp, `input_pro
   tốc độ. Đã sửa sẵn `scripts/kaggle/benchmark/benchmark.py` (lần 3: chỉ Mamba,
   AMP 1 GPU và 2 GPU, kèm `CHECK_CODE` kiểm tham số/padding/tương lai bằng
   kernel thật trước khi đo) — chưa push/chạy.
+
+## Đối chiếu nguồn (2026-10-03)
+
+Đối chiếu `src/models/mamba_encoder.py` với mã mamba-ssm **tag v2.3.1**
+(`modules/mamba_simple.py`, `modules/block.py`, `models/mixer_seq_simple.py`,
+`models/config_mamba.py`) và hai bài báo.
+
+**Nguồn ExtBiMamba đã xác minh:** Zhang, Zhang, Liu, Xiao và cs., *Mamba in
+Speech: Towards an Alternative to Self-Attention*, arXiv:2405.12609 (v6,
+04/2025), Algorithm 2: `H' = Norm(H)`; mỗi chiều có in_proj/conv/SSM/out_proj
+riêng; `H_l = y_fwd + y_bwd + H` — **B1 khớp đúng** (chung 1 norm, cộng, một
+residual). InnBiMamba (chung in/out_proj) là kiểu Vision Mamba, chính là B2.
+
+**Khớp mã gốc / bài Mamba (Gu & Dao, arXiv:2312.00752):** khối `Mamba` là của
+thư viện (S4D-Real cho A, D = 1, dt khởi tạo [0,001; 0,1], dt_rank = 16,
+d_state 16, d_conv 4, expand 2 = mặc định bài báo); pre-norm residual tương
+đương `Block` (Add → Norm → Mixer); `norm_f`; chia `out_proj` theo
+`_init_weights` (kaiming a=√5 rồi chia √n); residual fp32; miễn weight decay
+`A_log`/`D`; không dropout. `reverse_padded` chạy thử: đảo đúng trong độ dài
+thật, padding giữ nguyên, tự nghịch đảo. Số tham số tính tay theo shape v2.3.1:
+437.760/khối × 28 + 14 LN + norm_f + input_proj = **12.285.696**, khớp note.
+
+**Lệch nhỏ (có chủ đích hoặc không đáng kể):**
+- LayerNorm thay RMSNorm: `MambaConfig` mặc định `rms_norm=True` (công thức
+  "Transformer++" của bài), nhưng `MixerModel` hỗ trợ cả hai và bài gọi là
+  "standard normalization". LayerNorm giống Conformer torchaudio.
+- Hệ số √28 cho B1 là suy luận của dự án (mã gốc không có hai chiều).
+- Công thức train (AdamW 0,01, β mặc định, clip 5, warmup + hằng số) là của
+  pipeline chung, khác công thức LM của bài (wd 0,1, β2 0,95, clip 1, cosine);
+  LayerNorm/bias vẫn bị weight decay (các công thức LM thường miễn). Áp dụng
+  như nhau cho Conformer.
+- A thực (real): bài chỉ chuyển sang phức cho audio dạng sóng thô; mamba-ssm
+  `Mamba` chỉ hỗ trợ A thực. Đầu vào ở đây là log-mel 100 khung/s.
+
+**Rủi ro lớn (chưa quyết):** bài 2405.12609 mục V-B/V-D báo **Mamba/BiMamba
+chồng độc lập** (đúng thiết kế hiện tại) cho ASR **kém rõ rệt** Transformer/
+Conformer, kể cả khi tăng số lớp để khớp tham số, và **khó train ổn định**;
+lý do nêu: khối Mamba ít phi tuyến, ASR cần thêm FFN. Cấu hình tốt của họ là
+thay MHSA trong Conformer bằng ExtBiMamba (ConExtBiMamba). Bài dùng ESPnet có
+subsampling, khác thiết lập ở đây — không suy thẳng, nhưng phải nêu khi bàn
+kết quả và cân nhắc trước khi train.
+
+**Bổ sung 2026-10-03 — FFN không phải lời giải chắc chắn.** Bảng XVI của
+2405.12609 (LibriSpeech100, WER dev/test): ExtBiMamba chồng độc lập 38,5/37,7;
+**+ FFN 34,9/36,1** (chỉ ~1,6 điểm), + residual 42,1/41,7 (tệ hơn — tức mô hình
+độc lập của họ vốn *không có* residual, khác thiết kế ở đây vốn có pre-norm
+residual + `norm_f`); Transformer 8,0/8,4. Mức cải thiện lớn chỉ đến khi đặt
+ExtBiMamba vào khung Conformer (thay MHSA, giữ macaron FFN + conv module):
+ConExtBiMamba 5,9/6,0 vs Conformer 6,3/6,5 (Bảng XII), ổn định hơn qua seed trên
+AN4 (Bảng XV). Mọi mô hình của họ đều đã có SpecAugment (cấu hình ESPnet) → SpecAugment
+không cứu được Mamba độc lập trong bài. Hệ quả: bằng chứng "Mamba chồng thuần
+kém" yếu hơn tưởng (baseline của họ thiếu residual); bằng chứng "thêm FFN là
+đủ" cũng yếu.

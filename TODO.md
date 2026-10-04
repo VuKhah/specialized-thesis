@@ -1,6 +1,6 @@
 # TODO tổng — Mamba vs Conformer ASR
 
-Cập nhật lần cuối: **2026-10-03** (chốt A1 lọc dữ liệu). **Nguồn sự thật duy nhất cho việc cần làm /
+Cập nhật lần cuối: **2026-10-04** (bước 3 code dùng chung; chốt front-end CMVN + SpecAugment, dropout Mamba, giữ CTC). **Nguồn sự thật duy nhất cho việc cần làm /
 đang chặn / đã xong.** Kế hoạch tuần + quyết định + nhật ký phiên ở
 [`Plan.md`](Plan.md); kiến trúc ở [`ARCHITECTURE.md`](ARCHITECTURE.md).
 
@@ -30,12 +30,16 @@ Câu hỏi cần mang đi hỏi (người dùng/GVHD): [`QA.md`](QA.md).
       tách nhóm zero-shot/fine-tune khi bàn). **A1 chốt 2026-10-03** (mục dưới). Còn: viết đề cương điều chỉnh
       (bản mới) trước buổi Tuần 9.
 
-- [ ] **Hướng xử lý sai lệch số liệu dataset ảnh hưởng RQ2**: số liệu thật
+- [x] **RQ2 — CHỐT 2026-10-03 (người dùng): phương án 2 + đổi cách hỏi.**
+      RQ2 thành so hiệu quả giữa các mô hình (RTF, độ trễ, VRAM, tham số,
+      GPU-giờ); dải độ dài lấy từ **audio ghép nhân tạo** (đoạn liên tiếp cùng
+      video, chỉ để đo, không train); WER chỉ trên đoạn gốc 10-15 s. Việc code
+      ở 🟡 "RQ2". Ghi chú gốc bên dưới.
+      Sai lệch số liệu: số liệu thật
       (67.405 mẫu/245,42h, audio gần như đồng nhất 10-15s) khác đề cương đã
       đăng ký (52.023/267,39h, dải 3-30s) — RQ2 (RTF theo độ dài audio) không
       còn đủ dải để chứng minh ưu thế O(n) của Mamba. 4 phương án trong
-      `docs/notes/dataset_discrepancy.md`, đang chờ ý kiến thầy Hoàng Văn
-      Dũng. **Không tự chọn phương án khi chưa có ý kiến.**
+      `docs/notes/dataset_discrepancy.md`.
       *Không chặn train (rà 2026-09-30):* cả 4 phương án chỉ đổi phần đo RTF
       sau train (RTF không phụ thuộc trọng số → đo được song song lúc train).
       Chỉ ảnh hưởng train nếu GVHD muốn WER trên audio dài hoặc thêm dữ liệu
@@ -83,16 +87,30 @@ duyệt, D3 → **4 shard**, train full + đánh giá theo epoch).
       tính eval). Số đo: `training_plan_kaggle.md` mục 5.
 - [x] **`PACK_TAR = True` chốt 2026-09-30**: 5 dataset đều là tar; đầu mỗi phiên
       train giải nén vào `/tmp/audio_cache` (**không** `/kaggle/working`).
-- [ ] **3. Sửa code dùng chung (D5, D7, D8, D10)** cho cả hai encoder: val trừ
-      clean-test (đọc `data/splits/val.tsv`); `--max_minutes` + checkpoint
-      theo step, resume giữa epoch; D8: `torchrun` DDP + `SyncBatchNorm` +
-      `torch.autocast` fp16/GradScaler (front-end log-mel giữ fp32, như
-      benchmark), `DistributedSampler` có `set_epoch`, 2 worker/tiến trình;
-      bước giải nén tar vào `/tmp/audio_cache`; `VietSuperSpeechDataset` dùng
-      `HF_REVISION` (hằng số đã có); **bỏ các đoạn trong
-      `data/splits/excluded.tsv`** ở train, val và `eval_clean_test` (A1, còn
-      192 câu clean-test).
-      **Giữ lịch LR warmup + hằng số** (để dừng ở epoch bất kỳ vẫn hợp lệ).
+- [x] **3. Sửa code dùng chung (D5, D7, D8, D10) — code xong 2026-10-04,
+      chưa commit.** `manifest_indices` đọc `data/splits/*.tsv` + bỏ
+      `excluded.tsv` (train 48.340, `train_shard0` 12.086, val 5.140,
+      clean-test 192); `HF_REVISION`; `AUDIO_CACHE_DIR` từ biến môi trường;
+      `train.py`: `torchrun` DDP + SyncBN + AMP (front-end + CTC loss fp32),
+      sampler tất định theo (seed, epoch) bỏ được step đã học, `--max_minutes`,
+      checkpoint mỗi 20 phút ghi nguyên tử, `--resume_from`, `--train_manifests`,
+      `--epochs`, eval chia GPU; `src/data/extract_audio.py` giải nén tar. Lịch LR
+      giữ warmup + hằng số.
+      **Đã test CPU local (Conformer):** resume giữa epoch ra trọng số **giống hệt**
+      chạy liền (max |dW| = 0, tắt dropout/augment); `eval_clean_test` 192 câu;
+      giải nén tar thật. **Chưa test được:** DDP (PyTorch Windows không có gloo
+      device), NCCL/SyncBN/AMP, Mamba → bước đầu của kernel train thử.
+      Khởi động: `load_dataset` ~45 s/lần kể cả đã cache → làm ấm bằng
+      `python -m src.data.vietsuperspeech_dataset` rồi chạy `HF_HUB_OFFLINE=1`
+      (0,2 s).
+- [x] **Front-end + dropout — chốt và code 2026-10-04** (người dùng duyệt, căn
+      cứ `docs/notes/frontend_decoder_survey.md`): giữ CTC; CMVN toàn cục
+      (`configs/cmvn_stats.json`, 2000 câu train seed 42); SpecAugment 2 freq
+      mask F=27 + 10 time mask ≤ 5%, không time warp, chỉ lúc train; dropout 0,1
+      cho Mamba (đầu ra mỗi khối); giữ log-mel 80/25/10 ms. Mục `features` trong
+      2 yaml, dựng model qua `train.build_model`. Test: CMVN đúng công thức, mask
+      không lọt padding (~22% khung, ~33% kênh), dropout tắt khi eval, bất biến
+      padding Mamba giữ (khối giả, 9,5e-7), train 3 epoch CPU loss 113 → 41.
 - [x] **Theo khuyến nghị tác giả Mamba — sửa 2026-09-30** (người dùng duyệt):
       `build_optimizer` miễn weight decay cho `A_log`/`D`, `weight_decay: 0.01`
       ghi rõ trong 2 yaml; `MambaEncoder` thêm `norm_f`, chia `out_proj` cho
@@ -141,6 +159,28 @@ duyệt, D3 → **4 shard**, train full + đánh giá theo epoch).
       ~10-15 phút) — xin duyệt quota.
 - [ ] **Kernel GPU zero_shot** 3 mô hình trên 250 câu clean-test (~0,5 GPU-h)
       — xin duyệt quota. Kiểm Parakeet chạy được trên T4.
+- [ ] **RQ2 (chốt 2026-10-03, chưa code):** script ghép đoạn liên tiếp cùng
+      video (từ train + val, đã bỏ `excluded.tsv`) thành audio dài theo các mức
+      độ dài; sửa `rtf.py` bỏ bucket 3-30 s, đo RTF/độ trễ/VRAM cho cả 5 mô
+      hình. Không phụ thuộc trọng số → chạy được với trọng số ngẫu nhiên
+      trước khi train xong. Mức độ dài cụ thể: AI đề xuất, người dùng duyệt.
+- [ ] **Đội hình mới 2026-10-03 + train thử BiMamba vs ConExtBiMamba** (người
+      dùng chốt hướng; Plan mục 4). Việc: viết `ConExtBiMambaEncoder` (khối
+      Conformer tùy biến, ½FFN → ExtBiMamba → conv → ½FFN → LN; dùng lại
+      `reverse_padded`/khối B1), khớp ~12M; train thử trên tập nhỏ vài giờ
+      GPU. **Chốt 2026-10-03:** baseline = **Conformer-12M** train từ đầu;
+      pre-train = **Parakeet-CTC-0.6B-vi**, **dự bị PhoWhisper-small** (bỏ
+      wav2vec2 → kernel zero_shot rút về 2 mô hình; vẫn phải kiểm NeMo/T4); train thử = **1 shard,
+      ~5 epoch, 3 mô hình** (BiMamba, ConExtBiMamba, Conformer làm mốc), ước
+      ~2-3 GPU-h, so WER val + đường loss + s/step + VRAM. Thứ hạng sớm chỉ để
+      loại phương án tệ rõ. Còn: tiêu chí chọn cụ thể (AI đề xuất, người dùng
+      duyệt). Thứ tự: bước 3 → `ConExtBiMamba` + test CPU khối giả → kernel
+      train thử (gộp benchmark lần 3).
+      **Danh sách chuẩn bị từng mô hình: `docs/notes/lineup_preparation.md`.**
+- [x] **Mamba chồng thuần hay thêm FFN — CHỐT 2026-10-04 (người dùng): giữ B1,
+      không làm biến thể B1 + FFN**; ConExtBiMamba (đã trong train thử) là
+      phương án "có FFN". Căn cứ 2405.12609 Bảng XVI (+FFN chỉ ~1,6 điểm) và XII
+      (khung Conformer mới cải thiện lớn) — `docs/notes/frontend_decoder_survey.md` mục 5.
 - [ ] Xác nhận các thiết lập tác nhân tự chọn: `out_proj` chia √28; greedy
       không LM; chữ số giữ nguyên; đo batch 1 fp16.
 - [ ] Viết lại `Plan.md` mục 1-2, `CLAUDE.md` (luật "chỉ encoder khác nhau"),
@@ -204,10 +244,9 @@ duyệt, D3 → **4 shard**, train full + đánh giá theo epoch).
       khi upload Drive, đừng để mất bản edit tay. Không sửa nội dung file.
 
 **Code / thiết kế** (chi tiết ở `ARCHITECTURE.md` mục 8)
-- [ ] Hàm `main()` của `train.py` (vòng epoch, checkpoint, tensorboard) **chưa
-      chạy trên Kaggle** — smoke test 2026-09-24 dùng cùng `build_encoder`,
-      `CTCASRModel`, dataset, `evaluate` nhưng tự viết vòng step. Sẽ lộ ra ở
-      lần train thật đầu tiên.
+- [ ] `train.py` viết lại 2026-10-04 **chưa chạy trên Kaggle** (DDP/NCCL,
+      SyncBN, AMP, Mamba, `extract_audio`) — kernel train thử phải chạy một
+      vòng ngắn (vài step + cắt `--max_minutes` + resume) trước khi train thật.
 - [ ] **Ước lượng thời gian train vượt hạn mức**: ~1,3 s/step (batch 16, T4,
       chưa tính tải dữ liệu) × 3.791 step/epoch ≈ 80 phút/epoch → 30 epoch ≈
       40 GPU-giờ **mỗi mô hình**, trong khi hạn mức Kaggle 30 GPU-giờ/tuần.
@@ -217,19 +256,14 @@ duyệt, D3 → **4 shard**, train full + đánh giá theo epoch).
 - [ ] Mamba đơn hướng (đang cân nhắc hai chiều — 🔴 ở trên), chưa mask padding; hai
       encoder không subsampling (T'=T ≈ 1000-1500 khung). Cần nêu trong phần
       thảo luận; kiểm tra đề cương đã đề cập chưa.
-- [ ] `train.py`: 1 GPU (Kaggle có 2x T4), không AMP — ảnh hưởng thời gian
-      train so với hạn mức 30 GPU-giờ/tuần. Chưa quyết định có tối ưu không
-      (sửa training loop là sửa code dùng chung, phải áp dụng cho cả hai).
-- [ ] **Chênh ngoài lõi encoder (ghi 2026-10-01, chưa quyết):** Conformer có
-      dropout 0,1 (FFN, conv, attention), Mamba **không có dropout** (đúng như
-      mamba-ssm gốc) → nếu Mamba overfit hơn, đây là một nguyên nhân cần thảo
-      luận. Front-end **không CMVN** (log-mel vào thẳng `Linear 80→256`), không
-      SpecAugment — giống nhau cho cả hai nên vẫn công bằng; muốn thêm CMVN thì
-      là sửa code dùng chung, phải làm **trước khi train**. Người dùng quyết.
-- [ ] `best.pt` chọn theo WER `validation`, mà clean-test lấy từ `validation`
-      → lưu ý khi diễn giải kết quả cuối.
+- [x] ~~Chênh ngoài lõi encoder: Mamba không dropout, front-end không CMVN/SpecAugment~~
+      — xử lý 2026-10-04 (dropout 0,1 cho Mamba, CMVN toàn cục, SpecAugment).
+      Còn nêu khi viết: vị trí dropout trong khối Mamba là lựa chọn của dự án.
+- [ ] `best.pt` chọn theo WER val (= `validation` trừ clean-test, D5 — đã
+      tách tập từ 2026-10-04); val và clean-test vẫn rải từ cùng video với train
+      → lưu ý khi diễn giải.
 - [ ] `rtf.py`/`survey.py` chia bucket độ dài theo đề cương (3-30s), không
-      khớp dữ liệu thật — **không sửa** khi 🔴 chưa có quyết định.
+      khớp dữ liệu thật — RQ2 đã chốt 2026-10-03, việc sửa chuyển lên 🟡 "RQ2".
 
 ## ✅ Đã hoàn thành
 

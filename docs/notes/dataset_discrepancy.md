@@ -67,3 +67,15 @@ Xem thêm: [`docs/notes/mamba_ssm_install_log.md`](mamba_ssm_install_log.md)
 cho tiền lệ tương tự (đề cương vs Kaggle) — lần đó người dùng chọn "chỉ sửa
 tài liệu nội bộ, giữ nguyên đề cương đã nộp". Trường hợp này nghiêm trọng
 hơn vì ảnh hưởng trực tiếp đến thiết kế RQ2, không chỉ là chi tiết hạ tầng.
+
+## Quyết định (2026-10-03, người dùng)
+
+**Phương án 2 + đổi cách hỏi RQ2.** RQ2 không còn là "chứng minh ưu thế O(n)
+trên dải 3-30 s" mà là **so hiệu quả giữa các mô hình** (RTF, độ trễ, VRAM, số
+tham số, GPU-giờ). Dải độ dài lấy từ **audio ghép nhân tạo**: nối các đoạn
+liên tiếp cùng video (train + val, đã bỏ `data/splits/excluded.tsv`), chỉ để
+đo, không dùng để train. Các đoạn liền số seg không liền về thời gian (phần
+lặng bị cắt, một số seg khuyết) — vẫn hợp lệ vì chi phí suy luận chỉ phụ thuộc
+số khung; phải nêu rõ cách ghép trong khóa luận. WER chỉ báo trên đoạn gốc
+10-15 s; **không** đo WER audio dài (validation rải từ chính video train, gần
+như không có chuỗi seg liên tiếp dài). Ghi vào đề cương mới, không sửa docx cũ.
