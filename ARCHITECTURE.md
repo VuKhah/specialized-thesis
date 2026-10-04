@@ -17,8 +17,10 @@ flowchart TD
     FE --> ENC{{"ASREncoder<br/>điểm hoán đổi DUY NHẤT"}}
     ENC -->|"encoder.type = conformer"| C["ConformerEncoder"]
     ENC -->|"encoder.type = mamba"| M["MambaEncoder"]
+    ENC -->|"encoder.type = conextbimamba"| X["ConExtBiMambaEncoder"]
     C --> H["hidden [B, T, 256]"]
     M --> H
+    X --> H
     H --> HEAD["ctc_head: Linear 256 → 1001<br/>dùng chung"]
     HEAD --> LP["log_softmax → log_probs [B, T, 1001]"]
     LP --> LOSS["F.ctc_loss (blank = 0)<br/>khi train"]
@@ -28,7 +30,8 @@ flowchart TD
 
 Phần **dùng chung** (không được lệch giữa hai thí nghiệm): front-end log-mel,
 tokenizer, CTC head + loss, `train.py`, `evaluation/`, dataset/collate. Phần
-**riêng**: chỉ `mamba_encoder.py` và `conformer_encoder.py`.
+**riêng**: chỉ `mamba_encoder.py`, `conformer_encoder.py` và
+`conextbimamba_encoder.py` (ứng viên #5, thêm 2026-10-04).
 
 ## 2. Luồng dữ liệu: từ HF Hub đến batch
 
@@ -106,6 +109,17 @@ model đầy đủ (front-end từ mục `features` + encoder + CTC head) — d�
 | Cần | torch, torchaudio | GPU + kernel CUDA (`mamba-ssm`, `causal-conv1d`) — chỉ có trên Kaggle |
 | Tham số | 12.204.288 (theo yaml, đo bằng `param_count.py`) | 12.285.696 (+0,67%) với B1 `n_layers: 14` — đếm bằng khối giả cùng shape `mamba_ssm.Mamba` v2.3.1 (2026-10-02), **chưa đo trên Kaggle**. Bản một chiều 28 lớp: 12.292.864 (đo 12.292.352 trên T4 2026-09-24 + 512 `norm_f`) |
 
+**`ConExtBiMambaEncoder`** (ứng viên #5, `configs/model_conextbimamba.yaml`,
+thêm 2026-10-04; arXiv:2405.12609 Hình 2c, Bảng XII/XIV): khung Conformer,
+MHSA → ExtBiMamba. Mỗi lớp: `x += ½·FFN₁(x)`; `h = LN(x)`,
+`x += drop(Mamba_xuôi(h) + rev(Mamba_ngược(rev(h))))`; `x += Conv(x)` (xoá
+padding sau GLU, trước depthwise); `x += ½·FFN₂(x)`; `x = LN(x)`. FFN/conv là
+lớp `_FeedForwardModule`/`_ConvolutionModule` của torchaudio (cùng mã với
+Conformer). 6 lớp, ffn **928** (hạ từ 1024 để khớp tham số), conv kernel 31,
+khối Mamba như B1, dropout 0,1, không positional encoding, không `norm_f`,
+không chia `out_proj`. **12.241.536 tham số (+0,31%)** — đếm bằng khối giả,
+chưa đo trên Kaggle. Có BatchNorm → SyncBN khi DDP (khác B1).
+
 ## 5. Vòng đời một thí nghiệm
 
 ```mermaid
@@ -171,13 +185,16 @@ Ký hiệu: ✅ đã chạy thật · 🟡 chạy được một phần · ⬜ c
 | `src/models/encoder_base.py` | Interface `ASREncoder` | ✅ |
 | `src/models/conformer_encoder.py` | Encoder Conformer | ✅ (CPU) |
 | `src/models/mamba_encoder.py` | Encoder Mamba (hai chiều B1 + cờ một chiều) | 🟡 B1 test CPU bằng khối giả (shape, padding, tham số, weight decay) 2026-10-02; **chưa** chạy với kernel CUDA thật |
+| `src/models/conextbimamba_encoder.py` | Encoder ConExtBiMamba (ứng viên #5) | 🟡 test CPU bằng khối giả 2026-10-04 (tham số, bất biến padding, hai chiều, dropout, SyncBN, `train.py` với dữ liệu thật); **chưa** chạy CUDA thật |
 | `src/models/ctc_model.py` | Front-end + encoder + CTC head, loss, greedy decode | ✅ (với Conformer) |
-| `src/models/param_count.py` | So số tham số hai encoder, đọc yaml qua `build_encoder` | 🟡 Conformer ✅ (12.204.288) · Mamba chưa đo (cần CUDA); xem mục 8-f |
+| `src/models/param_count.py` | So số tham số Conformer với các encoder Mamba (`--others`), đọc yaml qua `build_encoder` | 🟡 Conformer ✅ (12.204.288) · Mamba chưa đo (cần CUDA); xem mục 8-f |
 | `src/training/train.py` | Vòng train chung: DDP `torchrun` + SyncBN + AMP, sampler resume giữa epoch, `--max_minutes`, checkpoint theo phút, eval chia GPU, tensorboard | 🟡 viết lại 2026-10-04: Conformer CPU (1 tiến trình + DDP gloo 2 tiến trình) · ⬜ GPU/NCCL/AMP · ⬜ Mamba |
 | `src/evaluation/wer.py` | `compute_wer`, `compute_wer_report` (jiwer), tự chuẩn hóa ref/hyp qua `normalize_text` | ✅ (dùng trong eval loop) |
 | `src/evaluation/text_normalize.py` | Chuẩn hóa văn bản dùng chung cho **mọi** mô hình trước WER; `is_vietnamese_label` (heuristic < 20% từ có dấu, **chưa kiểm chứng** — A1) | ✅ 2026-10-02 test local |
 | `src/evaluation/rtf.py` | `measure_rtf` + bucket độ dài | ⬜ chưa chạy thật |
 | `src/demo/` | Demo Gradio | ⬜ chỉ có `__init__.py` |
+| `src/evaluation/bootstrap.py` | Khoảng tin cậy WER bằng bootstrap theo khối video (1 mô hình / so cặp) | ✅ test CPU 2026-10-04 (WER khớp `train.py`) |
+| `src/evaluation/trial_report.py` | Bảng so sánh sau train thử (chất lượng, học/ổn định, tài nguyên, Pareto) + cổng G0-G3 → `trial_report.{md,json}` | ✅ test CPU 2026-10-04 trên output train thật |
 | `src/evaluation/eval_clean_test.py` | Đo WER checkpoint trên clean-test → `reports/results/<exp>_clean_test.json` (ref/hyp từng câu) | 🟡 chạy thật với dữ liệu thật (Conformer, CPU, trọng số ngẫu nhiên — chưa có checkpoint train) · Mamba ⬜ |
 | *(chưa có)* | Script phân tích lỗi (error taxonomy, RQ3) | ⬜ |
 | `configs/model_{conformer,mamba}.yaml` | 1 file = 1 thí nghiệm | ✅ |
@@ -186,6 +203,7 @@ Ký hiệu: ✅ đã chạy thật · 🟡 chạy được một phần · ⬜ c
 | `scripts/kaggle/verify_mamba.py` | Kernel GPU: build wheel mamba, `param_count`, smoke test cả hai encoder | ✅ 2026-09-24 |
 | `scripts/kaggle/check_env/check_env.py` | Kernel CPU (D9): đĩa, tốc độ tải HF, số file output, tốc độ tar | ✅ 2026-09-28 |
 | `scripts/kaggle/zero_shot/zero_shot.py` | Kernel GPU: zero-shot Parakeet-CTC-0.6B-vi / PhoWhisper-small / wav2vec2-base-vi trên 250 câu clean-test (tải từ HF), greedy không LM, WER 2 mức + RTF + VRAM → `results.json`, `predictions.tsv` | 🟡 2026-10-02 chạy thật CPU local 4 câu cả 3 mô hình · **chưa chạy Kaggle** |
+| `scripts/kaggle/train_trial/train_trial.py` | Kernel GPU train thử 3 mô hình (1 shard × 5 epoch): CHECK_CODE CUDA → chạy ngắn DDP + resume → 3 mô hình tuần tự → `trial_report.md` | ⬜ viết 2026-10-04, chưa chạy (chờ duyệt quota) |
 | `scripts/kaggle/benchmark/benchmark.py` | Kernel GPU (D9): s/step theo `num_workers` / AMP / 2 GPU × 2 encoder; tự viết vòng step, không gọi `train.py` | ✅ 2026-09-30 chạy đủ 8 cấu hình trên Kaggle (kết quả: `docs/notes/training_plan_kaggle.md` mục 5) · lần 3 (Mamba B1 + `CHECK_CODE` kiểm padding/tham số bằng kernel thật) sửa sẵn 2026-10-02, **chưa chạy** |
 | `scripts/kaggle/make_dataset/make_dataset.py` | Kernel CPU (D6): tạo 1 trong 5 dataset (sửa `PART`), kiểm WAV sau tải | 🟡 test local 20 file thật · chưa chạy trên Kaggle (cần push manifest) |
 | `scripts/kaggle/**/kernel-metadata.json` | Cấu hình kernel (chứa username) — **gitignore**, giữ local | — |
@@ -218,6 +236,13 @@ Ký hiệu: ✅ đã chạy thật · 🟡 chạy được một phần · ⬜ c
   miễn weight decay cho tham số `_no_weight_decay` (`A_log`, `D`); Conformer
   không bị ảnh hưởng (đã kiểm: tham số giống hệt từng bit so với AdamW cũ).
   Khi thêm AMP: dùng `torch.autocast` + tham số fp32, **không** `.half()`.
+- **e3. ConExtBiMamba: padding (2026-10-04).** Cặp Mamba giữ bất biến như 8-e,
+  nhưng depthwise conv kernel 31 không nhân quả → `ConExtBiMambaLayer._conv`
+  gọi lại từng bước `_ConvolutionModule` và xoá khung padding ngay trước
+  depthwise conv (test khối giả: câu riêng vs trong batch lệch 1,7e-6).
+  Conformer torchaudio **không** xoá (chỉ attention có mask) — lệch nhỏ giữa hai
+  encoder. BatchNorm lúc train vẫn tính cả khung padding, như Conformer. Sửa
+  torchaudio phải kiểm lại chỉ số `sequential[0..1]` (pointwise + GLU).
 - **f. `param_count.py` đọc yaml (sửa 2026-09-21).** Dựng encoder bằng
   `build_encoder` của `train.py` nên số đo = dòng "encoder params" của lúc
   train. Import `train.py` kéo theo tensorboard/tensorflow (~vài chục giây khởi
@@ -232,6 +257,14 @@ Ký hiệu: ✅ đã chạy thật · 🟡 chạy được một phần · ⬜ c
   bucketing theo độ dài. Loss in mỗi epoch là trung bình các step của phiên.
   Eval = greedy trên val (4.824 câu, chọn `best.pt`) và `extra_eval_manifests`
   (val_unseen 3.011 câu, log `eval/wer_val_unseen`).
+  **Ổn định + số đo (2026-10-04):** loss không hữu hạn → mọi rank cùng bỏ step
+  (`all_reduce` MIN; bỏ lệch nhau là DDP treo), step vẫn đếm để giữ lịch LR và
+  thứ tự dữ liệu; step AMP bị GradScaler bỏ nhận biết qua scale giảm. Mỗi epoch
+  rank 0 ghi 1 dòng `<ckpt_dir>/<exp>/metrics.jsonl` (loss, grad norm tb/max, số
+  step bị bỏ, s/step, VRAM đỉnh rank 0, WER + CTC loss + thời gian eval từng tập)
+  và `eval_<tập>_epoch<k>.jsonl` (split, index, video, ref, hyp) — đầu vào của
+  `src/evaluation/bootstrap.py`. Eval ghép hyp với video theo `eval_rows[rank::world]`
+  → loader eval **phải** giữ `shuffle=False`.
 - **h. Chọn model và báo cáo tách tập (D5).** `best.pt` chọn theo WER val =
   `validation` trừ clean-test cũ, trừ video giữ riêng; clean-test (203 câu) và
   val_unseen lấy từ **29 video giữ riêng** — không video nào có trong train/val

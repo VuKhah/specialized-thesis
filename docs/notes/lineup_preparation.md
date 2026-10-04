@@ -78,24 +78,77 @@ chuẩn bị** cho từng mô hình; trạng thái làm/chưa làm theo dõi ở
 
 ## 5. ConExtBiMamba
 
-- [ ] Viết `ConExtBiMambaEncoder`: khối `½FFN → ExtBiMamba → conv module →
-      ½FFN → LayerNorm` (theo 2405.12609; torchaudio không cho thay attention
-      → khối tùy biến), dùng lại `reverse_padded` + cặp khối Mamba của B1.
-- [ ] Khớp ~12M (ước ~2,1M/khối → ~6 khối; tính lại chính xác), thêm
-      `configs/model_conextbimamba.yaml`, đăng ký trong `build_encoder`.
-- [ ] Test CPU bằng khối Mamba giả (như B1); CUDA thật ở train thử.
-- [ ] Đối chiếu chi tiết khối với bài (Bảng XIV: macaron, Swish, dropout,
-      không positional encoding) trước khi chạy.
-- [ ] Cập nhật `ARCHITECTURE.md` (encoder thứ ba).
+- [x] Viết `ConExtBiMambaEncoder` (2026-10-04, `src/models/conextbimamba_encoder.py`):
+      `½FFN → ExtBiMamba → conv module → ½FFN → LayerNorm`, FFN/conv lấy nguyên
+      lớp torchaudio (cùng mã Conformer-12M), cặp Mamba như một lớp B1
+      (`reverse_padded`, chung LN, cộng), dropout 0,1, không PE.
+- [x] Khớp tham số: 1 lớp ffn 1024 = 2.135.296 → 6 lớp +5,1%, 5 lớp −12% →
+      **6 lớp, ffn 928** = **12.241.536 (+0,31%)** (đếm bằng khối giả cùng
+      shape mamba-ssm v2.3.1). `configs/model_conextbimamba.yaml`, đăng ký
+      `build_encoder`; `param_count.py --others` so cả hai encoder Mamba.
+- [x] Test CPU khối giả: tham số, 24 tham số miễn weight decay, câu riêng vs
+      trong batch lệch 1,7e-6, nhìn cả quá khứ lẫn tương lai, dropout tắt khi
+      eval, SyncBN đổi 6 lớp BN, `train.py` chạy với dữ liệu thật. CUDA thật
+      → kernel train thử (thêm vào `CHECK_CODE`).
+- [x] Đối chiếu bài (arXiv:2405.12609 v6, Hình 2c, Bảng XII, XIV): macaron ✓,
+      Swish ✓ (SiLU trong FFN/conv), dropout ✓, không PE ✓ (Bảng XIV: thêm PE
+      không đổi WER). **Lệch có chủ đích, cần người dùng xác nhận:**
+      (1) bài giữ kích thước Conformer nên nhiều tham số hơn (34,23M → 41,59M),
+      ở đây hạ ffn 1024 → 928 để khớp ~12M; (2) bài khởi tạo A bằng ma trận
+      chéo + nhiễu Gauss (tốt nhất trong Bảng XIV), ở đây giữ S4D-Real mặc định
+      của mamba-ssm để #1 và #5 dùng cùng khối; (3) không chia `out_proj` (mỗi
+      lớp có LN cuối — suy luận của dự án, bài không nói); (4) xoá padding trước
+      depthwise conv — Conformer-12M (torchaudio) không xoá.
+- [x] Cập nhật `ARCHITECTURE.md` (mục 1, bảng encoder, bản đồ file, 8-e3).
 
-## Train thử (chọn giữa #1 và #5)
+## Train thử (3 mô hình — giữ 2 hay 3)
 
-- Cấu hình chốt: **1 shard, ~5 epoch, 3 mô hình** (#1, #5, #2 làm mốc),
-  ước ~2-3 GPU-h; gộp benchmark lần 3.
-- [ ] AI đề xuất **tiêu chí chọn** (ví dụ: WER val ở epoch cuối, độ dốc
-      đường loss, có bất ổn/NaN không, s/step, VRAM), người dùng duyệt
-      **trước khi** chạy.
-- [ ] Ghi rõ hạn chế: thứ hạng sớm chỉ để loại phương án tệ rõ.
+- Cấu hình chốt: **1 shard, 5 epoch, 3 mô hình** (#1, #5, #2), **1 seed**, ước
+  ~2,5-3,5 GPU-h. **Đổi 2026-10-04 (người dùng):** không còn "chọn 1 trong #1/#5";
+  sau train thử chốt giữ 2 hay 3 mô hình, mong muốn cả 3 đủ tốt để giữ. Chấp
+  nhận 1 seed + biện pháp ổn định (không chạy 2 seed).
+- [x] Biện pháp ổn định + đo (2026-10-04): `train.py` bỏ step có loss không hữu
+      hạn (đồng bộ mọi rank), đếm step AMP bị GradScaler bỏ, ghi grad norm,
+      s/step, VRAM đỉnh, CTC loss + WER val/val_unseen mỗi epoch
+      (`metrics.jsonl`), ref/hyp từng câu (`eval_<tập>_epoch<k>.jsonl`);
+      `src/evaluation/bootstrap.py` (khoảng tin cậy theo khối video, Liu & Peng
+      arXiv:1912.09508). Kernel `scripts/kaggle/train_trial/`: CHECK_CODE CUDA
+      thật → chạy ngắn DDP + resume → 3 mô hình tuần tự, trần 90 phút/mô hình,
+      mô hình lỗi không chặn mô hình sau → `trial_summary.json`.
+- [ ] **Tiêu chí giữ/bỏ — AI đề xuất 2026-10-04 (bản mở rộng), chờ người dùng duyệt
+      trước khi chạy.** Bảng so sánh sinh tự động: `src/evaluation/trial_report.py`
+      → `trial_report.md` (kernel chạy cuối; chạy lại được ở local trên output).
+  **A. Cổng loại cứng** (tự đánh giá; ngưỡng là của dự án, không có tài liệu —
+  sửa ở `GATES` trong `trial_report.py`):
+  - G0 *lần chạy dùng được:* WER val_unseen của Conformer < 0,95. Trượt → chưa
+    kết luận mô hình nào (thêm epoch / so CTC loss val).
+  - G1 *không sụp về blank:* câu giải mã rỗng ≤ 5% (val_unseen, epoch cuối).
+    CTC dễ kẹt ở đầu ra toàn blank giai đoạn đầu; còn kẹt sau 5 epoch là hỏng.
+  - G2 *ổn định:* train loss hữu hạn mọi epoch, step bị bỏ ≤ 1%, WER val giảm
+    từ epoch đầu đến cuối. Căn cứ cần cổng này: 2405.12609 mục V báo Mamba chồng
+    khó train ổn định.
+  - G3 *tài nguyên:* ước train full 30 epoch ≤ 30 GPU-giờ, VRAM đỉnh ≤ 14 GiB.
+  **K. Tiêu chí cân nhắc** (báo số, người dùng/GVHD quyết):
+  - K1 *chất lượng so với mốc:* hiệu WER so với Conformer-12M trên val và
+    val_unseen, CI95 bootstrap theo khối video, P(tốt hơn mốc).
+  - K2 *xu hướng học:* đường WER theo epoch, mức giảm WER tương đối ở epoch
+    cuối — còn giảm mạnh thì thứ hạng sau train full dễ đổi.
+  - K3 *tổng quát hoá:* khoảng cách WER val_unseen − val (video chưa gặp vs đã gặp).
+  - K4 *dạng lỗi:* tỉ lệ thay/xoá/chèn, CER — xoá nhiều bất thường là dấu hiệu
+    học chưa tới (gần sụp blank).
+  - K5 *đánh đổi:* tham số, s/step, VRAM, ước GPU-giờ, RTF eval (proxy) và vị trí
+    Pareto theo (WER val_unseen, GPU-giờ). Đề tài hỏi về đánh đổi WER – tốc độ –
+    tài nguyên → mô hình bị trội cả hai trục đóng góp ít điểm mới cho bảng đánh đổi.
+  **C. Quy tắc đề xuất:** qua A thì mặc định giữ. Bỏ một mô hình qua A chỉ khi
+  vừa kém mốc có ý nghĩa (CI95 hiệu WER val_unseen > 0) vừa bị trội Pareto, và
+  người dùng đồng ý. Trượt A → bỏ, hoặc sửa rồi train thử lại nếu là lỗi code.
+  Lưu ý cho người dùng: mô hình #1 B1 (Mamba thuần) là trọng tâm đề tài — bỏ B1 là đổi đề
+  tài, nên bàn với GVHD dù số liệu có ra sao.
+  - Ngân sách nếu giữ 3: train full ~18,5 (Conformer) + ~12,8 (B1) + ? (ConExt,
+    đo ở train thử) GPU-h — xếp lại lịch hai tài khoản (Plan mục 2).
+- [ ] Ghi rõ hạn chế: 1 seed, 5 epoch trên 1/4 dữ liệu — thứ hạng sớm có thể
+      đảo (successive halving/Hyperband chấp nhận rủi ro này), dùng để phát hiện
+      mô hình bất ổn/tệ rõ, không để xếp hạng cuối.
 
 ## Dự bị — PhoWhisper-small
 

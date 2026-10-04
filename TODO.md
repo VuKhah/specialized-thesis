@@ -1,6 +1,6 @@
 # TODO tổng — Mamba vs Conformer ASR
 
-Cập nhật lần cuối: **2026-10-04** (bước 3 code dùng chung; front-end CMVN + SpecAugment, dropout Mamba, giữ CTC; test độc lập theo video). **Nguồn sự thật duy nhất cho việc cần làm /
+Cập nhật lần cuối: **2026-10-04** (ConExtBiMamba code + test CPU; bước 3 code dùng chung; front-end CMVN + SpecAugment, dropout Mamba, giữ CTC; test độc lập theo video). **Nguồn sự thật duy nhất cho việc cần làm /
 đang chặn / đã xong.** Kế hoạch tuần + quyết định + nhật ký phiên ở
 [`Plan.md`](Plan.md); kiến trúc ở [`ARCHITECTURE.md`](ARCHITECTURE.md).
 
@@ -159,13 +159,20 @@ duyệt, D3 → **4 shard**, train full + đánh giá theo epoch).
       tokenizer cũ — chạy lại thống kê khi sửa `make_shards`.
 - [ ] Kernel zero_shot: đọc clean-test bản 2 (203 câu) — **đã sửa 2026-10-04**; còn **một mức WER** (bỏ
       `wer_vi_label` hoặc đọc `excluded.tsv`) — sửa trước khi chạy.
-- [ ] **Hàm bootstrap theo khối video** cho khoảng tin cậy WER (clean-test 203
-      câu / 29 video; val_unseen; zero-shot) — câu cùng video không độc lập
-      (Liu và cs., arXiv:1912.09508). Làm trước khi báo số train thử.
-- [ ] **Commit + push** phần giữ riêng video (chờ người dùng duyệt) — kernel Kaggle clone repo.
-- [ ] **Kernel GPU benchmark lần 3** (Mamba B1, `CHECK_CODE` kiểm CUDA thật;
-      ~10-15 phút) — xin duyệt quota.
-- [ ] **Kernel GPU zero_shot** 3 mô hình trên 250 câu clean-test (~0,5 GPU-h)
+- [x] **Hàm bootstrap theo khối video** — `src/evaluation/bootstrap.py`
+      (2026-10-04; 1 mô hình hoặc so cặp; Liu & Peng arXiv:1912.09508). Test CPU:
+      WER khớp `train.py`. Còn: dùng cho clean-test/zero-shot khi có kết quả.
+- [x] **Commit + push** phần giữ riêng video — `f102ee9`, push 2026-10-04.
+- [x] ~~Kernel GPU benchmark lần 3~~ — gộp vào kernel train thử (CHECK_CODE
+      kiểm B1 + ConExtBiMamba với CUDA thật, s/step đo trong `metrics.jsonl`).
+- [ ] ⛔ **Kernel train thử** `scripts/kaggle/train_trial/` (viết 2026-10-04):
+      3 mô hình × `train_shard0` × 5 epoch, 1 seed, ~2,5-3,5 GPU-h, tài khoản A.
+      Cần: người dùng duyệt **tiêu chí giữ/bỏ** (cổng G0-G3 + K1-K5 + quy tắc,
+      `lineup_preparation.md` mục Train thử; bảng so sánh tự sinh bởi
+      `src/evaluation/trial_report.py`) + 4 lệch bài ConExtBiMamba + quota;
+      commit + push trước (kernel clone repo). Dữ liệu gắn qua output 5 kernel
+      make-dataset (không chờ 5 Dataset UI).
+- [ ] **Kernel GPU zero_shot** Parakeet + PhoWhisper trên 203 câu clean-test (~0,5 GPU-h)
       — xin duyệt quota. Kiểm Parakeet chạy được trên T4.
 - [ ] **RQ2 (chốt 2026-10-03, chưa code):** script ghép đoạn liên tiếp cùng
       video (từ train + val, đã bỏ `excluded.tsv`) thành audio dài theo các mức
@@ -181,8 +188,11 @@ duyệt, D3 → **4 shard**, train full + đánh giá theo epoch).
       wav2vec2 → kernel zero_shot rút về 2 mô hình; vẫn phải kiểm NeMo/T4); train thử = **1 shard,
       ~5 epoch, 3 mô hình** (BiMamba, ConExtBiMamba, Conformer làm mốc), ước
       ~2-3 GPU-h, so WER val + đường loss + s/step + VRAM. Thứ hạng sớm chỉ để
-      loại phương án tệ rõ. Còn: tiêu chí chọn cụ thể (AI đề xuất, người dùng
-      duyệt). Thứ tự: bước 3 → `ConExtBiMamba` + test CPU khối giả → kernel
+      loại phương án tệ rõ. **Đổi 2026-10-04 (người dùng): không chọn 1 trong
+      #1/#5 nữa — sau train thử chốt giữ 2 hay 3 mô hình, mong cả 3 đủ tốt;
+      1 seed + biện pháp ổn định.** Tiêu chí "đủ tốt" AI đã đề xuất, chờ duyệt. **`ConExtBiMambaEncoder` code xong 2026-10-04** (6 lớp, ffn 928,
+      12.241.536 tham số +0,31%, test CPU khối giả; 4 lệch bài cần xác nhận —
+      `lineup_preparation.md` mục 5). Thứ tự: bước 3 → `ConExtBiMamba` + test CPU khối giả → kernel
       train thử (gộp benchmark lần 3).
       **Danh sách chuẩn bị từng mô hình: `docs/notes/lineup_preparation.md`.**
 - [x] **Mamba chồng thuần hay thêm FFN — CHỐT 2026-10-04 (người dùng): giữ B1,

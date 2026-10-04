@@ -23,7 +23,7 @@ mới** trước buổi Tuần 9; `docs/de_cuong/*.docx` cũ giữ nguyên.
 | # | Mô hình | Vai trò | Cách dùng |
 |---|---|---|---|
 | 1 | Mamba hai chiều B1 (ExtBiMamba chồng) | Trọng tâm | Train từ đầu ~12M |
-| 5 | ConExtBiMamba (khung Conformer, MHSA → ExtBiMamba) | Ứng viên trọng tâm, chọn #1 hay #5 sau **train thử** | Train từ đầu ~12M |
+| 5 | ConExtBiMamba (khung Conformer, MHSA → ExtBiMamba) | Ứng viên trọng tâm; sau **train thử** chốt giữ 2 hay 3 mô hình (đổi 2026-10-04) | Train từ đầu ~12M |
 | 2 | Conformer-12M | Baseline có kiểm soát | Train từ đầu, cùng pipeline |
 | 4 | Parakeet-CTC-0.6B-vi (dự bị PhoWhisper-small) | Tham chiếu có pre-train | Zero-shot → fine-tune nếu còn quota |
 | 3 | Mamba một chiều | Chỉ trích dẫn (arXiv:2405.12609) | Không train |
@@ -56,8 +56,8 @@ thật ở train thử**.
 | Tuần | Ngày (≈) | Nội dung |
 |---|---|---|
 | 6 | 28/09–04/10 | ✅ A1 lọc dữ liệu, tokenizer mới, RQ2 chốt, đội hình chốt; bước 3 code dùng chung; front-end CMVN + SpecAugment, dropout Mamba |
-| 7 | 05/10–11/10 | `ConExtBiMambaEncoder` (~12M, test CPU khối giả); 5 Kaggle Dataset (UI); tiêu chí chọn #1/#5 (người dùng duyệt); **kernel train thử** 1 shard × ~5 epoch × 3 mô hình (~2-3 GPU-h, kèm kiểm DDP/AMP/Mamba thật); kernel zero-shot Parakeet + PhoWhisper (192 câu, kiểm NeMo/T4) |
-| 8 | 12/10–18/10 | Chọn #1 hay #5; **bắt đầu train full song song** (A: Conformer, B: Mamba đã chọn); code RQ2 (ghép audio, sửa `rtf.py`), đo RTF/VRAM bằng trọng số ngẫu nhiên; khung đề cương mới |
+| 7 | 05/10–11/10 | `ConExtBiMambaEncoder` (~12M, test CPU khối giả); 5 Kaggle Dataset (UI); tiêu chí "đủ tốt để giữ" (người dùng duyệt); **kernel train thử** 1 shard × 5 epoch × 3 mô hình (~2,5-3,5 GPU-h, kèm kiểm DDP/AMP/Mamba thật); kernel zero-shot Parakeet + PhoWhisper (203 câu, kiểm NeMo/T4) |
+| 8 | 12/10–18/10 | Chốt giữ 2 hay 3 mô hình; **bắt đầu train full song song** (A: Conformer, B: Mamba; giữ 3 thì xếp lại lịch quota); code RQ2 (ghép audio, sửa `rtf.py`), đo RTF/VRAM bằng trọng số ngẫu nhiên; khung đề cương mới |
 | 9 | 19/10–25/10 | Train full tiếp; **gặp GVHD lần 2**: đề cương mới, kết quả train thử, zero-shot, các quyết định front-end/CTC |
 | 10 | 26/10–01/11 | Hết train full; WER theo epoch trên val, clean-test; ước VRAM/thời gian fine-tune Parakeet (vài step) |
 | 11 | 02/11–08/11 | Fine-tune Parakeet (hoặc PhoWhisper) nếu quota cho phép; đo RQ2 mọi mô hình **trên cùng một máy** |
@@ -79,7 +79,7 @@ lỗi); fine-tune pre-train là phần **bỏ được đầu tiên** nếu thi�
 | Dữ liệu | ✅ | Manifest 4 shard + val; A1 lọc (`excluded.tsv`); giữ riêng 29 video cho test (`heldout_videos.tsv`); tokenizer BPE + CMVN tính lại; 5 kernel tạo dataset xong — **còn tạo Dataset trên UI + chia sẻ tài khoản B** (việc tay) |
 | Pipeline chung (#1, #2, #5) | ✅ code · 🟡 test | DDP/AMP/resume giữa epoch, CMVN + SpecAugment, dropout Mamba (2026-10-04). Test CPU Conformer đạt; **DDP/NCCL/AMP/Mamba thật chưa chạy** (Kaggle) |
 | #1 Mamba B1 | 🟡 | Code xong, test bằng khối giả; chưa chạy CUDA thật |
-| #5 ConExtBiMamba | ⬜ | Chưa code |
+| #5 ConExtBiMamba | 🟡 | Code xong 2026-10-04 (6 lớp, ffn 928, +0,31% tham số), test bằng khối giả; chưa chạy CUDA thật |
 | #2 Conformer-12M | ✅ code | Train thử CPU đạt |
 | #4 Parakeet / PhoWhisper | 🟡 | Kernel zero-shot có sẵn (test CPU 4 câu); đã đọc clean-test bản 2 (203 câu); còn rút về 2 mô hình; chưa chạy Kaggle |
 | RQ2 | ⬜ | Đã chốt cách đo, chưa code |
@@ -123,13 +123,15 @@ Theo thứ tự thời gian. Quyết định bị thay thế giữ lại để t
 | 2026-10-04 | **Dropout 0,1 cho Mamba** (đầu ra mỗi khối, trước residual) | 2405.12609 Bảng I-III, ConMamba yaml. Cùng note |
 | 2026-10-04 | **Giữ B1, không làm biến thể B1 + FFN** | 2405.12609 Bảng XVI/XII. Cùng note |
 | 2026-10-04 | **Test độc lập theo video** (thay clean-test 09-14 và một phần D5): giữ riêng ngẫu nhiên 29 video (~6%, seed 42, video ≥ 20 câu) khỏi train/val; clean-test mới 203 câu (7/video) để hiệu đính; phần còn lại = val_unseen 3.011 câu; val chọn checkpoint = 4.824 câu. Train 45.442 câu / 165,18 h. Tokenizer + CMVN tính lại | 561/562 video `validation` trùng train → test cũ chỉ đo "đã gặp", lệch khi so với pre-train. Chuẩn: LibriSpeech, VIVOS tách theo người nói. Chọn theo video (không theo chương trình) để test đại diện phân bố; hạn chế: MC chương trình lớn có thể đã gặp. `src/data/make_heldout.py`, `docs/notes/dataset_discrepancy.md` |
+| 2026-10-04 | **Train thử không còn để chọn 1 trong #1/#5**: sau train thử chốt giữ 2 hay 3 mô hình (mong cả 3 đủ tốt); 1 seed + biện pháp ổn định (bỏ step không hữu hạn, đo grad norm/s/step/VRAM, CI bootstrap theo video) | Người dùng. `lineup_preparation.md` mục Train thử |
 
 ## 5. Quyết định đang mở / treo / rủi ro đã biết
 
 | Trạng thái | Vấn đề | Chi tiết |
 |---|---|---|
 | 🔴 Chờ viết + GVHD duyệt | **Đề cương mới** (mục tiêu, đội hình, RQ, lộ trình theo mục 1-2) — trước buổi Tuần 9 | `docs/notes/gvhd_buoi_1.md`; mục 1-2 ở trên là bản làm việc |
-| 🟡 Chờ AI đề xuất → người dùng duyệt | **Tiêu chí chọn #1 (B1) hay #5 (ConExtBiMamba)** sau train thử — phải duyệt **trước** khi chạy kernel | `TODO.md` mục đội hình |
+| 🟡 AI đã đề xuất → chờ người dùng duyệt | **Tiêu chí "đủ tốt để giữ"** cho 3 mô hình sau train thử (giữ 2 hay 3) — phải duyệt **trước** khi chạy kernel | `docs/notes/lineup_preparation.md` mục Train thử |
+| 🟡 Chờ người dùng xác nhận | 4 lệch bài của ConExtBiMamba (ffn 928, khởi tạo A S4D-Real, không chia `out_proj`, xoá padding trước conv) | `lineup_preparation.md` mục 5 |
 | 🟡 Chờ AI đề xuất → người dùng duyệt | Các mức độ dài audio ghép cho RQ2 | `TODO.md` RQ2 |
 | 🟡 Chờ người dùng xác nhận | Thiết lập AI tự chọn: `out_proj` chia √28; greedy không LM; chữ số giữ nguyên; đo RTF batch 1 fp16; vị trí dropout trong khối Mamba; 10 time mask (NeMo gợi ý ít hơn cho mô hình nhỏ — núm chỉnh nếu hội tụ chậm) | `docs/notes/frontend_decoder_survey.md` |
 | ⚠️ Rủi ro | Parakeet chưa chắc chạy được trên T4/NeMo; dữ liệu pre-train có thể trùng VietSuperSpeech (rò rỉ) | `lineup_preparation.md` mục 4; dự bị PhoWhisper |
@@ -665,3 +667,73 @@ khảo sát dataset, phát hiện sai lệch số liệu, prefetch script, train
     hiệu đính 203 câu clean-test (notebook 02 mục 5).
   - **Chờ người dùng xác nhận:** `out_proj` chia √28; greedy không LM; chữ số
     giữ nguyên; đo RTF batch 1 fp16; vị trí dropout trong khối Mamba; 10 time mask.
+
+### 2026-10-04 (tối) — ConExtBiMamba
+- **Push** phần giữ riêng video: `f102ee9` (kèm sửa lỗi notebook 02: `\n`
+  trong f-string bị ghi thành xuống dòng thật → lỗi cú pháp).
+- **`ConExtBiMambaEncoder`** (`src/models/conextbimamba_encoder.py`,
+  `configs/model_conextbimamba.yaml`, `build_encoder` nhận `conextbimamba`):
+  khung Conformer, MHSA → ExtBiMamba; FFN/conv dùng nguyên lớp torchaudio;
+  6 lớp, ffn 928 → **12.241.536 tham số (+0,31%)**. Đối chiếu arXiv:2405.12609
+  v6 (Hình 2c, Bảng XII, XIV). `param_count.py --others` so cả hai encoder Mamba.
+- **Test CPU (khối Mamba giả cùng shape v2.3.1):** tham số; 24 tham số miễn
+  weight decay; bất biến padding 1,7e-6 (có xoá padding trước depthwise conv);
+  nhìn hai phía; dropout tắt khi eval; SyncBN 6 lớp; 5 bước train loss
+  102 → 38; `train.py` 2 epoch với 20 câu thật + eval WER + checkpoint. Chưa
+  chạy CUDA thật.
+- **Chờ người dùng xác nhận (4 lệch bài, `lineup_preparation.md` mục 5):**
+  hạ ffn 1024 → 928 để khớp 12M (bài để tăng tham số); khởi tạo A S4D-Real thay
+  vì nhiễu Gauss; không chia `out_proj`; xoá padding trước conv (Conformer-12M
+  không xoá).
+- **Phiên sau:** (1) commit + push ConExtBiMamba nếu người dùng duyệt;
+  (2) đề xuất tiêu chí chọn #1/#5 → duyệt; (3) bootstrap theo khối video;
+  (4) thêm ConExtBiMamba vào `CHECK_CODE` (padding/tham số với kernel thật) của
+  kernel train thử; (5) kernel zero-shot một mức WER; ⛔ quota cho train thử.
+
+### 2026-10-04 (tối, tiếp) — chuẩn bị train thử 3 mô hình
+- **Người dùng đổi hướng train thử:** không chọn 1 trong B1/ConExtBiMamba nữa;
+  sau train thử chốt giữ 2 hay 3, mong cả 3 đủ tốt. 1 seed + biện pháp ổn định.
+- **`train.py`:** bỏ step loss không hữu hạn (đồng bộ mọi rank), đếm step AMP
+  bị bỏ, grad norm, s/step, VRAM đỉnh, CTC loss + WER mỗi tập eval →
+  `metrics.jsonl`; ref/hyp từng câu kèm video → `eval_<tập>_epoch<k>.jsonl`.
+  `ctc_model.greedy_collapse` tách ra để eval giải mã + tính loss trên một lần forward.
+- **`src/evaluation/bootstrap.py`:** CI95 WER theo khối video, 1 mô hình hoặc so cặp.
+- **Kernel `scripts/kaggle/train_trial/`:** CHECK_CODE CUDA (B1 + ConExt) →
+  chạy ngắn DDP + resume → B1, ConExt, Conformer tuần tự (trần 90 phút/mô hình,
+  lỗi không chặn mô hình sau) → `trial_summary.json`. Dữ liệu: output 5 kernel
+  make-dataset (đủ 5 tar vì val_unseen rải cả 4 shard). Ước 2,5-3,5 GPU-h.
+- **Test CPU với dữ liệu thật:** Conformer 2 epoch có tiêm loss NaN ở step 2 →
+  bỏ đúng 1 step, loss 127 → 50; ConExt (khối giả) 2 epoch loss 111 → 19;
+  `metrics.jsonl`/eval jsonl đúng định dạng; bootstrap ra WER khớp `train.py`;
+  `summarize()` của kernel chạy, xử lý được mô hình thiếu kết quả. **Chưa test:**
+  DDP/NCCL/AMP, CHECK_CODE (cần CUDA) → bước đầu của kernel.
+- **Tiêu chí "đủ tốt để giữ"** AI đề xuất trong `lineup_preparation.md`, chờ duyệt.
+- **Phiên sau:** ⛔ người dùng duyệt tiêu chí + 4 lệch bài ConExt + commit/push
+  + quota ~2,5-3,5 GPU-h → `kaggle kernels push -p scripts/kaggle/train_trial
+  -t 14400`; song song: kernel zero-shot một mức WER.
+- **Người dùng yêu cầu thêm tiêu chí + bảng so sánh sau train thử:**
+  `src/evaluation/trial_report.py` sinh `trial_report.md` 4 bảng (chất lượng
+  kèm CI95 + hiệu so với Conformer trên val và val_unseen; học/ổn định: đường
+  WER, mức giảm epoch cuối, val_unseen − val, loss, step bỏ, grad norm, câu rỗng,
+  S/D/I; tài nguyên: tham số, s/step, VRAM, ước GPU-giờ full, RTF eval proxy,
+  Pareto; cổng G0-G3). Kernel gọi module này ở bước cuối. `metrics.jsonl` thêm
+  số tham số/số câu/số GPU. Tiêu chí mở rộng (G0-G3 loại cứng, K1-K5 cân nhắc,
+  quy tắc C) ở `lineup_preparation.md` — **chờ duyệt**. Test CPU trên output train
+  thật: bảng đủ 4 phần, G1 bắt đúng mô hình sụp blank, G2 bắt đúng step NaN tiêm vào.
+- **Đóng phiên 2026-10-04 (tối)** — đã commit local, **chưa push**:
+  - Push `f102ee9` (giữ riêng video). ConExtBiMamba (6 lớp, ffn 928, +0,31%
+    tham số). `train.py` thêm biện pháp ổn định + `metrics.jsonl` + ref/hyp từng
+    câu; `bootstrap.py`; `trial_report.py` (bảng so sánh + cổng); kernel
+    `scripts/kaggle/train_trial/`. Test CPU với dữ liệu thật; DDP/AMP/CUDA chưa.
+  - Đổi hướng (người dùng): train thử để chốt giữ 2 hay 3 mô hình, mong cả 3 đạt;
+    1 seed + biện pháp ổn định.
+- **Phiên sau bắt đầu từ (⛔ = cần người dùng duyệt):**
+  1. ⛔ Duyệt tiêu chí giữ/bỏ (G0-G3 + ngưỡng, K1-K5, quy tắc C) và chọn tập
+     đánh giá chính (val_unseen hay val) — `lineup_preparation.md` mục Train thử.
+  2. ⛔ Xác nhận 4 lệch bài ConExtBiMamba (`lineup_preparation.md` mục 5).
+  3. ⛔ Push (kernel clone repo) + quota ~2,5-3,5 GPU-h →
+     `kaggle kernels push -p scripts/kaggle/train_trial -t 14400` (tài khoản A).
+  4. Sau kernel: tải output, đọc `trial_report.md`, người dùng chốt giữ 2 hay 3,
+     xếp lại lịch train full (Plan mục 2).
+  5. Song song: kernel zero-shot một mức WER (bỏ `wer_vi_label`); RQ2; khung đề
+     cương mới (trước Tuần 9).

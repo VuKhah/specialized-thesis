@@ -20,9 +20,16 @@ truyền `--resume_from .../latest.pt`. `--no_resume` để train lại từ đ�
 
 Lịch LR giữ warmup + hằng số (không decay): dừng ở epoch bất kỳ vẫn là một
 điểm so sánh hợp lệ giữa các mô hình (train full, báo cáo theo epoch — 2026-09-28).
+
+Số đo độ ổn định (thêm 2026-10-04, cho train thử 3 mô hình): mỗi epoch ghi một
+dòng `<ckpt_dir>/<experiment_name>/metrics.jsonl` (loss, grad norm, số step bị
+bỏ vì loss/gradient không hữu hạn, s/step, VRAM đỉnh, WER + CTC loss từng tập
+eval) và ref/hyp từng câu `eval_<tập>_epoch<k>.jsonl` (có video → bootstrap theo
+khối, src/evaluation/bootstrap.py).
 """
 
 import argparse
+import json
 import math
 import os
 import time
@@ -34,11 +41,12 @@ import yaml
 from torch.utils.data import DataLoader, Sampler
 from torch.utils.tensorboard import SummaryWriter
 
-from src.data.vietsuperspeech_dataset import VietSuperSpeechDataset, collate_fn, manifest_rows
+from src.data.vietsuperspeech_dataset import VietSuperSpeechDataset, collate_fn, manifest_rows, video_of
 from src.evaluation.wer import compute_wer
 from src.features.log_mel import LogMelFeatureExtractor
+from src.models.conextbimamba_encoder import ConExtBiMambaEncoder
 from src.models.conformer_encoder import ConformerEncoder
-from src.models.ctc_model import CTCASRModel, ctc_loss
+from src.models.ctc_model import CTCASRModel, ctc_loss, greedy_collapse
 from src.models.mamba_encoder import MambaEncoder
 from src.tokenizer.bpe_tokenizer import BPETokenizer
 
@@ -53,6 +61,8 @@ def build_encoder(cfg: dict):
         return ConformerEncoder(**enc_cfg)
     if enc_type == "mamba":
         return MambaEncoder(**enc_cfg)
+    if enc_type == "conextbimamba":
+        return ConExtBiMambaEncoder(**enc_cfg)
     raise ValueError(f"Encoder type không hỗ trợ: {enc_type}")
 
 
@@ -129,25 +139,34 @@ def save_checkpoint(path: Path, model, optimizer, scheduler, scaler, **meta) -> 
 
 
 @torch.no_grad()
-def evaluate(model: CTCASRModel, eval_loader: DataLoader, tokenizer: BPETokenizer, device, amp: bool = False) -> float:
-    """WER greedy; với DDP mỗi rank giải mã phần của mình rồi gom lại (WER tính
-    trên toàn bộ tập, không lặp mẫu nào)."""
+def evaluate(model: CTCASRModel, eval_loader: DataLoader, rows: list[dict], tokenizer: BPETokenizer, device,
+             amp: bool = False) -> tuple[float, float, list[dict]]:
+    """WER greedy + CTC loss trên cùng một lần forward; với DDP mỗi rank giải mã
+    phần `rows` của mình (đúng thứ tự loader, shuffle=False) rồi gom lại — WER
+    tính trên toàn bộ tập, không lặp mẫu nào. Trả về (wer, loss trung bình theo
+    câu, ref/hyp từng câu kèm video)."""
     model.eval()
-    references, hypotheses = [], []
+    references, hypotheses, loss_sum, n = [], [], 0.0, 0
     for batch in eval_loader:
         waveform = batch["waveform"].to(device)
         waveform_lengths = batch["waveform_lengths"].to(device)
         with torch.autocast(torch.device(device).type, dtype=torch.float16, enabled=amp):
-            pred_ids_batch = model.greedy_decode(waveform, waveform_lengths)
-        hypotheses.extend(tokenizer.decode(ids) for ids in pred_ids_batch)
+            log_probs, out_lengths = model(waveform, waveform_lengths)
+        loss = ctc_loss(log_probs, out_lengths, batch["targets"].to(device), batch["target_lengths"].to(device))
+        loss_sum += loss.item() * waveform.size(0)
+        n += waveform.size(0)
+        hypotheses.extend(tokenizer.decode(ids) for ids in greedy_collapse(log_probs, out_lengths))
         references.extend(batch["text"])
     model.train()
+    records = [{"split": r["split"], "index": r["index"], "video": video_of(r["audio"]), "ref": ref, "hyp": hyp}
+               for r, ref, hyp in zip(rows, references, hypotheses, strict=True)]
     if dist.is_initialized():
         gathered = [None] * dist.get_world_size()
-        dist.all_gather_object(gathered, (references, hypotheses))
-        references = [r for refs, _ in gathered for r in refs]
-        hypotheses = [h for _, hyps in gathered for h in hyps]
-    return compute_wer(references, hypotheses)
+        dist.all_gather_object(gathered, (records, loss_sum, n))
+        records = [rec for recs, _, _ in gathered for rec in recs]
+        loss_sum, n = sum(g[1] for g in gathered), sum(g[2] for g in gathered)
+    wer = compute_wer([r["ref"] for r in records], [r["hyp"] for r in records])
+    return wer, loss_sum / max(n, 1), records
 
 
 def main():
@@ -196,21 +215,22 @@ def main():
     batch_size = tcfg["batch_size"] // world
 
     tokenizer = BPETokenizer(args.tokenizer_model)
-    def items(names):
-        return [(r["split"], r["index"]) for r in manifest_rows(names)]
+    def items(rows):
+        return [(r["split"], r["index"]) for r in rows]
 
-    train_ds = VietSuperSpeechDataset(tokenizer=tokenizer,
-                                      items=items(args.train_manifests or cfg["data"]["train_manifests"]))
+    train_ds = VietSuperSpeechDataset(
+        tokenizer=tokenizer, items=items(manifest_rows(args.train_manifests or cfg["data"]["train_manifests"])))
     loader_kw = dict(batch_size=batch_size, collate_fn=collate_fn, num_workers=tcfg["num_workers"],
                      pin_memory=device.type == "cuda")
     # Tập đầu (val đã gặp) chọn best.pt; các tập sau (val_unseen — video giữ
     # riêng, 2026-10-04) chỉ ghi log để thấy khoảng cách đã gặp / chưa gặp.
     eval_names = [cfg["data"]["eval_manifest"], *cfg["data"].get("extra_eval_manifests", [])]
-    eval_sizes, eval_loaders = {}, {}
+    eval_sizes, eval_loaders, eval_rows = {}, {}, {}
     for name in eval_names:
-        eval_items = items([name])
-        eval_sizes[name] = len(eval_items)
-        eval_loaders[name] = DataLoader(VietSuperSpeechDataset(tokenizer=tokenizer, items=eval_items[rank::world]),
+        rows = manifest_rows([name])
+        eval_sizes[name] = len(rows)
+        eval_rows[name] = rows[rank::world]  # thứ tự = thứ tự loader → ghép ref/hyp với video
+        eval_loaders[name] = DataLoader(VietSuperSpeechDataset(tokenizer=tokenizer, items=items(eval_rows[name])),
                                         shuffle=False, **loader_kw)
     steps_per_epoch = math.ceil(math.ceil(len(train_ds) / world) / batch_size)
 
@@ -281,12 +301,25 @@ def main():
     def out_of_time() -> bool:
         return args.max_minutes > 0 and time.time() - t_start > args.max_minutes * 60
 
+    def all_ranks_finite(loss: torch.Tensor) -> bool:
+        """Loss NaN/Inf ở một rank thì mọi rank cùng bỏ step — bỏ lệch nhau là DDP treo ở backward."""
+        ok = torch.isfinite(loss.detach()).float()
+        if ddp:
+            dist.all_reduce(ok, op=dist.ReduceOp.MIN)
+        return bool(ok.item())
+
+    metrics_path = ckpt_dir / "metrics.jsonl"
     last_ckpt_time = time.time()
     for epoch in range(start_epoch, epochs):
         sampler = ResumableSampler(len(train_ds), rank, world, seed, epoch, skip_steps * batch_size)
         train_loader = DataLoader(train_ds, sampler=sampler, **loader_kw)
         step_in_epoch, skip_steps = skip_steps, 0
         loss_sum, loss_n = 0.0, 0
+        # Số đo ổn định của epoch (chỉ phần chạy trong phiên này).
+        nonfinite_loss, amp_skipped, grad_norm_sum, grad_norm_max = 0, 0, 0.0, 0.0
+        if device.type == "cuda":
+            torch.cuda.reset_peak_memory_stats(device)
+        t_epoch = time.time()
         model.train()
         for batch in train_loader:
             waveform = batch["waveform"].to(device, non_blocking=True)
@@ -299,18 +332,29 @@ def main():
             loss = ctc_loss(log_probs, out_lengths, targets, target_lengths)
 
             optimizer.zero_grad(set_to_none=True)
-            scaler.scale(loss).backward()
-            scaler.unscale_(optimizer)
-            torch.nn.utils.clip_grad_norm_(model.parameters(), tcfg["grad_clip"])
-            scaler.step(optimizer)
-            scaler.update()
+            if all_ranks_finite(loss):
+                scaler.scale(loss).backward()
+                scaler.unscale_(optimizer)
+                grad_norm = torch.nn.utils.clip_grad_norm_(model.parameters(), tcfg["grad_clip"]).item()
+                scale_before = scaler.get_scale()
+                scaler.step(optimizer)  # AMP: gradient inf/NaN thì GradScaler tự bỏ step
+                scaler.update()
+                if amp and scaler.get_scale() < scale_before:
+                    amp_skipped += 1
+                elif math.isfinite(grad_norm):
+                    grad_norm_sum += grad_norm
+                    grad_norm_max = max(grad_norm_max, grad_norm)
+                loss_value = loss.item()
+                loss_sum += loss_value
+                loss_n += 1
+            else:
+                # Vẫn đếm step (giữ lịch LR + thứ tự dữ liệu khi resume), chỉ không học.
+                nonfinite_loss += 1
+                loss_value = float("nan")
             scheduler.step()
 
             global_step += 1
             step_in_epoch += 1
-            loss_value = loss.item()
-            loss_sum += loss_value
-            loss_n += 1
             if is_main:
                 writer.add_scalar("train/loss", loss_value, global_step)
                 writer.add_scalar("train/lr", scheduler.get_last_lr()[0], global_step)
@@ -332,25 +376,54 @@ def main():
                     return
 
         # Trung bình các step của phiên này trong epoch (thiếu phần trước resume nếu resume giữa epoch).
+        n_steps = loss_n + nonfinite_loss
+        mean_loss = loss_sum / max(loss_n, 1)
+        epoch_metrics = {
+            "epoch": epoch, "global_step": global_step, "encoder_params": encoder.num_parameters(),
+            "n_train": len(train_ds), "world_size": world, "global_batch": tcfg["batch_size"],
+            "train_loss": mean_loss, "steps": n_steps,
+            "nonfinite_loss_steps": nonfinite_loss, "amp_skipped_steps": amp_skipped,
+            "grad_norm_mean": grad_norm_sum / max(loss_n - amp_skipped, 1), "grad_norm_max": grad_norm_max,
+            "s_per_step": (time.time() - t_epoch) / max(n_steps, 1),
+            "peak_vram_gib": torch.cuda.max_memory_allocated(device) / 2**30 if device.type == "cuda" else None,
+        }
         if is_main:
-            mean_loss = loss_sum / max(loss_n, 1)
-            print(f"epoch {epoch}: loss trung bình={mean_loss:.4f} ({loss_n} step, "
+            print(f"epoch {epoch}: loss trung bình={mean_loss:.4f} ({n_steps} step, "
+                  f"{epoch_metrics['s_per_step']:.3f} s/step, grad norm tb {epoch_metrics['grad_norm_mean']:.2f} "
+                  f"max {grad_norm_max:.2f}, bỏ {nonfinite_loss} step loss không hữu hạn + {amp_skipped} step AMP, "
                   f"{(time.time() - t_start) / 60:.1f} phút từ đầu phiên)", flush=True)
             writer.add_scalar("train/epoch_loss", mean_loss, epoch)
 
         is_last_epoch = epoch == epochs - 1
         if (epoch + 1) % args.eval_every == 0 or is_last_epoch:
-            wers = {name: evaluate(core, loader, tokenizer, device, amp) for name, loader in eval_loaders.items()}
+            wers = {}
+            for name, loader in eval_loaders.items():
+                t_eval = time.time()
+                wers[name], eval_loss, records = evaluate(core, loader, eval_rows[name], tokenizer, device, amp)
+                epoch_metrics[f"wer_{name}"] = wers[name]
+                epoch_metrics[f"loss_{name}"] = eval_loss
+                epoch_metrics[f"eval_seconds_{name}"] = time.time() - t_eval
+                if is_main:
+                    ckpt_dir.mkdir(parents=True, exist_ok=True)
+                    with open(ckpt_dir / f"eval_{name}_epoch{epoch}.jsonl", "w", encoding="utf-8") as f:
+                        f.writelines(json.dumps(r, ensure_ascii=False) + "\n" for r in records)
             wer = wers[eval_names[0]]
             if is_main:
-                print(f"epoch {epoch}: eval WER " + "  ".join(f"{n}={w:.4f}" for n, w in wers.items()), flush=True)
+                print(f"epoch {epoch}: eval " + "  ".join(
+                    f"{n}: WER={w:.4f} loss={epoch_metrics[f'loss_{n}']:.3f}" for n, w in wers.items()), flush=True)
                 writer.add_scalar("eval/wer", wer, epoch)
                 for name in eval_names[1:]:
                     writer.add_scalar(f"eval/wer_{name}", wers[name], epoch)
+                for name in eval_names:
+                    writer.add_scalar(f"eval/loss_{name}", epoch_metrics[f"loss_{name}"], epoch)
             if wer < best_wer:
                 best_wer = wer
                 checkpoint(best_ckpt, epoch, steps_per_epoch)
         checkpoint(latest_ckpt, epoch, steps_per_epoch)
+        if is_main:
+            ckpt_dir.mkdir(parents=True, exist_ok=True)
+            with open(metrics_path, "a", encoding="utf-8") as f:
+                f.write(json.dumps(epoch_metrics, ensure_ascii=False) + "\n")
         last_ckpt_time = time.time()
         if rank0_decides(int(out_of_time())) and not is_last_epoch:
             if is_main:

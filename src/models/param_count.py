@@ -2,14 +2,14 @@
 Conformer-CTC có số tham số khớp nhau (matched-parameter), theo đúng yêu cầu
 so sánh công bằng trong đề cương (Chương 2).
 
-Đọc trực tiếp `configs/model_{conformer,mamba}.yaml` và dựng encoder bằng
+Đọc trực tiếp `configs/model_{conformer,mamba,conextbimamba}.yaml` và dựng encoder bằng
 `build_encoder` của `train.py` — cùng đường với lúc train thật, nên số ở đây
 đúng bằng dòng "encoder params" mà `train.py` in ra. Chỉ đếm encoder (front-end
 không có tham số học; CTC head giống hệt nhau khi hai d_model bằng nhau).
 
 Chạy từ gốc repo:
     python -m src.models.param_count
-    python -m src.models.param_count --mamba configs/model_mamba.yaml
+    python -m src.models.param_count --others configs/model_mamba.yaml
 """
 
 import argparse
@@ -38,7 +38,10 @@ def main() -> None:
 
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     parser.add_argument("--conformer", default="configs/model_conformer.yaml")
-    parser.add_argument("--mamba", default="configs/model_mamba.yaml")
+    parser.add_argument(
+        "--others", nargs="+", default=["configs/model_mamba.yaml", "configs/model_conextbimamba.yaml"],
+        help="Các config so với Conformer (đều cần mamba-ssm)",
+    )
     args = parser.parse_args()
 
     _, n_conformer = count_from_yaml(args.conformer)
@@ -47,10 +50,11 @@ def main() -> None:
         print("Mamba: mamba-ssm chưa cài (cần CUDA) — chạy trên Kaggle, xem notebooks/00_setup_environment.ipynb.")
         return
 
-    _, n_mamba = count_from_yaml(args.mamba)
-    diff_pct = abs(n_mamba - n_conformer) / n_conformer * 100
-    status = "ĐẠT" if diff_pct < TARGET_DIFF_PCT else "CHƯA đạt"
-    print(f"Chênh lệch: {diff_pct:.2f}%  (mục tiêu < {TARGET_DIFF_PCT:.0f}%) -> {status}")
+    for path in args.others:
+        _, n = count_from_yaml(path)
+        diff_pct = abs(n - n_conformer) / n_conformer * 100
+        status = "ĐẠT" if diff_pct < TARGET_DIFF_PCT else "CHƯA đạt"
+        print(f"  chênh lệch: {diff_pct:.2f}%  (mục tiêu < {TARGET_DIFF_PCT:.0f}%) -> {status}")
 
 
 if __name__ == "__main__":
