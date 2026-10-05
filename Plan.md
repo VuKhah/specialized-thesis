@@ -819,4 +819,38 @@ khảo sát dataset, phát hiện sai lệch số liệu, prefetch script, train
   train thử thêm pipeline tí hon 3 mô hình + `trial_report` trước khi train, resume smoke
   2+2 phút, `PREFLIGHT_ONLY` cho B; `trial_report` tự tạo thư mục output. Test CPU local.
   **Chưa test:** pipeline tí hon với DDP 2 GPU — đó là việc của preflight B.
+- **Đóng phiên 2026-10-05 (sáng sớm giờ VN)** — đã push `61c6149`. Preflight B
+  `vuvanduc1/preflight-asr` đẩy 19:08 UTC 04/10 (`-t 2400`, quota B 0/30 trước khi chạy).
+- **Phiên sau bắt đầu từ:**
+  1. Đọc kết quả preflight B: `KAGGLE_CONFIG_DIR=C:/Users/Dell/.kaggle_Duc kaggle kernels
+     output vuvanduc1/preflight-asr -p <scratch> --file-pattern '.*\.log$'` (đọc log JSON). Cần thấy
+     `MÔI TRƯỜNG: python 3.13… torch 2.11…`, `CHECK OK`, 5 part chép đủ, 3 dòng pipeline có
+     `eval val … WER=`, `trial_report` rc 0, `resume từ`, **`PREFLIGHT OK`**. Hỏng bước nào →
+     sửa, không chạy lại khi chưa hỏi. `kaggle quota` của B để biết preflight tốn bao nhiêu.
+  2. Qua preflight → ⛔ xin duyệt train thử A: `kaggle kernels push -p scripts/kaggle/train_trial
+     -t 19800` (metadata đã trỏ `mamba-wheels-v2`), theo dõi `python scripts/kaggle/watch_kernel.py
+     tieunhi/train-trial-asr`. Ước ~15 phút preflight + ~2,3 h train.
+  3. Kernel B dựng lại thế nào: bản sao `scripts/kaggle/train_trial/train_trial.py` với
+     `PREFLIGHT_ONLY = True` + metadata `id: vuvanduc1/preflight-asr`, `dataset_sources` =
+     5 `vss-asr-*` + `mamba-wheels-v2` (mẫu ở `training_plan_kaggle.md` mục 6).
+  4. Quy tắc giữ nguyên: mọi kernel GPU kiểm `check_env` (Py 3.13 / torch 2.11); image Kaggle
+     đổi → chạy lại `scripts/kaggle/env_check/` rồi thêm version `mamba-wheels-v2`.
 
+
+### 2026-10-05 (sáng) — kết quả preflight B, chuẩn bị train thử A
+- **Preflight B `vuvanduc1/preflight-asr`: PREFLIGHT OK** (18 phút, quota B 0,29 h). Py 3.13.15 /
+  torch 2.11.0+cu128 / 2x T4; CHECK OK (B1 12.285.696, ConExt 12.241.536 tham số); 5 part chép đủ
+  (5,4′); pipeline tí hon 3 mô hình DDP đi tới eval + `trial_report` rc 0; resume giữa epoch đúng
+  (step 269 → 502). Ghi nhận: Conformer tí hon bỏ cả 4 step AMP (GradScaler hạ scale ban đầu — bình
+  thường, nhưng nhánh Conformer chưa cập nhật trọng số thật trên GPU); ConExt smoke loss đứng ~6,0 từ
+  step ~150 đến 500 (bình nguyên blank của CTC, LR mới ½ warmup 1000 — G1 sẽ bắt nếu không thoát).
+  s/step ConExt ~0,45 → ~5,5 phút/epoch shard0. Quota A 1,54 h / 30.
+- **Sửa `train_trial.py` (chỉ file kernel, `src/` không đổi → kernel vẫn clone `61c6149` đã qua
+  preflight):** tìm wheel chỉ trong `mamba-wheels*` (rglob cả `/kaggle/input` mất 3 phút GPU chạy
+  không); log text `OUT/logs/train_trial.log` (tee stdout + stderr), `logs/<mô hình>.log`,
+  `logs/gpu_util.csv` (nvidia-smi 30 s); watchdog 20 → 10 phút; tắt nvidia-smi khi kết thúc kể cả lỗi.
+  Test local: tìm wheel 2 kiểu gắn, tee + log riêng + `LỖI` vào file, không có nvidia-smi vẫn chạy.
+- **Phiên sau bắt đầu từ:** ⛔ người dùng duyệt → `kaggle kernels push -p scripts/kaggle/train_trial
+  -t 19800` (A), theo dõi `python scripts/kaggle/watch_kernel.py tieunhi/train-trial-asr`; xong thì
+  tải `logs/`, `trial_report.*`, `trial/*/metrics.jsonl`, eval jsonl (không tải checkpoint). Commit
+  `train_trial.py` khi người dùng yêu cầu.

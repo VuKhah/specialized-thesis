@@ -1,6 +1,6 @@
 # TODO tổng — Mamba vs Conformer ASR
 
-Cập nhật lần cuối: **2026-10-04** (ConExtBiMamba code + test CPU; bước 3 code dùng chung; front-end CMVN + SpecAugment, dropout Mamba, giữ CTC; test độc lập theo video). **Nguồn sự thật duy nhất cho việc cần làm /
+Cập nhật lần cuối: **2026-10-05** (preflight B OK, kernel train thử thêm log); trước đó **2026-10-04** (ConExtBiMamba code + test CPU; bước 3 code dùng chung; front-end CMVN + SpecAugment, dropout Mamba, giữ CTC; test độc lập theo video). **Nguồn sự thật duy nhất cho việc cần làm /
 đang chặn / đã xong.** Kế hoạch tuần + quyết định + nhật ký phiên ở
 [`Plan.md`](Plan.md); kiến trúc ở [`ARCHITECTURE.md`](ARCHITECTURE.md).
 
@@ -178,8 +178,9 @@ duyệt, D3 → **4 shard**, train full + đánh giá theo epoch).
       ghim image cũ thất bại trên máy GPU (log 0 dòng, Cancel). Người dùng chọn **A** build
       mamba-ssm v2.3.1 trên image mặc định (Py 3.13, torch 2.11?) hay **B** cài torch 2.10
       + wheel v2.3.2/causal-conv1d ≥1.6.2 dựng sẵn → kernel kiểm tra ngắn `-t 1200` → train thử.
-- [ ] ⛔ **Preflight tài khoản B** (`vuvanduc1/preflight-asr`, ~15 phút GPU của B) → **train thử A**
-      (~2,5 GPU-h). Chuẩn bị xong 2026-10-05 (`training_plan_kaggle.md` mục 6, cuối); chờ duyệt.
+- [x] **Preflight tài khoản B** — **PREFLIGHT OK 2026-10-05** (18 phút, 0,29 GPU-h của B; Plan nhật ký).
+- [ ] ⛔ **Train thử A** (~2-2,5 GPU-h, `-t 19800`) — kernel đã thêm log text + `gpu_util.csv`,
+      bỏ rglob tốn 3 phút, watchdog 10 phút (2026-10-05, chưa commit); **chờ duyệt push**.
 - [ ] **Kernel train thử** — lần 1 **ERROR** (image Py 3.13 không nhận wheel cp312, chưa
       train gì); đã ghim `docker_image` + `dataset_sources`, thêm log tiến độ + watchdog
       treo 20 phút (test xong); **chờ duyệt push + chạy lại** (quota A còn 28,87 h).

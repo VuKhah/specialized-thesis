@@ -10,15 +10,18 @@ dùng chốt giữ 2 hay 3 mô hình. Đồng thời là lần đầu chạy `tr
     kaggle kernels status <username>/train-trial-asr
     kaggle kernels output <username>/train-trial-asr -p <thư mục>   (PYTHONUTF8=1)
 
-Ước ~2,5-3,5 GPU-giờ (số đo benchmark lần 2 + eval). Dữ liệu: output 5 kernel
-make-dataset-asr-* (kernel_sources) — đủ 5 tar vì val_unseen nằm rải cả 4 shard.
-Wheel mamba: output kernel verify-mamba-asr.
+Ước ~2,5-3,5 GPU-giờ (số đo benchmark lần 2 + eval). Dữ liệu: đủ 5 dataset `vss-asr-*` vì
+val_unseen nằm rải cả 4 shard.
 
 **Môi trường (sau sự cố 2026-10-04/05, `docs/notes/training_plan_kaggle.md` mục 6):** image
 mặc định, **không** ghim `docker_image` (ghim image cũ thì máy GPU không chạy được script).
-`kernel-metadata.json` (gitignore): dữ liệu qua `dataset_sources` (`vss-asr-*`), wheel cp313
-qua `kernel_sources` = `<user>/env-check-asr`. `check_env` dừng ngay nếu image lệch EXPECT_*.
+`kernel-metadata.json` (gitignore): `dataset_sources` = 5 `vss-asr-*` + `mamba-wheels-v2`
+(wheel cp313). `check_env` dừng ngay nếu image lệch EXPECT_*.
 Theo dõi: `python scripts/kaggle/watch_kernel.py <user>/train-trial-asr`.
+
+Log để xem lại sau (`OUT/logs/`, flush từng dòng nên kernel bị cắt vẫn còn): `train_trial.log` (toàn
+bộ log dạng text, khỏi giải JSON log của Kaggle), `<experiment>.log` mỗi lần train,
+`gpu_util.csv` (nvidia-smi mỗi 30 s — thấy được quãng GPU chạy không).
 
 Thứ tự (dừng sớm nếu lỗi code, không đốt quota):
 1. CHECK_CODE: tham số + bất biến padding với kernel CUDA thật cho B1 và
@@ -53,8 +56,10 @@ TRAIN_MANIFESTS = ["train_shard0"]
 CONFIGS = ["configs/model_mamba.yaml", "configs/model_conextbimamba.yaml", "configs/model_conformer.yaml"]
 TRIAL_MAX_MINUTES = 90  # trần mỗi mô hình; ước 30-45 phút train + ~10 phút eval
 # Lệnh im lặng quá chừng này phút thì coi là treo (vd. DDP/NCCL kẹt) → kill cả nhóm tiến trình.
-# train.py in tiến độ mỗi 50 step (~0,5-1 phút) và mỗi 50 batch eval, nên 20 phút im lặng là bất thường.
-SILENCE_MINUTES = 20
+# train.py in tiến độ mỗi 50 step (~0,5 phút) và mỗi 50 batch eval; preflight B 2026-10-04 im lâu nhất
+# ~1,6 phút (làm ấm cache HF). Hạ 20 → 10 phút: mỗi lần treo đốt ít GPU chạy không hơn.
+SILENCE_MINUTES = 10
+LOG_DIR = OUT / "logs"
 # Môi trường wheel mamba được build cho — kernel env-check-asr 2026-10-04 (phương án A: image mặc
 # định, causal-conv1d 1.5.4 + mamba-ssm 2.3.1 build từ mã nguồn, chỉ sm_75). Image đổi → chạy lại env_check.
 EXPECT_PY, EXPECT_TORCH = "3.13", "2.11"
@@ -106,14 +111,56 @@ sys.exit(0 if ok else 1)
 T0 = time.time()
 
 
+class Tee:
+    """Mọi print vừa ra log Kaggle vừa vào file text, flush từng dòng. Gắn cho cả stderr: thông báo
+    `sys.exit("LỖI ...")` và traceback đi ra stderr — thiếu thì file log mất đúng dòng cần đọc."""
+
+    def __init__(self, stream, file):
+        self.stream, self.file = stream, file
+
+    def write(self, s):
+        self.stream.write(s)
+        self.file.write(s)
+        self.file.flush()
+        return len(s)
+
+    def flush(self):
+        self.stream.flush()
+        self.file.flush()
+
+    def __getattr__(self, name):  # isatty, fileno, encoding... của stream gốc
+        return getattr(self.stream, name)
+
+
 def stamp() -> str:
     return f"[{time.strftime('%H:%M:%S')} +{(time.time() - T0) / 60:.0f}′]"
 
 
-def run(cmd, cwd=None, check=True, env=None) -> tuple[int, str]:
+def find_wheels(root: Path = Path("/kaggle/input")) -> list[str]:
+    """Chỉ tìm trong thư mục dataset mamba-wheels*: rglob cả /kaggle/input duyệt ~67 nghìn file wav trên
+    ổ mount, mất ~3 phút GPU chạy không (preflight B 2026-10-04). Dataset gắn ở /kaggle/input/<slug>/
+    hoặc /kaggle/input/datasets/<user>/<slug>/ tuỳ phiên bản Kaggle."""
+    return sorted({str(p) for pat in ("mamba-wheels*/**/*.whl", "*/*/mamba-wheels*/**/*.whl")
+                   for p in root.glob(pat)})
+
+
+def start_gpu_monitor() -> subprocess.Popen | None:
+    LOG_DIR.mkdir(parents=True, exist_ok=True)
+    try:
+        return subprocess.Popen(
+            ["nvidia-smi", "--query-gpu=timestamp,index,utilization.gpu,memory.used,power.draw",
+             "--format=csv", "-l", "30"], stdout=open(LOG_DIR / "gpu_util.csv", "w"), stderr=subprocess.DEVNULL)
+    except OSError as e:
+        print(f"Không chạy được nvidia-smi để ghi gpu_util.csv: {e}", flush=True)
+        return None
+
+
+def run(cmd, cwd=None, check=True, env=None, log_name: str | None = None) -> tuple[int, str]:
     """In output ngay khi có (xem trực tiếp bằng `kaggle kernels logs -f`), trả về (returncode, output).
-    Watchdog: im lặng quá SILENCE_MINUTES thì kill cả nhóm tiến trình (torchrun + 2 worker)."""
+    Watchdog: im lặng quá SILENCE_MINUTES thì kill cả nhóm tiến trình (torchrun + 2 worker).
+    `log_name`: chép thêm output vào LOG_DIR/<log_name>.log (log riêng từng lần train)."""
     print(f"\n{stamp()} $ {' '.join(map(str, cmd))}", flush=True)
+    log_file = open(LOG_DIR / f"{log_name}.log", "a", encoding="utf-8") if log_name else None
     proc = subprocess.Popen(cmd, cwd=cwd, env=env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True,
                             encoding="utf-8", errors="replace", start_new_session=True)
     lines_q: queue.Queue = queue.Queue()
@@ -140,9 +187,15 @@ def run(cmd, cwd=None, check=True, env=None) -> tuple[int, str]:
         # Bỏ cảnh báo lặp của tensorflow/oneDNN khi import tensorboard.
         if "oneDNN" not in line and "tensorflow" not in line:
             print(line, end="", flush=True)
+            if log_file:
+                log_file.write(line)
+                log_file.flush()
         lines.append(line)
     proc.wait()
     print(f"{stamp()} → returncode {proc.returncode}", flush=True)
+    if log_file:
+        log_file.write(f"{stamp()} → returncode {proc.returncode}\n")
+        log_file.close()
     if check and proc.returncode != 0:
         sys.exit(f"LỖI: lệnh trên trả về {proc.returncode}")
     return proc.returncode, "".join(lines)
@@ -179,7 +232,7 @@ def main():
         print(f"OVERLAY: ghi đè {rel} ({len(content)} ký tự)", flush=True)
     pip = [sys.executable, "-m", "pip", "install", "-q"]
     run(pip + ["einops", "librosa", "soundfile", "sentencepiece", "datasets", "jiwer", "pyyaml", "tensorboard"])
-    wheels = sorted(str(p) for p in Path("/kaggle/input").rglob("*.whl"))
+    wheels = find_wheels()
     if not wheels:
         run(["find", "/kaggle/input", "-maxdepth", "4"], check=False)
         sys.exit("LỖI: không thấy wheel mamba trong /kaggle/input — kiểm tra dataset mamba-wheels-v2")
@@ -217,7 +270,8 @@ def main():
         return
 
     for config in CONFIGS:
-        code, _ = run(train_cmd(config, OUT / "trial", TRIAL_MAX_MINUTES), cwd=REPO_DIR, env=env, check=False)
+        code, _ = run(train_cmd(config, OUT / "trial", TRIAL_MAX_MINUTES), cwd=REPO_DIR, env=env, check=False,
+                      log_name=Path(config).stem.removeprefix("model_"))
         if code != 0:
             print(f"!!! {config} lỗi (returncode {code}) — chạy tiếp mô hình sau", flush=True)
 
@@ -228,4 +282,14 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    LOG_DIR.mkdir(parents=True, exist_ok=True)
+    _log_file = open(LOG_DIR / "train_trial.log", "a", encoding="utf-8")
+    sys.stdout, sys.stderr = Tee(sys.stdout, _log_file), Tee(sys.stderr, _log_file)
+    monitor = start_gpu_monitor()
+    try:
+        main()
+    finally:
+        # Kể cả khi sys.exit vì lỗi: không để nvidia-smi -l chạy tiếp sau khi script xong.
+        if monitor:
+            monitor.terminate()
+        print(f"{stamp()} kết thúc kernel", flush=True)
