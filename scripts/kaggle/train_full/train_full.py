@@ -67,6 +67,8 @@ def main() -> None:
     run(["git", "log", "--oneline", "-1"], cwd=REPO_DIR)
     cfg = yaml.safe_load((REPO_DIR / CONFIG).read_text(encoding="utf-8"))
     experiment, epochs = cfg["experiment_name"], cfg["training"]["epochs"]
+    if "--epochs" in EXTRA_ARGS:  # thử nối phiên ghi đè số epoch — tổng kết phải theo cùng con số
+        epochs = int(EXTRA_ARGS[EXTRA_ARGS.index("--epochs") + 1])
     ckpt_root = OUT / "checkpoints"
     print(f"{stamp()} TRAIN FULL {experiment} — phiên {SESSION}, {CONFIG}, {epochs} epoch", flush=True)
 

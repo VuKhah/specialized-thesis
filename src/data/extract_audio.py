@@ -35,10 +35,16 @@ def _manifest_rels(tsv: Path) -> list[str]:
     return [line.split("	")[1] for line in tsv.read_text(encoding="utf-8").splitlines()[1:] if line.strip()]
 
 
+def _find(root: Path, pattern: str, max_depth: int = 5) -> list[Path]:
+    """Glob giới hạn độ sâu thay cho `rglob`: rglob duyệt ~67 nghìn wav trên ổ mount của Kaggle, im lặng
+    vài phút — tài khoản B 2026-10-05 vượt watchdog 10 phút của kernel và bị kill. tsv/tar nằm ở độ sâu ≤ 4."""
+    return sorted({p for d in range(max_depth) for p in root.glob("*/" * d + pattern)})
+
+
 def copy_extracted(input_root: Path, dest: Path, only: list[str] | None = None, workers: int = 16) -> int:
     """Chép thư mục `<part>/` (đã giải nén sẵn, cạnh `<part>.tsv`) vào `dest`
     theo đúng đường dẫn tương đối trong tsv; thiếu file thì dừng. Trả về số part."""
-    parts = sorted(t for t in input_root.rglob("*.tsv") if t.with_suffix("").is_dir())
+    parts = [t for t in _find(input_root, "*.tsv") if t.with_suffix("").is_dir()]
     if only:
         parts = [t for t in parts if t.stem in only]
     for tsv in parts:
@@ -57,8 +63,12 @@ def copy_extracted(input_root: Path, dest: Path, only: list[str] | None = None, 
             out.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(src_root / rel, out)
 
+        print(f"{tsv.stem}: chép {len(rels)} file ...", flush=True)
         with ThreadPoolExecutor(workers) as pool:
-            list(pool.map(copy_one, rels))
+            # In tiến độ: một part mất vài phút, watchdog của kernel kill tiến trình im quá 10 phút.
+            for i, _ in enumerate(pool.map(copy_one, rels), 1):
+                if i % 2000 == 0:
+                    print(f"  {tsv.stem}: {i}/{len(rels)} ({time.time() - t0:.0f}s)", flush=True)
         marker.touch()
         print(f"{tsv.stem}: chép {len(rels)} file {time.time() - t0:.0f}s (đủ theo {tsv.name})", flush=True)
     return len(parts)
@@ -68,7 +78,7 @@ def extract_tars(input_root: Path, dest: Path, only: list[str] | None = None) ->
     """Giải nén mọi `*.tar` dưới `input_root` (lọc theo tên part nếu có `only`);
     nếu cạnh tar có `<part>.tsv` thì kiểm đủ file. Trả về số tar đã xử lý."""
     dest.mkdir(parents=True, exist_ok=True)
-    tars = sorted(input_root.rglob("*.tar"))
+    tars = _find(input_root, "*.tar")
     if only:
         tars = [t for t in tars if t.stem in only]
     for tar_path in tars:
