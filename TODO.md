@@ -6,6 +6,34 @@ Cập nhật lần cuối: **2026-10-05** (preflight B OK, kernel train thử th
 
 Câu hỏi cần mang đi hỏi (người dùng/GVHD): [`QA.md`](QA.md).
 
+## 🔴 TRAIN FULL ĐANG CHẠY — việc đầu tiên của phiên sau (ghi 2026-10-06)
+
+Lần 1 đã đẩy 2026-10-06 ~00:38 (giờ VN; lúc đóng phiên 00:41 cả hai RUNNING, quota bắt đầu tăng — **chưa xác nhận được dòng "lưu epoch00.pt"**, kiểm đầu tiên ở phiên sau), commit **`7660a6b`**, phiên 540 phút:
+`tieunhi/train-full-conformer-s1` (A) · `vuvanduc1/train-full-mamba-s1` (B). Lịch: `training_plan_kaggle.md` mục 7.
+
+**LUẬT (người dùng): KHÔNG tự đẩy lần 2 / lần 3. Kiểm kết quả → trình người dùng → chỉ đẩy khi người dùng đồng ý.**
+Lý do: không để mất trắng hàng giờ GPU vì phiên trước hỏng mà không ai thấy.
+
+Kiểm mỗi phiên vừa xong (chỉ tải file nhỏ, không tải checkpoint):
+1. `kaggle kernels status <kernel>` (B: `KAGGLE_CONFIG_DIR=C:/Users/Dell/.kaggle_Duc`) — COMPLETE / ERROR?
+2. `python scripts/kaggle/train_full/fetch.py --model <conformer|mamba|conextbimamba> --session <k> [--account B]`
+   → in returncode, epoch xong, finished, commit. Đọc `reports/results/train_full/<model>/s<k>/`:
+   - `session_summary.json`: `returncode` 0, `latest.epoch/step_in_epoch` tăng so với phiên trước, `run.commit` = 7660a6b
+   - `metrics.jsonl`: `nonfinite_loss_steps` ≈ 0, loss giảm, WER val giảm (Conformer có thể WER 1,0 vài epoch đầu —
+     bình thường), có `wall_seconds_total`
+   - `logs/train_full_s<k>.log`: có dòng "lưu epochXX.pt" mỗi epoch, không có `!!!`/`LỖI`
+3. Báo người dùng: tình trạng + số epoch + WER + quota còn (`kaggle quota`) → **hỏi** có đẩy phiên kế không.
+
+Lệnh đẩy (chỉ sau khi người dùng đồng ý; launcher tự ghim commit của phiên 1 qua `_build/` — nếu `_build/` mất
+thì thêm `--commit 7660a6b`):
+- Lần 2: `python scripts/kaggle/train_full/launch.py --model conextbimamba --session 1 --push` (A, sau khi Conformer
+  xong cả 30 epoch; nếu Conformer chưa xong thì `--model conformer --session 2`) và
+  `python scripts/kaggle/train_full/launch.py --model mamba --session 2 --account B --push`
+- Lần 3: `--model conextbimamba --session 2` (A) và `--model mamba --session 3 --account B`
+- Phiên ERROR **log rỗng, quota không tăng** → đẩy lại cùng phiên. Phiên ERROR **sau khi đã train** → KHÔNG đẩy lại
+  cùng phiên (version mới che output) — đẩy phiên kế (resume từ latest.pt của phiên lỗi).
+- Hết train: `fetch.py ... --ckpt_dest <thư mục ngoài repo>` cho phiên cuối mỗi mô hình → người dùng đưa lên Drive.
+
 ## 🔴 Đang chặn — chờ quyết định từ GVHD
 
 - [ ] **ĐỔI ĐỊNH HƯỚNG sau buổi GVHD lần 1 (ghi 2026-10-01) — ưu tiên số 1**:

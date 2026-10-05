@@ -1005,3 +1005,11 @@ khảo sát dataset, phát hiện sai lệch số liệu, prefetch script, train
 - **Người dùng CHỐT (2026-10-06): không early stopping** (Plan mục 4). Commit + push.
 - **Phiên sau bắt đầu từ:** người dùng duyệt bắt đầu train full (mục 7 `training_plan_kaggle.md`) + câu hỏi chờ
   GVHD; sau mỗi phiên: `fetch.py` → đưa checkpoint lên Drive → đẩy phiên kế bằng `launch.py`.
+
+### 2026-10-06 — đẩy lần 1 train full
+- Người dùng: push code, đẩy lần 1; **phiên sau phải kiểm kết quả và HỎI người dùng trước khi đẩy lần 2, lần 3**
+  (không để mất trắng hàng giờ GPU). Quy trình kiểm + lệnh: đầu `TODO.md` (🔴 TRAIN FULL ĐANG CHẠY).
+- Đẩy `tieunhi/train-full-conformer-s1` + `vuvanduc1/train-full-mamba-s1` (commit `7660a6b`, 540 phút/phiên).
+  Đóng phiên 00:41 khi cả hai RUNNING, quota bắt đầu tăng (A 5,47 h · B 1,10 h); **chưa thấy epoch00** — kiểm ở phiên sau.
+- Output để trên Kaggle (mỗi phiên một kernel, không ghi đè nhau); tải bằng `fetch.py` khi cần.
+- **Phiên sau bắt đầu từ:** kiểm 2 phiên s1 theo checklist đầu `TODO.md` → báo người dùng → chờ đồng ý mới đẩy lần 2.
