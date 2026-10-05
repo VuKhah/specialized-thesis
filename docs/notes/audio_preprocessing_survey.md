@@ -67,6 +67,42 @@ biến với độ to — lý do phụ cho đề xuất 2, **không** phải cá
 Áp cho cả 3 mô hình train từ đầu (Conformer, ConExtBiMamba vừa train ổn vẫn phải
 dùng cùng front-end → phải train thử lại cả 3 nếu đổi, hoặc chỉ đổi từ train full).
 
+## 5. Tra thêm (2026-10-05, người dùng yêu cầu trước khi chốt)
+
+**Speed perturbation — đọc lại Ko 2015 (bản gốc):** hệ **DNN-HMM lai**, không phải
+E2E, **không có SpecAugment**; 0,9/1,1 tạo bản sao **offline ×3**. Bảng 3: GALE
+Mandarin 100 h −2,0% · Tedlium 118 h −3,9% · Switchboard 300 h −6,7% · LibriSpeech
+960 h −3,2% (TB 4,3%) · ASpIRE 5.500 h chỉ −0,3% → lợi giảm khi dữ liệu nhiều; 176 h
+của dự án nằm trong dải có lợi. Speed tốt hơn tempo perturbation và VTLP (Bảng 1).
+
+**SP khi đã có SpecAugment (E2E):** thực hành phổ biến dùng cả hai — ESPnet
+Conformer (Guo và cs., arXiv:2010.13956: đa số tập dùng cả hai; † chỉ SP, ‡ chỉ
+SpecAugment theo từng tập, **không phải ablation có kiểm soát**), icefall Zipformer
+(0,9/1,0/1,1), ConMamba (0,95/1/1,05). **Không tìm được ablation có kiểm soát "SP
+cộng thêm trên SpecAugment" cho E2E train từ đầu.** EURASIP JASMP 2026
+(doi 10.1186/s13636-026-00451-8, low-resource) dùng SP + SpecAugment làm mốc mạnh
+và thấy cộng thêm FadeOutIn tốt nhất — chỉ đọc được tóm tắt, chưa đọc bản đầy đủ.
+
+**On-the-fly vs ×3:** không tìm được bài so sánh. ×3 nhân 3 chi phí mỗi epoch →
+không khả thi với quota (B1 đã 18,1 GPU-h/30 epoch). On-the-fly (mỗi câu chọn ngẫu
+nhiên 1 hệ số mỗi lần đọc) giữ nguyên số step/epoch; độ dài TB đổi ~+0,7%
+(1/0,9 và 1/1,1 không đối xứng); câu dài nhất 15 s → 16,7 s.
+
+**Volume perturbation:** vẫn chỉ có thực hành Kaldi; Liu và cs. (SLTU-CCURL 2020,
+arXiv:1909.06522) theo tóm tắt kết quả tìm kiếm thấy "additional volume
+perturbation was not helpful" ở thí nghiệm đơn ngữ (chưa đọc bản gốc). Cộng với
+`diag-b1-asr` bác "to → NaN" → bằng chứng yếu.
+
+**CMVN toàn cục vs theo câu:** một so sánh (arXiv:2011.04884, SLU độ trễ thấp)
+thấy "almost the same performance", toàn cục tốt hơn khi xử lý theo đoạn → giữ
+toàn cục (đã chốt vì RQ2).
+
+**Đề xuất cập nhật:** (1) assert định dạng — làm; (2) SP on-the-fly 0,9/1,0/1,1
+cho cả 3 mô hình **nếu** preflight cho thấy DataLoader không thành nút cổ chai
+(resample CPU); không làm ×3; (3) không làm volume perturbation; (4) giữ CMVN toàn
+cục. Hệ quả của (2): kết quả train thử (không SP) không còn cùng điều kiện với
+train full — chỉ dùng để loại phương án, đã đúng mục đích.
+
 ## Nguồn
 
 - Ko, Peddinti, Povey, Khudanpur — Audio augmentation for speech recognition, Interspeech 2015: https://www.isca-archive.org/interspeech_2015/ko15_interspeech.html
@@ -75,4 +111,8 @@ dùng cùng front-end → phải train thử lại cả 3 nếu đổi, hoặc c
 - Kaldi `apply-cmvn`: https://kaldi-asr.org/doc/apply-cmvn_8cc.html
 - NeMo FastConformer CTC config: https://github.com/NVIDIA/NeMo/blob/main/examples/asr/conf/fastconformer/fast-conformer_ctc_bpe.yaml
 - ConMamba yaml (speed perturb, bf16, global norm): https://github.com/xi-j/Mamba-ASR/blob/main/hparams/CTC/conmamba_large.yaml
+- Guo và cs., Recent Developments on ESPnet Toolkit Boosted by Conformer: https://arxiv.org/abs/2010.13956
+- EURASIP JASMP 2026, SP + SpecAugment low-resource: https://link.springer.com/article/10.1186/s13636-026-00451-8
+- Liu và cs., Multilingual Graphemic Hybrid ASR with Massive Data Augmentation: https://arxiv.org/abs/1909.06522
+- Global vs utterance CMVN (SLU độ trễ thấp): https://arxiv.org/abs/2011.04884
 - mamba-ssm README (AMP giữ tham số fp32; "SSMs are sensitive to their recurrent dynamics"): https://github.com/state-spaces/mamba

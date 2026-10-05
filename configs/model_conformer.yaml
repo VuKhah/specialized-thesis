@@ -27,6 +27,9 @@ training:
   seed: 42 # khởi tạo + thứ tự dữ liệu; giống nhau ở hai tài khoản Kaggle (D10)
   amp: true # fp16 autocast trên GPU (D8); CPU tự tắt
   num_workers: 2 # mỗi tiến trình (D8)
+  # Bucketing theo độ dài (chốt 2026-10-05): xếp trong cụm 50 batch toàn cục (~800 câu),
+  # 0 = tắt. PHẢI giống nhau ở mọi config train từ đầu.
+  bucket_pool_batches: 50
 
 # Front-end dùng chung — PHẢI giống hệt nhau ở mọi config train từ đầu
 # (src/features/log_mel.py, thêm 2026-10-04).
@@ -45,3 +48,6 @@ data:
   eval_manifest: val # chọn best.pt: validation trừ clean-test cũ (D5), trừ video giữ riêng
   extra_eval_manifests: [val_unseen] # video giữ riêng (make_heldout.py), chỉ ghi log
   sample_rate: 16000
+  # Speed perturbation on-the-fly lúc train (Ko 2015; chốt 2026-10-05,
+  # docs/notes/audio_preprocessing_survey.md mục 5). PHẢI giống nhau ở mọi config train từ đầu.
+  speed_perturb: [0.9, 1.0, 1.1]

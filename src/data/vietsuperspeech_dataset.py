@@ -30,8 +30,10 @@ import os
 import re
 from pathlib import Path
 
+import numpy as np
 import soundfile as sf
 import torch
+import torchaudio
 from datasets import load_dataset
 from huggingface_hub import hf_hub_download
 from torch.utils.data import Dataset
@@ -49,6 +51,21 @@ EXCLUDED_PATH = SPLITS_DIR / "excluded.tsv"
 HELDOUT_PATH = SPLITS_DIR / "heldout_videos.tsv"
 # Manifest của make_shards.py = đúng nội dung 5 Kaggle Dataset (tar).
 SHARD_MANIFESTS = ["train_shard0", "train_shard1", "train_shard2", "train_shard3", "val"]
+SAMPLE_RATE = 16000
+
+
+def speed_factor(factors: list[float], seed: int, epoch: int, idx: int) -> float:
+    """Hệ số speed perturbation của mẫu `idx` ở `epoch` — hàm thuần của (seed, epoch, idx)
+    để resume giữa epoch ra đúng audio cũ và sampler bucketing biết trước độ dài sau đổi tốc."""
+    return factors[int(np.random.default_rng([seed, epoch, idx]).integers(len(factors)))]
+
+
+def speed_perturb(waveform: torch.Tensor, factor: float, sample_rate: int = SAMPLE_RATE) -> torch.Tensor:
+    """Như `speed` của sox/Kaldi (Ko 2015): coi audio lấy mẫu ở sr·factor rồi resample về sr
+    → đổi cả tempo lẫn cao độ, độ dài thành len/factor."""
+    if factor == 1.0:
+        return waveform
+    return torchaudio.functional.resample(waveform, round(sample_rate * factor), sample_rate)
 
 
 def manifest_split(name: str) -> str:
@@ -97,7 +114,8 @@ def manifest_rows(names: list[str]) -> list[dict]:
 
 class VietSuperSpeechDataset(Dataset):
     def __init__(self, split: str = "train", tokenizer=None, indices: list[int] | None = None,
-                 items: list[tuple[str, int]] | None = None):
+                 items: list[tuple[str, int]] | None = None, speed_factors: list[float] | None = None,
+                 seed: int = 0):
         """split: "train" hoặc "validation" — tên split thật trên HF Hub
         (KHÔNG phải "dev-test" như ghi trong đề cương, xác nhận qua
         src/data/survey.py, Tuần 3 — xem docs/notes/dataset_discrepancy.md
@@ -105,7 +123,11 @@ class VietSuperSpeechDataset(Dataset):
 
         items: [(split, index)] — trộn được hai split (val_unseen, clean-test lấy
         từ cả hai); thường từ `manifest_rows`. Nếu không có: dùng `split` +
-        `indices` (None = cả split, **chưa** lọc excluded/heldout)."""
+        `indices` (None = cả split, **chưa** lọc excluded/heldout).
+
+        speed_factors: chỉ cho tập train (on-the-fly, chốt 2026-10-05,
+        docs/notes/audio_preprocessing_survey.md mục 5); hệ số theo `speed_factor(..., self.epoch, idx)`
+        — train.py đặt `epoch` trước khi dựng DataLoader của epoch đó."""
         if items is None:
             ds = load_dataset(HF_DATASET_ID, split=split, revision=HF_REVISION)
             self.hf = {split: ds}
@@ -114,6 +136,7 @@ class VietSuperSpeechDataset(Dataset):
             self.hf = {s: load_dataset(HF_DATASET_ID, split=s, revision=HF_REVISION) for s in {s for s, _ in items}}
         self.items = list(items)
         self.tokenizer = tokenizer
+        self.speed_factors, self.seed, self.epoch = speed_factors, seed, 0
         Path(AUDIO_CACHE_DIR).mkdir(parents=True, exist_ok=True)
 
     def __len__(self):
@@ -130,8 +153,13 @@ class VietSuperSpeechDataset(Dataset):
             # dùng cho khảo sát/EDA nhỏ, không phù hợp để train trực tiếp).
             local_path = Path(hf_hub_download(HF_DATASET_ID, item["audio"], repo_type="dataset",
                                               revision=HF_REVISION, local_dir=AUDIO_CACHE_DIR))
-        array, _sample_rate = sf.read(local_path)
-        waveform = torch.from_numpy(array).float()
+        array, sample_rate = sf.read(local_path, dtype="float32")
+        # Dữ liệu đã đo 100% 16 kHz mono; kiểm để file lạ không lọt vào im lặng (front-end giả định 16 kHz).
+        if sample_rate != SAMPLE_RATE or array.ndim != 1:
+            raise ValueError(f"{local_path}: {sample_rate} Hz, shape {array.shape} — cần {SAMPLE_RATE} Hz mono")
+        waveform = torch.from_numpy(array)
+        if self.speed_factors:
+            waveform = speed_perturb(waveform, speed_factor(self.speed_factors, self.seed, self.epoch, idx))
         text = item["text"]
         token_ids = self.tokenizer.encode(text) if self.tokenizer else None
         return {"waveform": waveform, "text": text, "token_ids": token_ids}

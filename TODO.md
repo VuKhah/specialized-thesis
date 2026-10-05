@@ -190,12 +190,16 @@ duyệt, D3 → **4 shard**, train full + đánh giá theo epoch).
       `diag_b1`/`retrain_b1` — chờ người dùng yêu cầu. Train full phải clone code đã có `mamba_fp32`.
 - [ ] ⛔ Đo lại s/step ConExtBiMamba với khối Mamba fp32 (số 0,326 cũ là fp16) — chọn cách đo (b1/b2/b3) ở
       `docs/notes/trial_results_2026-10-05.md` mục 7.
-- [ ] ⛔ **Tiền xử lý audio** — đề xuất ở `docs/notes/audio_preprocessing_survey.md` (assert định dạng, volume /
-      speed perturbation); người dùng yêu cầu **tra thêm tài liệu** trước khi quyết; áp cho cả 3 mô hình.
-- [ ] ⛔ **Chính sách khối Mamba fp32** (`mamba_fp32`, đang dùng) — người dùng yêu cầu tra thêm tài liệu trước khi chốt.
+- [x] **Tiền xử lý audio — CHỐT 2026-10-05: assert + SP on-the-fly, không volume, giữ CMVN toàn cục.** Đã tra thêm 2026-10-05 (`audio_preprocessing_survey.md` mục 5). Đề xuất: assert định
+      dạng; speed perturbation on-the-fly 0,9/1,0/1,1 cả 3 mô hình (nếu preflight không nghẽn DataLoader); không volume;
+      giữ CMVN toàn cục. **Chờ người dùng chốt.**
+- [x] **Chính sách khối Mamba fp32 — CHỐT 2026-10-05: giữ `mamba_fp32`.** Đã tra 2026-10-05 (`docs/notes/mamba_precision_survey.md`). Đề xuất giữ
+      `mamba_fp32` (tiền lệ U-Mamba; bf16 không có trên T4; RMSNorm trong khối là đổi kiến trúc). **Chờ người dùng chốt.**
 - [x] **Giữ 2 hay 3 mô hình — CHỐT 2026-10-05: giữ cả 3** (dự phòng đề xuất: thiếu quota thì bỏ B1 trước).
-- [ ] **Tăng tốc train: bucketing theo độ dài — CHỐT 2026-10-05 (phương án B, cả 3 mô hình; không làm A)** — sampler
-      trong `train.py`, giữ resume giữa epoch + chia rank DDP; test CPU; đo s/step trong preflight.
+- [ ] **Tăng tốc train: bucketing theo độ dài — CHỐT 2026-10-05 (phương án B, cả 3 mô hình; không làm A)** — **code +
+      test CPU xong 2026-10-05** (padding 17–19% → 0,5%), chưa commit. Còn: đo s/step 3 mô hình trong preflight.
+- [ ] **Speed perturbation + kiểm định dạng audio — CHỐT 2026-10-05, code + test CPU xong**, chưa commit. Còn: preflight
+      kiểm DataLoader không nghẽn (resample CPU) + B1/ConExt chạy được.
 - [ ] Sửa phụ: `trial_report` lấy s/step từ epoch không toàn step bỏ (B1 ghi sai 0,114 s/step); `train.py` nhánh
       bỏ step `del loss, log_probs` (giữ đồ thị → VRAM 2,1 → 3,9 GiB) — sửa code dùng chung, test cả 3 encoder.
 - [ ] **Kernel train thử** — lần 1 **ERROR** (image Py 3.13 không nhận wheel cp312, chưa

@@ -41,7 +41,8 @@ import yaml
 from torch.utils.data import DataLoader, Sampler
 from torch.utils.tensorboard import SummaryWriter
 
-from src.data.vietsuperspeech_dataset import VietSuperSpeechDataset, collate_fn, manifest_rows, video_of
+from src.data.vietsuperspeech_dataset import (VietSuperSpeechDataset, collate_fn, manifest_rows, speed_factor,
+                                              video_of)
 from src.evaluation.wer import compute_wer
 from src.features.log_mel import LogMelFeatureExtractor
 from src.models.conextbimamba_encoder import ConExtBiMambaEncoder
@@ -104,10 +105,19 @@ class ResumableSampler(Sampler[int]):
     """Như `DistributedSampler(shuffle=True)` (đệm cho chia đều số GPU) nhưng bỏ
     qua được `skip` mẫu đầu phần của rank này — để resume giữa epoch đúng thứ
     tự dữ liệu (D7). Hoán vị chỉ phụ thuộc (seed, epoch) nên mọi rank, mọi phiên
-    đều ra cùng một thứ tự."""
+    đều ra cùng một thứ tự.
 
-    def __init__(self, n: int, rank: int, world: int, seed: int, epoch: int, skip: int = 0):
+    Bucketing theo độ dài (chốt 2026-10-05, phương án B; `lengths` khác None): trong mỗi
+    cụm `pool_batches` batch toàn cục liên tiếp của hoán vị, xếp theo độ dài rồi cắt thành
+    batch toàn cục, xáo thứ tự batch; rank r lấy phần tử r::world của từng batch → mọi GPU
+    nhận câu dài gần nhau (DDP chờ GPU chậm nhất). Batch lẻ (nếu có) để cuối để DataLoader
+    vẫn cắt đúng ranh giới batch. `lengths(epoch)` tính lại mỗi epoch vì speed perturbation
+    đổi độ dài."""
+
+    def __init__(self, n: int, rank: int, world: int, seed: int, epoch: int, skip: int = 0,
+                 batch_size: int = 1, lengths: list[float] | None = None, pool_batches: int = 50):
         self.n, self.rank, self.world, self.seed, self.epoch, self.skip = n, rank, world, seed, epoch, skip
+        self.batch_size, self.lengths, self.pool_batches = batch_size, lengths, pool_batches
         self.per_rank = math.ceil(n / world)
 
     def __iter__(self):
@@ -115,7 +125,21 @@ class ResumableSampler(Sampler[int]):
         g.manual_seed(self.seed + self.epoch)
         perm = torch.randperm(self.n, generator=g).tolist()
         perm += perm[: self.per_rank * self.world - self.n]
-        return iter(perm[self.rank :: self.world][self.skip :])
+        if self.lengths is None:
+            return iter(perm[self.rank :: self.world][self.skip :])
+        gb = self.batch_size * self.world
+        n_full = len(perm) // gb * gb
+        pool = gb * self.pool_batches
+        batches = []
+        for i in range(0, n_full, pool):
+            chunk = sorted(perm[i : min(i + pool, n_full)], key=lambda j: self.lengths[j])
+            batches += [chunk[k : k + gb] for k in range(0, len(chunk), gb)]
+        order = torch.randperm(len(batches), generator=g).tolist()
+        batches = [batches[k] for k in order]
+        if n_full < len(perm):
+            batches.append(sorted(perm[n_full:], key=lambda j: self.lengths[j]))
+        mine = [j for b in batches for j in b[self.rank :: self.world]]
+        return iter(mine[self.skip :])
 
     def __len__(self):
         return self.per_rank - self.skip
@@ -235,8 +259,19 @@ def main():
         return [(r["split"], r["index"]) for r in rows]
 
     train_rows = manifest_rows(args.train_manifests or cfg["data"]["train_manifests"])
-    train_ds = VietSuperSpeechDataset(
-        tokenizer=tokenizer, items=items(train_rows[:args.limit_train] if args.limit_train else train_rows))
+    train_rows = train_rows[:args.limit_train] if args.limit_train else train_rows
+    speed_factors = cfg["data"].get("speed_perturb")
+    train_ds = VietSuperSpeechDataset(tokenizer=tokenizer, items=items(train_rows),
+                                      speed_factors=speed_factors, seed=seed)
+    pool_batches = tcfg.get("bucket_pool_batches", 0)
+
+    def train_lengths(epoch: int) -> list[float] | None:
+        if not pool_batches:
+            return None
+        durations = [r["duration"] for r in train_rows]
+        if not speed_factors:
+            return durations
+        return [d / speed_factor(speed_factors, seed, epoch, i) for i, d in enumerate(durations)]
     loader_kw = dict(batch_size=batch_size, collate_fn=collate_fn, num_workers=tcfg["num_workers"],
                      pin_memory=device.type == "cuda")
     # Tập đầu (val đã gặp) chọn best.pt; các tập sau (val_unseen — video giữ
@@ -329,7 +364,9 @@ def main():
     metrics_path = ckpt_dir / "metrics.jsonl"
     last_ckpt_time = time.time()
     for epoch in range(start_epoch, epochs):
-        sampler = ResumableSampler(len(train_ds), rank, world, seed, epoch, skip_steps * batch_size)
+        sampler = ResumableSampler(len(train_ds), rank, world, seed, epoch, skip_steps * batch_size,
+                                   batch_size=batch_size, lengths=train_lengths(epoch), pool_batches=pool_batches)
+        train_ds.epoch = epoch  # trước khi dựng DataLoader: worker nhận bản sao dataset lúc bắt đầu lặp
         train_loader = DataLoader(train_ds, sampler=sampler, **loader_kw)
         step_in_epoch, skip_steps = skip_steps, 0
         loss_sum, loss_n = 0.0, 0

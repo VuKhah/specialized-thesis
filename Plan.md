@@ -955,3 +955,26 @@ khảo sát dataset, phát hiện sai lệch số liệu, prefetch script, train
   Vim/ConMamba/ESPnet Mamba; issue fp16 mamba-ssm; speed perturbation + SpecAugment; on-the-fly vs ×3; bằng chứng
   volume perturbation; CMVN toàn cục vs theo câu) → trình người dùng; code bucketing (`train.py`, giữ resume + chia
   rank DDP) + test CPU; preflight đo s/step 3 mô hình; push khi người dùng yêu cầu (kernel train full clone từ GitHub).
+
+### 2026-10-05 (khuya) — tra tài liệu: số học khối Mamba, tiền xử lý audio
+- **Khối Mamba fp32:** `docs/notes/mamba_precision_survey.md`. Tiền lệ trực tiếp: U-Mamba (`@autocast(enabled=False)`
+  + ép fp32, đúng cách `mamba_fp32`). ConMamba dùng bf16 (T4 không có). Jamba/FalconMamba thấy kích hoạt trong khối
+  lớn dần → RMSNorm trong khối (LLM 7B, đổi kiến trúc). ESPnet Mamba (2406.16808, 2405.12609) báo bất ổn, xử lý bằng
+  dropout/AdamW/clip, không nói precision. Không có bài ASR so fp16/fp32. **Đề xuất: giữ P1 (`mamba_fp32`) cho B1 +
+  ConExt, cả lúc đo RQ2.**
+- **Tiền xử lý:** `audio_preprocessing_survey.md` mục 5. Ko 2015 là DNN-HMM, ×3 offline, chưa có SpecAugment (−2,0 →
+  −6,7% ở 100-960 h, −0,3% ở 5.500 h). E2E dùng SP + SpecAugment là thực hành phổ biến (ESPnet, icefall, ConMamba)
+  nhưng **không tìm được ablation có kiểm soát**. Volume perturbation: chỉ thực hành Kaldi + 1 báo cáo không có lợi.
+  CMVN toàn cục ≈ theo câu (1 so sánh). **Đề xuất:** assert định dạng; SP on-the-fly 0,9/1,0/1,1 cả 3 mô hình nếu
+  preflight không nghẽn DataLoader; không ×3; không volume; giữ CMVN toàn cục.
+- **Phiên sau bắt đầu từ:** ⛔ người dùng chốt 2 đề xuất trên → code (assert, SP nếu duyệt, bucketing) + test CPU →
+  preflight đo s/step 3 mô hình → commit/push khi người dùng yêu cầu.
+- **Người dùng CHỐT (2026-10-05 khuya): giữ `mamba_fp32`; thêm speed perturbation.** Đã code (chưa commit): kiểm
+  16 kHz mono trong `__getitem__`; SP on-the-fly 0,9/1,0/1,1 chỉ train, hệ số = hàm thuần (seed, epoch, idx);
+  bucketing trong `ResumableSampler` (cụm 50 batch toàn cục, rank r lấy r::world); `data.speed_perturb`,
+  `training.bucket_pool_batches` ở cả 3 yaml. Test dữ liệu thật: sampler phủ đủ/rời rank/tất định/skip đúng; padding
+  17–19% → 0,5%, chênh độ dài 2 GPU 0,92 → 0,01 s; SP khớp `torchaudio.functional.speed`, 2–19 ms/câu; Conformer CPU
+  96 câu × 2 epoch chạy hết train → eval → checkpoint, 0 step bỏ (loss 129 → 129: LR còn trong warmup, đúng kỳ vọng).
+  Chưa test: B1/ConExt (CUDA), DDP, nghẽn DataLoader do SP.
+- **Phiên sau bắt đầu từ:** commit/push khi người dùng yêu cầu → soạn kernel preflight đo s/step 3 mô hình (SP +
+  bucketing + `mamba_fp32`, kiểm DataLoader không nghẽn) → xin duyệt quota.

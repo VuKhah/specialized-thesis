@@ -1,6 +1,6 @@
 # ARCHITECTURE.md — Sơ đồ & luồng dữ liệu
 
-Cập nhật lần cuối: 2026-10-04 (bước 3 code dùng chung + front-end CMVN/SpecAugment,
+Cập nhật lần cuối: 2026-10-05 (speed perturbation + bucketing + kiểm định dạng audio); 2026-10-04 (bước 3 code dùng chung + front-end CMVN/SpecAugment,
 chưa commit; trước đó đối chiếu commit `139f018`). Các
 shape/số liệu dưới đây lấy từ code và từ lần chạy thử thật, không suy đoán.
 Đổi luồng dữ liệu, shape hay interface thì sửa file này (xem
@@ -40,13 +40,19 @@ flowchart LR
     HF[("HF Hub<br/>thanhnew2001/VietSuperSpeech")]
     HF -->|"load_dataset: text, duration, source,<br/>audio = đường dẫn tương đối"| DS["VietSuperSpeechDataset"]
     HF -->|"prefetch_audio.py<br/>hf_hub_download song song"| CACHE[("data/raw/audio_cache/audio/...")]
-    CACHE -->|"soundfile.read"| DS
+    CACHE -->|"soundfile.read (kiểm 16 kHz mono)<br/>+ speed perturbation 0,9/1,0/1,1 (chỉ train)"| DS
     HF -->|"survey.py"| SV["reports/results/dataset_survey_*.json<br/>data/processed/train_transcripts.txt<br/>data/processed/clean_test_manifest.json"]
     SV -->|"BPETokenizer.train (vocab 1000)"| TOK[("configs/tokenizer.model")]
     TOK --> DS
     DS -->|"collate_fn: pad waveform,<br/>nối token_ids thành 1D"| B["batch"]
     B --> TR["train.py"]
 ```
+
+Tập train (2026-10-05): hệ số tốc độ của mẫu = hàm thuần `speed_factor(seed, epoch, idx)`
+→ resume giữa epoch ra đúng audio cũ. `ResumableSampler` bucketing: xếp theo độ dài
+(đã chia hệ số tốc độ) trong cụm `bucket_pool_batches` = 50 batch toàn cục, xáo thứ tự
+batch, rank r lấy phần tử r::world mỗi batch. Đo trên `train_shard0`: padding 17–19% → 0,5%,
+chênh độ dài tối đa giữa 2 GPU cùng step 0,92 s → 0,01 s. Không SP, không bucketing ở eval.
 
 | Bước | File | Vào → ra | Lưu ở |
 |---|---|---|---|
@@ -215,8 +221,9 @@ Ký hiệu: ✅ đã chạy thật · 🟡 chạy được một phần · ⬜ c
 - **b. `vocab_size` thật là 1001.** Khoá `tokenizer.vocab_size` và
   `data.sample_rate` trong yaml **không được `train.py` đọc** (nó lấy từ
   tokenizer thật); chỉ mang tính ghi chú.
-- **c. Không resample.** `sf.read` bỏ qua sample rate; code giả định file 16 kHz
-  và không kiểm tra.
+- **c. Không resample để chuẩn hoá định dạng.** `__getitem__` raise nếu file không phải
+  16 kHz mono (từ 2026-10-05; dữ liệu đã đo 100% đúng). Resample duy nhất là speed
+  perturbation lúc train (`speed_perturb`, = `torchaudio.functional.speed`).
 - **d. Không subsampling.** `T' = T` ≈ 1000–1500 khung cho mỗi mẫu. Ảnh hưởng
   VRAM/`batch_size`, chi phí attention của Conformer, và cách đọc kết quả RQ2.
 - **e. Mamba hai chiều B1, padding xử lý bằng đảo theo độ dài (2026-10-02).**
