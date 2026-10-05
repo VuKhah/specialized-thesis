@@ -59,6 +59,27 @@ def find_previous(experiment: str) -> Path | None:
     return Path(hits[0]).parent if hits else None
 
 
+def run_info() -> dict:
+    """Điều kiện chạy cho mục "môi trường thực nghiệm" của báo cáo + tái lập: commit, phiên bản, GPU."""
+    import platform
+    from importlib.metadata import PackageNotFoundError, version
+    import torch
+
+    def ver(pkg: str) -> str | None:
+        try:
+            return version(pkg)
+        except PackageNotFoundError:
+            return None
+
+    smi = subprocess.run(["nvidia-smi", "--query-gpu=name,driver_version,memory.total", "--format=csv,noheader"],
+                         capture_output=True, text=True).stdout.strip().splitlines()
+    commit = subprocess.run(["git", "rev-parse", "HEAD"], cwd=REPO_DIR, capture_output=True, text=True).stdout.strip()
+    return {"commit": commit, "python": platform.python_version(), "torch": torch.__version__,
+            "cuda": torch.version.cuda, "cudnn": torch.backends.cudnn.version(), "torchaudio": ver("torchaudio"),
+            "mamba_ssm": ver("mamba-ssm") or ver("mamba_ssm"), "causal_conv1d": ver("causal-conv1d") or ver("causal_conv1d"),
+            "gpus": smi, "cpu_count": os.cpu_count()}
+
+
 def main() -> None:
     from scripts.kaggle.train_trial.train_trial import (LOG_DIR, check_env, find_wheels, run, stamp)
     import yaml
@@ -102,7 +123,8 @@ def main() -> None:
     env = {**os.environ, "AUDIO_CACHE_DIR": AUDIO_DIR, "HF_HUB_OFFLINE": "1", "PYTHONIOENCODING": "utf-8"}
 
     # --max_minutes của train.py tính từ lúc train.py khởi động → trừ phần setup đã tiêu.
-    budget = SESSION_MINUTES - (time.time() - T_KERNEL) / 60 - TAIL_MARGIN
+    setup_minutes = (time.time() - T_KERNEL) / 60  # GPU-giờ của báo cáo = setup + train.py (+ phần thừa cuối)
+    budget = SESSION_MINUTES - setup_minutes - TAIL_MARGIN
     cmd = [sys.executable, "-m", "torch.distributed.run", "--nproc_per_node", "2", "-m", "src.training.train",
            "--config", CONFIG, "--max_minutes", f"{budget:.0f}", "--ckpt_dir", str(ckpt_root),
            "--log_dir", str(OUT / "runs"), "--ckpt_every_minutes", "20", *EXTRA_ARGS]
@@ -111,6 +133,7 @@ def main() -> None:
         print("!!! phiên sau không resume — kiểm tra log", flush=True)
 
     (ckpt_root / experiment / "latest.tmp").unlink(missing_ok=True)
+    shutil.copyfile(REPO_DIR / CONFIG, OUT / f"config_s{SESSION}.yaml")  # bản chụp config đúng commit đã chạy
     metrics_path = ckpt_root / experiment / "metrics.jsonl"
     metrics = [json.loads(l) for l in metrics_path.read_text(encoding="utf-8").splitlines() if l.strip()] \
         if metrics_path.exists() else []
@@ -121,9 +144,10 @@ def main() -> None:
         state_epoch = {"epoch": st["epoch"], "step_in_epoch": st["step_in_epoch"], "global_step": st["global_step"],
                        "best_wer": st.get("best_wer")}
     done = bool(metrics) and metrics[-1]["epoch"] >= epochs - 1
-    summary = {"experiment": experiment, "session": SESSION, "config": CONFIG, "returncode": code,
+    summary = {"experiment": experiment, "session": SESSION, "config": CONFIG, "extra_args": EXTRA_ARGS,
+               "run": run_info(), "returncode": code,
                "epochs_target": epochs, "epochs_done": len(metrics), "latest": state_epoch, "finished": done,
-               "kernel_minutes": (time.time() - T_KERNEL) / 60, "last_metrics": metrics[-1] if metrics else None}
+               "setup_minutes": setup_minutes, "kernel_minutes": (time.time() - T_KERNEL) / 60, "last_metrics": metrics[-1] if metrics else None}
     (OUT / "session_summary.json").write_text(json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8")
     print(json.dumps(summary, ensure_ascii=False, indent=2), flush=True)
     print("\nTRAIN FULL XONG" if done else f"\nPHIÊN {SESSION} XONG — chạy phiên {SESSION + 1}", flush=True)

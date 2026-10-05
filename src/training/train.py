@@ -309,6 +309,9 @@ def main():
     best_ckpt = ckpt_dir / "best.pt"
 
     start_epoch, skip_steps, global_step, best_wer = 0, 0, 0, float("inf")
+    # Thời gian train.py chạy cộng dồn qua mọi phiên Kaggle (lưu trong checkpoint) — trục "WER theo
+    # GPU-giờ" của báo cáo; không gồm setup kernel (ghi riêng ở session_summary.json của train_full).
+    wall_base = 0.0
     resume_path = latest_ckpt if latest_ckpt.exists() else (Path(args.resume_from) if args.resume_from else None)
     if not args.no_resume and resume_path is not None:
         state = torch.load(resume_path, map_location=device)
@@ -322,6 +325,7 @@ def main():
             scaler.load_state_dict(state["scaler"])
         global_step = state["global_step"]
         best_wer = state.get("best_wer", best_wer)
+        wall_base = state.get("wall_seconds_total", 0.0)
         # Checkpoint cũ (trước 2026-10-04) chỉ lưu cuối epoch, không có step_in_epoch.
         done = state.get("step_in_epoch", steps_per_epoch)
         start_epoch, skip_steps = (state["epoch"] + 1, 0) if done >= steps_per_epoch else (state["epoch"], done)
@@ -340,10 +344,27 @@ def main():
 
     writer = SummaryWriter(log_dir=str(Path(args.log_dir) / experiment_name)) if is_main else None
 
+    def wall_total() -> float:
+        return wall_base + time.time() - t_start
+
     def checkpoint(path: Path, epoch: int, step_in_epoch: int) -> None:
         if is_main:
             save_checkpoint(path, core, optimizer, scheduler, scaler, epoch=epoch, step_in_epoch=step_in_epoch,
-                            global_step=global_step, best_wer=best_wer, n_train=len(train_ds))
+                            global_step=global_step, best_wer=best_wer, n_train=len(train_ds),
+                            wall_seconds_total=wall_total())
+
+    def save_epoch_weights(epoch: int, metrics: dict) -> None:
+        """Chỉ trọng số (~50 MB), mỗi epoch một file — để sau train so các mô hình ở cùng số epoch, vẽ
+        WER clean-test theo epoch, lấy trung bình checkpoint… mà không phải train lại (2026-10-06)."""
+        if not is_main:
+            return
+        path = ckpt_dir / "epochs" / f"epoch{epoch:02d}.pt"
+        path.parent.mkdir(parents=True, exist_ok=True)
+        tmp = path.with_suffix(".tmp")
+        torch.save({"model": core.state_dict(), "epoch": epoch, "global_step": global_step,
+                    **{k: v for k, v in metrics.items() if k.startswith(("wer_", "loss_"))}}, tmp)
+        os.replace(tmp, path)
+        _log(f"lưu {path.name} ({path.stat().st_size / 2**20:.0f} MB)")
 
     def rank0_decides(flag: int) -> int:
         """Quyết định theo đồng hồ phải giống nhau ở mọi rank, nếu không DDP treo."""
@@ -371,6 +392,7 @@ def main():
         train_ds.epoch = epoch  # trước khi dựng DataLoader: worker nhận bản sao dataset lúc bắt đầu lặp
         train_loader = DataLoader(train_ds, sampler=sampler, **loader_kw)
         step_in_epoch, skip_steps = skip_steps, 0
+        resumed_mid_epoch = step_in_epoch > 0
         loss_sum, loss_n = 0.0, 0
         # Số đo ổn định của epoch (chỉ phần chạy trong phiên này).
         nonfinite_loss, amp_skipped, grad_norm_sum, grad_norm_max = 0, 0, 0.0, 0.0
@@ -455,6 +477,9 @@ def main():
             "grad_norm_mean": grad_norm_sum / max(loss_n - amp_skipped, 1), "grad_norm_max": grad_norm_max,
             "s_per_step": (time.time() - t_epoch) / max(n_steps, 1),
             "peak_vram_gib": torch.cuda.max_memory_allocated(device) / 2**30 if device.type == "cuda" else None,
+            "lr": scheduler.get_last_lr()[0],
+            # Epoch nối hai phiên: s_per_step/train_loss chỉ tính phần của phiên sau và gồm khởi động chậm.
+            "resumed_mid_epoch": resumed_mid_epoch,
         }
         if is_main:
             print(f"epoch {epoch}: loss trung bình={mean_loss:.4f} ({n_steps} step, "
@@ -491,7 +516,10 @@ def main():
             if wer < best_wer:
                 best_wer = wer
                 checkpoint(best_ckpt, epoch, steps_per_epoch)
+        epoch_metrics["wall_seconds_total"] = wall_total()
+        epoch_metrics["epoch_end_utc"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
         checkpoint(latest_ckpt, epoch, steps_per_epoch)
+        save_epoch_weights(epoch, epoch_metrics)
         if is_main:
             ckpt_dir.mkdir(parents=True, exist_ok=True)
             with open(metrics_path, "a", encoding="utf-8") as f:

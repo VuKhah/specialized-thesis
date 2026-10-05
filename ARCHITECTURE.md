@@ -139,6 +139,7 @@ flowchart TD
     LOOP -->|"mỗi --ckpt_every_minutes, hoặc hết --max_minutes (lưu rồi thoát)"| LATEST
     LOOP --> LATEST["ghi đè latest.pt (ghi file tạm rồi đổi tên)"]
     LOOP --> BEST["nếu WER thấp nhất: ghi checkpoints/{experiment_name}/best.pt"]
+    LOOP --> EPW["mỗi epoch: epochs/epochXX.pt (chỉ trọng số, 2026-10-06) + metrics.jsonl (lr, wall_seconds_total cộng dồn qua phiên)"]
     LOOP --> TB["runs/{experiment_name}/ (tensorboard: train/loss, train/lr, eval/wer)"]
 ```
 

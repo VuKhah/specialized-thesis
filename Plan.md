@@ -124,6 +124,10 @@ Theo thứ tự thời gian. Quyết định bị thay thế giữ lại để t
 | 2026-10-04 | **Giữ B1, không làm biến thể B1 + FFN** | 2405.12609 Bảng XVI/XII. Cùng note |
 | 2026-10-04 | **Test độc lập theo video** (thay clean-test 09-14 và một phần D5): giữ riêng ngẫu nhiên 29 video (~6%, seed 42, video ≥ 20 câu) khỏi train/val; clean-test mới 203 câu (7/video) để hiệu đính; phần còn lại = val_unseen 3.011 câu; val chọn checkpoint = 4.824 câu. Train 45.442 câu / 165,18 h. Tokenizer + CMVN tính lại | 561/562 video `validation` trùng train → test cũ chỉ đo "đã gặp", lệch khi so với pre-train. Chuẩn: LibriSpeech, VIVOS tách theo người nói. Chọn theo video (không theo chương trình) để test đại diện phân bố; hạn chế: MC chương trình lớn có thể đã gặp. `src/data/make_heldout.py`, `docs/notes/dataset_discrepancy.md` |
 | 2026-10-04 | **Train thử không còn để chọn 1 trong #1/#5**: sau train thử chốt giữ 2 hay 3 mô hình (mong cả 3 đủ tốt); 1 seed + biện pháp ổn định (bỏ step không hữu hạn, đo grad norm/s/step/VRAM, CI bootstrap theo video) | Người dùng. `lineup_preparation.md` mục Train thử |
+| 2026-10-05 | **Khối Mamba fp32** (`mamba_fp32`, B1 + ConExt, cả lúc đo RQ2) | U-Mamba (code), README mamba-ssm; bf16 không có trên T4. `docs/notes/mamba_precision_survey.md` |
+| 2026-10-05 | **Speed perturbation on-the-fly 0,9/1,0/1,1** (cả 3 mô hình, chỉ train) + kiểm 16 kHz mono; không volume perturbation; giữ CMVN toàn cục | Ko 2015; thực hành ESPnet/icefall/ConMamba. `audio_preprocessing_survey.md` mục 5. Preflight: không nghẽn dữ liệu |
+| 2026-10-05 | **`out_proj` chia √28** cho B1 (giữ) | `_init_weights` mamba-ssm / GPT-2; N đếm theo số nhánh `out_proj` cộng vào residual (lựa chọn dự án) |
+| 2026-10-06 | **Không early stopping**: train cố định 30 epoch, best.pt theo WER val; lưu trọng số mỗi epoch (trung bình checkpoint để ngỏ, làm sau train) | Thực hành icefall/ESPnet (epoch cố định + chọn/trung bình checkpoint); so sánh công bằng cùng ngân sách; giai đoạn blank của Conformer + WER val trên nhãn giả nhiễu dễ dừng nhầm |
 
 ## 5. Quyết định đang mở / treo / rủi ro đã biết
 
@@ -978,3 +982,26 @@ khảo sát dataset, phát hiện sai lệch số liệu, prefetch script, train
   Chưa test: B1/ConExt (CUDA), DDP, nghẽn DataLoader do SP.
 - **Phiên sau bắt đầu từ:** commit/push khi người dùng yêu cầu → soạn kernel preflight đo s/step 3 mô hình (SP +
   bucketing + `mamba_fp32`, kiểm DataLoader không nghẽn) → xin duyệt quota.
+
+### 2026-10-05 (đêm) → 2026-10-06 — sửa lỗi phụ, preflight full, kernel train full + thử nối phiên
+- **Chốt (người dùng):** giữ `out_proj` chia √28 (theo `_init_weights` mamba-ssm / GPT-2; N đếm theo số nhánh
+  `out_proj` cộng vào residual — lựa chọn dự án; ConMamba đếm theo khối vì BiMamba của họ chung 1 `out_proj`).
+  Người dùng cho phép dùng quota Kaggle cho khâu chuẩn bị.
+- **Sửa (commit `1727ec7`, `ea108cd`):** `train.py` giải phóng đồ thị khi bỏ step; **`@torch.no_grad()` bị tách
+  khỏi `evaluate` từ `18b5434`** (eval train thử chạy có autograd: WER đúng, thời gian/VRAM eval phồng);
+  `trial_report` s/step từ epoch sạch (B1 fp16: 0,114 → 0,473); `extract_audio` glob giới hạn độ sâu + in tiến độ.
+- **Preflight full** (A, ~1,1 GPU-h): mọi mục kiểm đạt; tốc độ ổn định Conformer 0,262 · ConExt (fp32) 0,432 ·
+  B1 0,688 s/step; SP không gây nghẽn (0,262 vs 0,261); bucketing −6…−9%. Chi tiết + lịch:
+  `training_plan_kaggle.md` mục 7. Lưu ý: s/step trong log `train.py` là trung bình cộng dồn từ đầu epoch.
+- **Kernel train full** `scripts/kaggle/train_full/` (`launch.py` sinh 1 kernel/phiên, nối qua `kernel_sources`,
+  ghim commit). Thử nối phiên trên B đạt (s1 → s2 resume global_step 1000, metrics liền mạch). B khởi động
+  ERROR log rỗng 2/4 lần (không trừ quota) — đẩy lại là chạy.
+- Lỗi Windows khi test local: `python -` + DataLoader `num_workers > 0` treo (worker không import lại được
+  `<stdin>`) — chạy test bằng file hoặc `-m`.
+- **Phiên sau bắt đầu từ:** người dùng duyệt bắt đầu train full theo lịch mục 7 (A: Conformer → ConExt; B: B1
+  3 phiên) và quyết định có chờ GVHD duyệt đề cương mới không.
+- **Ghi nhận cho báo cáo (người dùng yêu cầu):** checkpoint mỗi epoch, `metrics.jsonl` thêm lr/thời gian cộng dồn,
+  `session_summary.json` thêm commit/phiên bản/GPU, `fetch.py` tải output sau mỗi phiên — test CPU local.
+- **Người dùng CHỐT (2026-10-06): không early stopping** (Plan mục 4). Commit + push.
+- **Phiên sau bắt đầu từ:** người dùng duyệt bắt đầu train full (mục 7 `training_plan_kaggle.md`) + câu hỏi chờ
+  GVHD; sau mỗi phiên: `fetch.py` → đưa checkpoint lên Drive → đẩy phiên kế bằng `launch.py`.

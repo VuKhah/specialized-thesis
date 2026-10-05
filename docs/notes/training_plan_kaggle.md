@@ -283,3 +283,45 @@ trong output `env-check-asr`. Tài khoản B cần chúng qua Dataset (thêm ver
   bản sao `train_trial.py` dựng ở scratchpad lúc đẩy; metadata riêng `id` + `dataset_sources`).
 - Thứ tự đề xuất: preflight B (~15 phút GPU của B) → train thử A (~15 phút preflight + ~2,3 h train).
 
+
+## 7. Preflight full (2026-10-05) và lịch train full
+
+Kernel `tieunhi/preflight-full-asr` (commit `1727ec7`, ~1,1 GPU-h quota A), số gốc
+`preflight_summary.json` trong output kernel. **Mọi mục kiểm đạt:** K1 môi trường + CHECK_CODE
+(Mamba CUDA thật); K2 53.277 file audio, thiếu 0, sai định dạng 0; K4 pipeline 3 mô hình; K5 bỏ step
+NaN dưới DDP (15/15, kể cả NaN chỉ ở rank 1 — không treo; VRAM đỉnh 3,6 → 3,6 GiB); K6 resume giữa
+epoch (ConExt, step 164).
+
+**Tốc độ — đọc theo tốc độ ổn định** (Δthời gian/Δstep ở nửa sau mỗi lần chạy; s/step trong log
+`train.py` là trung bình cộng dồn từ đầu epoch, bị ~200 step khởi động 1,0-1,5 s/step kéo lên):
+
+| Mô hình (đủ 4 shard, SP + bucketing) | s/step ổn định | GPU util | Train thử (không bucketing) | 30 epoch, chỉ train |
+|---|---|---|---|---|
+| Conformer | 0,262 | 95% | 0,287 (−9%) | 6,2 h |
+| Conformer không SP | 0,261 | 94% | — | 6,2 h |
+| ConExtBiMamba (khối Mamba fp32) | 0,432 | 90% | 0,326 fp16 (+33%) | 10,2 h |
+| Mamba B1 | 0,688 | 99% | 0,733 (−6%) | 16,3 h |
+
+SP **không** gây nghẽn dữ liệu (0,262 vs 0,261). Eval có `no_grad` (B1, val + val_unseen): 62 + 39 s.
+
+**Lịch đề xuất** (phiên 9 h = D7; train ≈ 540 − ~15 setup − 30 dự phòng ≈ 495 phút/phiên):
+
+| Mô hình | GPU-h ước (train + eval + setup) | Phiên | Tài khoản |
+|---|---|---|---|
+| Conformer | ~7 | 1 | A |
+| ConExtBiMamba | ~11,5 | 2 | A (sau Conformer) |
+| Mamba B1 | ~18,5 | 3 nối tiếp | B |
+
+Quota tuần (làm mới 2026-10-10 00:00 UTC): A còn 24,6 h → dùng ~18,5 (dư ~6); B còn 29,5 h → ~18,5
+(dư ~11, gồm kernel zero-shot ~0,5 h). Wall-clock ~20 h mỗi tài khoản nếu đẩy phiên kế ngay khi phiên
+trước xong. Chưa rõ Kaggle cho chạy song song 2 phiên GPU cùng tài khoản — nếu được, A rút còn ~10 h.
+Chạy: `scripts/kaggle/train_full/launch.py` (một kernel mỗi phiên, nối qua `kernel_sources`, ghim commit).
+
+**Thử nối phiên (tài khoản B, `train-full-chain-conformer-s1/s2`, commit `ea108cd`, ~0,6 GPU-h):** s1
+(4.000 câu × 4 epoch) xong, `session_summary.json` đúng; s2 tìm thấy output s1 ở
+`/kaggle/input/notebooks/vuvanduc1/train-full-chain-conformer-s1/checkpoints/...`, chép latest/best/metrics/
+eval, resume `epoch 4 step 0 (global_step=1000)`, train tiếp tới epoch 5, `metrics.jsonl` liền mạch 0-5.
+**Sự cố hạ tầng B:** 2/4 lần đẩy s1 kết thúc ERROR với log rỗng (một lần sau ~50 phút RUNNING, một lần
+sau ~3 phút) — quota **không** bị trừ. Lần đầu chạy thật bị watchdog kill vì `extract_audio` im > 10 phút
+(rglob + chép không in tiến độ) → sửa `ea108cd`. Khi train full: phiên ERROR log rỗng thì đẩy lại cùng
+phiên (launcher ghim commit nên an toàn).

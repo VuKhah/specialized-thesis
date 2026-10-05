@@ -145,8 +145,15 @@ duyệt, D3 → **4 shard**, train full + đánh giá theo epoch).
       `scripts/kaggle/make_dataset/make_dataset.py` (`PACK_TAR = True`), test
       local 20 file thật. Còn: chạy 5 lần (sửa `PART`), mỗi lần ~40 phút CPU
       (không tốn GPU); tạo Dataset từ output; chia sẻ sang tài khoản B (D6).
-- [ ] **6. Train full song song**: tài khoản A Conformer, B Mamba; báo cáo
-      theo epoch, so hai mô hình ở cùng số epoch.
+- [ ] **6. Train full** — **sẵn sàng 2026-10-06** (preflight full đạt, thử nối phiên đạt): lịch ở
+      `training_plan_kaggle.md` mục 7 — A: Conformer (1 phiên) → ConExtBiMamba (2 phiên); B: B1 (3 phiên).
+      Chạy bằng `scripts/kaggle/train_full/launch.py`. **Chờ người dùng duyệt bắt đầu.**
+- [x] **Ghi nhận cho báo cáo trong lúc train (2026-10-06, người dùng yêu cầu):** checkpoint trọng số mỗi epoch
+      (`epochs/epochXX.pt`), `metrics.jsonl` thêm lr / `resumed_mid_epoch` / `wall_seconds_total` (cộng dồn qua
+      phiên) / `epoch_end_utc`; `session_summary.json` thêm commit + phiên bản + GPU + `setup_minutes`, chụp config;
+      `scripts/kaggle/train_full/fetch.py` tải output sau mỗi phiên. Test CPU local (resume cộng dồn đúng).
+- [x] **Early stopping — CHỐT 2026-10-06 (người dùng): KHÔNG dùng.** Train cố định 30 epoch, chọn best.pt theo
+      WER val; trung bình checkpoint (icefall/ESPnet) để ngỏ, làm sau train từ `epochs/*.pt`.
 
 ## 🟡 Mới 2026-10-02 — chờ duyệt chạy
 
@@ -188,7 +195,7 @@ duyệt, D3 → **4 shard**, train full + đánh giá theo epoch).
       0,439; B1 − ConExt +0,026 [+0,019; +0,034]); 0,733 s/step. Chi tiết Plan nhật ký 2026-10-05 (tối).
 - [ ] **Commit** `mamba_fp32` (mamba_encoder + conextbimamba_encoder), ARCHITECTURE, note tiền xử lý, kernel
       `diag_b1`/`retrain_b1` — chờ người dùng yêu cầu. Train full phải clone code đã có `mamba_fp32`.
-- [ ] ⛔ Đo lại s/step ConExtBiMamba với khối Mamba fp32 (số 0,326 cũ là fp16) — chọn cách đo (b1/b2/b3) ở
+- [x] Đo lại s/step ConExtBiMamba với khối Mamba fp32 — **0,432 s/step** (preflight full 2026-10-05). (số 0,326 cũ là fp16) — chọn cách đo (b1/b2/b3) ở
       `docs/notes/trial_results_2026-10-05.md` mục 7.
 - [x] **Tiền xử lý audio — CHỐT 2026-10-05: assert + SP on-the-fly, không volume, giữ CMVN toàn cục.** Đã tra thêm 2026-10-05 (`audio_preprocessing_survey.md` mục 5). Đề xuất: assert định
       dạng; speed perturbation on-the-fly 0,9/1,0/1,1 cả 3 mô hình (nếu preflight không nghẽn DataLoader); không volume;
@@ -200,7 +207,7 @@ duyệt, D3 → **4 shard**, train full + đánh giá theo epoch).
       test CPU xong 2026-10-05** (padding 17–19% → 0,5%), chưa commit. Còn: đo s/step 3 mô hình trong preflight.
 - [ ] **Speed perturbation + kiểm định dạng audio — CHỐT 2026-10-05, code + test CPU xong**, chưa commit. Còn: preflight
       kiểm DataLoader không nghẽn (resample CPU) + B1/ConExt chạy được.
-- [ ] Sửa phụ: `trial_report` lấy s/step từ epoch không toàn step bỏ (B1 ghi sai 0,114 s/step); `train.py` nhánh
+- [x] (sửa `1727ec7`) Sửa phụ: `trial_report` lấy s/step từ epoch không toàn step bỏ (B1 ghi sai 0,114 s/step); `train.py` nhánh
       bỏ step `del loss, log_probs` (giữ đồ thị → VRAM 2,1 → 3,9 GiB) — sửa code dùng chung, test cả 3 encoder.
 - [ ] **Kernel train thử** — lần 1 **ERROR** (image Py 3.13 không nhận wheel cp312, chưa
       train gì); đã ghim `docker_image` + `dataset_sources`, thêm log tiến độ + watchdog
@@ -242,7 +249,7 @@ duyệt, D3 → **4 shard**, train full + đánh giá theo epoch).
       không làm biến thể B1 + FFN**; ConExtBiMamba (đã trong train thử) là
       phương án "có FFN". Căn cứ 2405.12609 Bảng XVI (+FFN chỉ ~1,6 điểm) và XII
       (khung Conformer mới cải thiện lớn) — `docs/notes/frontend_decoder_survey.md` mục 5.
-- [ ] Xác nhận các thiết lập tác nhân tự chọn: `out_proj` chia √28; greedy
+- [ ] Xác nhận các thiết lập tác nhân tự chọn: ~~`out_proj` chia √28~~ (chốt giữ 2026-10-05); greedy
       không LM; chữ số giữ nguyên; đo batch 1 fp16.
 - [x] Viết lại `Plan.md` mục 1-5, `CLAUDE.md`, `README.md` theo định hướng
       khảo sát — xong 2026-10-04.
