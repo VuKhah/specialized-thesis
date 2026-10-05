@@ -179,8 +179,25 @@ duyệt, D3 → **4 shard**, train full + đánh giá theo epoch).
       mamba-ssm v2.3.1 trên image mặc định (Py 3.13, torch 2.11?) hay **B** cài torch 2.10
       + wheel v2.3.2/causal-conv1d ≥1.6.2 dựng sẵn → kernel kiểm tra ngắn `-t 1200` → train thử.
 - [x] **Preflight tài khoản B** — **PREFLIGHT OK 2026-10-05** (18 phút, 0,29 GPU-h của B; Plan nhật ký).
-- [ ] ⛔ **Train thử A** (~2-2,5 GPU-h, `-t 19800`) — kernel đã thêm log text + `gpu_util.csv`,
-      bỏ rglob tốn 3 phút, watchdog 10 phút (2026-10-05, chưa commit); **chờ duyệt push**.
+- [x] **Train thử A — XONG 2026-10-05** (88′, ~1,5 GPU-h). WER val_unseen: ConExt 0,439 · Conformer 0,564 ·
+      B1 0,747 (B1 trượt G1/G2: loss NaN dưới fp16, 41,6% câu rỗng; trên câu không rỗng B1 0,560 ≈ Conformer).
+      Chi tiết: `Plan.md` nhật ký 2026-10-05 (chiều).
+- [x] **Chẩn đoán NaN của B1** — 2026-10-05: tràn fp16 bên trong khối Mamba; sửa `mamba_fp32` (khối Mamba
+      fp32 mọi encoder, theo U-Mamba/README mamba-ssm). Kernel `diag-b1-asr`; Plan nhật ký 2026-10-05 (tối).
+- [x] **Train thử lại B1** — XONG 2026-10-05: 0 NaN, qua G0-G3, WER val_unseen 0,465 (Conformer 0,564, ConExt
+      0,439; B1 − ConExt +0,026 [+0,019; +0,034]); 0,733 s/step. Chi tiết Plan nhật ký 2026-10-05 (tối).
+- [ ] **Commit** `mamba_fp32` (mamba_encoder + conextbimamba_encoder), ARCHITECTURE, note tiền xử lý, kernel
+      `diag_b1`/`retrain_b1` — chờ người dùng yêu cầu. Train full phải clone code đã có `mamba_fp32`.
+- [ ] ⛔ Đo lại s/step ConExtBiMamba với khối Mamba fp32 (số 0,326 cũ là fp16) — chọn cách đo (b1/b2/b3) ở
+      `docs/notes/trial_results_2026-10-05.md` mục 7.
+- [ ] ⛔ **Tiền xử lý audio** — đề xuất ở `docs/notes/audio_preprocessing_survey.md` (assert định dạng, volume /
+      speed perturbation); người dùng yêu cầu **tra thêm tài liệu** trước khi quyết; áp cho cả 3 mô hình.
+- [ ] ⛔ **Chính sách khối Mamba fp32** (`mamba_fp32`, đang dùng) — người dùng yêu cầu tra thêm tài liệu trước khi chốt.
+- [x] **Giữ 2 hay 3 mô hình — CHỐT 2026-10-05: giữ cả 3** (dự phòng đề xuất: thiếu quota thì bỏ B1 trước).
+- [ ] **Tăng tốc train: bucketing theo độ dài — CHỐT 2026-10-05 (phương án B, cả 3 mô hình; không làm A)** — sampler
+      trong `train.py`, giữ resume giữa epoch + chia rank DDP; test CPU; đo s/step trong preflight.
+- [ ] Sửa phụ: `trial_report` lấy s/step từ epoch không toàn step bỏ (B1 ghi sai 0,114 s/step); `train.py` nhánh
+      bỏ step `del loss, log_probs` (giữ đồ thị → VRAM 2,1 → 3,9 GiB) — sửa code dùng chung, test cả 3 encoder.
 - [ ] **Kernel train thử** — lần 1 **ERROR** (image Py 3.13 không nhận wheel cp312, chưa
       train gì); đã ghim `docker_image` + `dataset_sources`, thêm log tiến độ + watchdog
       treo 20 phút (test xong); **chờ duyệt push + chạy lại** (quota A còn 28,87 h).
@@ -192,6 +209,10 @@ duyệt, D3 → **4 shard**, train full + đánh giá theo epoch).
       checkpoint), người dùng chốt giữ 2 hay 3.
 - [ ] **Kernel GPU zero_shot** Parakeet + PhoWhisper trên 203 câu clean-test (~0,5 GPU-h)
       — xin duyệt quota. Kiểm Parakeet chạy được trên T4.
+- [x] **Pilot RQ2 2026-10-05** (trọng số ngẫu nhiên, 3 mô hình × {1×, 4×} + B1 fp16, 5-3.600 s): Mamba dốc ≈ 1,
+      Conformer ≈ 2; điểm giao 60 s (ConExt) / 120 s (B1); không OOM tới 3.600 s. `docs/notes/rq2_pilot_2026-10-05.md`.
+- [x] **Subsampling — CHỐT 2026-10-05: giữ không subsampling.** Pilot: 4× làm mọi mô hình nhanh hơn nhưng đẩy
+      điểm giao ra ~4× (240/480 s).
 - [ ] **RQ2 (chốt 2026-10-03, chưa code):** script ghép đoạn liên tiếp cùng
       video (từ train + val, đã bỏ `excluded.tsv`) thành audio dài theo các mức
       độ dài; sửa `rtf.py` bỏ bucket 3-30 s, đo RTF/độ trễ/VRAM cho cả 5 mô

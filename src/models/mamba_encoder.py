@@ -42,6 +42,20 @@ def reverse_padded(x: torch.Tensor, lengths: torch.Tensor) -> torch.Tensor:
     return torch.gather(x, 1, index.unsqueeze(-1).expand_as(x))
 
 
+def mamba_fp32(block: torch.nn.Module, x: torch.Tensor) -> torch.Tensor:
+    """Chạy một khối Mamba ở fp32 kể cả khi train dưới autocast fp16 (thêm 2026-10-05).
+
+    Train thử 2026-10-05: B1 tràn fp16 *bên trong* khối Mamba (đầu ra khối chạy fp32 chỉ ~7e3
+    nhưng trung gian vượt 65504) → loss NaN, 41,6% câu rỗng; cùng checkpoint chạy fp32 thì hết
+    (kernel diag-b1-asr). T4 không có bf16 (ConMamba train bf16). Cách làm theo U-Mamba
+    (`MambaLayer`: `@autocast(enabled=False)` + ép fp16 → fp32); README mamba-ssm: "SSMs are
+    sensitive to their recurrent dynamics". Dùng cho mọi encoder có khối Mamba (B1, ConExtBiMamba)
+    — cùng tiền lệ front-end/CTC luôn fp32; phần còn lại vẫn AMP.
+    """
+    with torch.autocast(device_type=x.device.type, enabled=False):
+        return block(x.float())
+
+
 class MambaEncoder(ASREncoder):
     def __init__(
         self,
@@ -117,11 +131,11 @@ class MambaEncoder(ASREncoder):
         # khung thật vì cùng lý do; CTC chỉ tính trên feat_lengths.
         if not self.bidirectional:
             for block, norm in zip(self.layers, self.norms):
-                x = x + self.dropout(block(norm(x)))
+                x = x + self.dropout(mamba_fp32(block, norm(x)))
             return self.norm_f(x), feat_lengths
 
         for block_fwd, block_bwd, norm in zip(self.layers, self.layers_bwd, self.norms):
             h = norm(x)
-            h_bwd = reverse_padded(block_bwd(reverse_padded(h, feat_lengths)), feat_lengths)
-            x = x + self.dropout(block_fwd(h)) + self.dropout(h_bwd)
+            h_bwd = reverse_padded(mamba_fp32(block_bwd, reverse_padded(h, feat_lengths)), feat_lengths)
+            x = x + self.dropout(mamba_fp32(block_fwd, h)) + self.dropout(h_bwd)
         return self.norm_f(x), feat_lengths

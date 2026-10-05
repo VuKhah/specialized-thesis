@@ -22,7 +22,7 @@ from torchaudio.models.conformer import _ConvolutionModule, _FeedForwardModule
 
 from src.models.encoder_base import ASREncoder
 from src.models import mamba_encoder
-from src.models.mamba_encoder import reverse_padded
+from src.models.mamba_encoder import mamba_fp32, reverse_padded
 
 
 class ConExtBiMambaLayer(torch.nn.Module):
@@ -70,8 +70,8 @@ class ConExtBiMambaLayer(torch.nn.Module):
     def forward(self, x: torch.Tensor, lengths: torch.Tensor, pad_mask: torch.Tensor) -> torch.Tensor:
         x = x + 0.5 * self.ffn1(x)
         h = self.mamba_norm(x)
-        h_bwd = reverse_padded(self.mamba_bwd(reverse_padded(h, lengths)), lengths)
-        x = x + self.mamba_dropout(self.mamba_fwd(h) + h_bwd)
+        h_bwd = reverse_padded(mamba_fp32(self.mamba_bwd, reverse_padded(h, lengths)), lengths)
+        x = x + self.mamba_dropout(mamba_fp32(self.mamba_fwd, h) + h_bwd)
         x = x + self._conv(x, pad_mask)
         x = x + 0.5 * self.ffn2(x)
         return self.final_layer_norm(x)

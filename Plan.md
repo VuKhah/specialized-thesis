@@ -854,3 +854,104 @@ khảo sát dataset, phát hiện sai lệch số liệu, prefetch script, train
   -t 19800` (A), theo dõi `python scripts/kaggle/watch_kernel.py tieunhi/train-trial-asr`; xong thì
   tải `logs/`, `trial_report.*`, `trial/*/metrics.jsonl`, eval jsonl (không tải checkpoint). Commit
   `train_trial.py` khi người dùng yêu cầu.
+- **Đã chạy train thử A** (người dùng duyệt): commit + push `39e0a44`; `kaggle kernels push` version 3
+  lúc ~03:50 UTC 05/10 (`-t 19800`). Phần kiểm tra đầu kernel đạt hết trong 17′ (môi trường, CHECK OK,
+  cài wheel 4 s thay vì 3′, chép audio 7,3′, pipeline tí hon 3 mô hình, resume). 04:10 UTC đang train B1
+  epoch 0: loss tb 119,7 → 28,8 (step 50 → 350), 0,48 s/step (~5,7′/epoch), VRAM 2,1 GiB, bỏ 0+5 step
+  AMP; cảnh báo `scheduler.step()` trước `optimizer.step()` do AMP bỏ step đầu — vô hại. Quota A 1,88 h.
+  Dự kiến xong ~06:00-06:30 UTC (13:00-13:30 VN).
+- **Đóng phiên 2026-10-05 (trưa).** Chưa commit phần nhật ký này.
+- **Phiên sau bắt đầu từ:**
+  1. `PYTHONUTF8=1 kaggle kernels status tieunhi/train-trial-asr` + `kaggle quota`. ERROR/CANCEL →
+     đọc log, sửa, **không chạy lại khi chưa hỏi**. Còn RUNNING → `python scripts/kaggle/watch_kernel.py
+     tieunhi/train-trial-asr`.
+  2. COMPLETE → tải output nhỏ vào scratchpad, **không tải checkpoint** (`trial/*/*.pt`):
+     `PYTHONUTF8=1 kaggle kernels output tieunhi/train-trial-asr -p <scratch> --file-pattern
+     '(logs/.*|trial_report\..*|trial/.*/(metrics\.jsonl|eval_.*\.jsonl))'` (kiểm lại cú pháp regex
+     của CLI; nếu không lọc được thì tải log trước).
+  3. Kiểm: `logs/train_trial.log` có `TRAIN THỬ XONG`, không có `!!!` (lỗi/watchdog); mỗi mô hình đủ 5
+     epoch trong `metrics.jsonl` (hết trần 90′ thì chưa đủ); `logs/gpu_util.csv` — quãng GPU 0% dài
+     (lần đầu dùng file này, xem có ghi được không).
+  4. Đọc `trial_report.md` (chất lượng + CI95, học/ổn định, tài nguyên, cổng G0-G3) → trình người dùng;
+     ⛔ **người dùng chốt giữ 2 hay 3 mô hình** (không tự chọn). Chú ý G1 (sụp blank) với ConExt — preflight
+     thấy loss đứng ~6,0 ở step 150-500.
+  5. Sau chốt: xếp lại lịch train full (mục 2), viết kernel train full mỗi tài khoản (resume nhiều phiên).
+
+### 2026-10-05 (chiều) — kết quả train thử A
+- **Kernel `tieunhi/train-trial-asr` v3 COMPLETE** (88′, `TRAIN THỬ XONG`, không `!!!`; quota A 3,01 h / 30 →
+  lần này ~1,5 GPU-h). Output nhỏ đã tải vào scratchpad (không tải checkpoint). `gpu_util.csv` ghi được (352 mẫu).
+- **`trial_report.md` (5 epoch, 1/4 dữ liệu, 1 seed) — WER val_unseen:** ConExtBiMamba **0,439** [0,415; 0,467] ·
+  Conformer 0,564 [0,543; 0,587] · B1 0,747. ConExt tốt hơn Conformer −0,125 [−0,131; −0,117]. Cổng: Conformer,
+  ConExt qua G0-G3; **B1 trượt G1 (41,6% câu rỗng) và G2 (1318/3555 step loss không hữu hạn, val loss NaN)**.
+- **Chẩn đoán B1 (chưa kiểm chứng trên GPU):** loss không hữu hạn từ cuối epoch 1, lan thành chuỗi (epoch 4 bỏ
+  708/711 step). CTC đã fp32 → NaN/Inf có sẵn trong `log_probs`, tức forward encoder dưới autocast fp16 (T4 không
+  bf16). Câu rỗng ở eval chỉ có từ epoch 3, không phụ thuộc độ dài câu (53 vs 51 từ), không dồn theo batch mà
+  **dồn theo video** (5 video ≈ 436/1252) → phụ thuộc đầu vào. **Trên câu không rỗng B1 WER 0,560 ≈ Conformer
+  0,564** (epoch 2 khi chưa rỗng: B1 0,681 vs Conformer 0,984) → kết quả B1 phản ánh lỗi số học, không phải năng lực.
+  Giả thuyết tràn fp16 trong khối Mamba là suy đoán, chưa có bằng chứng tầng nào.
+- **Lỗi phụ phát hiện:** (1) `trial_report` lấy s/step + GPU-giờ của epoch cuối → B1 ghi 0,114 s/step / 3,2 GPU-h là
+  sai (epoch cuối toàn step bỏ; thật ~0,47 s/step ≈ 13 GPU-h/30 epoch). (2) Nhánh bỏ step trong `train.py` giữ
+  đồ thị forward của step trước (`loss`, `log_probs` còn tham chiếu) → VRAM đỉnh 2,1 → 3,9 GiB đúng lúc bắt đầu bỏ.
+  (3) Conformer kẹt bình nguyên blank 3 epoch (rỗng 100% tới epoch 2), ConExt thoát sau 1 epoch.
+- **⛔ Chờ người dùng:** (a) có chạy kernel chẩn đoán ngắn B1 không (nạp checkpoint B1 cuối, so forward fp16 vs fp32
+  trên các câu rỗng, tìm tầng ra Inf; ước ~15-20′ GPU); (b) quyết định giữ 2 hay 3 mô hình — **nên hoãn tới khi
+  B1 được sửa/chẩn đoán**, vì kết quả hiện tại không công bằng với B1.
+- **Phiên sau bắt đầu từ:** câu trả lời (a)/(b) ở trên. Kernel chẩn đoán cần checkpoint B1 từ output
+  `train-trial-asr` (gắn làm `kernel_sources`, không tải về local).
+
+### 2026-10-05 (tối) — tra tiền xử lý audio, chẩn đoán B1, train thử lại B1
+- **Người dùng yêu cầu:** tra tài liệu tiền xử lý audio → kernel chẩn đoán B1 → train thử lại B1.
+- **Tiền xử lý:** `docs/notes/audio_preprocessing_survey.md` (đề xuất, **chưa áp dụng**). Dữ liệu 100% 16 kHz
+  mono PCM_16; RMS câu train p5 −28,3 / p95 −14,8 dBFS (lệch ≈ 1 std log-mel, chủ yếu giữa video), 5,1% câu chạm
+  trần. CMVN toàn cục không khử gain. Đề xuất: assert định dạng; volume perturbation (Kaldi); speed perturbation
+  (Ko 2015, −4,3% tương đối). **Người dùng chọn: chưa đổi front-end** cho lần train lại B1.
+- **Kernel `tieunhi/diag-b1-asr`** (`scripts/kaggle/diag_b1/`, ~1 phút GPU sau setup): B1 latest.pt, 80 câu batch 1.
+  40/40 câu từng rỗng → không hữu hạn ở fp16, **0/40 ở fp32** (WER fp32 0,539; nhóm lành 0,565 cả hai). Inf đầu
+  tiên luôn ở **tầng 8 nhánh xuôi**; chạy fp32 đầu ra khối max ~7e3 (< 65504) → tràn ở **trung gian trong khối**.
+  Kích hoạt khối tăng theo train: best.pt (epoch 2) p50 1,3e3 → latest 6,1e3 (đỉnh dồn vào vài khối, vd. tầng 7
+  nhảy 18 → 6.889). Trọng số không có gì bất thường. Đổi gain ×0,25…×4: không đơn điệu → **bác giả thuyết "to →
+  NaN"** (đã sửa trong note). ConExt cùng câu: 0 NaN cả fp16/fp32.
+- **Cách sửa:** người dùng chọn "phương án tác giả/cộng đồng khuyến nghị" → khối Mamba fp32 cho mọi encoder có
+  Mamba (`mamba_fp32` trong `mamba_encoder.py`, dùng ở B1 + ConExt). Căn cứ: README mamba-ssm (SSM nhạy, giữ fp32),
+  ConMamba train bf16 (T4 không có), U-Mamba `MambaLayer` `@autocast(enabled=False)` + ép fp32. Test CPU khối
+  giả: khối nhận fp32, autocast tắt, 3 encoder forward/backward OK; lệch riêng/batch trước = sau sửa.
+  **Phát hiện phụ (có từ trước):** test cả front-end thì câu riêng vs trong batch lệch ~0,2 với khối giả — khung
+  cuối của câu ngắn bị STFT nhìn vào padding 0; bất biến 8-e chỉ đúng từ đặc trưng trở đi. Chưa đánh giá ảnh hưởng.
+- **Kernel `tieunhi/retrain-b1-asr`** (`scripts/kaggle/retrain_b1/`, `OVERLAY` = 2 file đã sửa, chưa commit): chỉ B1,
+  shard0, 5 epoch, seed 42; chép metrics/eval của ConExt + Conformer từ output train thử để `trial_report` so cả 3.
+  Đẩy `-t 7200`.
+- **Lưu ý so sánh:** WER của ConExt ở train thử là fp16 (không NaN, giữ được); từ train full ConExt chạy khối
+  Mamba fp32 → s/step phải đo lại.
+- **Kết quả `retrain-b1-asr` (COMPLETE, ~1,1 GPU-h, quota A 4,14 h / 30):** B1 khối Mamba fp32 — **0 step loss không
+  hữu hạn** (5 step AMP đầu, như mọi mô hình), 0% câu rỗng, **qua cả G0-G3**. WER val_unseen theo epoch 1,000 →
+  0,799 → 0,610 → 0,507 → **0,465** [0,438; 0,496], CER 0,316. So Conformer −0,099 [−0,108; −0,089]; so ConExt
+  (bootstrap cặp theo video, local) **+0,026 [+0,019; +0,034]** → ConExt > B1 > Conformer ở mốc 5 epoch / 1/4 dữ liệu.
+  Tài nguyên: B1 0,733 s/step (fp16 cũ 0,47, +55%), VRAM 3,3 GiB, ước 18,1 GPU-h / 30 epoch. **Bảng tốc độ chưa
+  công bằng:** ConExt/Conformer đo ở train thử fp16; ConExt từ nay cũng chạy khối Mamba fp32 → s/step phải đo lại
+  (cờ "bị trội Pareto bởi ConExt" của B1 dựa trên số cũ).
+- **Phiên sau bắt đầu từ:** (1) ⛔ người dùng chốt giữ 2 hay 3 mô hình (giờ đủ dữ liệu: cả 3 qua cổng); (2) ⛔ tiền
+  xử lý audio (note mới); (3) commit `mamba_fp32` + note + kernel diag/retrain khi người dùng yêu cầu — kernel train
+  full phải clone code có `mamba_fp32` (bỏ OVERLAY); (4) đo lại s/step ConExt với khối fp32 (có thể gộp vào epoch đầu
+  train full); (5) lỗi phụ còn mở: `trial_report` s/step epoch cuối, `train.py` giữ đồ thị khi bỏ step.
+- **Ghi nhận kết quả (người dùng yêu cầu):** `docs/notes/trial_results_2026-10-05.md` (bảng điều kiện, chất lượng,
+  ổn định, tài nguyên, cổng, phương án a/b/c) + số liệu gốc `reports/results/trial_2026-10-05/`. Trả lời câu hỏi tiền
+  xử lý: 3 mô hình **cùng front-end** (commit `39e0a44`, OVERLAY chỉ 2 file mô hình); khác duy nhất là số học khối
+  Mamba (ConExt fp16 ở train thử, B1 fp32) — ConExt từ nay tự fp32; WER ConExt fp16 = fp32 (0,435 / 80 câu, diag).
+- **Pilot RQ2 (người dùng duyệt, `tieunhi/rq2-pilot-asr`, ~0,2 GPU-h, quota A 4,35 h):** trọng số ngẫu nhiên, 1 T4,
+  batch 1, 5 → 3.600 s audio ghép (1 video, 274 đoạn), có nhánh subsampling 4× dựng tạm chỉ để đo. Kết quả:
+  `docs/notes/rq2_pilot_2026-10-05.md`, biểu đồ `reports/results/rq2_pilot_2026-10-05/rq2_pilot.png`. Conformer
+  dốc log-log 1,96, Mamba ≈ 1,0; ở 10-15 s Conformer nhanh nhất; điểm giao ConExt 60 s / B1 120 s (1×), 240 / 480 s
+  (4×); 3.600 s: Conformer 157 s vs ConExt 3,3 s / B1 5,0 s. Không OOM tới 3.600 s (attention mem-efficient → VRAM
+  tuyến tính cả ba; Mamba fp32 tốn VRAM hơn ~36%). Subsampling đẩy điểm giao ra ~4× — khớp Speech Slytherin.
+- **Phiên sau bắt đầu từ:** ⛔ (1) giữ 2 hay 3 mô hình; (2) có đổi subsampling không (pilot cho số để quyết);
+  (3) tiền xử lý; (4) tăng tốc train B1 (A/B); (5) commit toàn bộ (`mamba_fp32`, notes, reports, 4 kernel mới,
+  `scripts/plot_rq2_pilot.py`) khi người dùng yêu cầu.
+- **Người dùng CHỐT (2026-10-05 tối):** (1) **không subsampling** (giữ chốt 2026-09-26, pilot RQ2 ủng hộ); (2) **tăng tốc
+  train B1 = chỉ bucketing theo độ dài (phương án B)**, không làm A (in_proj fp16 — không có tài liệu ủng hộ); áp cho
+  cả 3 mô hình; (3) **giữ cả 3 mô hình** cho train full (dự phòng thiếu quota/chậm lịch: bỏ B1 trước — đề xuất, chưa
+  chốt). **Còn mở:** tiền xử lý (speed/volume perturbation) và chính sách khối Mamba fp32 — người dùng yêu cầu tra
+  thêm tài liệu (lần tra đầu hỏng vì lỗi hệ thống kiểm duyệt, chưa tra được). Người dùng yêu cầu commit.
+- **Phiên sau bắt đầu từ:** tra tài liệu 2 mục còn mở (Jamba/FalconMamba chuẩn hoá trong khối Mamba; precision của
+  Vim/ConMamba/ESPnet Mamba; issue fp16 mamba-ssm; speed perturbation + SpecAugment; on-the-fly vs ×3; bằng chứng
+  volume perturbation; CMVN toàn cục vs theo câu) → trình người dùng; code bucketing (`train.py`, giữ resume + chia
+  rank DDP) + test CPU; preflight đo s/step 3 mô hình; push khi người dùng yêu cầu (kernel train full clone từ GitHub).

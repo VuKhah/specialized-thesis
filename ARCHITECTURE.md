@@ -236,6 +236,11 @@ Ký hiệu: ✅ đã chạy thật · 🟡 chạy được một phần · ⬜ c
   miễn weight decay cho tham số `_no_weight_decay` (`A_log`, `D`); Conformer
   không bị ảnh hưởng (đã kiểm: tham số giống hệt từng bit so với AdamW cũ).
   Khi thêm AMP: dùng `torch.autocast` + tham số fp32, **không** `.half()`.
+  **Khối Mamba luôn chạy fp32 (2026-10-05):** mọi lời gọi khối Mamba (B1 và
+  ConExtBiMamba) đi qua `mamba_encoder.mamba_fp32` (tắt autocast + ép fp32), như
+  U-Mamba. Lý do: train thử B1 tràn fp16 *bên trong* khối → NaN/câu rỗng (kernel
+  `diag-b1-asr`, Plan.md nhật ký 2026-10-05 tối). Thêm khối Mamba mới thì cũng gọi
+  qua hàm này. Hệ quả: s/step của mô hình có Mamba gồm phần fp32 — ghi khi so tốc độ.
 - **e3. ConExtBiMamba: padding (2026-10-04).** Cặp Mamba giữ bất biến như 8-e,
   nhưng depthwise conv kernel 31 không nhân quả → `ConExtBiMambaLayer._conv`
   gọi lại từng bước `_ConvolutionModule` và xoá khung padding ngay trước
