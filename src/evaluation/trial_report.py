@@ -98,14 +98,19 @@ def analyze_experiment(exp: Path, full_steps_per_epoch: int | None) -> dict:
         }
     steps = sum(m["steps"] for m in metrics)
     skipped = sum(m["nonfinite_loss_steps"] + m["amp_skipped_steps"] for m in metrics)
-    s_step = last["s_per_step"]
+    # Epoch có step bỏ (loss không hữu hạn) không chạy backward/optimizer → s/step thấp giả: train thử B1
+    # 2026-10-05 epoch cuối bỏ 708/711 step, ghi 0,114 thay vì ~0,47 s/step. Lấy epoch sạch cuối cùng;
+    # không có thì epoch ít step bỏ nhất.
+    clean = [m for m in metrics if m["nonfinite_loss_steps"] == 0]
+    timing = clean[-1] if clean else min(metrics, key=lambda m: m["nonfinite_loss_steps"] / max(m["steps"], 1))
+    s_step = timing["s_per_step"]
     eval_s = sum(last.get(f"eval_seconds_{n}", 0.0) for n in EVAL_SETS)
     res.update({
         "encoder_params": last.get("encoder_params"),
         "train_loss": last["train_loss"], "train_loss_curve": [m["train_loss"] for m in metrics],
         "skipped_steps": skipped, "total_steps": steps, "skipped_frac": skipped / max(steps, 1),
         "grad_norm_mean": last["grad_norm_mean"], "grad_norm_max": max(m["grad_norm_max"] for m in metrics),
-        "s_per_step": s_step, "peak_vram_gib": max((m["peak_vram_gib"] or 0.0) for m in metrics) or None,
+        "s_per_step": s_step, "s_per_step_epoch": timing["epoch"], "peak_vram_gib": max((m["peak_vram_gib"] or 0.0) for m in metrics) or None,
         "full_gpu_hours": (s_step * full_steps_per_epoch + eval_s) * FULL_EPOCHS / 3600
         if full_steps_per_epoch else None,
     })

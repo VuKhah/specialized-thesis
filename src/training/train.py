@@ -162,13 +162,15 @@ def save_checkpoint(path: Path, model, optimizer, scheduler, scaler, **meta) -> 
     os.replace(tmp, path)
 
 
-@torch.no_grad()
 def _log(msg: str) -> None:
     """Kèm giờ (UTC trên Kaggle): `kaggle kernels logs -f` không có mốc thời gian, cần để
     phân biệt đang chạy chậm với đang treo (lần train thử 1 không thấy gì suốt ~4 h)."""
     print(f"[{time.strftime('%H:%M:%S')}] {msg}", flush=True)
 
 
+# Decorator từng bị tách khỏi hàm này khi chèn `_log` (commit 18b5434) → eval train thử 2026-10-05 chạy
+# có autograd: WER đúng, nhưng thời gian/VRAM eval bị đo phồng.
+@torch.no_grad()
 def evaluate(model: CTCASRModel, eval_loader: DataLoader, rows: list[dict], tokenizer: BPETokenizer, device,
              amp: bool = False, name: str = "eval", log_every: int = 0) -> tuple[float, float, list[dict]]:
     """WER greedy + CTC loss trên cùng một lần forward; với DDP mỗi rank giải mã
@@ -406,6 +408,9 @@ def main():
                 # Vẫn đếm step (giữ lịch LR + thứ tự dữ liệu khi resume), chỉ không học.
                 nonfinite_loss += 1
                 loss_value = float("nan")
+            # Không backward thì đồ thị forward vẫn sống qua `loss`/`log_probs` tới khi forward step sau gán
+            # đè → hai đồ thị cùng lúc (train thử B1 2026-10-05: VRAM đỉnh 2,1 → 3,9 GiB đúng lúc bắt đầu bỏ).
+            del loss, log_probs, out_lengths
             scheduler.step()
 
             global_step += 1

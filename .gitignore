@@ -82,3 +82,6 @@ Thumbs.db
 # Cấu hình kernel Kaggle chứa username tài khoản — giữ local (repo public)
 scripts/kaggle/**/kernel-metadata.json
 docs/tong_ket/
+
+# Bản sinh của launcher train full (chứa username)
+scripts/kaggle/train_full/_build/
