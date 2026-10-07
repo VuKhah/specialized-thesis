@@ -1,0 +1,61 @@
+# Mamba-CTC. 2026-10-02 chuyển sang hai chiều phương án B1
+# (docs/notes/mamba_bidirectional.md): 14 lớp × 2 khối Mamba (xuôi + ngược,
+# chung LayerNorm) = vẫn 28 khối như bản một chiều n_layers=28 chọn
+# 2026-09-24 để khớp tham số với model_conformer.yaml. Tính theo shape
+# mamba_ssm.Mamba v2.3.1: 12.285.696 vs 12.204.288 (+0,67%, mục tiêu < 5%) —
+# cần xác nhận bằng `python -m src.models.param_count` trên Kaggle. Giữ
+# expand=2 mặc định bài gốc, chỉ tăng độ sâu; d_model=256 để CTC head giống
+# hệt Conformer. Bản một chiều (ablation/thảo luận): bidirectional: false,
+# n_layers: 28 → 12.292.864.
+experiment_name: mamba_ctc
+
+encoder:
+  type: mamba
+  input_dim: 80
+  d_model: 256
+  n_layers: 14 # số lớp; mỗi lớp 2 khối khi bidirectional. 1 khối Mamba ~0,44M tham số, 1 Conformer block ~1,5M
+  bidirectional: true
+  d_state: 16
+  d_conv: 4
+  expand: 2
+  dropout: 0.1 # = Conformer; 2405.12609, ConMamba (thêm 2026-10-04)
+
+tokenizer:
+  vocab_size: 1000 # PHẢI khớp với model_conformer.yaml (dùng chung tokenizer)
+
+training:
+  batch_size: 16
+  lr: 3.0e-4 # PyYAML doc "3e-4" (khong co dau cham) thanh string, khong phai float
+  epochs: 30
+  warmup_steps: 1000
+  grad_clip: 5.0
+  # = mặc định AdamW trước 2026-09-30, ghi rõ ra. Tham số `_no_weight_decay`
+  # (A_log, D của Mamba) được miễn — xem build_optimizer trong train.py.
+  weight_decay: 0.01
+  seed: 42 # khởi tạo + thứ tự dữ liệu; giống nhau ở hai tài khoản Kaggle (D10)
+  amp: true # fp16 autocast trên GPU (D8); CPU tự tắt
+  num_workers: 2 # mỗi tiến trình (D8)
+  # Bucketing theo độ dài (chốt 2026-10-05): xếp trong cụm 50 batch toàn cục (~800 câu),
+  # 0 = tắt. PHẢI giống nhau ở mọi config train từ đầu.
+  bucket_pool_batches: 50
+
+# Front-end dùng chung — PHẢI giống hệt nhau ở mọi config train từ đầu
+# (src/features/log_mel.py, thêm 2026-10-04).
+features:
+  cmvn_stats: configs/cmvn_stats.json
+  spec_augment: # chỉ lúc train; theo Conformer (Gulati 2020), không time warping
+    freq_masks: 2
+    freq_width: 27
+    time_masks: 10
+    time_ratio: 0.05
+
+data:
+  # data/splits/*.tsv (make_shards.py), đã bỏ excluded.tsv (A1) khi đọc.
+  # Train thử 1 shard: --train_manifests train_shard0.
+  train_manifests: [train_shard0, train_shard1, train_shard2, train_shard3]
+  eval_manifest: val # chọn best.pt: validation trừ clean-test cũ (D5), trừ video giữ riêng
+  extra_eval_manifests: [val_unseen] # video giữ riêng (make_heldout.py), chỉ ghi log
+  sample_rate: 16000
+  # Speed perturbation on-the-fly lúc train (Ko 2015; chốt 2026-10-05,
+  # docs/notes/audio_preprocessing_survey.md mục 5). PHẢI giống nhau ở mọi config train từ đầu.
+  speed_perturb: [0.9, 1.0, 1.1]

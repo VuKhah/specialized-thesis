@@ -1,0 +1,62 @@
+{
+  "experiment": "conformer_ctc_baseline",
+  "session": 2,
+  "config": "configs/model_conformer.yaml",
+  "extra_args": [
+    "--epochs",
+    "76"
+  ],
+  "run": {
+    "commit": "bb8d0ebd885c6ba21f67373cfd44cb67bb67c988",
+    "python": "3.13.15",
+    "torch": "2.11.0+cu128",
+    "cuda": "12.8",
+    "cudnn": 91900,
+    "torchaudio": "2.11.0+cu128",
+    "mamba_ssm": "2.3.1",
+    "causal_conv1d": "1.5.4",
+    "gpus": [
+      "Tesla T4, 580.178.04, 15360 MiB",
+      "Tesla T4, 580.178.04, 15360 MiB"
+    ],
+    "cpu_count": 4
+  },
+  "returncode": 0,
+  "epochs_target": 76,
+  "epochs_done": 69,
+  "latest": {
+    "epoch": 69,
+    "step_in_epoch": 2795,
+    "global_step": 198824,
+    "best_wer": 0.19435570822193987
+  },
+  "finished": false,
+  "setup_minutes": 5.458128976821899,
+  "kernel_minutes": 511.64675151109697,
+  "last_metrics": {
+    "epoch": 68,
+    "global_step": 196029,
+    "encoder_params": 12204288,
+    "n_train": 45442,
+    "world_size": 2,
+    "global_batch": 16,
+    "train_loss": 2.0336500151985675,
+    "steps": 2841,
+    "nonfinite_loss_steps": 0,
+    "amp_skipped_steps": 1,
+    "grad_norm_mean": 3.5316999965570344,
+    "grad_norm_max": 31.18896484375,
+    "s_per_step": 0.24865536327221074,
+    "peak_vram_gib": 2.877936840057373,
+    "lr": 0.0003,
+    "resumed_mid_epoch": false,
+    "wer_val": 0.19527758516339266,
+    "loss_val": 0.7471900153812484,
+    "eval_seconds_val": 25.705135107040405,
+    "wer_val_unseen": 0.19200756076067382,
+    "loss_val_unseen": 0.7372749491966828,
+    "eval_seconds_val_unseen": 16.021871089935303,
+    "wall_seconds_total": 53352.31040644646,
+    "epoch_end_utc": "2026-10-07T05:29:03Z"
+  }
+}

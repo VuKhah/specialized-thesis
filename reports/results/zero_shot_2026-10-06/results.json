@@ -1,0 +1,84 @@
+{
+  "meta": {
+    "date_utc": "2026-10-06T15:36:42+00:00",
+    "device": "cuda",
+    "gpu": "Tesla T4",
+    "torch": "2.11.0+cu128",
+    "dataset": "thanhnew2001/VietSuperSpeech",
+    "dataset_revision": "cbf624ae9b30e1c2793a27e95b262115c69601f3",
+    "manifest_version": 2,
+    "n": 203,
+    "limit": null,
+    "n_corrected_text": 0,
+    "n_pseudo_label": 203,
+    "normalization": "src/evaluation/text_normalize.py: NFC, chữ thường, bỏ nháy đơn, dấu câu/ký hiệu → khoảng trắng, gộp khoảng trắng; chữ số GIỮ NGUYÊN (nhãn không có chữ số → mỗi chữ số trong hyp là lỗi, xem n_hyp_with_digits)",
+    "normalize_copy_check": "khớp bản GitHub",
+    "timing": "batch 1, audio đã nạp sẵn RAM (không tính đọc đĩa), gồm trích đặc trưng + mô hình + giải mã; 3 câu warm-up không tính; RTF = tổng thời gian / tổng thời lượng audio",
+    "vram": "torch.cuda.max_memory_allocated trong lúc suy luận (gồm trọng số); không gồm overhead CUDA context"
+  },
+  "models": {
+    "phowhisper": {
+      "model": "vinai/PhoWhisper-small",
+      "revision": "a86b604c346caf7148c37512eafe783a16420adb",
+      "license": "BSD-3-Clause",
+      "precision": "fp32 weights + autocast fp16 (front-end fp32)",
+      "batch_size": 1,
+      "n_warmup": 3,
+      "load_time_s": 34.6,
+      "decoding": "greedy (num_beams=1), language=vi, task=transcribe, max_new_tokens=200",
+      "n_params": 241734912,
+      "vram_weights_gib": 0.901,
+      "vram_peak_allocated_gib": 1.049,
+      "vram_peak_reserved_gib": 1.156,
+      "total_infer_s": 318.102,
+      "total_audio_s": 2660.8,
+      "rtf": 0.11955127192310597,
+      "mean_latency_s": 1.5670050459753713,
+      "wer_all": {
+        "n": 203,
+        "wer": 0.15497726613137275,
+        "cer": 0.0998496588412166,
+        "substitutions": 857,
+        "deletions": 191,
+        "insertions": 554,
+        "hits": 9289
+      },
+      "n_hyp_empty": 0,
+      "n_hyp_with_digits": 0
+    },
+    "parakeet": {
+      "model": "nvidia/parakeet-ctc-0.6b-Vietnamese",
+      "revision": "b0493142b49458810324e3db8be9e8e07b4ebc17",
+      "license": "NVIDIA Open Model License",
+      "precision": "fp32 weights + autocast fp16 (front-end fp32)",
+      "batch_size": 1,
+      "n_warmup": 3,
+      "load_time_s": 115.7,
+      "decoding": "CTC greedy (decoding cfg mặc định của .nemo), không LM",
+      "nemo_version": "2.6.2 lhotse 1.31.1",
+      "n_params": 608799745,
+      "vram_weights_gib": 4.585,
+      "vram_peak_allocated_gib": 4.615,
+      "vram_peak_reserved_gib": 4.65,
+      "forward_vs_transcribe_check": {
+        "error": "TypeError(\"EncDecCTCModel.transcribe() got an unexpected keyword argument 'use_lhotse'\")",
+        "traceback": "_from_single_config(\n        config=config, global_rank=global_rank, world_size=world_size, dataset=dataset, tokenizer=tokenizer\n    )\n  File \"/usr/local/lib/python3.13/dist-packages/nemo/collections/common/data/lhotse/dataloader.py\", line 306, in get_lhotse_dataloader_from_single_config\n    sampler, use_iterable_dataset = get_lhotse_sampler_from_config(\n                                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^\n        config=config, global_rank=global_rank, world_size=world_size, tokenizer=tokenizer\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"/usr/local/lib/python3.13/dist-packages/nemo/collections/common/data/lhotse/dataloader.py\", line 595, in get_lhotse_sampler_from_config\n    sampler = DynamicCutSampler(\n        cuts,\n    ...<6 lines>...\n        world_size=1 if use_iterable_dataset else world_size,\n    )\n  File \"/usr/local/lib/python3.13/dist-packages/lhotse/dataset/sampling/dynamic.py\", line 120, in __init__\n    super().__init__(\n    ~~~~~~~~~~~~~~~~^\n        drop_last=drop_last, world_size=world_size, rank=rank, seed=seed\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"/usr/local/lib/python3.13/dist-packages/lhotse/dataset/sampling/base.py\", line 77, in __init__\n    super().__init__(\n    ~~~~~~~~~~~~~~~~^\n        data_source=None\n        ^^^^^^^^^^^^^^^^\n    )  # the \"data_source\" arg is not used in Sampler...\n    ^\nTypeError: object.__init__() takes exactly one argument (the instance to initialize)\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/kaggle/src/script.py\", line 419, in run_model\n    official = reference_transcribe(s[\"path\"])\n  File \"/kaggle/src/script.py\", line 352, in reference_transcribe\n    out = model.transcribe([audio_path], batch_size=1, verbose=False, use_lhotse=False)\nTypeError: EncDecCTCModel.transcribe() got an unexpected keyword argument 'use_lhotse'\n"
+      },
+      "total_infer_s": 62.994,
+      "total_audio_s": 2660.8,
+      "rtf": 0.023674864336665363,
+      "mean_latency_s": 0.3103156602315232,
+      "wer_all": {
+        "n": 203,
+        "wer": 0.20112218245138822,
+        "cer": 0.1547126170926333,
+        "substitutions": 711,
+        "deletions": 934,
+        "insertions": 434,
+        "hits": 8692
+      },
+      "n_hyp_empty": 16,
+      "n_hyp_with_digits": 0
+    }
+  }
+}

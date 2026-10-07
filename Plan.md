@@ -72,20 +72,20 @@ lỗi); fine-tune pre-train là phần **bỏ được đầu tiên** nếu thi�
 
 ## 3. Trạng thái hiện tại (mức tuần — chi tiết ở `TODO.md`)
 
-Đang ở **cuối Tuần 6** (2026-10-04).
+Đang ở **giữa Tuần 7** (2026-10-08) — **sớm hơn lộ trình mục 2 khoảng 2-3 tuần** ở phần train.
 
 | Hạng mục | Trạng thái | Ghi chú |
 |---|---|---|
-| Dữ liệu | ✅ | Manifest 4 shard + val; A1 lọc (`excluded.tsv`); giữ riêng 29 video cho test (`heldout_videos.tsv`); tokenizer BPE + CMVN tính lại; 5 kernel tạo dataset xong — **còn tạo Dataset trên UI + chia sẻ tài khoản B** (việc tay) |
-| Pipeline chung (#1, #2, #5) | ✅ code · 🟡 test | DDP/AMP/resume giữa epoch, CMVN + SpecAugment, dropout Mamba (2026-10-04). Test CPU Conformer đạt; **DDP/NCCL/AMP/Mamba thật chưa chạy** (Kaggle) |
-| #1 Mamba B1 | 🟡 | Code xong, test bằng khối giả; chưa chạy CUDA thật |
-| #5 ConExtBiMamba | 🟡 | Code xong 2026-10-04 (6 lớp, ffn 928, +0,31% tham số), test bằng khối giả; chưa chạy CUDA thật |
-| #2 Conformer-12M | ✅ code | Train thử CPU đạt |
-| #4 Parakeet / PhoWhisper | 🟡 | Kernel zero-shot có sẵn (test CPU 4 câu); đã đọc clean-test bản 2 (203 câu); còn rút về 2 mô hình; chưa chạy Kaggle |
-| RQ2 | ⬜ | Đã chốt cách đo, chưa code |
-| clean-test hiệu đính tay | ⬜ | 203 câu từ 29 video giữ riêng (thay bản 192 câu ngày 10-04), việc tay |
-| Đề cương mới | ⬜ | Trước Tuần 9 |
-| Khóa luận | 🔄 | File khung + nháp Ch1 (mục 6) |
+| Dữ liệu | ✅ | Manifest, A1, video giữ riêng, 5 Kaggle Dataset |
+| Pipeline chung | ✅ | DDP/AMP/resume chạy thật trên Kaggle |
+| Train full 30 epoch (#1, #2, #5) | ✅ (lộ trình: Tuần 10) | WER val: Mamba B1 0,156 · ConExt 0,188 · Conformer 0,252; Conformer dài 69 ep 0,194. Checkpoint lưu `D:\Model\kltn_checkpoints\` |
+| Zero-shot #4 | 🟡 | PhoWhisper 0,155 (203 câu); Parakeet chạy lại fp32 đủ 203 câu chưa làm |
+| Eval clean-test 3 mô hình, trung bình checkpoint, bootstrap | ⬜ | Không cần GPU |
+| RQ2 | 🟡 | Pilot xong (`rq2_pilot_2026-10-05.md`) + đo tốc độ subsampling (`subsample_speed_2026-10-08.md`); đo cuối chưa |
+| clean-test hiệu đính tay | ⬜ | 203 câu, việc tay — WER clean-test hiện so với nhãn giả |
+| Đề cương mới | ⬜ 🔴 | Trước buổi GVHD lần 2 |
+| Demo | ✅ (lộ trình: Tuần 14) | 3 mô hình, CPU |
+| Khóa luận | 🔄 | Khung + nháp Ch1 |
 
 ## 4. Quyết định đã chốt
 
@@ -1013,3 +1013,205 @@ khảo sát dataset, phát hiện sai lệch số liệu, prefetch script, train
   Đóng phiên 00:41 khi cả hai RUNNING, quota bắt đầu tăng (A 5,47 h · B 1,10 h); **chưa thấy epoch00** — kiểm ở phiên sau.
 - Output để trên Kaggle (mỗi phiên một kernel, không ghi đè nhau); tải bằng `fetch.py` khi cần.
 - **Phiên sau bắt đầu từ:** kiểm 2 phiên s1 theo checklist đầu `TODO.md` → báo người dùng → chờ đồng ý mới đẩy lần 2.
+
+### 2026-10-06 (trưa) — kiểm lần 1 train full
+- **Mamba B1 s1 (B):** COMPLETE, 510′ kernel (setup 7′), **15 epoch/phiên** (lịch ước 3 phiên → có thể 2 phiên + 1 phiên
+  ngắn). WER val 0,515 (ep0) → 0,185 (ep14), val_unseen 0,181; loss val 2,68 → 0,78, chưa bão hoà. nonfinite 0,
+  amp skip ≤ 5/epoch, VRAM 3,6 GiB, 16 dòng "lưu epoch". LR hằng 3e-4 sau warmup là đúng thiết kế.
+- **Conformer s1 (A):** ERROR, log 0 dòng, quota A không tăng → lỗi khởi động hạ tầng (như B trước đây), mất ~11 h
+  wall-clock, không mất quota.
+- Người dùng duyệt → đẩy lần 2 (~12:17): Conformer s1 lỗi khởi động thêm 2 lần (v1, v2: ERROR log rỗng, quota không
+  trừ, API `failureMessage` rỗng; metadata giống hệt preflight), v3 chạy; Mamba s2 v1 lỗi y hệt, v2 chạy. → Kiểu lỗi này
+  xảy ra trên **cả hai** tài khoản, đẩy lại là chạy; nên luôn để watcher theo dõi vài phút đầu sau khi đẩy.
+- Conformer s1 v3 ghim `bb8d0eb` (launcher lấy HEAD khi đẩy lại) — chỉ khác `7660a6b` ở Plan/TODO, code y hệt.
+- Lúc đóng phiên: Conformer xong epoch 0 (WER 1,0, loss val 5,68; 0,38 s/step cộng dồn), Mamba resume epoch 15 step 494,
+  WER val epoch 15 = 0,192 (epoch 14: 0,185 — LR hằng, theo dõi).
+- **Phiên sau bắt đầu từ:** kiểm Conformer s1 + Mamba s2 (checklist đầu `TODO.md`) → hỏi người dùng trước khi đẩy lần 3.
+
+### 2026-10-06 (tối) — kiểm Conformer s1
+- **Conformer-12M s1 (A, v3):** COMPLETE, returncode 0, **30/30 epoch trong 1 phiên** (kernel 402′, setup 6′),
+  0,259 s/step, VRAM 2,8 GiB, nonfinite 0, amp skip ≤ 6/epoch, 30 dòng "lưu epoch", không lỗi.
+  WER val 1,0 (ep0) → 0,593 (ep1) → 0,301 (ep14) → **best 0,2519 (ep28)**, val_unseen 0,2481 (ep28). Epoch cuối
+  (29) nhích lên 0,273 — LR hằng 3e-4, không decay → WER dao động ±0,01-0,02 giữa các epoch; best.pt lấy theo WER val.
+- **Mamba B1 s2 (B):** đang chạy, xong epoch 26 lúc 19:12 VN (WER val 0,164; tốt nhất tới giờ 0,159 ep24), ~34′/epoch.
+- Quota lúc 19:15: A dùng 12,15 h (còn 17,85 h), B 16,50 h (còn 13,50 h); reset 2026-10-10.
+- **Phiên sau bắt đầu từ:** người dùng quyết định đẩy `conextbimamba --session 1` (A); kiểm Mamba s2 khi xong (~21:30)
+  → hỏi trước khi đẩy `mamba --session 3` (nếu s2 chưa đủ 30 epoch).
+- Người dùng duyệt → **đẩy `conextbimamba --session 1` (A) lúc ~19:45** (version 1, commit `bb8d0eb`, 540′): khởi động
+  ngay lần đầu, chép audio đủ 4 shard + val, train từ 19:56; step 300 lúc 20:00 (loss tb 131,7 → 32,6, VRAM 3,1 GiB,
+  bỏ 0+5 step AMP đầu). Theo lịch cần 2 phiên (~11,5 GPU-h) → phiên 2 hỏi lại sau khi kiểm s1.
+- **Demo Gradio bản đầu** `src/demo/app.py` (sớm hơn lịch tuần 14, người dùng yêu cầu): tải `best.pt` Conformer (150 MB,
+  gồm optimizer) vào `checkpoints/conformer_ctc_baseline/` (gitignore); chạy CPU local, RTF ~0,06 câu 10-15 s; cài
+  `gradio` 6.29.1. Transcript chuẩn clean-test vẫn là nhãn giả (0/203 hiệu đính) — giao diện ghi rõ.
+  Quan sát từ demo: "âm tiết gãy" thực chất thường là **dính từ** khi mất token đầu từ (`nhiều hoài bão` → `nhiềuàiã`).
+- **Đóng phiên 20:17:** cả hai kernel RUNNING — `conextbimamba-s1` (A, đẩy ~19:45, hết chậm nhất ~04:45 07/10) và
+  `mamba-s2` (B, đẩy ~12:17, hết ~21:30 06/10). Quota: A 12,67 h (còn 17,33) · B 17,49 h (còn 12,51); reset 10/10.
+  Đã báo cáo Conformer cho người dùng (bảng epoch + phân tích lỗi S/D/I); **chưa** chốt: trung bình checkpoint (N?),
+  eval clean-test Conformer.
+- **Phiên sau bắt đầu từ:** kiểm `mamba` s2 (B) và `conextbimamba` s1 (A) theo checklist 🔴 đầu `TODO.md` → báo
+  người dùng → **hỏi** trước khi đẩy `mamba --session 3 --account B` (nếu s2 chưa đủ 30 epoch) và
+  `conextbimamba --session 2` (A). Sau đó hỏi lại 2 câu Conformer còn treo.
+
+### 2026-10-06 (tối, 21:25) — kiểm Mamba s2, theo dõi ConExt s1
+- **Mamba B1 s2 (B):** COMPLETE, returncode 0, **30/30 epoch — Mamba xong train, không cần phiên 3** (kernel 510′; s1 15 ep +
+  s2 15 ep, resume đúng epoch 15 step 494, metrics liền mạch). nonfinite 0, amp skip ≤ 2/epoch, 0,683 s/step, VRAM 3,66 GiB,
+  wall tổng 16,8 h. **Best epoch 28: WER val 0,1562 · val_unseen 0,1547** [CI 0,136-0,178]. So cặp cùng epoch 28 trên
+  val_unseen: Conformer 0,248 vs Mamba 0,155, chênh 9,3 điểm [8,9; 9,8] (bootstrap theo video).
+- **ConExtBiMamba s1 (A):** RUNNING, epoch 4 lúc 21:30; WER val 0,498 → 0,383 → 0,348 → 0,324 (ep0-3); 0,396 s/step,
+  ~21′/epoch → ước ~24 epoch/phiên, phiên 2 ngắn. Hết chậm nhất ~04:45 07/10.
+- Quota 21:25: A 13,81 h (còn 16,19) · B 18,09 h (còn 11,91).
+- **Phiên sau bắt đầu từ:** kiểm ConExt s1 → **hỏi** trước khi đẩy `conextbimamba --session 2`; tải checkpoint Mamba
+  (`fetch.py --model mamba --session 2 --account B --ckpt_dest <thư mục ngoài repo>`) khi người dùng chọn thư mục.
+- **Phân tích Mamba B1 (ep28, val_unseen):** S 10,8% · D 2,5% · I 2,2% · CER 0,097 (Conformer: S 15,7 · D 7,2 · I 1,9);
+  độ dài hyp ≈ ref (−0,2%; Conformer −5,3%); Mamba tốt hơn ở 29/29 video, 2.766/3.011 câu. WER val dao động giữa epoch
+  sd 0,005 (Conformer ~0,009); bước nhảy lúc nối phiên (ep14→15 +0,007) nằm trong nhiễu, ep16 hồi lại. Lỗi chung cả hai
+  mô hình: **âm tiết bị cắt theo ranh giới token BPE** — tokenizer tách 11,4% từ thành ≥ 2 mảnh kiểu phụ âm đầu + vần
+  (`NHÃN`=▁NH+Ã+N), mô hình phát phụ âm đầu rồi mất vần (`nh`, `tr`, `đ`). Chưa đề xuất đổi tokenizer (không có tài liệu
+  đã kiểm; đổi = train lại cả nhóm) — ghi làm loại lỗi RQ3.
+- **Câu hỏi người dùng (22:00):** (1) 30 epoch = 30 lượt qua **toàn bộ** 45.442 câu train (~165 h; 2.841 step × 16) — dữ
+  liệu không "hết", mỗi lượt lặp lại kèm SP + SpecAugment. (2) Dự đoán train thêm (khớp WER val = a + b·(e+1)^−c từ
+  epoch 3/5/10, LR hằng, **ngoại suy, không phải kết quả**): Mamba 45 ep ≈ 0,139-0,140 · 60 ep ≈ 0,128-0,131; Conformer
+  45 ep ≈ 0,224-0,225 · 60 ep ≈ 0,206-0,208 → khoảng cách ~7,5-9 điểm vẫn còn. Chưa thấy overfit (loss val vẫn giảm).
+  Train thêm = đổi chốt 30 epoch → người dùng/GVHD quyết. (3) **Demo thêm Mamba B1**: `src/models/mamba_ref.py` (khối
+  Mamba thuần PyTorch, kiểm khớp eval CUDA) + tải `best.pt` B1 (epoch 28) vào `checkpoints/mamba_ctc/`.
+- **Zero-shot nhóm pre-train (người dùng duyệt, tài khoản B):** sửa `scripts/kaggle/zero_shot/zero_shot.py` — mặc định
+  Parakeet + PhoWhisper (wav2vec2 chỉ khi `ZS_MODELS` nêu), 203 câu, một mức WER (bỏ `wer_vi_label`), `predictions.tsv`
+  thêm cột `split`; bước đối chiếu `transcribe()` chính thức hỏng thì ghi lỗi chứ không bỏ kết quả. Kernel kiểm tra
+  `vuvanduc1/zero-shot-check-asr` (5 câu): PhoWhisper WER 0,077 · RTF 0,10 · 1,05 GiB; Parakeet chạy được trên T4
+  (NeMo 2.6.2 cài được trên Py 3.13, lhotse 1.31.1) WER 0,073 · RTF 0,021 · 608,8M tham số. **Còn mở:** `model.transcribe()`
+  chính thức hỏng (lhotse sampler `TypeError object.__init__`; `use_lhotse` không nhận) → chưa đối chiếu được forward tự viết
+  với đường chính thức. Bản đầy đủ `vuvanduc1/zero-shot-asr` đẩy 22:33.
+- **Môi trường local (lỗi do AI):** `pip install gradio` (20:05) kéo `huggingface_hub` 2.1.1 → hỏng `transformers` 4.56.
+  Sửa: gradio 6.29.1 + transformers 5.18.0 + huggingface_hub 1.33.0 + pillow 12.3.0 (gradio 5 cần pillow < 12, xung đột
+  pdfplumber ≥ 12.2). `pip check` còn 2 xung đột không do phiên này (streamlit pillow < 12 — chọi pdfplumber; pathos).
+  Đã kiểm lại: PhoWhisper local, `datasets` offline, demo.
+- **Kết quả zero-shot 203 câu (`vuvanduc1/zero-shot-asr`, 11′ GPU, `reports/results/zero_shot_2026-10-06/`):** PhoWhisper-small
+  WER 0,155 · CER 0,100 · RTF 0,120 · 1,05 GiB. Parakeet (fp16 autocast) WER 0,201 · RTF 0,024 · 4,62 GiB nhưng **16/203 câu
+  ra đúng một token `⁇`**. Chẩn đoán (`zero-shot-check-asr` v3, 4′): 16 câu đó fp16 lỗi tái lập 16/16, **fp32 hết lỗi** (WER
+  0,176, 0 rỗng); câu bình thường fp16 ≈ fp32 (WER 0,079 cả hai). → tràn số fp16 kiểu B1. Ghép 16 câu fp32 vào: Parakeet
+  ≈ 0,140 (ước, trộn fp16/fp32 — không phải số báo cáo). VRAM fp32 6,95 GiB. Thêm `ZS_ONLY`, mô hình `parakeet_fp32`.
+  GPU B dùng cho zero-shot ≈ 0,4 h (quota B 18,47 h lúc 22:54).
+- **Phiên sau / chờ người dùng:** chạy lại Parakeet fp32 đủ 203 câu (~0,1-0,15 GPU-h B) để có số chính thức? (chính sách
+  precision cho nhóm pre-train — người dùng quyết; tiền lệ `mamba_fp32`).
+- **Mô hình #6 "Conformer cùng GPU-giờ" (người dùng yêu cầu, 23:00):** Conformer chạy tới 76 epoch ≈ 16,78 h GPU (= tổng của
+  Mamba B1 30 epoch; Conformer 792 s/epoch), nối tiếp từ `latest.pt` của Conformer s1 (epoch 29) — cùng commit `bb8d0eb`,
+  LR hằng nên kéo dài không đổi lịch. B không đọc được output kernel của A → tải `latest.pt`/`best.pt`/`metrics.jsonl` về rồi
+  tạo Dataset private `vuvanduc1/conformer-s1-ckpt` (lần 1 Kaggle bỏ thư mục `checkpoints/` khi giải nén → lồng thêm một cấp,
+  version 2 đúng). Kernel `vuvanduc1/train-full-long-conformer-s2` (tag `long`, `--epochs 76`, metadata sửa tay: bỏ
+  `kernel_sources`, thêm dataset) đẩy 23:33. **Lúc 23:49: RUNNING, quota B đã tính ~15′ nhưng 0 dòng log** (kiểu sự cố
+  05/10) — đã báo người dùng kiểm trên UI / huỷ. Không sửa `launch.py`/`train_full.py`. Tải kết quả: `fetch.py --model
+  conformer --session 2 --account B --tag long`.
+- **Lỗi khởi động GPU tài khoản B (2026-10-06 23:33 → 10-07 00:08):** `train-full-long-conformer-s2` v1 RUNNING ~25′ 0 dòng log
+  rồi ERROR (quota tạm tính rồi hoàn lại), v2 + v3 ERROR sau ~1,5′. Kernel thăm dò `vuvanduc1/probe-ckpt-mount`: **CPU chạy
+  bình thường** (mount ở `/kaggle/input/datasets/vuvanduc1/conformer-s1-ckpt/checkpoints/conformer_ctc_baseline/latest.pt`,
+  `find_previous` tìm thấy) nhưng **bản GPU ERROR sau ~30 s** → lỗi cấp máy GPU phía Kaggle, không do kernel/dataset. Không
+  lần nào trừ quota (B 18,47 h). Người dùng không vào được UI tài khoản B.
+- **Phiên sau bắt đầu từ:** (1) kiểm `conextbimamba` s1 (A, hết ~04:45 07/10) theo checklist → hỏi trước khi đẩy s2;
+  (2) đẩy lại `train-full-long-conformer-s2` (B) bằng `kaggle kernels push -p scripts/kaggle/train_full/_build/train-full-long-conformer-s2
+  -t 33600` (metadata đã sửa tay — **đừng chạy lại `launch.py`**, sẽ ghi đè `kernel_sources`), theo dõi bằng watcher; nếu
+  vẫn ERROR thì thử kernel thăm dò GPU trước; (3) câu hỏi còn treo: Parakeet fp32 đủ 203 câu; eval clean-test 3 mô hình
+  train từ đầu + trung bình checkpoint; 30 hay 60 epoch cho cả nhóm.
+
+### 2026-10-07 (03:30 → 04:15) — kiểm ConExt s1 đang chạy, đẩy Conformer dài (B)
+- **ConExtBiMamba s1 (A):** RUNNING, epoch 23 lúc 03:38 (463/540′ phiên), 0,401 s/step, VRAM 3,1 GiB, bỏ 0+0, không lỗi.
+  WER val: ep0 0,498 · ep9 0,247 · ep14 0,230 · ep19 0,205 · **ep22 0,198 (best tới giờ)**, val_unseen 0,194. Ước phiên dừng
+  ~24-25 epoch → cần phiên 2 ngắn (~5-6 epoch, ~2 GPU-h A). Cùng epoch 22: Mamba B1 0,167 · Conformer 0,265 → thứ tự theo
+  epoch Mamba B1 < ConExt < Conformer; theo GPU-giờ (ước thô) ConExt ≈ Mamba B1 (~7,7 h: ConExt 0,198 vs B1 ~ep13 ≈ 0,19).
+- **Thảo luận với người dùng (chưa chốt gì, chỉ trả lời câu hỏi):**
+  - Vì sao LR hằng: chốt 2026-09-28 (dừng epoch bất kỳ vẫn hợp lệ). Kết quả ngược trực giác ("ConExt tốt nhất, Mamba nhanh
+    kém chính xác") — nguyên nhân khả dĩ: Conformer xa cấu hình Gulati 2020 nhất (không subsampling, không PE, LR hằng 3e-4
+    thay Noam/warmup 10k, 165 h); ConExt hạ về 12M (bài 41,6M, có subsampling); Mamba chậm/step vì khối fp32 trên T4. LR
+    hằng có đảo thứ tự hay không: **không có bằng chứng**. Các hướng (giữ + ghi Hạn chế / trung bình checkpoint / thêm pha
+    decay / ablation Conformer cấu hình gốc) — **người dùng/GVHD quyết**, chưa ghi vào `QA.md` (đã đề nghị).
+  - Ngoại suy power-law (LR hằng, không phải kết quả): Conformer 76 ep ≈ 0,183-0,196 vẫn kém Mamba B1 30 ep (0,156);
+    Conformer chạm 0,156 cần > 100 epoch (ngoài vùng tin cậy). Hệ số tiệm cận a không ổn định → không nói được "trần".
+  - GPU: DDP dùng đủ 2 T4 (nvidia-smi: Mamba 98-99% cả 2 card, Conformer ~91%). Kaggle: T4×2 / P100 / TPU (SDK local
+    chỉ liệt kê 3 loại; H100/A100 chỉ thấy ở trang bên thứ ba, chưa kiểm). P100 không có lợi (1 card, không tensor core,
+    torch cu128 có thể bỏ sm_60 — chưa kiểm). H100 ước nhanh hơn nhiều (bf16 + băng thông) nhưng đổi phần cứng phá đồng nhất
+    phép đo tốc độ; chưa đẩy kernel thử.
+- **Người dùng duyệt → đẩy `vuvanduc1/train-full-long-conformer-s2` (B) version 4 lúc 04:06** (`_build/`, metadata sửa tay,
+  `-t 33600`, commit `bb8d0eb`, `--epochs 76`). Lần này khởi động được: quota bắt đầu tính 04:08, cài wheel, chép đủ 4 shard
+  train lúc 04:12. **Chưa thấy dòng resume epoch 30 / step train đầu** lúc đóng phiên.
+- Quota 04:00: A 20,40 h (còn 9,60; ConExt s1 còn chạy tới ~04:45 → còn ~8,7) · B 18,47 h (còn 11,53 → sau phiên 9 h còn
+  ~2,5 → phiên 2 Conformer dài phải đợi reset 2026-10-10).
+- **Phiên sau bắt đầu từ:** (1) kiểm `train-full-long-conformer-s2` (B): có dòng resume từ `latest.pt` epoch 29 → bắt đầu
+  epoch 30 không, metrics liền mạch, s/step ~0,26, WER các epoch mới (hết chậm nhất ~13:06 07/10, ~40 epoch/phiên →
+  dừng quanh epoch ~69-70); (2) kiểm `conextbimamba` s1 (A, xong ~04:45) theo checklist → **hỏi** trước khi đẩy
+  `conextbimamba --session 2`; (3) câu hỏi treo: ghi các hướng LR/ablation vào `QA.md`?; Parakeet fp32 đủ 203 câu;
+  eval clean-test + trung bình checkpoint; 30 hay 60 epoch.
+
+### 2026-10-07 (04:15 → 04:30) — kiểm ConExt s1, đẩy ConExt s2, đề xuất về lịch LR
+- **ConExtBiMamba s1 (A):** COMPLETE (kết thúc 04:16, kernel 511′), **25 epoch (0-24)**, nonfinite 0, amp skip ≤ 5/epoch,
+  0,397 s/step, VRAM 3,13 GiB. **Best WER val 0,1960 (ep23)**; ep24 0,1966 · val_unseen 0,1923. Loss train tb 2,196
+  (ep19) → 2,110 (ep24), loss val 0,820 → 0,790 → chưa overfit; "loss tb quanh 2,1" là loss train có SP/SpecAugment/dropout
+  (luôn > loss val), vẫn giảm ~0,02/epoch. WER cuối có răng cưa (ep20 +0,004) như Mamba B1 ep24-29 và Conformer ep29
+  (+0,021) — dấu hiệu LR hằng không "lắng" được (diễn giải, chưa kiểm chứng).
+- **Tra tài liệu LR cho Mamba** (đã đọc PDF/yaml): không nguồn nào dùng LR hằng. Mamba gốc (LM): warmup + cosine về 1e-5,
+  đỉnh 5× GPT-3. 2405.12609 (ESPnet ASR): Noam, đỉnh 1e-3-2,5e-3, warmup 15k-40k, **chuyển nguyên siêu tham số từ mô hình
+  attention sang Mamba** để so công bằng; xác nhận Mamba "sometimes unstable". Miyazaki 2024: giữ recipe E-Branchformer,
+  sửa bất ổn bằng AdamW + dropout 0,2 (không đổi LR). ConMamba (SpeechBrain yaml): Noam đỉnh 1e-3, warmup 7,5k/25k,
+  bf16, **trung bình 10 checkpoint**. → Không có bằng chứng Mamba cần LR khác Conformer cho ASR.
+- **Người dùng duyệt → đẩy `tieunhi/train-full-conextbimamba-s2` (A) lúc 04:29** — v1 ERROR log rỗng sau ~1,5′ (quota không trừ, lỗi khởi động quen thuộc), **v2 đẩy lại 04:31 khởi động OK** (chép audio 04:33) (`launch.py --model conextbimamba
+  --session 2 --account A`, commit `bb8d0eb` của s1, nguồn output s1, 540′; dự kiến ~5 epoch ≈ 2 h rồi dừng ở 30).
+- **Thứ tự đề xuất của Claude về lịch LR (người dùng yêu cầu ghi lại; CHƯA CHỐT — người dùng/GVHD quyết):**
+  1. ConExt s2 **giữ LR hằng** tới epoch 30 → cả ba mô hình có mốc "30 epoch, LR hằng" so sánh được (đang chạy).
+  2. **Trung bình checkpoint** vài epoch cuối (`epochs/epochNN.pt`, 48 MB/epoch, đã có cho cả ba) cho cả ba mô hình, eval
+     val/val_unseen → đo LR hằng đang "để lại" bao nhiêu WER. Không tốn quota train.
+  3. Xem mức lợi: nhỏ (ngưỡng đề xuất ~0,5 điểm WER, không lấy từ tài liệu) → không cần pha decay, ghi "LR hằng" vào Hạn
+     chế; lớn → **pha decay riêng** sau epoch 30, cùng K epoch cho cả ba (vd. 5, linear/cosine về ~0, resume `latest.pt`
+     ep30; ước ~1,1 h Conformer + ~1,8 h ConExt + ~2,8 h Mamba ≈ 5,7 GPU-h; cần cờ lịch LR trong `train.py`, mặc định giữ
+     hằng). Mốc 30 epoch LR hằng giữ nguyên làm một mốc báo cáo.
+  Không đổi lịch LR giữa chừng cho mô hình nào (trộn yếu tố kiến trúc với lịch LR).
+- Đính chính: `metrics.jsonl` ghi `global_batch` 16 (`world_size` 2 → 8 câu/GPU), không phải 32 như đã nói trong lúc trao đổi.
+- **Phiên sau bắt đầu từ:** (1) kiểm `conextbimamba-s2` (A): resume đúng epoch 25 từ `latest.pt`, đủ 30 epoch, best;
+  (2) kiểm `train-full-long-conformer-s2` (B, hết chậm nhất ~13:06); (3) hỏi người dùng về bước 2 (trung bình checkpoint —
+  N bao nhiêu, chạy CPU local hay kernel GPU ngắn).
+
+### 2026-10-08 — kiểm ConExt s2 + Conformer dài, tổng hợp 30 epoch cả ba mô hình
+- **ConExtBiMamba s2 (A):** COMPLETE, resume đúng epoch 25 step 456 (global_step 71.481), **30/30**, nonfinite 0, kernel 109′.
+  Best **ep28 WER val 0,1875 · val_unseen 0,1846**. → Cả ba mô hình train từ đầu đã đủ 30 epoch.
+- **Conformer dài s2 (B):** COMPLETE (hết giờ, returncode 0), resume đúng epoch 30 step 0, **69/76 epoch** (latest ep69 step
+  2795). Best **ep66 WER val 0,1944 · val_unseen 0,1924** (ở 14,4 h wall). Vẫn giảm chậm, răng cưa ±0,005.
+- **Bảng 30 epoch (LR hằng 3e-4, batch toàn cục 16, best theo WER val):** Mamba B1 0,1562/0,1547 (ep28; 16,8 h wall;
+  0,683 s/step; VRAM train 3,66 GiB; 12,29M) · ConExt 0,1875/0,1846 (ep28; 10,0 h; 0,40 s/step; 3,18 GiB; 12,24M) ·
+  Conformer 0,2519/0,2481 (ep28; 6,6 h; 0,26 s/step; 2,82 GiB; 12,20M). Cả ba: ep29 xấu hơn ep28 (Conformer +0,021).
+- **Cùng thời gian wall (2×T4, đọc từ `wall_seconds_total`):** ~6,6 h: Mamba 0,1996 · ConExt 0,2047 · Conformer 0,2519;
+  ~10 h: Mamba 0,1833 · ConExt 0,1875 · Conformer 0,2187; ~14,4 h: Mamba 0,1591 · Conformer 0,1944. Thứ tự không đổi
+  theo mốc thời gian (chỉ là quan sát trên một seed, LR hằng).
+- Quota 2026-10-08: A còn 7,52 h · B còn 3,00 h (reset 2026-10-10). Checkpoint ConExt/Conformer dài chưa tải (`--ckpt_dest`).
+- **Phiên sau bắt đầu từ:** người dùng chọn bước tiếp (trình bày trong phiên: tải checkpoint → trung bình checkpoint +
+  eval clean-test 3 mô hình → quyết pha decay/Conformer dài s3 → Parakeet fp32 → đề cương mới). Không đẩy kernel nào khi
+  chưa được duyệt.
+- **(tiếp, 2026-10-08) Lưu checkpoint:** `D:\Model\kltn_checkpoints\` (6,6 GB): `mamba`, `conextbimamba`, `conformer` (best + ep00-29)
+  · `long\conformer` (best ep66 + ep30-68; ep00-29 = `conformer\epochs`, cùng một lần chạy). Người dùng tự đưa lên Drive.
+- **Tra tài liệu tốc độ train Mamba:** chỉ 2 nguồn đo train — 2405.12609 Bảng XIII (ASR LS-100, V100: Conformer 21,4 ·
+  ConExtBiMamba 19,8 phút/epoch; Bảng V/VII/IX là tăng cường tiếng nói) và Zevallos 2025 (ConMamba ít hơn 40-45% giờ train,
+  2× Hopper, token 40 ms). Speech Slytherin + 2406.16808 chỉ đo suy luận (Slytherin: Mamba nhanh hơn chỉ khi > 60 s).
+- **Kernel `tieunhi/subsample-speed-asr` (A, người dùng duyệt)** — `scripts/kaggle/subsample_speed/`, độc lập với code train
+  (clone `bb8d0eb`, subsampling/fp16 gắn trong tiến trình con). v1 lỗi thiếu `jiwer` (~1′); v2 (24′): Conformer/ConExt ~1,1 s/step
+  cố định (a ≈ b), Mamba khớp log → nguyên nhân: cuDNN dựng kế hoạch conv cho mỗi shape mới; v3 (12′) đo lượt 2 trên cùng
+  batch → khớp log train (Conformer 0,195 vs 0,26 log; Mamba 0,663 vs 0,683; ConExt 0,385 vs 0,40). Kết quả `reports/results/subsample_speed/v3/`.
+  s/step trung vị (1 T4, batch 8, AMP): **a** Conf 0,195 · Mamba 0,663 (3,4×) · ConExt 0,385 (2,0×); **b subsampling 4×**
+  Conf 0,075 · Mamba 0,165 (2,2×) · ConExt 0,110 (1,5×); **c Mamba fp16** Mamba 0,445 · ConExt 0,282. Subsampling nhanh
+  Conf 2,6× · Mamba 4,0× · ConExt 3,5×; fp16 nhanh Mamba 1,5× · ConExt 1,4×. → Có subsampling Mamba vẫn chậm hơn Conformer
+  trên T4/~13 s; chưa đo b+c kết hợp. Lượt 1 Conformer 1,37 s/step → **đo RTF RQ2 (độ dài thay đổi) phải làm ấm từng shape**.
+- **Phiên sau:** người dùng quyết có đưa kết quả này vào khóa luận (Thảo luận/Hạn chế) + có đo b+c không; các việc treo ở trên.
+- **(tiếp, 2026-10-08) Bảng so sánh cuối — kernel `tieunhi/final-compare-asr` (A, người dùng duyệt, 18′):** `zero_shot.py` thêm
+  nhánh 3 mô hình train từ đầu (clone `bb8d0eb`, trọng số best.pt ep28 từ dataset riêng tư `tieunhi/kltn-best-ckpt`) + làm ấm
+  một lượt trọn 203 câu (mặc định mới `ZS_WARMUP=all`, vì cuDNN dựng kế hoạch conv mỗi shape). Kernel chạy bản sinh
+  `scripts/kaggle/final_compare/final_compare.py` (gitignore). Kết quả `reports/results/final_compare_2026-10-08/`
+  (+ `bootstrap_clean_test.json`). Clean-test 203 câu, ref = **nhãn giả** (0 câu hiệu đính), T4 batch 1:
+  Parakeet fp32 WER 0,140 · RTF 0,0086 · 4,64 GiB | PhoWhisper 0,155 · 0,1155 · 1,05 | Mamba B1 0,171 · 0,0020 · 0,08 |
+  ConExt 0,203 · 0,0015 · 0,08 | Conformer 0,265 · 0,0012 · 0,07. Bootstrap ghép cặp: Mamba − Parakeet +3,1 [1,6; 4,8];
+  Mamba − PhoWhisper +1,6 [−0,1; 3,5] (chưa phân biệt). RTF Parakeet lần 06/10 (0,024, làm ấm 3 câu) bị thổi phồng.
+  ⚠️ Nhãn giả cùng nguồn nhãn train → có lợi cho 3 mô hình tự train; tính lại WER từ `predictions.tsv` sau khi hiệu đính.
+- **Công cụ hiệu đính** `python -m src.data.correct_clean_test` (cổng 7861) + `docs/notes/clean_test_correction_guide.md`;
+  người dùng đang hiệu đính. **Trang báo cáo cho thầy khác:** https://claude.ai/artifact/VFAfKywgz6UjTu3PGNXZF1 (riêng tư,
+  bản sao `docs/tong_ket/2026-10-08/`).
+- **Phiên sau:** sau hiệu đính → tính lại WER clean-test 5 mô hình từ `predictions.tsv` (không GPU) + cập nhật trang; đề cương
+  mới; hẹn GVHD trước ~15/10; commit (chưa commit gì trong phiên này).
+- **(tiếp, 2026-10-08) Trang báo cáo cho thầy khác — bản cuối phiên:** https://claude.ai/artifact/VFAfKywgz6UjTu3PGNXZF1
+  (người dùng đã bật link công khai). Có: bảng so sánh cuối + biểu đồ đánh đổi WER/tốc độ + forest plot, biểu đồ RQ2
+  (không / có subsampling 4×) ở Điểm 3, link GitHub + Drive. Nguồn: `docs/tong_ket/2026-10-08/mamba_asr_report.html`
+  (người dùng sửa câu chữ tay; thư mục `docs/tong_ket/` gitignore → bản HTML/PDF lưu Drive, người dùng tự tải lên).
+  Hiệu đính clean-test: 11/203 câu lúc commit.

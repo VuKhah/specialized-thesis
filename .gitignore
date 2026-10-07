@@ -89,3 +89,5 @@ scripts/kaggle/train_full/_build/
 # Output train full tải về (scripts/kaggle/train_full/fetch.py): giữ metrics/log/summary, bỏ phần lớn
 reports/results/train_full/**/eval_*.jsonl
 reports/results/train_full/**/runs/
+# Bản sinh từ scripts/kaggle/zero_shot/zero_shot.py lúc đẩy kernel bảng so sánh cuối
+scripts/kaggle/final_compare/final_compare.py

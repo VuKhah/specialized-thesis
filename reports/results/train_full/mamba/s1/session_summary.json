@@ -1,0 +1,59 @@
+{
+  "experiment": "mamba_ctc",
+  "session": 1,
+  "config": "configs/model_mamba.yaml",
+  "extra_args": [],
+  "run": {
+    "commit": "7660a6ba54c26ed3a27a3e66fcf825c773532d41",
+    "python": "3.13.15",
+    "torch": "2.11.0+cu128",
+    "cuda": "12.8",
+    "cudnn": 91900,
+    "torchaudio": "2.11.0+cu128",
+    "mamba_ssm": "2.3.1",
+    "causal_conv1d": "1.5.4",
+    "gpus": [
+      "Tesla T4, 580.178.04, 15360 MiB",
+      "Tesla T4, 580.178.04, 15360 MiB"
+    ],
+    "cpu_count": 4
+  },
+  "returncode": 0,
+  "epochs_target": 30,
+  "epochs_done": 15,
+  "latest": {
+    "epoch": 15,
+    "step_in_epoch": 494,
+    "global_step": 43109,
+    "best_wer": 0.18476417987021576
+  },
+  "finished": false,
+  "setup_minutes": 6.588154431184133,
+  "kernel_minutes": 510.32698128620785,
+  "last_metrics": {
+    "epoch": 14,
+    "global_step": 42615,
+    "encoder_params": 12285696,
+    "n_train": 45442,
+    "world_size": 2,
+    "global_batch": 16,
+    "train_loss": 2.11301576575105,
+    "steps": 2841,
+    "nonfinite_loss_steps": 0,
+    "amp_skipped_steps": 1,
+    "grad_norm_mean": 3.6207710107447397,
+    "grad_norm_max": 37.2198600769043,
+    "s_per_step": 0.6689024511167425,
+    "peak_vram_gib": 3.580071449279785,
+    "lr": 0.0003,
+    "resumed_mid_epoch": false,
+    "wer_val": 0.18476417987021576,
+    "loss_val": 0.7782241671931487,
+    "eval_seconds_val": 55.81267237663269,
+    "wer_val_unseen": 0.1810112517401244,
+    "loss_val_unseen": 0.7712462253643405,
+    "eval_seconds_val_unseen": 33.571147203445435,
+    "wall_seconds_total": 29848.65634918213,
+    "epoch_end_utc": "2026-10-06T02:09:48Z"
+  }
+}

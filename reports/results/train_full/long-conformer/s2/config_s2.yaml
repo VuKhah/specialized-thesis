@@ -1,0 +1,53 @@
+# Baseline Conformer-CTC. Chạy `python -m src.models.param_count` sau khi
+# cài mamba-ssm để tinh chỉnh mamba yaml khớp số tham số với config này.
+experiment_name: conformer_ctc_baseline
+
+encoder:
+  type: conformer
+  input_dim: 80
+  d_model: 256
+  n_layers: 8
+  n_heads: 4
+  conv_kernel_size: 31
+  ff_dim: 1024
+  dropout: 0.1
+
+tokenizer:
+  vocab_size: 1000
+
+training:
+  batch_size: 16 # điều chỉnh theo VRAM thực tế (Kaggle: 2x T4 16GB — có thể tăng nếu dùng cả 2 GPU)
+  lr: 3.0e-4 # PyYAML doc "3e-4" (khong co dau cham) thanh string, khong phai float
+  epochs: 30
+  warmup_steps: 1000
+  grad_clip: 5.0
+  # = mặc định AdamW trước 2026-09-30, ghi rõ ra. Tham số `_no_weight_decay`
+  # (A_log, D của Mamba) được miễn — xem build_optimizer trong train.py.
+  weight_decay: 0.01
+  seed: 42 # khởi tạo + thứ tự dữ liệu; giống nhau ở hai tài khoản Kaggle (D10)
+  amp: true # fp16 autocast trên GPU (D8); CPU tự tắt
+  num_workers: 2 # mỗi tiến trình (D8)
+  # Bucketing theo độ dài (chốt 2026-10-05): xếp trong cụm 50 batch toàn cục (~800 câu),
+  # 0 = tắt. PHẢI giống nhau ở mọi config train từ đầu.
+  bucket_pool_batches: 50
+
+# Front-end dùng chung — PHẢI giống hệt nhau ở mọi config train từ đầu
+# (src/features/log_mel.py, thêm 2026-10-04).
+features:
+  cmvn_stats: configs/cmvn_stats.json
+  spec_augment: # chỉ lúc train; theo Conformer (Gulati 2020), không time warping
+    freq_masks: 2
+    freq_width: 27
+    time_masks: 10
+    time_ratio: 0.05
+
+data:
+  # data/splits/*.tsv (make_shards.py), đã bỏ excluded.tsv (A1) khi đọc.
+  # Train thử 1 shard: --train_manifests train_shard0.
+  train_manifests: [train_shard0, train_shard1, train_shard2, train_shard3]
+  eval_manifest: val # chọn best.pt: validation trừ clean-test cũ (D5), trừ video giữ riêng
+  extra_eval_manifests: [val_unseen] # video giữ riêng (make_heldout.py), chỉ ghi log
+  sample_rate: 16000
+  # Speed perturbation on-the-fly lúc train (Ko 2015; chốt 2026-10-05,
+  # docs/notes/audio_preprocessing_survey.md mục 5). PHẢI giống nhau ở mọi config train từ đầu.
+  speed_perturb: [0.9, 1.0, 1.1]

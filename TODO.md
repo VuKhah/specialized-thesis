@@ -8,8 +8,69 @@ Câu hỏi cần mang đi hỏi (người dùng/GVHD): [`QA.md`](QA.md).
 
 ## 🔴 TRAIN FULL ĐANG CHẠY — việc đầu tiên của phiên sau (ghi 2026-10-06)
 
+**▶▶▶ 2026-10-08: TRAIN 30 EPOCH XONG CẢ BA** — Mamba B1 0,1562/0,1547 · ConExt 0,1875/0,1846 · Conformer 0,2519/0,2481
+(WER val/val_unseen, best ep28 cả ba). Conformer dài (B) dừng 69/76, best ep66 0,1944/0,1924. Không kernel nào đang chạy.
+Quota A 7,52 h · B 3,00 h (reset 10/10). Chi tiết + bảng cùng-thời-gian: `Plan.md` nhật ký 2026-10-08.
+⛔ Chờ người dùng chọn: tải checkpoint (thư mục?) · N trung bình checkpoint · eval clean-test · pha decay? · Conformer dài s3
+(7 epoch ≈ 1,5 h B)? · Parakeet fp32.
+✅ Checkpoint đã lưu `D:\Model\kltn_checkpoints\` (6,6 GB) — người dùng đưa lên Drive. ✅ Benchmark subsampling (v3,
+`reports/results/subsample_speed/v3/`): có subsampling Mamba vẫn 2,2× Conformer/step; ⚠️ RTF RQ2 phải làm ấm cuDNN từng shape.
+Quota A còn 6,91 h.
+✅ Bảng so sánh cuối 5 mô hình trên clean-test (nhãn giả): `reports/results/final_compare_2026-10-08/`. ⏳ Người dùng
+hiệu đính 203 câu (`python -m src.data.correct_clean_test`) → tính lại WER từ `predictions.tsv`. Quota A còn ~6,6 h.
+
 Lần 1 đã đẩy 2026-10-06 ~00:38 (giờ VN; lúc đóng phiên 00:41 cả hai RUNNING, quota bắt đầu tăng — **chưa xác nhận được dòng "lưu epoch00.pt"**, kiểm đầu tiên ở phiên sau), commit **`7660a6b`**, phiên 540 phút:
 `tieunhi/train-full-conformer-s1` (A) · `vuvanduc1/train-full-mamba-s1` (B). Lịch: `training_plan_kaggle.md` mục 7.
+
+**Kết quả kiểm lần 1 (2026-10-06 12:10):** Mamba s1 (B) COMPLETE, returncode 0, **15/30 epoch** (latest epoch 15
+step 494), WER val 0,515 → 0,185 · val_unseen 0,181, giảm đều; nonfinite 0, VRAM 3,6 GiB, 0,669 s/step; quota B dùng
+9,58 h. Conformer s1 (A) **ERROR log rỗng, quota A không tăng (5,44 h)** → lỗi khởi động, chưa train gì. Người dùng
+duyệt → **đẩy 2026-10-06 ~12:17:** `conformer-s1` (A, version 3 — v1, v2 ERROR log rỗng không trừ quota; ghim commit
+`bb8d0eb`, code y hệt `7660a6b`) và `mamba-s2` (B, version 2 — v1 ERROR log rỗng). Lúc đóng phiên (~13:00) cả hai
+đang train: Conformer xong epoch 0 (WER 1,0, loss val 5,68 — bình thường), Mamba resume đúng epoch 15 step 494, xong
+epoch 15 (WER val 0,192, nhích lên từ 0,185 — theo dõi epoch 16-17). **Phiên sau:** kiểm `conformer` s1 + `mamba` s2
+theo checklist dưới (Conformer ~7 h → xong ~19:30; Mamba 540′ → hết ~21:30), hỏi người dùng trước khi đẩy lần 3
+(`conextbimamba --session 1` A, `mamba --session 3 --account B`).
+
+**Kiểm 2026-10-06 19:15:** Conformer s1 **COMPLETE, 30/30 epoch** (402′), best WER val 0,2519 (ep28), val_unseen
+0,2481; không lỗi → Conformer xong train. Mamba s2 đang chạy (epoch 26, WER val 0,164). Quota còn A 17,85 h · B 13,50 h.
+→ Người dùng duyệt, **đã đẩy `conextbimamba-s1` (A) ~19:45**, train từ 19:56, kết thúc chậm nhất ~04:45 07/10.
+Phiên sau: kiểm Mamba s2 (hết ~21:30) + ConExt s1 → hỏi trước khi đẩy `mamba --session 3` / `conextbimamba --session 2`.
+
+Demo: `python -m src.demo.app` (Conformer + Mamba B1 trên CPU, Mamba qua `mamba_ref.py`). Còn: ConExt (khi có best.pt); tab RQ2 audio dài + căn chỉnh CTC (theo bản phác) chưa làm.
+
+**Cập nhật 21:25:** Mamba s2 **XONG 30/30** (best ep28 WER val 0,1562 · val_unseen 0,1547) → **không đẩy mamba s3**; còn tải checkpoint Mamba (`--ckpt_dest`, chờ người dùng chọn thư mục). ConExt s1 RUNNING epoch 4 (WER val ep3 0,324).
+
+**▶▶ PHIÊN SAU (ghi 2026-10-07 04:30) — thay khối 20:17 bên dưới:**
+
+| Việc | Trạng thái lúc đóng | Làm gì |
+|---|---|---|
+| Conformer s1 (A) | ✅ 30/30, best ep28 WER val 0,2519 · val_unseen 0,2481 | — |
+| Mamba B1 s1+s2 (B) | ✅ 30/30, best ep28 WER val 0,1562 · val_unseen 0,1547 | tải checkpoint `--ckpt_dest` (chờ người dùng chọn thư mục) |
+| ConExtBiMamba s1+s2 (A) | s1 ✅ 25 ep (best ep23 WER val 0,1960); **s2 v2 đẩy 04:31** (v1 lỗi khởi động, v2 chạy; ~5 epoch còn lại) | kiểm s2: resume đúng ep25, đủ 30/30, best; hết ~07:00 nếu không lỗi |
+| #6 Conformer cùng GPU-giờ (B, 76 epoch) | RUNNING — v4 đẩy 04:06; **resume đúng epoch 30 step 0** (global_step 85.230); ep30 WER val 0,2545 · val_unseen 0,2503; 0,248 s/step; hết chậm nhất ~13:06 (ước dừng ~ep70) | **kiểm**: resume đúng epoch 30 từ `latest.pt` ep29, metrics liền mạch, WER mới; phiên 2 đợi quota reset 10/10 (hỏi trước) |
+| Zero-shot (B) | PhoWhisper 0,155; Parakeet fp16 lỗi `⁇` 16/203 → fp32 hết lỗi | ⛔ người dùng: chạy lại Parakeet fp32 đủ 203 câu? |
+| Demo | Conformer + Mamba B1 (CPU, `mamba_ref.py`) | thêm ConExt khi có best.pt |
+
+Quota 04:29: A còn 9,34 h (ConExt s2 dùng ~2 h), B còn 11,53 h (phiên Conformer dài dùng tới 9 h → còn ~2,5); reset 2026-10-10.
+Câu hỏi treo: trung bình checkpoint (N?); eval clean-test 3 mô hình; 30 hay 60 epoch cho cả nhóm; **lịch LR** — thứ tự Claude đề xuất (chưa chốt, Plan nhật ký 2026-10-07 04:15): ConExt s2 LR hằng tới 30 → trung bình checkpoint cả ba → mức lợi lớn mới làm pha decay riêng ~5,7 GPU-h; ablation Conformer cấu hình gốc; ghi vào `QA.md`?
+
+**▶ PHIÊN SAU BẮT ĐẦU Ở ĐÂY (ghi 2026-10-06 20:17)** — tình trạng lúc đóng phiên:
+
+| Kernel | Tài khoản | Đẩy lúc | Hết chậm nhất | Lúc đóng phiên |
+|---|---|---|---|---|
+| `vuvanduc1/train-full-mamba-s2` | B | 06/10 ~12:17 | ~21:30 06/10 | RUNNING, xong epoch 26 (WER val 0,164; tốt nhất 0,159 ep24) |
+| `tieunhi/train-full-conextbimamba-s1` | A | 06/10 ~19:45 | ~04:45 07/10 | RUNNING, epoch 0 step 300 (cần ~2 phiên) |
+| `tieunhi/train-full-conformer-s1` | A | — | — | **XONG 30/30**, best ep28 WER val 0,2519 · val_unseen 0,2481 |
+
+Quota lúc đóng: A còn 17,33 h · B còn 12,51 h (reset 2026-10-10).
+Việc: (1) checklist bên dưới cho `mamba` s2 (`--account B`) và `conextbimamba` s1 → `fetch.py` → báo người dùng;
+(2) **hỏi** trước khi đẩy `mamba --session 3 --account B` (chỉ khi s2 chưa đủ 30 epoch — 34′/epoch, có thể vừa đủ)
+và `conextbimamba --session 2` (A); sau khi đẩy chạy `watch_kernel.py` vài phút (lỗi khởi động log rỗng);
+(3) Mamba xong 30 epoch → `fetch.py --ckpt_dest` phiên cuối → người dùng đưa lên Drive;
+(4) còn treo từ báo cáo Conformer: trung bình checkpoint (N?) cho cả nhóm; chạy eval clean-test Conformer (CPU).
+
+**Zero-shot (2026-10-06, B):** PhoWhisper 0,155 (203 câu). Parakeet fp16 lỗi `⁇` 16/203 câu → fp32 hết lỗi (chẩn đoán). ⛔ Chờ người dùng: chạy lại Parakeet fp32 đủ 203 câu (~0,1-0,15 GPU-h B). Còn mở: đối chiếu forward tự viết với `transcribe()` chính thức (hỏng do lhotse).
 
 **LUẬT (người dùng): KHÔNG tự đẩy lần 2 / lần 3. Kiểm kết quả → trình người dùng → chỉ đẩy khi người dùng đồng ý.**
 Lý do: không để mất trắng hàng giờ GPU vì phiên trước hỏng mà không ai thấy.

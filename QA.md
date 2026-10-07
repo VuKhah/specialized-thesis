@@ -20,6 +20,7 @@ Q9, Q10) để mang đi gặp thầy: [`Report.md`](Report.md) (2026-09-27).
 
 | # | Câu hỏi | Ai trả lời | Chi tiết |
 |---|---|---|---|
+| Q11 | Tốc độ train (2026-10-08): có subsampling Mamba B1 vẫn chậm hơn Conformer ~2,2×/step trên T4. Đưa vào khóa luận? Train thêm nhóm subsampling 4× (mở lại chốt 2026-09-26)? Bản Conformer gần chuẩn? Dùng ~90 GPU-h thế nào | GVHD | `docs/notes/subsample_speed_2026-10-08.md` mục 7-8 |
 | Q4 | Đề cương đã nộp ghi 52.023 mẫu/267,39 h hay 67.405/245,42 h? (bản `.docx` trên đĩa khác bản từng commit) | Người dùng | `Plan.md` nhật ký 2026-09-21 |
 | Q5 | Tên đề tài trên bìa: `Conformer` hay `Con-Former` (như đề cương)? | GVHD | `TODO.md` 📘 |
 | Q6 | Hình thức nộp hiện hành (biểu mẫu 2018 còn dùng?) và dạng "thiết kế" mong đợi ở Chương 2? | GVHD | `Plan.md` mục 6 |

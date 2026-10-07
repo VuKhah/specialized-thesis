@@ -1,0 +1,60 @@
+# ConExtBiMamba-CTC (ứng viên #5, thêm 2026-10-04): khung Conformer, MHSA →
+# ExtBiMamba (arXiv:2405.12609) — src/models/conextbimamba_encoder.py. Khớp tham
+# số với model_conformer.yaml: 1 lớp ff_dim 1024 = 2.135.296 → 6 lớp là +5,1%,
+# 5 lớp là -12% → giữ 6 lớp, hạ ff_dim 1024 → 928 (bội của 32):
+# 6 × 2.036.800 + input_proj 20.736 = 12.241.536 vs 12.204.288 (+0,31%), tính
+# theo shape mamba_ssm.Mamba v2.3.1 — xác nhận lại trên Kaggle bằng param_count.
+# Khối Mamba, conv kernel, dropout giữ như B1 / Conformer-12M.
+experiment_name: conextbimamba_ctc
+
+encoder:
+  type: conextbimamba
+  input_dim: 80
+  d_model: 256
+  n_layers: 6
+  ff_dim: 928
+  conv_kernel_size: 31
+  d_state: 16
+  d_conv: 4
+  expand: 2
+  dropout: 0.1
+
+tokenizer:
+  vocab_size: 1000 # PHẢI khớp với model_conformer.yaml (dùng chung tokenizer)
+
+training:
+  batch_size: 16
+  lr: 3.0e-4 # PyYAML doc "3e-4" (khong co dau cham) thanh string, khong phai float
+  epochs: 30
+  warmup_steps: 1000
+  grad_clip: 5.0
+  # = mặc định AdamW trước 2026-09-30, ghi rõ ra. Tham số `_no_weight_decay`
+  # (A_log, D của Mamba) được miễn — xem build_optimizer trong train.py.
+  weight_decay: 0.01
+  seed: 42 # khởi tạo + thứ tự dữ liệu; giống nhau ở hai tài khoản Kaggle (D10)
+  amp: true # fp16 autocast trên GPU (D8); CPU tự tắt
+  num_workers: 2 # mỗi tiến trình (D8)
+  # Bucketing theo độ dài (chốt 2026-10-05): xếp trong cụm 50 batch toàn cục (~800 câu),
+  # 0 = tắt. PHẢI giống nhau ở mọi config train từ đầu.
+  bucket_pool_batches: 50
+
+# Front-end dùng chung — PHẢI giống hệt nhau ở mọi config train từ đầu
+# (src/features/log_mel.py, thêm 2026-10-04).
+features:
+  cmvn_stats: configs/cmvn_stats.json
+  spec_augment: # chỉ lúc train; theo Conformer (Gulati 2020), không time warping
+    freq_masks: 2
+    freq_width: 27
+    time_masks: 10
+    time_ratio: 0.05
+
+data:
+  # data/splits/*.tsv (make_shards.py), đã bỏ excluded.tsv (A1) khi đọc.
+  # Train thử 1 shard: --train_manifests train_shard0.
+  train_manifests: [train_shard0, train_shard1, train_shard2, train_shard3]
+  eval_manifest: val # chọn best.pt: validation trừ clean-test cũ (D5), trừ video giữ riêng
+  extra_eval_manifests: [val_unseen] # video giữ riêng (make_heldout.py), chỉ ghi log
+  sample_rate: 16000
+  # Speed perturbation on-the-fly lúc train (Ko 2015; chốt 2026-10-05,
+  # docs/notes/audio_preprocessing_survey.md mục 5). PHẢI giống nhau ở mọi config train từ đầu.
+  speed_perturb: [0.9, 1.0, 1.1]

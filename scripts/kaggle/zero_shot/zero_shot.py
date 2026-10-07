@@ -1,6 +1,7 @@
-"""Kernel Kaggle **GPU** (T4) — đo zero-shot (không fine-tune) 3 mô hình pre-train
-trên 250 câu clean-test: đội hình #3-#5 trong docs/notes/survey_model_candidates.md
-mục 3 (Parakeet-CTC-0.6B-vi, PhoWhisper-small, wav2vec2-base-vi-250h).
+"""Kernel Kaggle **GPU** (T4) — đo zero-shot (không fine-tune) nhóm pre-train trên 203 câu clean-test
+(manifest bản 2, video giữ riêng): Parakeet-CTC-0.6B-vi (#4) + PhoWhisper-small (dự bị) — đội hình chốt
+2026-10-03 (`docs/notes/lineup_preparation.md`). wav2vec2-base-vi còn trong MODEL_SPECS, chỉ chạy khi
+`ZS_MODELS` nêu tên. Một mức WER trên cả 203 câu (A1 đã lọc nhãn hỏng khi tạo manifest).
 
     kaggle kernels push -p scripts/kaggle/zero_shot -t 7200
     kaggle kernels status <username>/zero-shot-asr
@@ -52,12 +53,26 @@ ON_KAGGLE = Path("/kaggle/working").exists()
 _LOCAL_TMP = Path(tempfile.gettempdir()) / "zero_shot"
 
 # Cờ chạy thử: biến môi trường, vì kernel script trên Kaggle không nhận tham số.
-LIMIT = int(os.environ.get("ZS_LIMIT", "0"))  # 0 = cả 250 câu
+LIMIT = int(os.environ.get("ZS_LIMIT", "0"))  # 0 = cả manifest
+# Chỉ chạy các câu "split:index,..." (chẩn đoán); rỗng = theo LIMIT.
+ONLY = {tuple(x.split(":")) for x in os.environ.get("ZS_ONLY", "").split(",") if x}
 DEVICE_OVERRIDE = os.environ.get("ZS_DEVICE", "")
-MODELS = [m for m in os.environ.get("ZS_MODELS", "wav2vec2,phowhisper,parakeet").split(",") if m]
+MODELS = [m for m in os.environ.get("ZS_MODELS", "phowhisper,parakeet").split(",") if m]
 OUT_DIR = Path(os.environ.get("ZS_OUT", "/kaggle/working" if ON_KAGGLE else _LOCAL_TMP / "out"))
 AUDIO_DIR = Path(os.environ.get("ZS_AUDIO", "/tmp/clean_test_audio" if ON_KAGGLE else _LOCAL_TMP / "audio"))
-N_WARMUP = 3
+# "all" (mặc định từ 2026-10-08): làm ấm bằng một lượt trọn mọi câu rồi mới đo. Lý do: mỗi câu một độ dài
+# → lần đầu gặp mỗi shape, cuDNN dựng kế hoạch conv (~0,35 s/batch với Conformer/ConExt, đo ở
+# docs/notes/subsample_speed_2026-10-08.md mục 4) — làm ấm 3 câu như bản 2026-10-06 thì RTF của mô hình có
+# conv cuDNN bị thổi phồng. Số nguyên N = làm ấm N câu đầu (cách cũ).
+_WARMUP_ENV = os.environ.get("ZS_WARMUP", "all")
+N_WARMUP = None if _WARMUP_ENV == "all" else int(_WARMUP_ENV)
+
+# Nhóm train từ đầu: dựng bằng code của repo ở đúng commit đã train, trọng số best.pt (chỉ phần `model`)
+# từ Kaggle Dataset `tieunhi/kltn-best-ckpt` (local: ZS_CKPT_DIR/<tên>.pt).
+OURS_COMMIT = "bb8d0ebd885c6ba21f67373cfd44cb67bb67c988"
+OURS_REPO_URL = "https://github.com/VuKhah/specialized-thesis"
+OURS_REPO_DIR = Path("/tmp/specialized-thesis")
+CKPT_DIR = Path(os.environ.get("ZS_CKPT_DIR", "/kaggle/input" if ON_KAGGLE else "D:/Model/kltn_checkpoints/kaggle_upload"))
 
 REPO_RAW = "https://raw.githubusercontent.com/VuKhah/specialized-thesis/master"
 MANIFEST_REL = "data/processed/clean_test_manifest.json"
@@ -161,8 +176,6 @@ _tn: dict = {}
 exec(compile(TEXT_NORMALIZE_SRC, "text_normalize.py", "exec"), _tn)
 normalize_text = _tn["normalize_text"]
 has_digit = _tn["has_digit"]
-is_vietnamese_label = _tn["is_vietnamese_label"]
-VI_THRESHOLD = _tn["VIETNAMESE_LABEL_MIN_RATIO"]
 
 
 def run(cmd, check=True):
@@ -217,6 +230,8 @@ def prepare_samples(manifest: dict) -> list[dict]:
     from huggingface_hub import hf_hub_download
 
     samples = manifest["samples"][: LIMIT or None]
+    if ONLY:
+        samples = [s for s in manifest["samples"] if (s["split"], str(s["index"])) in ONLY]
     # Manifest bản 2 (2026-10-04, video giữ riêng): mỗi câu có `split` riêng (câu đến
     # từ cả train lẫn validation). Tra lại ở đúng revision đã pin; so text để chắc
     # index không lệch (nếu lệch thì ref sai câu).
@@ -252,7 +267,6 @@ def prepare_samples(manifest: dict) -> list[dict]:
             "duration_s": len(wave) / SAMPLE_RATE,
             "ref_source": "corrected_text" if corrected else "pseudo_label",
             "ref": normalize_text(ref_raw),
-            "vi_label": is_vietnamese_label(ref_raw),
         })
     return out
 
@@ -311,7 +325,7 @@ def install_nemo() -> str:
             break
     else:
         raise RuntimeError("cài nemo_toolkit[asr] thất bại (cả 2.6.2 lẫn bản mới nhất)")
-    r = run([sys.executable, "-c", "import nemo; print(nemo.__version__)"])
+    r = run([sys.executable, "-c", "import nemo, lhotse; print(nemo.__version__, 'lhotse', lhotse.__version__)"])
     return r.stdout.strip()
 
 
@@ -346,7 +360,12 @@ def load_parakeet(spec, device, amp):
         return decode(log_probs.float(), enc_len)
 
     def reference_transcribe(audio_path):
-        out = model.transcribe([audio_path], batch_size=1, verbose=False)
+        # Kernel kiểm tra 2026-10-06 (NeMo 2.6.2, Py 3.13): transcribe() mặc định hỏng trong sampler lhotse
+        # (TypeError object.__init__) — thử lại bằng dataloader không lhotse.
+        try:
+            out = model.transcribe([audio_path], batch_size=1, verbose=False)
+        except TypeError:
+            out = model.transcribe([audio_path], batch_size=1, verbose=False, use_lhotse=False)
         if isinstance(out, tuple):
             out = out[0]
         h = out[0]
@@ -356,7 +375,82 @@ def load_parakeet(spec, device, amp):
                                "nemo_version": nemo_version, "reference_transcribe": reference_transcribe}
 
 
-LOADERS = {"wav2vec2": load_wav2vec2, "phowhisper": load_phowhisper, "parakeet": load_parakeet}
+def ensure_ours_repo() -> Path:
+    """Local: dùng chính repo đang đứng (cwd). Kaggle: clone đúng commit đã train + cài wheel mamba
+    (dataset mamba-wheels-v2) — một lần cho cả ba mô hình."""
+    if not ON_KAGGLE and Path("src/training/train.py").exists():
+        repo = Path.cwd()
+    else:
+        repo = OURS_REPO_DIR
+        if not repo.exists():
+            run(["git", "clone", "-q", OURS_REPO_URL, str(repo)])
+            subprocess.run(["git", "checkout", "-q", OURS_COMMIT], cwd=repo, check=True)
+            run([sys.executable, "-m", "pip", "install", "-q", "einops", "sentencepiece", "pyyaml", "tensorboard",
+                 "librosa"])
+            wheels = sorted(str(p) for p in Path("/kaggle/input").rglob("*.whl"))
+            if not wheels:
+                raise RuntimeError("không thấy wheel mamba trong /kaggle/input — gắn dataset mamba-wheels-v2")
+            run([sys.executable, "-m", "pip", "install", "-q", "--no-deps"] + wheels)
+    if str(repo) not in sys.path:
+        sys.path.insert(0, str(repo))
+    return repo
+
+
+def load_ours(spec, device, amp):
+    import torch
+    import yaml
+
+    repo = ensure_ours_repo()
+    from src.models import mamba_encoder
+
+    if not mamba_encoder.MAMBA_SSM_AVAILABLE:
+        # Chỉ chạy thử CPU ở local (mamba_ref.py là file local, chậm); trên Kaggle phải có mamba_ssm thật.
+        if ON_KAGGLE:
+            raise RuntimeError("mamba_ssm không import được trên Kaggle")
+        from src.models.mamba_ref import use_reference_mamba
+        use_reference_mamba()
+    from src.models.ctc_model import greedy_collapse
+    from src.tokenizer.bpe_tokenizer import BPETokenizer
+    from src.training.train import build_model
+
+    ckpts = sorted(CKPT_DIR.rglob(spec["ckpt"]))
+    if not ckpts:
+        raise RuntimeError(f"không thấy {spec['ckpt']} dưới {CKPT_DIR} — gắn dataset kltn-best-ckpt")
+    cwd = os.getcwd()
+    os.chdir(repo)  # build_model đọc configs/cmvn_stats.json theo đường dẫn tương đối
+    try:
+        cfg = yaml.safe_load(Path(spec["config"]).read_text(encoding="utf-8"))
+        tokenizer = BPETokenizer("configs/tokenizer.model")
+        model = build_model(cfg, tokenizer.vocab_size)
+    finally:
+        os.chdir(cwd)
+    state = torch.load(ckpts[0], map_location="cpu", weights_only=False)
+    model.load_state_dict(state["model"])
+    model = model.to(device).eval()  # eval: tắt SpecAugment, dropout
+
+    def transcribe(wave):
+        x = torch.from_numpy(wave)[None].to(device)
+        lengths = torch.tensor([x.shape[1]], device=device)
+        # Như lúc train/eval: autocast fp16, front-end + khối Mamba tự giữ fp32 bên trong.
+        with torch.autocast("cuda", dtype=torch.float16, enabled=amp):
+            log_probs, out_lengths = model(x, lengths)
+        return tokenizer.decode(greedy_collapse(log_probs.float(), out_lengths)[0])
+
+    return model, transcribe, {"decoding": "CTC greedy, không LM", "commit": OURS_COMMIT, "config": spec["config"],
+                               "checkpoint_epoch": state.get("epoch"), "checkpoint_best_wer_val": state.get("best_wer"),
+                               "encoder_params": model.encoder.num_parameters(),
+                               "precision_note": "front-end, khối Mamba, CTC luôn fp32 (như train)"}
+
+
+for _name, _cfg in [("conformer", "configs/model_conformer.yaml"), ("mamba", "configs/model_mamba.yaml"),
+                    ("conextbimamba", "configs/model_conextbimamba.yaml")]:
+    MODEL_SPECS[_name] = {"repo": f"{OURS_REPO_URL}@{OURS_COMMIT[:7]} ({_cfg})", "revision": OURS_COMMIT,
+                          "license": "train từ đầu trong đề tài", "config": _cfg, "ckpt": f"{_name}.pt"}
+
+# `<tên>_fp32`: cùng mô hình nhưng tắt autocast fp16 — chẩn đoán 2026-10-06 (Parakeet ra "⁇" ở 16/203 câu dưới fp16).
+LOADERS = {"wav2vec2": load_wav2vec2, "phowhisper": load_phowhisper, "parakeet": load_parakeet,
+           "parakeet_fp32": load_parakeet, "conformer": load_ours, "mamba": load_ours, "conextbimamba": load_ours}
+MODEL_SPECS["parakeet_fp32"] = MODEL_SPECS["parakeet"]
 
 
 def score(refs: list[str], hyps: list[str]) -> dict:
@@ -373,11 +467,11 @@ def run_model(name: str, samples: list[dict], device: str) -> dict:
     import torch
 
     spec = MODEL_SPECS[name]
-    amp = device == "cuda"
+    amp = device == "cuda" and not name.endswith("_fp32")
     cuda = device == "cuda"
     result = {"model": spec["repo"], "revision": spec["revision"], "license": spec["license"],
               "precision": "fp32 weights + autocast fp16 (front-end fp32)" if amp else "fp32",
-              "batch_size": 1, "n_warmup": N_WARMUP}
+              "batch_size": 1, "n_warmup": N_WARMUP or "all"}
     if cuda:
         torch.cuda.empty_cache()
         torch.cuda.reset_peak_memory_stats()
@@ -391,9 +485,11 @@ def run_model(name: str, samples: list[dict], device: str) -> dict:
         result["vram_weights_gib"] = round(torch.cuda.memory_allocated() / 2**30, 3)
         torch.cuda.reset_peak_memory_stats()
 
+    t_warm = time.time()
     with torch.inference_mode():
-        for s in samples[:N_WARMUP]:
+        for s in samples[:N_WARMUP]:  # N_WARMUP None = trọn một lượt
             transcribe(s["wave"])
+        result["warmup_s"] = round(time.time() - t_warm, 1)
         raw_hyps, times = [], []
         for s in samples:
             if cuda:
@@ -409,24 +505,27 @@ def run_model(name: str, samples: list[dict], device: str) -> dict:
         result["vram_peak_reserved_gib"] = round(torch.cuda.max_memory_reserved() / 2**30, 3)
     if reference_transcribe is not None:
         # Đường forward tự viết phải ra giống model.transcribe() chính thức.
-        checks = []
-        for s, h in list(zip(samples, raw_hyps))[:3]:
-            official = reference_transcribe(s["path"])
-            checks.append({"index": s["index"], "same_after_normalize": normalize_text(official) == normalize_text(h),
-                           "official": official, "ours": h})
-        result["forward_vs_transcribe_check"] = checks
+        # Chỉ là bước đối chiếu: hỏng thì ghi lại, không vứt kết quả của vòng chính.
+        try:
+            checks = []
+            for s, h in list(zip(samples, raw_hyps))[:3]:
+                official = reference_transcribe(s["path"])
+                checks.append({"index": s["index"], "same_after_normalize": normalize_text(official) == normalize_text(h),
+                               "official": official, "ours": h})
+            result["forward_vs_transcribe_check"] = checks
+        except Exception as e:  # noqa: BLE001
+            print(f"CẢNH BÁO: không đối chiếu được với transcribe() chính thức: {e!r}", flush=True)
+            result["forward_vs_transcribe_check"] = {"error": repr(e), "traceback": traceback.format_exc()[-2000:]}
 
     total_audio = sum(s["duration_s"] for s in samples)
     hyps = [normalize_text(h) for h in raw_hyps]
     refs = [s["ref"] for s in samples]
-    vi = [i for i, s in enumerate(samples) if s["vi_label"]]
     result.update({
         "total_infer_s": round(sum(times), 3),
         "total_audio_s": round(total_audio, 1),
         "rtf": sum(times) / total_audio,
         "mean_latency_s": sum(times) / len(times),
         "wer_all": score(refs, hyps),
-        "wer_vi_label": score([refs[i] for i in vi], [hyps[i] for i in vi]),
         "n_hyp_empty": sum(1 for h in hyps if not h),
         "n_hyp_with_digits": sum(1 for h in hyps if has_digit(h)),
         "raw_hyps": raw_hyps,
@@ -448,10 +547,11 @@ def write_outputs(meta: dict, samples: list[dict], results: dict) -> None:
     clean = lambda t: t.replace("\t", " ").replace("\n", " ")  # noqa: E731
     with open(OUT_DIR / "predictions.tsv", "w", encoding="utf-8", newline="") as f:
         w = csv.writer(f, delimiter="\t", quoting=csv.QUOTE_NONE, escapechar="\\")
-        w.writerow(["index", "duration_s", "ref_source", "vi_label", "ref"]
+        # Câu clean-test đến từ cả hai split → `index` đơn lẻ không xác định được câu.
+        w.writerow(["split", "index", "duration_s", "ref_source", "ref"]
                    + [f"hyp_{n}" for n in ok] + [f"raw_{n}" for n in ok])
         for i, s in enumerate(samples):
-            w.writerow([s["index"], f"{s['duration_s']:.2f}", s["ref_source"], int(s["vi_label"]), s["ref"]]
+            w.writerow([s["split"], s["index"], f"{s['duration_s']:.2f}", s["ref_source"], s["ref"]]
                        + [clean(results[n]["hyps"][i]) for n in ok] + [clean(results[n]["raw_hyps"][i]) for n in ok])
 
 
@@ -466,10 +566,8 @@ def main():
     manifest = load_manifest()
     samples = prepare_samples(manifest)
     n_corrected = sum(1 for s in samples if s["ref_source"] == "corrected_text")
-    n_vi = sum(1 for s in samples if s["vi_label"])
     print(f"Reference: {n_corrected}/{len(samples)} câu là corrected_text, "
           f"{len(samples) - n_corrected} là pseudo_label", flush=True)
-    print(f"Tập con nhãn tiếng Việt: {n_vi}/{len(samples)} câu (tỉ lệ từ có dấu ≥ {VI_THRESHOLD})", flush=True)
 
     meta = {
         "date_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"),
@@ -479,16 +577,12 @@ def main():
         "dataset": HF_DATASET_ID, "dataset_revision": HF_REVISION, "manifest_version": manifest.get("version", 1),
         "n": len(samples), "limit": LIMIT or None,
         "n_corrected_text": n_corrected, "n_pseudo_label": len(samples) - n_corrected,
-        "n_vi_label": n_vi,
         "normalization": "src/evaluation/text_normalize.py: NFC, chữ thường, bỏ nháy đơn, dấu câu/ký hiệu → "
                          "khoảng trắng, gộp khoảng trắng; chữ số GIỮ NGUYÊN (nhãn không có chữ số → mỗi chữ số "
                          "trong hyp là lỗi, xem n_hyp_with_digits)",
         "normalize_copy_check": normalize_status,
-        "vi_label_subset": f"câu có tỉ lệ từ mang dấu tiếng Việt ≥ {VI_THRESHOLD} (NFD, đếm ký tự combining, "
-                           "`đ` tính là có dấu) — HEURISTIC CHƯA KIỂM CHỨNG, đo ngôn ngữ của nhãn chứ không "
-                           "phải audio (docs/notes/survey_model_candidates.md mục 4)",
         "timing": f"batch 1, audio đã nạp sẵn RAM (không tính đọc đĩa), gồm trích đặc trưng + mô hình + giải mã; "
-                  f"{N_WARMUP} câu warm-up không tính; RTF = tổng thời gian / tổng thời lượng audio",
+                  f"warm-up {'một lượt trọn mọi câu' if N_WARMUP is None else str(N_WARMUP) + ' câu'} không tính; RTF = tổng thời gian / tổng thời lượng audio",
         "vram": "torch.cuda.max_memory_allocated trong lúc suy luận (gồm trọng số); không gồm overhead CUDA context",
     }
 
@@ -497,9 +591,8 @@ def main():
         print(f"\n{'=' * 70}\n{name}: {MODEL_SPECS[name]['repo']}\n{'=' * 70}", flush=True)
         try:
             r = run_model(name, samples, device)
-            a, v = r["wer_all"], r["wer_vi_label"]
-            print(f"{name}: WER={a['wer']:.4f} CER={a['cer']:.4f} | nhãn Việt ({v['n']}): "
-                  f"WER={v.get('wer', float('nan')):.4f} | params={r['n_params']:,} | RTF={r['rtf']:.4f} | "
+            a = r["wer_all"]
+            print(f"{name}: WER={a['wer']:.4f} CER={a['cer']:.4f} | params={r['n_params']:,} | RTF={r['rtf']:.4f} | "
                   f"hyp rỗng={r['n_hyp_empty']} có chữ số={r['n_hyp_with_digits']}", flush=True)
         except BaseException as e:  # noqa: BLE001 — kể cả SystemExit từ thư viện; lỗi 1 mô hình không làm sập kernel
             if isinstance(e, KeyboardInterrupt):
@@ -511,7 +604,7 @@ def main():
         results[name] = r
         write_outputs(meta, samples, results)
 
-    summary = {n: ({"wer": r["wer_all"]["wer"], "wer_vi_label": r["wer_vi_label"].get("wer"), "cer": r["wer_all"]["cer"],
+    summary = {n: ({"wer": r["wer_all"]["wer"], "cer": r["wer_all"]["cer"],
                     "rtf": r["rtf"], "n_params": r["n_params"], "vram_peak_gib": r.get("vram_peak_allocated_gib")}
                    if "error" not in r else {"error": r["error"]}) for n, r in results.items()}
     print("\n" + "=" * 70 + "\nKẾT QUẢ\n" + "=" * 70)
