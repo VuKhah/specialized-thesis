@@ -1248,3 +1248,12 @@ khảo sát dataset, phát hiện sai lệch số liệu, prefetch script, train
   để tách WER (RQ3). Tiến độ 11/203.
 - **Phiên sau bắt đầu từ:** push (nếu người dùng duyệt) → kernel trial A (~1,5 h, cần duyệt + xác nhận quota) → chốt
   cấu hình main; hỏi thầy Dũng đã trả lời thư chưa; đề cương mới.
+- **Nhận xét chuyên môn của AI (người dùng yêu cầu ghi nhận, 2026-10-11):** điểm mạnh — thực nghiệm chặt (test giữ riêng theo
+  video, bootstrap khối video, ~12M chỉ khác encoder, kernel ghim commit, quyết định có nguồn); kết quả có chuyện (Mamba B1
+  12M ≈ PhoWhisper-small zero-shot 244M trên clean-test nhãn giả, nhanh hơn ~60×). Rủi ro theo thứ tự: (1) **baseline
+  Conformer lệch chuẩn** (không subsampling, không PE, LR hằng) — đe dọa kết luận chính "Mamba > Conformer", quan trọng
+  hơn fine-tune; (2) clean-test còn nhãn giả (11/203) — đường găng, việc tay; (3) thời gian viết (~8 tuần, mới nháp Ch1);
+  (4) đề cương mới chưa có, gặp GVHD đã quá 2 tuần (Mẫu 3); (5) dàn trải. Đề xuất: đề cương + hẹn GVHD tuần này, hỏi trọng
+  tâm "có cần Conformer chuẩn (subsampling 4× + PE) + Mamba cùng điều kiện" (~12-20 GPU-h); hiệu đính xong trong 7-10
+  ngày; fine-tune Parakeet như đã chốt; đóng băng thực nghiệm ~đầu tháng 11; viết Ch3 ngay từ `docs/notes/`.
+- Người dùng duyệt push + chạy kernel trial fine-tune Parakeet (A, ~1,5 h).
