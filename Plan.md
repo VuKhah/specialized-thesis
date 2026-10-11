@@ -1215,3 +1215,36 @@ khảo sát dataset, phát hiện sai lệch số liệu, prefetch script, train
   (không / có subsampling 4×) ở Điểm 3, link GitHub + Drive. Nguồn: `docs/tong_ket/2026-10-08/mamba_asr_report.html`
   (người dùng sửa câu chữ tay; thư mục `docs/tong_ket/` gitignore → bản HTML/PDF lưu Drive, người dùng tự tải lên).
   Hiệu đính clean-test: 11/203 câu lúc commit.
+
+### 2026-10-08 (đóng phiên) — tổng kết phiên và điểm bắt đầu phiên sau
+- **Đã làm trong phiên:** kiểm + tải xong train full 3 mô hình (30 ep) + Conformer dài (69 ep); lưu checkpoint
+  `D:\Model\kltn_checkpoints\` (6,6 GB, người dùng đưa Drive); benchmark subsampling/fp16 (`subsample_speed_2026-10-08.md`);
+  bảng so sánh cuối 5 mô hình trên clean-test (`reports/results/final_compare_2026-10-08/`); công cụ hiệu đính clean-test;
+  trang báo cáo công khai https://claude.ai/artifact/VFAfKywgz6UjTu3PGNXZF1 + PDF trên Drive
+  (https://drive.google.com/file/d/1nn2Rfo8nUOhb3hT2f-Pt8XlJ9gh1N3WQ/view); soạn thư gửi thầy Dũng (báo cáo lần 2, xin đổi
+  tên đề tài thành "Khảo sát Mamba làm encoder cho nhận dạng tiếng nói tiếng Việt hội thoại", xin báo cáo sớm) — người
+  dùng tự gửi. Commit `1dbb0f5` đã push.
+- **Chốt trong phiên:** không train thêm cho tới khi GVHD trả lời (subsampling, Conformer chuẩn, fine-tune, seed — QA Q11).
+- **Phiên sau bắt đầu từ:** (1) hỏi người dùng: thầy Dũng đã trả lời thư chưa, lịch gặp (ghi vào bảng mục 6); (2) tiến độ
+  hiệu đính clean-test (11/203 lúc commit; chạy lại `python -m src.data.correct_clean_test`) → khi xong tính lại WER 5 mô
+  hình từ `final_compare_2026-10-08/predictions.tsv` + bootstrap, cập nhật trang báo cáo (nguồn
+  `docs/tong_ket/2026-10-08/mamba_asr_report.html`, đăng lại cùng URL); (3) soạn nháp đề cương mới (chờ người dùng duyệt);
+  (4) việc không GPU: trung bình checkpoint (CPU khó với Mamba — cân nhắc kernel ngắn, hỏi trước), code đo RQ2 cuối (làm ấm
+  từng độ dài). Quota reset 2026-10-10 (A còn ~6,6 h, B 3 h trước reset).
+
+### 2026-10-11 — fine-tune Parakeet: chốt, code, kernel
+- **Người dùng chốt (bỏ treo phần fine-tune; GVHD buổi 1 đã nêu "Conformer pre-train + fine-tune"):** chỉ fine-tune
+  Parakeet (PhoWhisper giữ zero-shot); trần ~7 GPU-h cho lần chính (≈ Conformer-12M 6,6 h); chạy ngay, chấm clean-test
+  lại sau hiệu đính (fine-tune trên nhãn giả → WER so nhãn giả lạc quan). Subsampling 4× / seed 2 vẫn ⏸ chờ GVHD (Q11).
+- **Code:** `src/training/finetune_parakeet.py` (test CPU bằng mô hình giả + dữ liệu thật: warmup/cosine, tích lũy
+  gradient, eval đầu = zero-shot, best/last, eval_*.jsonl có video) + kernel `scripts/kaggle/finetune_parakeet/` (trial:
+  phủ tokenizer, khớp giải mã NeMo, probe fp32/fp16, 2 LR × 20′; main ≤ 420′). Thiết lập + nguồn:
+  `lineup_preparation.md` mục 4. NeMo/DDP chưa chạy thật.
+- **Khung quyết định "train tiếp" (AI đề xuất, chờ kết quả):** Parakeet-FT bỏ xa Mamba (CI không chứa 0) → kể chuyện
+  đánh đổi, không train thêm để đuổi; khoảng cách nhỏ → trung bình checkpoint rồi pha decay LR (6-9 GPU-h); trung bình
+  checkpoint lợi ≥ ~0,5 điểm → pha decay cho cả ba.
+- **Hiệu đính:** tên riêng/tiếng Anh viết đúng chính tả thật (nhãn train viết đúng: MARKETING 585, FACEBOOK 337, GOOGLE
+  148 lần; phiên âm 0 lần); mô hình đoán theo âm khi từ hiếm (Bachelor → "ba sholo"/"ba chơ dô"). Ghi chú `tên riêng`
+  để tách WER (RQ3). Tiến độ 11/203.
+- **Phiên sau bắt đầu từ:** push (nếu người dùng duyệt) → kernel trial A (~1,5 h, cần duyệt + xác nhận quota) → chốt
+  cấu hình main; hỏi thầy Dũng đã trả lời thư chưa; đề cương mới.

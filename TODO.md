@@ -6,6 +6,21 @@ Cập nhật lần cuối: **2026-10-05** (preflight B OK, kernel train thử th
 
 Câu hỏi cần mang đi hỏi (người dùng/GVHD): [`QA.md`](QA.md).
 
+## ▶ PHIÊN SAU BẮT ĐẦU Ở ĐÂY (ghi 2026-10-08, đóng phiên)
+
+| Việc | Trạng thái | Làm gì |
+|---|---|---|
+| Thư gửi thầy Dũng (báo cáo lần 2, đổi tên đề tài, xin báo cáo sớm) | người dùng tự gửi | ⛔ hỏi: thầy trả lời chưa, ngày gặp → `Plan.md` mục 6 |
+| Hiệu đính clean-test | 11/203 (`python -m src.data.correct_clean_test`) | xong → tính lại WER 5 mô hình từ `reports/results/final_compare_2026-10-08/predictions.tsv` + bootstrap → cập nhật trang báo cáo |
+| Trang báo cáo | https://claude.ai/artifact/VFAfKywgz6UjTu3PGNXZF1 (công khai) | nguồn `docs/tong_ket/2026-10-08/mamba_asr_report.html` (gitignore); sửa → đăng lại cùng URL |
+| Đề cương mới | ⬜ 🔴 | soạn nháp, người dùng duyệt |
+| Train thêm | ⏸ chờ GVHD | QA Q11, `docs/notes/subsample_speed_2026-10-08.md` mục 8 |
+| **Fine-tune Parakeet** (chốt 2026-10-11) | code xong, test CPU; ⛔ chờ duyệt push + kernel trial (~1,5 h, A) | `python scripts/kaggle/finetune_parakeet/launch.py --mode trial --push` → xem `kernel_summary.json` → chốt LR/fp16/batch → `--mode main` (≤ 7 h). Kết luận chỉ sau hiệu đính clean-test. `lineup_preparation.md` mục 4 |
+| Hiệu đính: tên riêng / tiếng Anh | ghi chú cho người hiệu đính | viết đúng chính tả thật; ghi `tên riêng`/`tiếng Anh` ở ô ghi chú để tách WER nhóm này (RQ3) |
+| Trung bình checkpoint · RQ2 cuối | ⬜ | hỏi trước nếu cần kernel GPU; RQ2 phải làm ấm từng độ dài |
+
+Quota reset 2026-10-10. Train full đã xong — khối "TRAIN FULL" bên dưới là lịch sử.
+
 ## 🔴 TRAIN FULL ĐANG CHẠY — việc đầu tiên của phiên sau (ghi 2026-10-06)
 
 **▶▶▶ 2026-10-08: TRAIN 30 EPOCH XONG CẢ BA** — Mamba B1 0,1562/0,1547 · ConExt 0,1875/0,1846 · Conformer 0,2519/0,2481

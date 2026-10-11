@@ -73,6 +73,19 @@ chuẩn bị** cho từng mô hình; trạng thái làm/chưa làm theo dõi ở
       thuẫn ~2.000 h vs >4.000 h chưa giải) — rủi ro rò rỉ.
 - [ ] Fine-tune 600M trên T4: ước VRAM/thời gian bằng vài step (AMP, batch
       nhỏ, có thể đóng băng một phần encoder) trước khi xin quota.
+      **2026-10-11 — người dùng chốt:** chỉ fine-tune Parakeet (PhoWhisper giữ zero-shot); trần **~7 GPU-h** cho lần
+      chính (≈ Conformer-12M 6,6 h → so trên trục tài nguyên); chạy ngay, kết luận cuối chỉ sau khi hiệu đính
+      clean-test (fine-tune trên nhãn giả Zipformer → WER so với nhãn giả lạc quan). Code: `src/training/finetune_parakeet.py`
+      + kernel `scripts/kaggle/finetune_parakeet/` (trial ~1,5 h → main ≤ 7 h). Thiết lập và nguồn:
+      - Giữ front-end/SpecAugment/tokenizer/CTC head của .nemo, full fine-tune (đóng băng chỉ là phương án dự phòng nếu OOM).
+      - Nhãn → `normalize_text` (chữ thường) trước khi token hóa: tokenizer Parakeet phân biệt hoa/thường.
+      - AdamW (0,9; 0,98), wd 1e-3, warmup + cosine về 0,1×: theo `linagora/linto_stt_fr_fastconformer` (fine-tune
+        FastConformer công bố duy nhất tìm được có siêu tham số: lr 1e-5, cosine, min 1e-6). Card Parakeet không ghi
+        siêu tham số fine-tune. Trial so 1e-5 vs 5e-5 (20′ mỗi mức) — chỉ để loại LR phá mô hình, không để kết luận.
+      - Batch toàn cục 16, grad clip 5,0, SyncBN: lấy theo nhóm train từ đầu (lựa chọn dự án, không có tài liệu).
+      - fp32 mặc định: 06/10 Parakeet tràn số fp16 khi suy luận (16/203 câu). Trial đo cả fp16 (s/step, loss hữu hạn).
+      - Card Parakeet (đọc lại 2026-10-11): ~2.000 h, 10 bộ (CV 20.0, VietMed-L, LSVSC, FLEURS, InfoRe 2, FOSD, VAIS,
+        VLSP 2020, VSV-1100, MS-SNSD); không nêu VietSuperSpeech/YouTube; T4 có trong danh sách phần cứng đã thử.
 - [ ] RQ2: subsampling 8× → ghi rõ không cùng điều kiện với #1/#2/#5 khi so
       RTF. License: NVIDIA Open Model License — trích trong khóa luận.
 
