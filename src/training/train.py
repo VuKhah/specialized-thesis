@@ -18,8 +18,11 @@ cắt. Thứ tự dữ liệu mỗi epoch chỉ phụ thuộc (seed, epoch) — 
 bỏ đúng các batch đã học. Phiên Kaggle mới: gắn output phiên trước làm input,
 truyền `--resume_from .../latest.pt`. `--no_resume` để train lại từ đầu.
 
-Lịch LR giữ warmup + hằng số (không decay): dừng ở epoch bất kỳ vẫn là một
-điểm so sánh hợp lệ giữa các mô hình (train full, báo cáo theo epoch — 2026-09-28).
+Lịch LR: v1 (2026-09-28) warmup + hằng — dừng ở epoch bất kỳ vẫn so được. Từ 2026-10-12 (công thức v2)
+thêm `training.decay_epochs` > 0 → WSD: warmup, hằng, rồi pha giảm 1-sqrt về 0 ở `decay_epochs` epoch
+cuối (Hägele và cs., arXiv:2405.18392: hằng + pha giảm ~20% ≈ cosine; 1-sqrt tốt hơn tuyến tính).
+Ghi đè từ dòng lệnh (`--lr`, `--seed`, `--warmup_steps`, `--decay_epochs`, `--experiment_name`) cho dò
+LR / nhiều seed mà không nhân bản yaml.
 
 Số đo độ ổn định (thêm 2026-10-04, cho train thử 3 mô hình): mỗi epoch ghi một
 dòng `<ckpt_dir>/<experiment_name>/metrics.jsonl` (loss, grad norm, số step bị
@@ -47,8 +50,10 @@ from src.evaluation.wer import compute_wer
 from src.features.log_mel import LogMelFeatureExtractor
 from src.models.conextbimamba_encoder import ConExtBiMambaEncoder
 from src.models.conformer_encoder import ConformerEncoder
+from src.models.conformer_relpos_encoder import ConformerRelPosEncoder
 from src.models.ctc_model import CTCASRModel, ctc_loss, greedy_collapse
 from src.models.mamba_encoder import MambaEncoder
+from src.models.subsampling import Conv2dSubsampling4
 from src.tokenizer.bpe_tokenizer import BPETokenizer
 
 CHECKPOINT_ROOT = Path("checkpoints")
@@ -60,6 +65,8 @@ def build_encoder(cfg: dict):
     enc_type = enc_cfg.pop("type")
     if enc_type == "conformer":
         return ConformerEncoder(**enc_cfg)
+    if enc_type == "conformer_relpos":
+        return ConformerRelPosEncoder(**enc_cfg)
     if enc_type == "mamba":
         return MambaEncoder(**enc_cfg)
     if enc_type == "conextbimamba":
@@ -69,9 +76,20 @@ def build_encoder(cfg: dict):
 
 def build_model(cfg: dict, vocab_size: int) -> CTCASRModel:
     """Chỗ duy nhất dựng model đầy đủ (train, eval_clean_test, kernel benchmark)
-    → front-end (CMVN, SpecAugment) đọc từ mục `features` của yaml giống nhau."""
+    → front-end (CMVN, SpecAugment) đọc từ mục `features` của yaml giống nhau.
+    Mục tùy chọn (v2, 2026-10-12): `subsampling: {type: conv2d4, channels}` (encoder.input_dim phải = d_model),
+    `interctc: {weight, layer, self_condition}`."""
     fe = LogMelFeatureExtractor(**cfg["features"])
-    return CTCASRModel(encoder=build_encoder(cfg), vocab_size=vocab_size, feature_extractor=fe)
+    sub_cfg = cfg.get("subsampling")
+    subsampling = None
+    if sub_cfg:
+        if sub_cfg.get("type") != "conv2d4":
+            raise ValueError(f"subsampling không hỗ trợ: {sub_cfg}")
+        subsampling = Conv2dSubsampling4(input_dim=cfg["features"].get("n_mels", 80),
+                                         output_dim=cfg["encoder"]["input_dim"],
+                                         channels=sub_cfg.get("channels", 256))
+    return CTCASRModel(encoder=build_encoder(cfg), vocab_size=vocab_size, feature_extractor=fe,
+                       subsampling=subsampling, interctc=cfg.get("interctc"))
 
 
 def build_optimizer(model: torch.nn.Module, cfg: dict) -> torch.optim.AdamW:
@@ -95,7 +113,11 @@ def build_optimizer(model: torch.nn.Module, cfg: dict) -> torch.optim.AdamW:
     )
 
 
-def warmup_lr_lambda(step: int, warmup_steps: int) -> float:
+def warmup_lr_lambda(step: int, warmup_steps: int, decay_start: int = 0, total_steps: int = 0) -> float:
+    """Warmup tuyến tính → hằng → (decay_start > 0) pha giảm 1-sqrt về 0 tại total_steps (WSD)."""
+    if decay_start > 0 and step >= decay_start:
+        progress = min(1.0, (step - decay_start) / max(total_steps - decay_start, 1))
+        return max(0.0, 1.0 - progress ** 0.5)
     if warmup_steps <= 0:
         return 1.0
     return min(1.0, (step + 1) / warmup_steps)
@@ -216,6 +238,12 @@ def main():
     parser.add_argument("--train_manifests", nargs="+", default=None,
                         help="Ghi đè data.train_manifests, vd. train_shard0 cho train thử 1 shard")
     parser.add_argument("--epochs", type=int, default=None, help="Ghi đè training.epochs")
+    parser.add_argument("--lr", type=float, default=None, help="Ghi đè training.lr (dò LR)")
+    parser.add_argument("--seed", type=int, default=None, help="Ghi đè training.seed (nhiều seed)")
+    parser.add_argument("--warmup_steps", type=int, default=None, help="Ghi đè training.warmup_steps")
+    parser.add_argument("--decay_epochs", type=int, default=None,
+                        help="Ghi đè training.decay_epochs (0 = không pha giảm, như v1)")
+    parser.add_argument("--experiment_name", default=None, help="Ghi đè experiment_name (thư mục checkpoint)")
     parser.add_argument("--max_minutes", type=float, default=0,
                         help="Lưu rồi thoát sau chừng này phút tính từ lúc khởi động (0 = không giới hạn)")
     parser.add_argument("--ckpt_every_minutes", type=float, default=20)
@@ -232,9 +260,17 @@ def main():
     with open(args.config, encoding="utf-8") as f:
         cfg = yaml.safe_load(f)
     tcfg = cfg["training"]
+    for key in ("lr", "seed", "warmup_steps", "decay_epochs"):
+        if getattr(args, key) is not None:
+            tcfg[key] = getattr(args, key)
+    if args.experiment_name:
+        cfg["experiment_name"] = args.experiment_name
     epochs = args.epochs or tcfg["epochs"]
     seed = tcfg["seed"]
     experiment_name = cfg["experiment_name"]
+    decay_epochs = tcfg.get("decay_epochs", 0)
+    if not 0 <= decay_epochs < epochs:
+        raise ValueError(f"decay_epochs {decay_epochs} phải trong [0, {epochs})")
 
     ddp = int(os.environ.get("WORLD_SIZE", 1)) > 1
     if ddp:
@@ -293,14 +329,17 @@ def main():
     model = build_model(cfg, tokenizer.vocab_size).to(device)
     encoder = model.encoder
     if is_main:
-        print(f"[{experiment_name}] encoder params: {encoder.num_parameters():,} | train {len(train_ds)} câu "
-              f"({steps_per_epoch} step/epoch), eval {eval_sizes} | {world} tiến trình, "
-              f"batch {batch_size}/tiến trình, AMP={amp}", flush=True)
+        print(f"[{experiment_name}] encoder params: {encoder.num_parameters():,} | tổng {sum(p.numel() for p in model.parameters()):,} | "
+              f"train {len(train_ds)} câu ({steps_per_epoch} step/epoch), eval {eval_sizes} | {world} tiến trình, "
+              f"batch {batch_size}/tiến trình, AMP={amp} | lr {tcfg['lr']} warmup {tcfg['warmup_steps']} "
+              f"decay {decay_epochs}/{epochs} epoch | seed {seed} | interctc {cfg.get('interctc')} | "
+              f"subsampling {cfg.get('subsampling')}", flush=True)
 
     optimizer = build_optimizer(model, cfg)
+    decay_start = (epochs - decay_epochs) * steps_per_epoch if decay_epochs else 0
     scheduler = torch.optim.lr_scheduler.LambdaLR(
         optimizer,
-        lr_lambda=lambda step: warmup_lr_lambda(step, tcfg["warmup_steps"]),
+        lr_lambda=lambda step: warmup_lr_lambda(step, tcfg["warmup_steps"], decay_start, epochs * steps_per_epoch),
     )
     scaler = torch.amp.GradScaler(device.type, enabled=amp)
 
@@ -394,6 +433,7 @@ def main():
         step_in_epoch, skip_steps = skip_steps, 0
         resumed_mid_epoch = step_in_epoch > 0
         loss_sum, loss_n = 0.0, 0
+        main_sum, inter_sum = 0.0, 0.0  # CTC cuối / InterCTC riêng (chỉ khi bật interctc)
         # Số đo ổn định của epoch (chỉ phần chạy trong phiên này).
         nonfinite_loss, amp_skipped, grad_norm_sum, grad_norm_max = 0, 0, 0.0, 0.0
         if device.type == "cuda":
@@ -407,8 +447,8 @@ def main():
             target_lengths = batch["target_lengths"].to(device, non_blocking=True)
 
             with torch.autocast(device.type, dtype=torch.float16, enabled=amp):
-                log_probs, out_lengths = model(waveform, waveform_lengths)
-            loss = ctc_loss(log_probs, out_lengths, targets, target_lengths)
+                log_probs, out_lengths, inter = model(waveform, waveform_lengths, return_inter=True)
+            loss, loss_main, loss_inter = core.total_ctc_loss(log_probs, out_lengths, inter, targets, target_lengths)
 
             optimizer.zero_grad(set_to_none=True)
             if all_ranks_finite(loss):
@@ -426,13 +466,16 @@ def main():
                 loss_value = loss.item()
                 loss_sum += loss_value
                 loss_n += 1
+                if loss_inter is not None:
+                    main_sum += loss_main.item()
+                    inter_sum += loss_inter.item()
             else:
                 # Vẫn đếm step (giữ lịch LR + thứ tự dữ liệu khi resume), chỉ không học.
                 nonfinite_loss += 1
                 loss_value = float("nan")
             # Không backward thì đồ thị forward vẫn sống qua `loss`/`log_probs` tới khi forward step sau gán
             # đè → hai đồ thị cùng lúc (train thử B1 2026-10-05: VRAM đỉnh 2,1 → 3,9 GiB đúng lúc bắt đầu bỏ).
-            del loss, log_probs, out_lengths
+            del loss, loss_main, loss_inter, log_probs, out_lengths, inter
             scheduler.step()
 
             global_step += 1
@@ -473,6 +516,8 @@ def main():
             "epoch": epoch, "global_step": global_step, "encoder_params": encoder.num_parameters(),
             "n_train": len(train_ds), "world_size": world, "global_batch": tcfg["batch_size"],
             "train_loss": mean_loss, "steps": n_steps,
+            **({"train_loss_ctc": main_sum / max(loss_n, 1), "train_loss_interctc": inter_sum / max(loss_n, 1)}
+               if cfg.get("interctc") else {}),
             "nonfinite_loss_steps": nonfinite_loss, "amp_skipped_steps": amp_skipped,
             "grad_norm_mean": grad_norm_sum / max(loss_n - amp_skipped, 1), "grad_norm_max": grad_norm_max,
             "s_per_step": (time.time() - t_epoch) / max(n_steps, 1),

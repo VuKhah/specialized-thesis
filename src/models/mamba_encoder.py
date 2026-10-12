@@ -120,7 +120,7 @@ class MambaEncoder(ASREncoder):
     def output_dim(self) -> int:
         return self._d_model
 
-    def forward(self, feats: torch.Tensor, feat_lengths: torch.Tensor):
+    def forward(self, feats: torch.Tensor, feat_lengths: torch.Tensor, layer_hook=None):
         # residual_in_fp32: dưới autocast, input_proj trả fp16 → cộng dồn 28
         # khối ở fp16. Ép fp32 ở đây là đủ: LayerNorm chạy fp32 và fp32 + fp16 → fp32.
         x = self.input_proj(feats).float()  # [B, T, d_model]
@@ -129,13 +129,16 @@ class MambaEncoder(ASREncoder):
         # cuối không lan ngược; nhánh ngược đảo theo feat_lengths nên padding vẫn
         # ở cuối. Giá trị rác ở vị trí padding qua các lớp cũng không lan vào
         # khung thật vì cùng lý do; CTC chỉ tính trên feat_lengths.
-        if not self.bidirectional:
-            for block, norm in zip(self.layers, self.norms):
-                x = x + self.dropout(mamba_fp32(block, norm(x)))
-            return self.norm_f(x), feat_lengths
-
-        for block_fwd, block_bwd, norm in zip(self.layers, self.layers_bwd, self.norms):
+        for i, (block_fwd, norm) in enumerate(zip(self.layers, self.norms), 1):
             h = norm(x)
-            h_bwd = reverse_padded(mamba_fp32(block_bwd, reverse_padded(h, feat_lengths)), feat_lengths)
-            x = x + self.dropout(mamba_fp32(block_fwd, h)) + self.dropout(h_bwd)
+            x = x + self.dropout(mamba_fp32(block_fwd, h))
+            if self.bidirectional:
+                block_bwd = self.layers_bwd[i - 1]
+                x = x + self.dropout(reverse_padded(mamba_fp32(block_bwd, reverse_padded(h, feat_lengths)),
+                                                    feat_lengths))
+            if layer_hook is not None:
+                x = layer_hook(i, x)
         return self.norm_f(x), feat_lengths
+
+    def normalize_intermediate(self, x: torch.Tensor) -> torch.Tensor:
+        return self.norm_f(x)

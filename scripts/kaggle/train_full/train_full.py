@@ -90,6 +90,8 @@ def main() -> None:
     experiment, epochs = cfg["experiment_name"], cfg["training"]["epochs"]
     if "--epochs" in EXTRA_ARGS:  # thử nối phiên ghi đè số epoch — tổng kết phải theo cùng con số
         epochs = int(EXTRA_ARGS[EXTRA_ARGS.index("--epochs") + 1])
+    if "--experiment_name" in EXTRA_ARGS:  # v2: seed/LR khác nhau cùng một yaml → thư mục checkpoint riêng
+        experiment = EXTRA_ARGS[EXTRA_ARGS.index("--experiment_name") + 1]
     ckpt_root = OUT / "checkpoints"
     print(f"{stamp()} TRAIN FULL {experiment} — phiên {SESSION}, {CONFIG}, {epochs} epoch", flush=True)
 

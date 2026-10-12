@@ -17,8 +17,19 @@ class ASREncoder(torch.nn.Module, ABC):
     """
 
     @abstractmethod
-    def forward(self, feats: torch.Tensor, feat_lengths: torch.Tensor):
+    def forward(self, feats: torch.Tensor, feat_lengths: torch.Tensor, layer_hook=None):
+        """layer_hook(i, x) → x, gọi sau lớp thứ i (1-based) với luồng residual — cho InterCTC +
+        self-conditioning (2026-10-12, ESPnet `interctc_layer_idx`/`interctc_use_conditioning`)."""
         raise NotImplementedError
+
+    @property
+    def n_layers(self) -> int:
+        return len(self.layers)
+
+    def normalize_intermediate(self, x: torch.Tensor) -> torch.Tensor:
+        """Biểu diễn trung gian đưa vào CTC head. Mặc định giữ nguyên (mỗi lớp đã kết thúc bằng LayerNorm);
+        chồng pre-norm (B1) ghi đè bằng norm cuối — như ESPnet chuẩn hóa intermediate bằng `after_norm`."""
+        return x
 
     @property
     @abstractmethod

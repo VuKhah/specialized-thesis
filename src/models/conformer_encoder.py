@@ -36,7 +36,13 @@ class ConformerEncoder(ASREncoder):
     def output_dim(self) -> int:
         return self._d_model
 
-    def forward(self, feats: torch.Tensor, feat_lengths: torch.Tensor):
+    @property
+    def n_layers(self) -> int:
+        return len(self.conformer.conformer_layers)
+
+    def forward(self, feats: torch.Tensor, feat_lengths: torch.Tensor, layer_hook=None):
+        if layer_hook is not None:
+            raise ValueError("Conformer v1 (torchaudio) không hỗ trợ InterCTC — dùng conformer_relpos")
         x = self.input_proj(feats)  # [B, T, d_model]
         out, out_lengths = self.conformer(x, feat_lengths)
         return out, out_lengths

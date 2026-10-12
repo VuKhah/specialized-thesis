@@ -110,9 +110,11 @@ class ConExtBiMambaEncoder(ASREncoder):
     def output_dim(self) -> int:
         return self._d_model
 
-    def forward(self, feats: torch.Tensor, feat_lengths: torch.Tensor):
+    def forward(self, feats: torch.Tensor, feat_lengths: torch.Tensor, layer_hook=None):
         x = self.input_proj(feats)  # [B, T, d_model]
         pad_mask = torch.arange(x.size(1), device=x.device) >= feat_lengths.to(x.device).unsqueeze(1)  # [B, T]
-        for layer in self.layers:
+        for i, layer in enumerate(self.layers, 1):
             x = layer(x, feat_lengths, pad_mask)
+            if layer_hook is not None:
+                x = layer_hook(i, x)
         return x, feat_lengths

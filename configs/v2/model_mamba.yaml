@@ -1,0 +1,57 @@
+# Công thức v2 (2026-10-12) — docs/notes/conextbimamba_gap_2026-10-12.md mục 7-8.
+# Khác v1: lịch WSD (warmup → hằng → giảm 1-sqrt 8 epoch cuối, Hägele 2024), 40 epoch, warmup 1 epoch,
+# InterCTC + self-conditioning lớp giữa (Lee & Watanabe 2021; Nozaki & Komatsu 2021; cách ESPnet),
+# chọn LR bằng lưới chung {3e-4, 6e-4, 1e-3} (P2) rồi ghi đè `--lr`; 3 seed (`--seed`).
+
+experiment_name: v2_mamba
+
+encoder:
+  type: mamba
+  input_dim: 80
+  d_model: 256
+  n_layers: 14 # số lớp; mỗi lớp 2 khối khi bidirectional. 1 khối Mamba ~0,44M tham số, 1 Conformer block ~1,5M
+  bidirectional: true
+  d_state: 16
+  d_conv: 4
+  expand: 2
+  dropout: 0.1 # = Conformer; 2405.12609, ConMamba (thêm 2026-10-04)
+
+tokenizer:
+  vocab_size: 1000 # PHẢI khớp với model_conformer.yaml (dùng chung tokenizer)
+
+training:
+  batch_size: 16
+  lr: 3.0e-4 # placeholder — LR thật do P2 (dò LR) chọn, truyền --lr
+  epochs: 40
+  decay_epochs: 8 # 20% cuối, 1-sqrt về 0 (Hägele và cs., arXiv:2405.18392)
+  warmup_steps: 2840 # ~1 epoch (v1: 1000) — lựa chọn dự án: LR đỉnh tới 1e-3 cần warmup dài hơn
+  grad_clip: 5.0
+  weight_decay: 0.01
+  seed: 42
+  amp: true
+  num_workers: 2
+  bucket_pool_batches: 50
+
+interctc:
+  weight: 0.3 # Lee & Watanabe 2021: w = 0,3 mọi thí nghiệm
+  layer: null # null = ⌊L/2⌋ (Lee & Watanabe 2021)
+  self_condition: true # Nozaki & Komatsu 2021; ESPnet interctc_use_conditioning
+
+features:
+  cmvn_stats: configs/cmvn_stats.json
+  spec_augment: # chỉ lúc train; theo Conformer (Gulati 2020), không time warping
+    freq_masks: 2
+    freq_width: 27
+    time_masks: 10
+    time_ratio: 0.05
+
+data:
+  # data/splits/*.tsv (make_shards.py), đã bỏ excluded.tsv (A1) khi đọc.
+  # Train thử 1 shard: --train_manifests train_shard0.
+  train_manifests: [train_shard0, train_shard1, train_shard2, train_shard3]
+  eval_manifest: val # chọn best.pt: validation trừ clean-test cũ (D5), trừ video giữ riêng
+  extra_eval_manifests: [val_unseen] # video giữ riêng (make_heldout.py), chỉ ghi log
+  sample_rate: 16000
+  # Speed perturbation on-the-fly lúc train (Ko 2015; chốt 2026-10-05,
+  # docs/notes/audio_preprocessing_survey.md mục 5). PHẢI giống nhau ở mọi config train từ đầu.
+  speed_perturb: [0.9, 1.0, 1.1]

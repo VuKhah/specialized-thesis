@@ -27,9 +27,18 @@ BUILD = HERE / "_build"
 ACCOUNTS = {  # tài khoản → (username Kaggle, KAGGLE_CONFIG_DIR) — xem memory/kaggle CLI
     "A": ("tieunhi", None),
     "B": ("vuvanduc1", "C:/Users/Dell/.kaggle_Duc"),
+    # C (2026-10-12): người dùng cấp thêm; điền username + thư mục khoá khi có (không đọc nội dung khoá).
+    "C": (None, "C:/Users/Dell/.kaggle_C"),
 }
 MODELS = {"conformer": "configs/model_conformer.yaml", "mamba": "configs/model_mamba.yaml",
-          "conextbimamba": "configs/model_conextbimamba.yaml"}
+          "conextbimamba": "configs/model_conextbimamba.yaml",
+          # Công thức v2 (2026-10-12): bảng chính 10 ms, ablation PE, nhánh 40 ms.
+          "v2-mamba": "configs/v2/model_mamba.yaml", "v2-conextbimamba": "configs/v2/model_conextbimamba.yaml",
+          "v2-conformer-relpos": "configs/v2/model_conformer_relpos.yaml",
+          "v2-conformer-nope": "configs/v2/model_conformer_nope.yaml",
+          "v2s4-mamba": "configs/v2/model_mamba_sub4.yaml",
+          "v2s4-conextbimamba": "configs/v2/model_conextbimamba_sub4.yaml",
+          "v2s4-conformer-relpos": "configs/v2/model_conformer_relpos_sub4.yaml"}
 # Dataset do A sở hữu, đã chia sẻ B (TODO bước 5).
 DATASETS = ["tieunhi/vss-asr-train-shard0", "tieunhi/vss-asr-train-shard1", "tieunhi/vss-asr-train-shard2",
             "tieunhi/vss-asr-train-shard3", "tieunhi/vss-asr-val", "tieunhi/mamba-wheels-v2"]
@@ -56,6 +65,8 @@ def main() -> None:
     args = ap.parse_args()
 
     user, config_dir = ACCOUNTS[args.account]
+    if user is None:
+        sys.exit(f"LỖI: tài khoản {args.account} chưa có username — điền ACCOUNTS trong launch.py")
     name = slug(args.model, args.session, args.tag)
     first = BUILD / slug(args.model, 1, args.tag) / "build.json"
     if args.commit:

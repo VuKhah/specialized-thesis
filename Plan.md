@@ -1279,3 +1279,23 @@ khảo sát dataset, phát hiện sai lệch số liệu, prefetch script, train
   `--lr` mặc định 1e-4, `--min_lr_ratio` 0,05; trial chỉ còn 1 lần 20′ ở 1e-4. Nguồn: `lineup_preparation.md` mục 4.
   Lần chính phải tính `--total_steps` từ s/step trial (cosine của `lr_factor` theo step, không theo thời gian).
 - Người dùng nêu trọng tâm là ConExtBiMamba, mục tiêu để các mô hình Mamba đuổi sát mô hình khác.
+- **Trial v2 đẩy 08:37** (commit `54a3efa`, A). Commit + push được người dùng duyệt.
+- **Phân tích ConExtBiMamba** (người dùng yêu cầu): `docs/notes/conextbimamba_gap_2026-10-12.md` — kém B1 3,2 điểm
+  clean-test là underfit + chưa hội tụ (LR hằng), không phải overfit; nhanh hơn B1 1,7×/step nên 30 ep chỉ 10,0 GPU-h
+  so với B1 16,8. Đề xuất (chưa chốt): P0 trung bình checkpoint cả ba; P1 train tiếp ConExt tới ~51 ep = cùng GPU-giờ
+  B1 (Conformer dài 69 ep 14,8 h đã có) — mức so sánh thứ hai song song; P2 giảm LR cả ba; P3 subsampling ⏸ GVHD.
+- **Trial v2 xong 09:13** (33′, 0,56 GPU-h): tokenizer phủ 100% (0 unk); giải mã khác NeMo chỉ ở khoảng trắng trước dấu
+  câu; batch 8/GPU OOM → 4; probe fp32 1,08 / fp16 0,73 s/step, VRAM 12,6 GB; chạy ngắn LR 1e-4 DDP fp32 2,07 s/step,
+  0 step bỏ; WER 400 câu: val 12,1 → 9,6%, val_unseen 11,0 → 7,5% sau 551 step (nhãn giả — một phần có thể là học
+  cách viết của Zipformer). Output nhỏ ở scratchpad phiên (không lưu repo).
+- **Lần chính đẩy 09:39** `tieunhi/finetune-parakeet-main` (A, commit `54a3efa`, người dùng duyệt fp32): batch 4×2×2=16,
+  LR 1e-4 → 5e-6 cosine, warmup 800, total 10.000 step (~3,5 epoch, ước từ 2,07 s/step), eval đủ val+val_unseen mỗi
+  2.500 step (~6′/lần). Ước xong ~16:40. Giữ `find_unused_parameters=True` (chưa sửa).
+- **Phiên sau / khi xong:** tải output nhỏ (`--file-pattern '.*\.(json|jsonl|log|csv)$'`), best.pt 2,27 GB chỉ tải khi
+  cần eval clean-test; chờ người dùng chốt 4 câu hỏi chuỗi v2 (`conextbimamba_gap_2026-10-12.md` mục 6).
+- **Người dùng duyệt kế hoạch v2 + "mọi thay đổi có lợi triển khai hết lần này"; bỏ ràng buộc chỉ đổi encoder;
+  sẽ cấp tài khoản Kaggle C.** G0 (code) xong, test CPU 10 config OK (chưa commit): `conformer_relpos_encoder.py`
+  (PE tương đối qua SDPA bias, xoá padding conv, `pos_enc: none`), `subsampling.py`, InterCTC + self-conditioning
+  (`ctc_model.py`, `layer_hook` trong encoder), WSD + ghi đè CLI (`train.py`), `average_checkpoints.py`,
+  `configs/v2/` (7 file), launcher (v2 + C). Smoke `train.py` dữ liệu thật CPU OK (10 ms batch 4, 40 ms batch 16;
+  10 ms batch 16 vượt RAM máy local). Danh sách + ngân sách ~255 GPU-h: `conextbimamba_gap_2026-10-12.md` mục 8.

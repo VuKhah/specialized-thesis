@@ -81,7 +81,9 @@ Repo HF có 118.259 file trong `audio/` nhưng train+validation chỉ dùng 67.4
 |---|---|---|---|
 | Dataset | file wav | `waveform [S]` float | 10–15 s → S = 160.000–240.000 |
 | `LogMelFeatureExtractor` | `[B, S]`, `[B]` | `feats [B, T, 80]`, `feat_lengths [B]` | `T = S//160 + 1` (hop 10 ms → **100 khung/giây**): 10 s → 1001, 13,4 s → 1341, 15 s → 1501. `log(clamp(mel, 1e-5))` → CMVN toàn cục `(x − mean)/std` (buffer, lưu trong checkpoint) → SpecAugment **chỉ khi `training`**: 2 mask tần số F=27 + 10 mask thời gian ≤ 5% độ dài thật, điền 0, không time warp. Luôn fp32 kể cả dưới AMP. Cấu hình ở mục `features` của yaml (từ 2026-10-04, căn cứ `docs/notes/frontend_decoder_survey.md`) |
-| `ASREncoder.forward` | `feats`, `feat_lengths` | `hidden [B, T', 256]`, `out_lengths [B]` | **Cả hai encoder không subsampling: `T' = T`.** |
+| `Conv2dSubsampling4` (chỉ config `subsampling`, nhánh 40 ms v2) | `feats [B, T, 80]` | `[B, T', 256]` | `T' = ((T-1)//2 - 1)//2` (15 s: 1501 → 374). Không có ở v1 và bảng chính v2 (10 ms) |
+| `ASREncoder.forward` | `feats`, `feat_lengths`, `layer_hook=None` | `hidden [B, T', 256]`, `out_lengths [B]` | **v1 và bảng chính v2 không subsampling: `T' = T`.** `layer_hook(i, x)` gọi sau lớp i (InterCTC v2) |
+| InterCTC + self-conditioning (chỉ config `interctc`, v2) | luồng residual ở lớp ⌊L/2⌋ | `inter log_probs [B, T', V]`; x += Linear(softmax) | chung `ctc_head`; B1 chuẩn hóa bằng `norm_f` trước head. Loss = 0,7·CTC + 0,3·InterCTC (`CTCASRModel.total_ctc_loss`); conditioning chạy cả lúc suy luận |
 | `ctc_head` | `hidden` | `logits [B, T', V]` | `V = 1001` = 1000 piece BPE + blank (id 0) |
 | `ctc_loss` (hàm, `ctc_model.py`) | `log_probs`, `out_lengths`, `targets`, lengths | scalar | ép fp32, chuyển `[T, B, V]` cho `F.ctc_loss`, `zero_infinity=True`. `train.py` gọi `model(...)` (qua DDP) rồi hàm này; `compute_loss` chỉ còn là tiện ích |
 | `greedy_decode` | waveform | `list[list[int]]` | argmax → gộp lặp → bỏ blank. Không beam search, không LM. |
@@ -296,3 +298,19 @@ Ký hiệu: ✅ đã chạy thật · 🟡 chạy được một phần · ⬜ c
   lại (kernel tự so khớp với repo local/GitHub và báo nếu lệch).
 - **j. Docstring lỗi thời — đã sửa 2026-09-21** (`vietsuperspeech_dataset.py`,
   `wer.py`).
+
+### 8-v2. Công thức v2 (2026-10-12, `configs/v2/`, `docs/notes/conextbimamba_gap_2026-10-12.md` mục 7-8)
+
+- Encoder thứ tư `conformer_relpos` (`src/models/conformer_relpos_encoder.py`): PE tương đối kiểu ESPnet qua
+  bias của `F.scaled_dot_product_attention` (bản tính tay tràn RAM), xoá padding trước depthwise conv (v1
+  torchaudio để padding lọt: lệch 0,13-0,38 giữa câu riêng/trong batch), `pos_enc: none` cho ablation PE.
+  Conformer v1 (`conformer`, torchaudio) giữ nguyên để nạp checkpoint v1; không hỗ trợ InterCTC.
+- Mọi encoder v2 bất biến padding ở mức encoder (lệch ~2e-6). Front-end thì không: MelSpectrogram đệm biên
+  khác nhau giữa câu riêng/có padding → vài khung cuối lệch, nhánh Mamba ngược lan ra cả câu (như nhau mọi mô hình).
+- `train.py`: lịch WSD (`training.decay_epochs`, 1-sqrt về 0), ghi đè `--lr --seed --warmup_steps
+  --decay_epochs --experiment_name`; metrics thêm `train_loss_ctc`/`train_loss_interctc`. `decay_epochs` thiếu
+  = 0 = v1 (warmup + hằng). Vòng lặp B1 viết lại cho có hook — kiểm trên checkpoint v1 thật: lệch 0,0.
+- `src/evaluation/average_checkpoints.py`: trung bình `epochs/epochNN.pt` (float trung bình, int lấy cuối).
+- Số tham số (tổng, V = 1001): v1 Conformer 12,46M · B1 12,54M · ConExt 12,50M; v2 cộng conditioning 0,26M;
+  `conformer_relpos` encoder 12,73M (+0,53M PE); nhánh 40 ms cộng subsampling 1,84M.
+
