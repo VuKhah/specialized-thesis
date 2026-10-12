@@ -1257,3 +1257,25 @@ khảo sát dataset, phát hiện sai lệch số liệu, prefetch script, train
   tâm "có cần Conformer chuẩn (subsampling 4× + PE) + Mamba cùng điều kiện" (~12-20 GPU-h); hiệu đính xong trong 7-10
   ngày; fine-tune Parakeet như đã chốt; đóng băng thực nghiệm ~đầu tháng 11; viết Ch3 ngay từ `docs/notes/`.
 - Người dùng duyệt push + chạy kernel trial fine-tune Parakeet (A, ~1,5 h).
+
+### 2026-10-11 (đóng phiên)
+- **Đã làm:** fine-tune Parakeet — chốt (chỉ Parakeet, ~7 GPU-h, chấm lại sau hiệu đính), code + kernel, commit `9b1dfcb`;
+  ghi nhận xét chuyên môn, commit `50b6da4` (đã push). **Đẩy kernel trial `tieunhi/finetune-parakeet-trial` 21:51**
+  (A, quota A đã reset — 0,0 h lúc đẩy; trần 150′). Lúc đóng phiên: RUNNING, chưa có dòng log (máy vừa cấp).
+- **Chốt:** "train" = lần fine-tune chính của Parakeet (không phải train lại nhóm train từ đầu — vẫn ⏸ GVHD, Q11).
+- **Phiên sau bắt đầu từ:** kiểm trial (status + output) → trình người dùng số liệu (phủ tokenizer, khớp giải mã, probe
+  fp32/fp16 s/step + VRAM, WER 400+400 câu trước/sau 2 LR) + **đề xuất cấu hình lần chính** → người dùng duyệt mới đẩy
+  `--mode main`. Song song: hỏi thầy Dũng đã trả lời chưa; đề cương mới; hiệu đính (11/203). Ghi chú phiên này chưa commit.
+
+### 2026-10-12 — trial fine-tune Parakeet lỗi cấp máy; chốt LR 1e-4
+- **Trial `tieunhi/finetune-parakeet-trial` (đẩy 11/10 21:51):** RUNNING ~10,3 h, log 0 dòng (kể cả `print` đầu tiên),
+  output rỗng; người dùng Cancel 08:12 → **quota A hoàn về 0,00 h**. Chẩn đoán không tốn GPU: cùng script chạy CPU
+  (`finetune-parakeet-cpucheck`) → clone/import/log OK, dừng đúng chỗ thiếu CUDA; kernel GPU 16 s (`gpu-check-asr`,
+  gắn 5 dataset) → 2× T4, torch 2.11+cu128 OK. Kết luận: lỗi cấp máy phía Kaggle (như 05-06/10), không phải code.
+  Thêm: API stream log (`kaggle kernels logs -f`) trả 500 cho mọi kernel → khi chạy chỉ canh được status + quota;
+  `kaggle kernels push -t` **không** cắt kernel.
+- **Chốt (người dùng): LR fine-tune Parakeet = 1e-4** (bỏ so 1e-5/5e-5). Đối chiếu tài liệu: config fine-tune
+  chính thức NeMo (1e-4, AdamW 0,9/0,98, wd 1e-3, cosine → 5e-6, batch 16/GPU), docs NeMo "1e-4 to 1e-5". Code:
+  `--lr` mặc định 1e-4, `--min_lr_ratio` 0,05; trial chỉ còn 1 lần 20′ ở 1e-4. Nguồn: `lineup_preparation.md` mục 4.
+  Lần chính phải tính `--total_steps` từ s/step trial (cosine của `lr_factor` theo step, không theo thời gian).
+- Người dùng nêu trọng tâm là ConExtBiMamba, mục tiêu để các mô hình Mamba đuổi sát mô hình khác.

@@ -2,14 +2,14 @@
 
 Đừng push tay — `launch.py` điền các hằng dưới đây (MODE, COMMIT, MAIN_ARGS) và push:
     python scripts/kaggle/finetune_parakeet/launch.py --mode trial --push
-    python scripts/kaggle/finetune_parakeet/launch.py --mode main --account B --extra --lr 1e-5 --total_steps 6000 --push
+    python scripts/kaggle/finetune_parakeet/launch.py --mode main --account B --extra --total_steps 6000 --push
 
 MODE "trial" (~1,5 h, chốt cách chạy lần chính — số đo, không kết luận WER):
   1. tokenizer .nemo phủ nhãn train tới đâu (tỉ lệ token unk sau `normalize_text`);
   2. giải mã greedy của script khớp `model.decoding` của NeMo trên vài câu;
   3. probe 1 GPU trên batch dài nhất: fp32 và fp16 — s/step, VRAM đỉnh, loss hữu hạn (06/10 fp16 tràn khi suy luận);
-  4. hai lần chạy ngắn DDP fp32, ~20 phút mỗi lần, LR 1e-5 (linto_stt_fr_fastconformer) và 5e-5, eval 400 câu
-     val + 400 val_unseen trước/sau — để thấy LR nào không phá mô hình và đo s/step thật.
+  4. một lần chạy ngắn DDP fp32 ~20 phút ở LR 1e-4 (người dùng chốt 2026-10-12, = speech_to_text_finetune.yaml
+     của NeMo), eval 400 câu val + 400 val_unseen trước/sau — kiểm LR không phá mô hình và đo s/step thật.
 MODE "main": một lần trong trần ~7 GPU-h (chốt 2026-10-11), tham số từ launcher sau khi xem kết quả trial.
 
 Output `/kaggle/working`: `trial/` hoặc `parakeet_ft/` (metrics.jsonl, eval_*.jsonl, best.pt, last.pt),
@@ -148,7 +148,7 @@ def main() -> None:
                              *(["--amp"] if amp else [])])
                 if code == 0:
                     break
-        for lr in ("1e-5", "5e-5"):
+        for lr in ("1e-4",):
             step(f"short_lr{lr}", [*torchrun, *mod, "--out_dir", str(OUT / "trial" / f"lr{lr}"), "--lr", lr,
                                    "--warmup_steps", "100", "--max_minutes", "20", "--limit_eval", "400",
                                    "--per_gpu_batch", "4", "--global_batch", "16"])

@@ -98,9 +98,12 @@ def evaluate(model, core, loader, rows, tok, blank, device, amp) -> tuple[float,
 
 
 def lr_factor(step: int, warmup: int, total: int, min_ratio: float) -> float:
-    """Warmup tuyến tính rồi cosine về `min_ratio` tại `total` (total = 0 → hằng sau warmup). Cosine + warmup
-    theo bản fine-tune FastConformer công bố (linagora/linto_stt_fr_fastconformer: AdamW 1e-5, cosine, min 1e-6);
-    khác nhóm train từ đầu (warmup + hằng) vì ở đây ngân sách cố định, không báo cáo theo epoch."""
+    """Warmup tuyến tính rồi cosine về `min_ratio` tại `total` (total = 0 → hằng sau warmup) — cùng dạng
+    `CosineAnnealing` của NeMo. Mặc định theo `asr_finetune/speech_to_text_finetune.yaml` của NeMo (AdamW 1e-4,
+    cosine, min_lr 5e-6 = 0,05×; người dùng chốt LR 1e-4 ngày 2026-10-12). Bản 1e-5 của linto_stt_fr_fastconformer
+    đi kèm 100k step trên 9.500 h — ngân sách ~7 GPU-h ở đây ít step hơn nhiều. Khác nhóm train từ đầu (warmup +
+    hằng) vì ở đây ngân sách cố định, không báo cáo theo epoch. `total` phải khớp số step chạy được trong
+    `--max_minutes` (tính từ s/step của trial), nếu không cosine bị cắt giữa chừng."""
     if step < warmup:
         return (step + 1) / warmup
     if total <= warmup:
@@ -148,11 +151,11 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--nemo_path", required=True)
     ap.add_argument("--out_dir", required=True)
-    ap.add_argument("--lr", type=float, default=1e-5)
-    ap.add_argument("--min_lr_ratio", type=float, default=0.1)
+    ap.add_argument("--lr", type=float, default=1e-4)
+    ap.add_argument("--min_lr_ratio", type=float, default=0.05)
     ap.add_argument("--warmup_steps", type=int, default=500)
     ap.add_argument("--total_steps", type=int, default=0, help="Cuối lịch cosine; 0 = hằng sau warmup")
-    ap.add_argument("--weight_decay", type=float, default=1e-3)  # theo linto_stt_fr_fastconformer
+    ap.add_argument("--weight_decay", type=float, default=1e-3)  # = NeMo speech_to_text_finetune.yaml
     ap.add_argument("--grad_clip", type=float, default=5.0)  # = nhóm train từ đầu (lựa chọn dự án)
     ap.add_argument("--global_batch", type=int, default=16)  # = nhóm train từ đầu
     ap.add_argument("--per_gpu_batch", type=int, default=8)

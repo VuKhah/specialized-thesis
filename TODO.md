@@ -6,7 +6,7 @@ Cập nhật lần cuối: **2026-10-05** (preflight B OK, kernel train thử th
 
 Câu hỏi cần mang đi hỏi (người dùng/GVHD): [`QA.md`](QA.md).
 
-## ▶ PHIÊN SAU BẮT ĐẦU Ở ĐÂY (ghi 2026-10-08, đóng phiên)
+## ▶ PHIÊN SAU BẮT ĐẦU Ở ĐÂY (ghi 2026-10-11, đóng phiên; bản 08/10 + cập nhật)
 
 | Việc | Trạng thái | Làm gì |
 |---|---|---|
@@ -15,7 +15,7 @@ Câu hỏi cần mang đi hỏi (người dùng/GVHD): [`QA.md`](QA.md).
 | Trang báo cáo | https://claude.ai/artifact/VFAfKywgz6UjTu3PGNXZF1 (công khai) | nguồn `docs/tong_ket/2026-10-08/mamba_asr_report.html` (gitignore); sửa → đăng lại cùng URL |
 | Đề cương mới | ⬜ 🔴 | soạn nháp, người dùng duyệt |
 | Train thêm | ⏸ chờ GVHD | QA Q11, `docs/notes/subsample_speed_2026-10-08.md` mục 8 |
-| **Fine-tune Parakeet** (chốt 2026-10-11) | code xong, test CPU; ⛔ chờ duyệt push + kernel trial (~1,5 h, A) | `python scripts/kaggle/finetune_parakeet/launch.py --mode trial --push` → xem `kernel_summary.json` → chốt LR/fp16/batch → `--mode main` (≤ 7 h). Kết luận chỉ sau hiệu đính clean-test. `lineup_preparation.md` mục 4 |
+| **Fine-tune Parakeet — VIỆC ĐẦU TIÊN** | trial `tieunhi/finetune-parakeet-trial` đẩy 2026-10-11 21:51 (commit `50b6da4`, trần 150′) | (1) `kaggle kernels status` + tải output (`PYTHONUTF8=1 kaggle kernels output tieunhi/finetune-parakeet-trial -p <thư mục>`), đọc `kernel_summary.json` + `trial/lr*/metrics.jsonl`; (2) **trình người dùng số liệu + đề xuất cấu hình main** (LR, fp32/fp16, per_gpu_batch, `--total_steps` theo s/step đo được để vừa ~7 h, `--eval_every_steps`, tài khoản); (3) duyệt → `launch.py --mode main --push --extra ...`. Lỗi → đọc `logs/`, sửa, hỏi trước khi chạy lại. Kết luận WER chỉ sau hiệu đính |
 | Hiệu đính: tên riêng / tiếng Anh | ghi chú cho người hiệu đính | viết đúng chính tả thật; ghi `tên riêng`/`tiếng Anh` ở ô ghi chú để tách WER nhóm này (RQ3) |
 | Trung bình checkpoint · RQ2 cuối | ⬜ | hỏi trước nếu cần kernel GPU; RQ2 phải làm ấm từng độ dài |
 

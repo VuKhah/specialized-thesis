@@ -2,7 +2,7 @@
 
     python scripts/kaggle/finetune_parakeet/launch.py --mode trial                 # chỉ sinh, xem lại
     python scripts/kaggle/finetune_parakeet/launch.py --mode trial --push
-    python scripts/kaggle/finetune_parakeet/launch.py --mode main --account B --push --extra --lr 1e-5 --total_steps 6000
+    python scripts/kaggle/finetune_parakeet/launch.py --mode main --account B --push --extra --total_steps 6000
 
 Bản sinh ở `_build/<slug>/` (gitignore như train_full — metadata chứa username). Ghim `COMMIT` = HEAD local;
 từ chối nếu HEAD chưa có trên origin hoặc src/scripts có thay đổi chưa commit (kernel clone từ GitHub).

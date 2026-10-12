@@ -76,12 +76,22 @@ chuẩn bị** cho từng mô hình; trạng thái làm/chưa làm theo dõi ở
       **2026-10-11 — người dùng chốt:** chỉ fine-tune Parakeet (PhoWhisper giữ zero-shot); trần **~7 GPU-h** cho lần
       chính (≈ Conformer-12M 6,6 h → so trên trục tài nguyên); chạy ngay, kết luận cuối chỉ sau khi hiệu đính
       clean-test (fine-tune trên nhãn giả Zipformer → WER so với nhãn giả lạc quan). Code: `src/training/finetune_parakeet.py`
-      + kernel `scripts/kaggle/finetune_parakeet/` (trial ~1,5 h → main ≤ 7 h). Thiết lập và nguồn:
+      + kernel `scripts/kaggle/finetune_parakeet/` (trial ~1,2 h → main ≤ 7 h). Thiết lập và nguồn:
       - Giữ front-end/SpecAugment/tokenizer/CTC head của .nemo, full fine-tune (đóng băng chỉ là phương án dự phòng nếu OOM).
       - Nhãn → `normalize_text` (chữ thường) trước khi token hóa: tokenizer Parakeet phân biệt hoa/thường.
-      - AdamW (0,9; 0,98), wd 1e-3, warmup + cosine về 0,1×: theo `linagora/linto_stt_fr_fastconformer` (fine-tune
-        FastConformer công bố duy nhất tìm được có siêu tham số: lr 1e-5, cosine, min 1e-6). Card Parakeet không ghi
-        siêu tham số fine-tune. Trial so 1e-5 vs 5e-5 (20′ mỗi mức) — chỉ để loại LR phá mô hình, không để kết luận.
+      - **Đổi 2026-10-12 (người dùng chốt LR 1e-4):** AdamW (0,9; 0,98), wd 1e-3, warmup + cosine về 0,05× (1e-4 →
+        5e-6) = `examples/asr/conf/asr_finetune/speech_to_text_finetune.yaml` của NeMo (bộ công cụ train chính
+        Parakeet-vi; config này batch 16/GPU, gần batch toàn cục 16 ở đây). Tài liệu fine-tune NeMo: "typical
+        fine-tuning LRs are 1e-4 to 1e-5"; Basque fine-tune Parakeet-TDT-0.6B-v3 cũng 1e-4. Bản trước 1e-5 theo
+        `linagora/linto_stt_fr_fastconformer` — nhưng đi kèm 100k step, batch 60-80, 9.500 h, H100; ngân sách ~7
+        GPU-h ở đây ít step hơn nhiều. `lr_factor` cùng dạng `CosineAnnealing` của NeMo (đã đọc `lr_scheduler.py`).
+        Lần chính: warmup ~5-10% tổng step (NeMo 5000/50 epoch, linto 10%), `--total_steps` tính từ s/step trial
+        để cosine về đáy đúng lúc hết `--max_minutes`. Trial chỉ còn 1 lần ngắn 20′ ở 1e-4 (LR hằng sau warmup
+        100 — khắt khe hơn lần chính): kiểm loss hữu hạn, WER không sụp, đo s/step. Card Parakeet không ghi siêu
+        tham số. Lệch NeMo có chủ đích: grad clip 5,0 (NeMo 0,0), fp32 (NeMo khuyên fp16 khi không có bf16 — fp16
+        tràn 06/10), số epoch vài epoch (NeMo "50-100" cho thích nghi miền — giới hạn bởi trần 7 GPU-h).
+        Nguồn: docs.nvidia.com/nemo/speech/latest/asr/fine_tuning.html, huggingface.co/itzune/parakeet-tdt-0.6b-v3-basque,
+        huggingface.co/linagora/linto_stt_fr_fastconformer.
       - Batch toàn cục 16, grad clip 5,0, SyncBN: lấy theo nhóm train từ đầu (lựa chọn dự án, không có tài liệu).
       - fp32 mặc định: 06/10 Parakeet tràn số fp16 khi suy luận (16/203 câu). Trial đo cả fp16 (s/step, loss hữu hạn).
       - Card Parakeet (đọc lại 2026-10-11): ~2.000 h, 10 bộ (CV 20.0, VietMed-L, LSVSC, FLEURS, InfoRe 2, FOSD, VAIS,
