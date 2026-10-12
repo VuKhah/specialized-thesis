@@ -22,8 +22,8 @@ mới** trước buổi Tuần 9; `docs/de_cuong/*.docx` cũ giữ nguyên.
 
 | # | Mô hình | Vai trò | Cách dùng |
 |---|---|---|---|
-| 1 | Mamba hai chiều B1 (ExtBiMamba chồng) | Trọng tâm | Train từ đầu ~12M |
-| 5 | ConExtBiMamba (khung Conformer, MHSA → ExtBiMamba) | Ứng viên trọng tâm; sau **train thử** chốt giữ 2 hay 3 mô hình (đổi 2026-10-04) | Train từ đầu ~12M |
+| 1 | Mamba hai chiều B1 (ExtBiMamba chồng) | Đối chứng trong họ Mamba (trước 2026-10-12: trọng tâm) | Train từ đầu ~12M |
+| 5 | ConExtBiMamba (khung Conformer, MHSA → ExtBiMamba) | **Mô hình chính** (người dùng chốt 2026-10-12) | Train từ đầu ~12M |
 | 2 | Conformer-12M | Baseline có kiểm soát | Train từ đầu, cùng pipeline |
 | 4 | Parakeet-CTC-0.6B-vi (dự bị PhoWhisper-small) | Tham chiếu có pre-train | Zero-shot → fine-tune nếu còn quota |
 | 3 | Mamba một chiều | Chỉ trích dẫn (arXiv:2405.12609) | Không train |
@@ -128,6 +128,8 @@ Theo thứ tự thời gian. Quyết định bị thay thế giữ lại để t
 | 2026-10-05 | **Speed perturbation on-the-fly 0,9/1,0/1,1** (cả 3 mô hình, chỉ train) + kiểm 16 kHz mono; không volume perturbation; giữ CMVN toàn cục | Ko 2015; thực hành ESPnet/icefall/ConMamba. `audio_preprocessing_survey.md` mục 5. Preflight: không nghẽn dữ liệu |
 | 2026-10-05 | **`out_proj` chia √28** cho B1 (giữ) | `_init_weights` mamba-ssm / GPT-2; N đếm theo số nhánh `out_proj` cộng vào residual (lựa chọn dự án) |
 | 2026-10-06 | **Không early stopping**: train cố định 30 epoch, best.pt theo WER val; lưu trọng số mỗi epoch (trung bình checkpoint để ngỏ, làm sau train) | Thực hành icefall/ESPnet (epoch cố định + chọn/trung bình checkpoint); so sánh công bằng cùng ngân sách; giai đoạn blank của Conformer + WER val trên nhãn giả nhiễu dễ dừng nhầm |
+| 2026-10-12 | **Phạm vi thực nghiệm "A + 40 ms"** (thay bộ v2 ~255 GPU-h): công thức chung = v1 + pha giảm 1-sqrt 8 epoch (38 epoch) + trung bình checkpoint, **không InterCTC**; (1) trung bình checkpoint v1; (2) pha giảm rẽ nhánh từ v1 cho B1/ConExt/Conformer v1; (3) Conformer PE tương đối từ đầu; (4) nhánh 40 ms 3 mô hình × 1 seed; (5) RQ2 lại. Seed 2 → dò LR chỉ khi xong trước ~22/10 và còn ≥ 60 GPU-h. Đóng băng GPU 01/11 | Rà soát 3 góc 12/10: đường găng là hiệu đính + viết + GVHD; InterCTC không phục vụ RQ. `docs/notes/conextbimamba_gap_2026-10-12.md` mục 9 |
+| 2026-10-12 | **Mô hình chính của khóa luận = ConExtBiMamba**; B1 thành đối chứng trong họ Mamba | Người dùng. Kết quả v1 B1 tốt hơn ConExt 3,2 điểm → khi viết phải nêu thẳng, không giấu (nhánh 40 ms kiểm giả thuyết độ phân giải) |
 
 ## 5. Quyết định đang mở / treo / rủi ro đã biết
 
@@ -1299,3 +1301,56 @@ khảo sát dataset, phát hiện sai lệch số liệu, prefetch script, train
   (`ctc_model.py`, `layer_hook` trong encoder), WSD + ghi đè CLI (`train.py`), `average_checkpoints.py`,
   `configs/v2/` (7 file), launcher (v2 + C). Smoke `train.py` dữ liệu thật CPU OK (10 ms batch 4, 40 ms batch 16;
   10 ms batch 16 vượt RAM máy local). Danh sách + ngân sách ~255 GPU-h: `conextbimamba_gap_2026-10-12.md` mục 8.
+
+### 2026-10-12 (đóng phiên ~11:55)
+- **Đã làm:** chẩn đoán trial Parakeet 10 h (lỗi cấp máy Kaggle, quota hoàn) → chốt LR 1e-4 (config fine-tune NeMo) →
+  trial OK → **lần chính đang chạy**; phân tích ConExtBiMamba (underfit + chưa hội tụ; cùng độ dốc học với B1 —
+  ngoại suy power-law kiểm trên Conformer dài sai ≤ 0,5 điểm) → **công thức v2** (người dùng duyệt, bỏ chờ GVHD, bỏ
+  ràng buộc chỉ đổi encoder, "mọi thay đổi có lợi một lần") → G0 code + test CPU, commit `1384e70`; kernel preflight
+  `fcb188f`. Ghi nhận AI: hôm nay 2 lần push trước khi quét khoá (quét bù sạch; memory đã cập nhật).
+- **Đang chạy lúc đóng phiên:**
+  - A `tieunhi/finetune-parakeet-main` (đẩy 09:39, commit `54a3efa`; quota A 2,82 h lúc 11:55; ước xong ~16:40,
+    tổng ~7-7,5 h). Báo động nếu quota A > 8,3 h mà chưa xong.
+  - B `vuvanduc1/preflight-v2-asr` (đẩy 11:53, commit code `1384e70`; quota B 0,04 h lúc 11:55; ước 75-90′,
+    trần 120′). Báo động nếu quota B > 2,5 h.
+- **Phiên sau bắt đầu từ:**
+  1. Kiểm 2 kernel trên (status + quota). Tải output nhỏ:
+     `kaggle kernels output <kernel> -p <dir> --file-pattern '.*\.(json|jsonl|log|csv)$'` (B: `KAGGLE_CONFIG_DIR=C:/Users/Dell/.kaggle_Duc`).
+     Log stream (`logs -f`) đang lỗi 500 phía Kaggle → chỉ đọc được sau khi kernel xong.
+  2. Preflight: đọc `preflight_v2_summary.json` — K1 (tham số, padding_diff), **Đ2 VRAM xấu nhất của conformer_relpos
+     (rủi ro OOM chính)**, K3 7 pipeline, Đ4 s/step thật → **chốt lại ngân sách** (ước hiện ~213 + 20% ≈ 255 GPU-h,
+     Conformer relpos/40 ms chưa đo).
+  3. Parakeet: đọc `parakeet_ft/metrics.jsonl` (eval mỗi 2.500 step, đủ val + val_unseen), trình người dùng.
+  4. ⛔ Chờ người dùng: username + khoá tài khoản C (điền `ACCOUNTS` ở `scripts/kaggle/train_full/launch.py`,
+     chia sẻ 6 dataset A → C); chọn ngân sách (a) tài khoản 4 / (b) bỏ ConExt cùng GPU-giờ / (c) 40 ms chỉ 2 mô hình.
+  5. Sau đó theo thứ tự: P1 trung bình checkpoint v1 (cần kernel eval — chưa viết) → P2 dò LR (9 lần proxy 10 epoch,
+     `launch.py --model v2-... --tag p2lr<lr> --extra --lr <lr> --epochs 10 --decay_epochs 2 --experiment_name ...`)
+     → P3 3 seed × 40 epoch → P4 40 ms → P5. Mỗi lần đẩy kernel GPU vẫn phải hỏi.
+  6. Việc tay song song: hiệu đính clean-test (11/203 — đường găng của mọi kết luận); đề cương mới; hẹn GVHD.
+
+### 2026-10-12 (chiều) — rà soát lộ trình, chốt phạm vi "A + 40 ms"
+- **Preflight v2 (B) COMPLETE, đạt hết** (K1/K3/K5, 0 nonfinite; VRAM xấu nhất Conformer relPE 5,1 GiB). s/step (CÓ
+  InterCTC): B1 0,69 · ConExt 0,81 · Conformer relPE 1,06 · không PE 0,53 · sub4 0,19/0,28/0,26. Output ở scratchpad phiên.
+- **Rà soát 3 agent** (phương pháp, tiến độ, tài liệu): đường găng là hiệu đính clean-test + viết + GVHD; mục 8 v2 quá tay
+  và ước thấp; InterCTC không phục vụ RQ. Đính chính nguồn + nguồn mới Miyazaki 2406.16808: note gap mục 9.3.
+- **Chốt (người dùng): phạm vi "A + 40 ms"** — Plan mục 4, note gap mục 9. Người dùng yêu cầu chia việc cho agent; sau khi
+  phương án chạy sẽ dọn lại các file hướng dẫn (CLAUDE/Plan/TODO/notes).
+- **Đang làm (agent, chưa commit):** config công thức chung + rẽ nhánh từ checkpoint v1 + launcher; trung bình checkpoint +
+  kernel eval; công cụ + kernel RQ2 cuối; nháp đề cương mới `docs/notes/de_cuong_moi_nhap.md`.
+- **Phiên sau:** đọc báo cáo agent → test lại → xin duyệt đẩy kernel (bước 1 trước, rẻ); Parakeet main xong ~16:40 → tải
+  output nhỏ; hiệu đính clean-test (mục tiêu ≥ 80/203 trước 18/10); gửi đề cương + hẹn GVHD trước ~17/10.
+- **Người dùng chốt: mô hình chính = ConExtBiMamba** (Plan mục 1, 4; nháp đề cương đã sửa).
+
+### 2026-10-12 (tối) — Parakeet fine-tune xong; agent bị ngắt vì hạn mức API
+- **Parakeet main COMPLETE** (397′ train, returncode 0; dừng ở step 9.379/10.000 do trần thời gian, LR đã ~6e-6):
+  WER val 12,1 → 8,2% · val_unseen 12,6 → 8,0% (0 → 2.500 → 5.000 → 7.500 → 9.379: val_unseen 12,6 / 9,0 / 8,4 / 8,1 /
+  8,0); 0 step không hữu hạn; 2,46 s/step; VRAM 12,6 GB. **Đo trên nhãn giả Zipformer** → một phần cải thiện có thể là học
+  cách viết của nhãn; chấm clean-test sau hiệu đính mới kết luận. Quota A 7,33 h. Output nhỏ ở scratchpad phiên; best.pt chưa tải.
+- **Agent:** xong — nháp đề cương, RQ2 cuối (`rtf.py`, `concat_audio.py`, `scripts/kaggle/rq2_final/`), công cụ RQ3
+  (`error_analysis.py`), kiểm trích dẫn Ch1 (`docs/khoa_luan/ch1_kiem_trich_dan.md`: [10] ghép số hai cấu hình — phải sửa),
+  nháp Ch2, Ch3 (dữ liệu + phương pháp) trong `docs/khoa_luan/`. Ba agent bị ngắt 429 (hạn mức phiên) → nháp Ch3 đã đủ;
+  agent công thức chung (`configs/v2a/`, rẽ nhánh v1) và trung bình checkpoint được cho làm tiếp.
+- **Bài học quản lý agent:** tối đa ~2-3 agent song song, phạm vi hẹp, báo cáo ngắn; agent bị ngắt thì làm tiếp bằng chính
+  agent đó (giữ ngữ cảnh), không giao lại từ đầu.
+- **Chờ người dùng:** commit + push để đẩy kernel; sửa `normalize_text` thống nhất dấu thanh (hóa/hoá); N trung bình pha
+  giảm (AI nghiêng: cả 8 epoch); 4 chỗ đề cương; lý do thật chọn ConExt làm mô hình chính (ghi vào Ch2).

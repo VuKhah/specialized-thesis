@@ -13,10 +13,10 @@ Câu hỏi cần mang đi hỏi (người dùng/GVHD): [`QA.md`](QA.md).
 | Thư gửi thầy Dũng (báo cáo lần 2, đổi tên đề tài, xin báo cáo sớm) | người dùng tự gửi | ⛔ hỏi: thầy trả lời chưa, ngày gặp → `Plan.md` mục 6 |
 | Hiệu đính clean-test | 11/203 (`python -m src.data.correct_clean_test`) | xong → tính lại WER 5 mô hình từ `reports/results/final_compare_2026-10-08/predictions.tsv` + bootstrap → cập nhật trang báo cáo |
 | Trang báo cáo | https://claude.ai/artifact/VFAfKywgz6UjTu3PGNXZF1 (công khai) | nguồn `docs/tong_ket/2026-10-08/mamba_asr_report.html` (gitignore); sửa → đăng lại cùng URL |
-| Đề cương mới | ⬜ 🔴 | soạn nháp, người dùng duyệt |
+| Đề cương mới | 🔄 🔴 agent soạn nháp `docs/notes/de_cuong_moi_nhap.md` | người dùng duyệt → chuyển Word → gửi thầy trước ~15/10 |
 | ~~Train thêm~~ | ✅ người dùng quyết 2026-10-12 không chờ GVHD → công thức v2 (dòng dưới) | QA Q11 coi như đã trả lời |
-| **Fine-tune Parakeet lần chính** | `tieunhi/finetune-parakeet-main` đẩy 2026-10-12 09:39 (commit `54a3efa`, A, fp32, LR 1e-4, 10.000 step, ước xong ~16:40). Trial 12/10 OK (`Plan.md` nhật ký 12/10) | Kiểm status + quota (> 8,3 h mà chưa xong → báo cancel); tải output nhỏ `--file-pattern '.*\.(json\|jsonl\|log\|csv)$'`; trình số liệu. best.pt 2,27 GB chỉ tải khi chấm clean-test. Kết luận WER chỉ sau hiệu đính |
-| **Công thức v2 (người dùng duyệt 2026-10-12)** | G0 code xong + test CPU, commit 12/10 | ⛔ chờ người dùng: (1) duyệt kernel preflight GPU ~1 h (B) — đo VRAM/s/step 7 config `configs/v2/`; (2) username + khoá tài khoản C (`C:/Users/Dell/.kaggle_C`, điền `ACCOUNTS` trong `scripts/kaggle/train_full/launch.py`), chia sẻ 6 dataset A → C; (3) ngân sách ~255 GPU-h vừa khít 262 — chọn (a) tài khoản 4 / (b) bỏ ConExt cùng GPU-giờ / (c) nhánh 40 ms chỉ 2 mô hình. Sau đó: P1 trung bình checkpoint v1 → P2 dò LR → P3 3 seed → P4 40 ms → P5. Chi tiết `docs/notes/conextbimamba_gap_2026-10-12.md` mục 7-8 |
+| **Fine-tune Parakeet lần chính** | ✅ COMPLETE 12/10 (9.379 step): WER val 12,1 → 8,2% · val_unseen 12,6 → 8,0% (nhãn giả) | best.pt 2,27 GB chỉ tải khi chấm clean-test sau hiệu đính; kết luận WER chỉ sau hiệu đính |
+| **Phạm vi "A + 40 ms" (người dùng duyệt 2026-10-12 chiều, thay v2 mục 8)** | preflight v2 ✅ (12/10); agent đang làm: config công thức chung + rẽ nhánh v1, trung bình checkpoint + kernel eval, RQ2 cuối, nháp đề cương | (1) trung bình checkpoint v1 → (2) pha giảm rẽ nhánh v1 ×3 → (3) Conformer relPE từ đầu → (4) 40 ms ×3 → (5) RQ2. Cổng seed 2: xong trước ~22/10 + còn ≥ 60 GPU-h (áp đối xứng cả ba). Quy tắc phân tích chốt trước: note mục 9.4. **Người dùng giao quyền quyết định đẩy kernel cho AI (2026-10-12)** — vẫn báo sau mỗi lần đẩy. Đóng băng GPU 01/11. Mỗi kernel vẫn hỏi trước. Tài khoản C: chờ username + khoá. Chi tiết `docs/notes/conextbimamba_gap_2026-10-12.md` mục 9 |
 | Hiệu đính: tên riêng / tiếng Anh | ghi chú cho người hiệu đính | viết đúng chính tả thật; ghi `tên riêng`/`tiếng Anh` ở ô ghi chú để tách WER nhóm này (RQ3) |
 | Trung bình checkpoint · RQ2 cuối | ⬜ → thuộc v2 (P1, P5) | `src/evaluation/average_checkpoints.py`; RQ2 phải làm ấm từng độ dài; Conformer relpos VRAM bậc hai — audio dài OOM sớm hơn v1 |
 
@@ -491,3 +491,5 @@ duyệt, D3 → **4 shard**, train full + đánh giá theo epoch).
       resume qua session, lỗi từng file không sập cả batch (test logic xong,
       chưa chạy full — xem ⏸).
 - [x] Push code lên GitHub: https://github.com/VuKhah/specialized-thesis
+
+- [ ] **Sau khi phạm vi "A + 40 ms" chạy: dọn lại file hướng dẫn** (CLAUDE.md, Plan.md, TODO.md — khối lịch sử train full, notes lỗi thời) — người dùng yêu cầu 2026-10-12.

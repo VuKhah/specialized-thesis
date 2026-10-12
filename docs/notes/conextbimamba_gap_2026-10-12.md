@@ -31,14 +31,14 @@ ConExtBiMamba − B1 = +3,2 điểm (CI cặp 2,6-3,8; p(B1 tốt hơn) = 1,0) �
    lượng tính toán.
 4. Ổn định: không có step loss không hữu hạn; AMP bỏ 1-5 step/epoch, như B1. Ổn định không phải nguyên nhân.
 5. Lệch so với công thức của bài gốc (arXiv:2405.12609, ESPnet, LibriSpeech-100): bài train **120 epoch**, LR
-   đỉnh 2e-3, warmup 15k, có subsampling, và chuyển nguyên siêu tham số của Conformer sang mô hình Mamba
+   đỉnh 2e-3, warmup 15k, có subsampling (*bài không nêu — suy từ mặc định ESPnet, xem mục 9.3*), và chuyển nguyên siêu tham số của Conformer sang mô hình Mamba
    ("directly transferred the optimal parameters from attention-based models"). Ở dự án: 30 epoch, LR hằng 3e-4,
    không subsampling. Khởi tạo A dùng S4D-Real mặc định; Gaussian-noise-diagonal tốt hơn 0,2 điểm trong Bảng XIV
    của bài (6,1/6,2 → 5,9/6,0).
 
 **Giả thuyết, chưa kiểm:** ConExtBiMamba chỉ có 6 cặp Mamba trên chuỗi 10 ms không subsampling (≤ 1.500 khung).
 B1 có 14 cặp. Phần lớn tham số của ConExtBiMamba nằm ở FFN và conv, nên khả năng mô hình hóa chuỗi dài yếu hơn
-B1 khi chuỗi dài. Bài gốc chạy có subsampling 4×, tức chuỗi ngắn hơn 4 lần. Không có tài liệu nào so ConExtBiMamba
+B1 khi chuỗi dài. Bài gốc nhiều khả năng chạy có subsampling 4× (*bài không nêu — suy từ mặc định ESPnet, mục 9.3*), tức chuỗi ngắn hơn 4 lần. Không có tài liệu nào so ConExtBiMamba
 ở 10 ms/khung.
 
 ## 3. Phương án, xếp theo chi phí
@@ -73,7 +73,7 @@ có train). P2/P3 tùy kết quả P0/P1 và ý kiến GVHD.
 Nguồn đã kiểm phiên này:
 - **ConMamba** (`xi-j/Mamba-ASR`, `hparams/CTC/conmamba_large.yaml`): CNN 2 lớp stride 2 (4×), LR 1e-3 Noam warmup
   7.500, 500 epoch, **trung bình 10 checkpoint**, clip 5,0, speed perturb 0,95/1/1,05.
-- **2405.12609** (ESPnet, Bảng I-II): LR đỉnh 2e-3, warmup 15k, 120 epoch, có subsampling; ConExtBiMamba hơn Conformer
+- **2405.12609** (ESPnet, Bảng I-II): LR đỉnh 2e-3, warmup 15k, 120 epoch (Bảng II chỉ ghi cho Conformer; Mamba "directly transferred"), subsampling không nêu (mục 9.3); ConExtBiMamba hơn Conformer
   ở LibriSpeech-100/960, SEAME, ASRU (vd. 5,9/6,0 so với 6,3/6,5). Trong bài, ExtBiMamba xếp chồng thuần kém xa
   (38,5/37,7, Bảng XVI) — dự án thấy ngược lại (B1 > ConExt) ở 10 ms/khung: **giả thuyết** độ phân giải quyết định.
 - **Fast Conformer** (arXiv:2305.05084, Bảng 2/4): 4× → 8× không làm tăng WER (RNNT 5,19 → 5,11; CTC Conformer 5,74
@@ -113,8 +113,8 @@ v2 trả lời giả thuyết độ phân giải dù kết quả thế nào; (3)
 | Nguyên tắc | Nguồn | Áp vào |
 |---|---|---|
 | LR hằng + pha giảm cuối (WSD) ≈ cosine; pha giảm ~20% tổng step, dạng 1-sqrt tốt hơn tuyến tính; SWA trên LR hằng thu hẹp nhưng không bằng pha giảm | Hägele và cs., arXiv:2405.18392 (LLM, không phải ASR — giả định chuyển được) | Tái dùng các lần v1 làm pha "hằng", thêm pha giảm |
-| Ngân sách dò siêu tham số ngang nhau cho mọi kiến trúc; baseline dò kỹ có thể đảo kết luận | Melis và cs., ICLR 2018 (arXiv:1707.05589) | Lưới LR chung cho cả ba, chọn theo val |
-| Biến thiên do khởi tạo/thứ tự dữ liệu đáng kể; một seed đánh giá thấp phương sai | Bouthillier và cs., MLSys 2021 (arXiv:2103.03098) | 3 seed cho bảng chính |
+| Baseline dò kỹ có thể đảo kết luận (LSTM chuẩn dò kỹ vượt mô hình mới); *bài không phát biểu "ngân sách dò ngang nhau" — đó là suy diễn của dự án* | Melis và cs. (arXiv:1707.05589; venue chưa kiểm) | Lưới LR chung cho cả ba, chọn theo val |
+| Biến thiên do lấy mẫu dữ liệu, khởi tạo, siêu tham số "impact markedly" (abstract); *câu "một seed đánh giá thấp phương sai" chưa kiểm trong thân bài* | Bouthillier và cs. (arXiv:2103.03098) | 3 seed cho bảng chính |
 | Conformer chuẩn có PE tương đối | Gulati và cs., 2020 | Conformer bảng chính = bản có rel-PE; bản không PE thành ablation |
 | Subsampling 4× là cấu hình của tài liệu Mamba/Conformer | ConMamba yaml; 2405.12609; Fast Conformer | Nhánh phụ 40 ms (thiết kế giai thừa độ phân giải × encoder) |
 | Mọi lựa chọn trên val; clean-test (đã hiệu đính) chỉ dùng một lần cuối | thông lệ | Hiệu đính 203 câu là đường găng |
@@ -158,3 +158,62 @@ v1 giữ làm mốc "công thức đơn giản" + ablation 10 ms/LR hằng.
 **Ngân sách cập nhật (GPU-h, ước từ log v1; Conformer relpos chưa đo):** preflight ~1 · P1 ~2 · P2 ~34 ·
 P3 9 lần từ đầu ~136 (B1 67, ConExt 40, Conformer 29) · P4 ~17 · P5 ablation không PE ~10 + eval ~4 ·
 ConExt cùng GPU-giờ ~9 → **~213, +20% dự phòng ≈ 255**. 3 tài khoản tới 31/10 ≈ 262 → vừa khít.
+
+
+## 9. Phạm vi chốt: "A + 40 ms" (người dùng duyệt 2026-10-12, thay mục 8)
+
+Rà soát 3 góc (phương pháp, tiến độ, tài liệu) ngày 12/10 → mục 8 (~255 GPU-h) bị thu hẹp. Lý do: đường găng là
+hiệu đính clean-test + viết + GVHD, không phải GPU; InterCTC không phục vụ RQ nào, thêm biến nhiễu khi đối chiếu
+2405.12609 và làm mất phần tái dùng v1; preflight v2 (12/10) cho thấy chi phí thật cao hơn ước (Conformer relPE
+1,06 s/step so với 0,53 không PE; ConExt v2 0,81 so với ~0,40 v1 — đo CÓ InterCTC, nguyên nhân chưa tách).
+
+### 9.1 Công thức chung (mọi run bảng chính)
+Công thức v1 (LR 3e-4, warmup 1000, batch 16, SpecAugment, SP, dropout…) + **pha giảm 1-sqrt 8 epoch cuối** (WSD,
+Hägele 2024) → 38 epoch (30 hằng + 8 giảm) + **trung bình checkpoint**. **Không InterCTC/self-conditioning.**
+
+### 9.2 Các bước
+| # | Việc | Ghi chú |
+|---|---|---|
+| 1 | Trung bình 10 checkpoint cuối (ep20-29) v1 cả ba + eval val/val_unseen/clean-test | số tham chiếu "LR hằng + SWA" |
+| 2 | Pha giảm 8 epoch rẽ nhánh từ v1 ep29: B1, ConExt, Conformer v1 (không PE) | tái dùng 30 epoch v1 |
+| 3 | Conformer PE tương đối (+ xoá padding trước conv) train từ đầu, công thức chung | so với bước 2 Conformer = tác dụng PE + sửa padding (gộp, ghi rõ) |
+| 4 | Nhánh 40 ms (subsampling 4×): B1, ConExt, Conformer relPE × 1 seed, từ đầu | kiểm giả thuyết độ phân giải; đóng góp mới (chưa tìm thấy bài so Mamba theo độ phân giải khung) |
+| 5 | Đo lại RQ2 mọi cấu hình | Conformer relPE VRAM bậc hai |
+| cổng | Seed 2 cho bảng chính, rồi dò LR — **chỉ khi** bước 1-5 xong trước ~22/10 và còn ≥ 60 GPU-h | chốt trước khi có số; không đạt → 1 seed ghi vào hạn chế |
+
+Đóng băng thực nghiệm GPU **01/11**; chấm clean-test (đã hiệu đính) **một lần** cho mọi mô hình ~08/11.
+Không làm: InterCTC, ConExt cùng GPU-giờ, dò LR lưới đầy đủ / 3 seed (trừ khi qua cổng).
+
+### 9.3 Đính chính nguồn (agent rà tài liệu, 12/10, đã mở arXiv)
+- 2405.12609 **không nêu** subsampling; Bảng II chỉ ghi công thức cho Conformer; cấu hình stack ExtBiMamba thuần
+  không nêu (25,8M so với ConExt 41,6M); "+FFN ~1,6 điểm" chỉ đúng ở test (dev 3,6).
+- Melis (1707.05589) và Bouthillier (2103.03098): đã sửa ở bảng 7.2.
+- **Nguồn mới:** Miyazaki và cs. (arXiv:2406.16808) — stack BiMamba thuần (24 khối, không FFN, ESPnet, CTC,
+  LS-100) test-clean/other 9,1/23,5 so với Conformer 9,8/23,3 → kết quả "stack thuần kém xa" của 2405.12609
+  có thể là ngoại lệ (chính bài đó nói Mamba "sometimes unstable", không tái lập được [35]). Ủng hộ B1 v1 là thật.
+- Tiền lệ Mamba cho ngôn ngữ ít tài nguyên: Alabi và cs. (arXiv:2607.01502), 7 tiếng Nam Phi — chưa đọc kỹ.
+- Chưa tìm thấy bài Mamba ASR tiếng Việt, hay so Mamba/Conformer theo độ phân giải khung (quét chưa hệ thống:
+  chưa qua ACL Anthology/Interspeech 2025-26/VLSP).
+
+### 9.4 Quy tắc phân tích chốt TRƯỚC khi có số (2026-10-12, người dùng: "đúng khoa học, không ngụy biện")
+Viết trước khi chạy bất kỳ run nào của mục 9.2. Sau khi có số **không sửa mục này**; muốn đổi thì thêm mục mới ghi ngày
+và lý do, và khóa luận phải báo cả cách đọc cũ.
+
+1. **Thứ tự thời gian phải khai trong khóa luận:** công thức v1 chạy trước; pha giảm LR, Conformer PE, nhánh 40 ms được
+   thêm **sau khi thấy kết quả v1**; ConExtBiMamba được chọn làm mô hình chính **sau khi** v1 cho ConExt kém B1 3,2 điểm.
+2. **Đối xứng:** mọi run bảng chính cùng công thức, cùng số epoch, cùng N trung bình checkpoint; mọi seed/dò LR thêm
+   (nếu qua cổng) áp **cho cả ba** mô hình theo cùng thứ tự — không ưu tiên mô hình chính. (Đề xuất "seed 2 cho ConExt
+   trước" của AI lúc 14:30 bị rút lại vì vi phạm điều này.)
+3. **Chọn trên val, báo trên clean-test một lần.** Checkpoint, N trung bình, LR chỉ chọn theo WER `val`; clean-test (đã
+   hiệu đính) chấm một lần sau khi đóng băng 01/11, không quay lại chỉnh gì sau đó.
+4. **Tiêu chí "A tốt hơn B":** CI 95% bootstrap ghép cặp theo khối video của hiệu WER trên clean-test không chứa 0.
+   CI chứa 0 → viết "không phân biệt được", không viết "tương đương" hay "nhỉnh hơn".
+5. **Kết luận theo từng câu hỏi, viết sẵn mọi nhánh:**
+   - ConExt vs B1 ở 10 ms và ở 40 ms: báo đủ 4 số. Nếu thứ tự đổi giữa 10 ms và 40 ms → "phù hợp với giả thuyết độ
+     phân giải", **không** "chứng minh" (1 seed, một bộ dữ liệu). Nếu không đổi → giả thuyết không được ủng hộ, ghi thẳng.
+   - Mamba vs Conformer: so với **Conformer PE** (baseline chuẩn), Conformer v1 không PE chỉ là ablation. Nếu Conformer
+     PE bắt kịp/vượt → đó là kết luận chính, không chuyển sang so với bản không PE.
+   - Mô hình chính thua đối chứng → vẫn báo là kết quả; khóa luận không đổi trọng tâm hồi tố.
+6. **1 seed:** mọi chênh lệch giữa mô hình ghi kèm "1 seed; CI chỉ phản ánh biến thiên do mẫu test, không do train".
+7. **Nhóm pre-train** không xếp hạng chung với nhóm train từ đầu; luôn ghi khác dữ liệu/cỡ/khả năng rò rỉ.
+8. **RQ2** báo đường cong đầy đủ (kể cả OOM), điểm giao chỉ là quan sát trên T4 + batch 1 + chế độ số học đã chốt.
