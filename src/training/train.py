@@ -24,6 +24,11 @@ cuối (Hägele và cs., arXiv:2405.18392: hằng + pha giảm ~20% ≈ cosine; 
 Ghi đè từ dòng lệnh (`--lr`, `--seed`, `--warmup_steps`, `--decay_epochs`, `--experiment_name`) cho dò
 LR / nhiều seed mà không nhân bản yaml.
 
+Rẽ nhánh (`--branch_from`, công thức v2a 2026-10-12 "A + 40 ms"): lấy checkpoint ĐẦY ĐỦ cuối một epoch của
+lần chạy khác (v1 `latest.pt` sau epoch 29, LR hằng) làm điểm xuất phát cho thư mục `experiment_name` mới —
+như resume (optimizer, scheduler, GradScaler, global_step → LR và thứ tự dữ liệu liền mạch) nhưng `best_wer`
+tính lại (best.pt chỉ chọn trong nhánh). Chỉ dùng khi thư mục mới chưa có `latest.pt`; phiên sau tự resume.
+
 Số đo độ ổn định (thêm 2026-10-04, cho train thử 3 mô hình): mỗi epoch ghi một
 dòng `<ckpt_dir>/<experiment_name>/metrics.jsonl` (loss, grad norm, số step bị
 bỏ vì loss/gradient không hữu hạn, s/step, VRAM đỉnh, WER + CTC loss từng tập
@@ -121,6 +126,30 @@ def warmup_lr_lambda(step: int, warmup_steps: int, decay_start: int = 0, total_s
     if warmup_steps <= 0:
         return 1.0
     return min(1.0, (step + 1) / warmup_steps)
+
+
+def check_branch_point(state: dict, steps_per_epoch: int, epochs: int, decay_epochs: int, warmup_steps: int,
+                       lr: float, weight_decay: float) -> None:
+    """Từ chối rẽ nhánh khi LR/thứ tự dữ liệu không thể liền mạch. Không tự sửa cho khớp: lệch nào ở đây là
+    nhánh không còn là "cùng một quỹ đạo + pha giảm" (Hägele 2024) nữa."""
+    if "optimizer" not in state or "scheduler" not in state:
+        raise ValueError("Rẽ nhánh cần checkpoint đầy đủ (latest.pt/best.pt), không phải epochs/epochNN.pt "
+                         "(chỉ trọng số): AdamW mất moment → bước đầu cỡ lr·sign(g), không còn liền mạch")
+    if state.get("step_in_epoch", steps_per_epoch) < steps_per_epoch:
+        raise ValueError(f"Checkpoint dừng giữa epoch {state['epoch']} — rẽ nhánh chỉ từ cuối epoch")
+    start_epoch = state["epoch"] + 1
+    # Cùng step/epoch ⇔ cùng số câu × batch toàn cục: lịch LR theo step và hoán vị (seed, epoch) mới khớp.
+    if state["global_step"] != start_epoch * steps_per_epoch:
+        raise ValueError(f"global_step {state['global_step']} ≠ {start_epoch} epoch × {steps_per_epoch} step — "
+                         "khác dữ liệu/batch so với lần chạy gốc")
+    if not warmup_steps <= state["global_step"] <= (epochs - decay_epochs) * steps_per_epoch:
+        raise ValueError(f"Điểm rẽ nhánh (epoch {start_epoch}) phải nằm trong pha LR hằng "
+                         f"[hết warmup, epoch {epochs - decay_epochs}]")
+    ck_lr = state["scheduler"]["base_lrs"]
+    ck_wd = sorted({g["weight_decay"] for g in state["optimizer"]["param_groups"]})
+    # optimizer.load_state_dict ghi đè lr/weight_decay bằng giá trị trong checkpoint → config khác là vô hiệu ngầm.
+    if any(abs(x - lr) > 1e-12 for x in ck_lr) or ck_wd != sorted({weight_decay, 0.0}):
+        raise ValueError(f"Checkpoint lr {ck_lr} / weight_decay {ck_wd} khác config ({lr}, {weight_decay})")
 
 
 class ResumableSampler(Sampler[int]):
@@ -235,6 +264,9 @@ def main():
     parser.add_argument("--eval_every", type=int, default=1, help="Số epoch giữa 2 lần eval WER")
     parser.add_argument("--no_resume", action="store_true", help="Bỏ qua checkpoint cũ, train lại từ đầu")
     parser.add_argument("--resume_from", default=None, help="latest.pt của phiên trước, dùng khi ckpt_dir chưa có")
+    parser.add_argument("--branch_from", default=None,
+                        help="Rẽ nhánh từ checkpoint đầy đủ cuối epoch của lần chạy khác (dùng khi ckpt_dir chưa có "
+                             "latest.pt): tiếp optimizer/lịch LR/thứ tự dữ liệu, best_wer tính lại")
     parser.add_argument("--train_manifests", nargs="+", default=None,
                         help="Ghi đè data.train_manifests, vd. train_shard0 cho train thử 1 shard")
     parser.add_argument("--epochs", type=int, default=None, help="Ghi đè training.epochs")
@@ -351,26 +383,39 @@ def main():
     # Thời gian train.py chạy cộng dồn qua mọi phiên Kaggle (lưu trong checkpoint) — trục "WER theo
     # GPU-giờ" của báo cáo; không gồm setup kernel (ghi riêng ở session_summary.json của train_full).
     wall_base = 0.0
-    resume_path = latest_ckpt if latest_ckpt.exists() else (Path(args.resume_from) if args.resume_from else None)
+    if args.resume_from and args.branch_from:
+        raise ValueError("--resume_from và --branch_from loại trừ nhau")
+    branched_from = None  # đường dẫn checkpoint gốc của nhánh, mang theo qua mọi phiên
+    resume_path = latest_ckpt if latest_ckpt.exists() else \
+        Path(args.resume_from or args.branch_from) if (args.resume_from or args.branch_from) else None
+    branching = resume_path is not None and not latest_ckpt.exists() and args.branch_from is not None
     if not args.no_resume and resume_path is not None:
         state = torch.load(resume_path, map_location=device)
         if state.get("n_train", len(train_ds)) != len(train_ds):
             raise ValueError(f"Checkpoint train trên {state['n_train']} câu, lần này {len(train_ds)} — "
                              "đổi dữ liệu thì dùng experiment_name khác hoặc --no_resume")
+        if branching:
+            check_branch_point(state, steps_per_epoch, epochs, decay_epochs, tcfg["warmup_steps"], tcfg["lr"],
+                               tcfg["weight_decay"])
         model.load_state_dict(state["model"])
         optimizer.load_state_dict(state["optimizer"])
         scheduler.load_state_dict(state["scheduler"])
         if "scaler" in state:
             scaler.load_state_dict(state["scaler"])
         global_step = state["global_step"]
-        best_wer = state.get("best_wer", best_wer)
+        # Nhánh: best.pt chỉ chọn trong nhánh (best_wer của gốc là của quỹ đạo LR hằng).
+        best_wer = float("inf") if branching else state.get("best_wer", best_wer)
+        # Giữ thời gian cộng dồn của gốc: trục "WER theo GPU-giờ" tính cả pha hằng đã tiêu.
         wall_base = state.get("wall_seconds_total", 0.0)
+        branched_from = str(resume_path) if branching else state.get("branched_from")
         # Checkpoint cũ (trước 2026-10-04) chỉ lưu cuối epoch, không có step_in_epoch.
         done = state.get("step_in_epoch", steps_per_epoch)
         start_epoch, skip_steps = (state["epoch"] + 1, 0) if done >= steps_per_epoch else (state["epoch"], done)
         if is_main:
-            print(f"[{experiment_name}] resume từ {resume_path}: epoch {start_epoch} step {skip_steps} "
-                  f"(global_step={global_step})", flush=True)
+            print(f"[{experiment_name}] {'rẽ nhánh' if branching else 'resume'} từ {resume_path}: epoch "
+                  f"{start_epoch} step {skip_steps} (global_step={global_step}, lr={scheduler.get_last_lr()[0]:.3g}"
+                  f"{', best_wer gốc ' + format(state.get('best_wer', float('nan')), '.4f') + ' bỏ' if branching else ''})",
+                  flush=True)
 
     # SyncBN chỉ chạy trên GPU; Conformer có BatchNorm trong conv module, Mamba không có (D8).
     if ddp and device.type == "cuda":
@@ -390,7 +435,7 @@ def main():
         if is_main:
             save_checkpoint(path, core, optimizer, scheduler, scaler, epoch=epoch, step_in_epoch=step_in_epoch,
                             global_step=global_step, best_wer=best_wer, n_train=len(train_ds),
-                            wall_seconds_total=wall_total())
+                            wall_seconds_total=wall_total(), branched_from=branched_from)
 
     def save_epoch_weights(epoch: int, metrics: dict) -> None:
         """Chỉ trọng số (~50 MB), mỗi epoch một file — để sau train so các mô hình ở cùng số epoch, vẽ
@@ -488,7 +533,8 @@ def main():
                 _log(f"[{experiment_name}] epoch {epoch} step {step_in_epoch}/{steps_per_epoch} loss tb "
                      f"{loss_sum / max(loss_n, 1):.3f} | {sps:.3f} s/step, còn ~"
                      f"{(steps_per_epoch - step_in_epoch) * sps / 60:.1f} phút epoch | "
-                     f"{(time.time() - t_start) / 60:.1f} phút từ đầu phiên | bỏ {nonfinite_loss}+{amp_skipped}{vram}")
+                     f"{(time.time() - t_start) / 60:.1f} phút từ đầu phiên | bỏ {nonfinite_loss}+{amp_skipped}{vram} | "
+                     f"lr {scheduler.get_last_lr()[0]:.3e}")
             if is_main:
                 writer.add_scalar("train/loss", loss_value, global_step)
                 writer.add_scalar("train/lr", scheduler.get_last_lr()[0], global_step)
@@ -525,6 +571,7 @@ def main():
             "lr": scheduler.get_last_lr()[0],
             # Epoch nối hai phiên: s_per_step/train_loss chỉ tính phần của phiên sau và gồm khởi động chậm.
             "resumed_mid_epoch": resumed_mid_epoch,
+            **({"branched_from": branched_from} if branched_from else {}),
         }
         if is_main:
             print(f"epoch {epoch}: loss trung bình={mean_loss:.4f} ({n_steps} step, "

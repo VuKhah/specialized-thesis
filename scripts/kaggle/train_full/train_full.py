@@ -11,6 +11,10 @@ Mọi phiên của một mô hình chạy **cùng commit** (`COMMIT`, launcher g
 không đổi giữa chừng. Phiên k > 1 không thấy `latest.pt` của phiên trước thì dừng ngay — không bao giờ
 lặng lẽ train lại từ đầu.
 
+Rẽ nhánh (v2a, `BRANCH_FROM`): phiên 1 tìm `checkpoints/<experiment v1>/{latest,best}.pt` trong /kaggle/input
+(output kernel v1 gắn qua `kernel_sources`, hoặc dataset), chọn file đầy đủ đúng `epoch`, truyền
+`--branch_from`; không thấy thì dừng — không bao giờ lặng lẽ train từ đầu.
+
 Output (`/kaggle/working`): `checkpoints/<experiment>/` (latest.pt, best.pt, metrics.jsonl,
 eval_*.jsonl — cộng dồn qua các phiên), `runs/` (tensorboard), `logs/` (log text, gpu_util.csv),
 `session_summary.json`.
@@ -33,6 +37,8 @@ SESSION = 1
 COMMIT = ""  # rỗng = HEAD của master (chỉ dùng khi thử tay)
 SESSION_MINUTES = 540  # D7: phiên GPU ~9 h; train.py dừng sớm hơn TAIL_MARGIN để kịp lưu + ghi output
 EXTRA_ARGS: list[str] = []  # vd. ["--limit_eval", "64"] khi thử nối phiên
+# v2a (2026-10-12): phiên 1 rẽ nhánh từ checkpoint v1 — {"experiment": "mamba_ctc", "epoch": 29}; None = không.
+BRANCH_FROM: dict | None = None
 # ------------------------------------
 
 REPO_URL = "https://github.com/VuKhah/specialized-thesis"
@@ -57,6 +63,25 @@ def find_previous(experiment: str) -> Path | None:
     /kaggle/input duyệt ~67 nghìn wav (~3 phút GPU chạy không)."""
     hits = [h for d in range(1, 5) for h in glob.glob("/kaggle/input/" + "*/" * d + f"checkpoints/{experiment}/latest.pt")]
     return Path(hits[0]).parent if hits else None
+
+
+def find_branch_source(experiment: str, epoch: int) -> Path | None:
+    """Có thể có nhiều bản cùng tên experiment (vd. conformer_ctc_baseline ở output v1 ep29 và output chạy dài
+    ep68) → lọc theo epoch + có optimizer, không lấy bản đầu tiên glob thấy."""
+    import torch
+
+    hits = sorted({h for d in range(1, 6) for name in ("latest.pt", "best.pt")
+                   for h in glob.glob("/kaggle/input/" + "*/" * d + f"{experiment}/{name}")})
+    for h in hits:
+        st = torch.load(h, map_location="cpu", weights_only=False)
+        # Cuối epoch ⇔ global_step = (epoch + 1) × step_in_epoch; train.py kiểm lại đầy đủ (check_branch_point).
+        ok = (st.get("epoch") == epoch and "optimizer" in st
+              and st.get("global_step") == (epoch + 1) * st.get("step_in_epoch", -1))
+        print(f"  ứng viên rẽ nhánh {h}: epoch {st.get('epoch')} step_in_epoch {st.get('step_in_epoch')} "
+              f"global_step {st.get('global_step')} optimizer {'optimizer' in st} → {'CHỌN' if ok else 'bỏ'}", flush=True)
+        if ok:
+            return Path(h)
+    return None
 
 
 def run_info() -> dict:
@@ -113,6 +138,14 @@ def main() -> None:
             print(f"{stamp()} TRAIN FULL ĐÃ XONG từ phiên trước — không train thêm", flush=True)
             return
 
+    branch_args: list[str] = []
+    if BRANCH_FROM and SESSION == 1:
+        src = find_branch_source(BRANCH_FROM["experiment"], BRANCH_FROM["epoch"])
+        if src is None:
+            run(["find", "/kaggle/input", "-maxdepth", "6", "-name", "*.pt", "-not", "-path", "*/epochs/*"], check=False)
+            sys.exit(f"LỖI: không thấy checkpoint đầy đủ {BRANCH_FROM} để rẽ nhánh — kiểm tra kernel_sources/dataset")
+        branch_args = ["--branch_from", str(src)]
+
     pip = [sys.executable, "-m", "pip", "install", "-q"]
     run(pip + ["einops", "librosa", "soundfile", "sentencepiece", "datasets", "jiwer", "pyyaml", "tensorboard"])
     wheels = find_wheels()
@@ -129,10 +162,12 @@ def main() -> None:
     budget = SESSION_MINUTES - setup_minutes - TAIL_MARGIN
     cmd = [sys.executable, "-m", "torch.distributed.run", "--nproc_per_node", "2", "-m", "src.training.train",
            "--config", CONFIG, "--max_minutes", f"{budget:.0f}", "--ckpt_dir", str(ckpt_root),
-           "--log_dir", str(OUT / "runs"), "--ckpt_every_minutes", "20", *EXTRA_ARGS]
+           "--log_dir", str(OUT / "runs"), "--ckpt_every_minutes", "20", *branch_args, *EXTRA_ARGS]
     code, out = run(cmd, cwd=REPO_DIR, env=env, check=False, log_name=f"{experiment}_s{SESSION}")
     if SESSION > 1 and "resume từ" not in out:
         print("!!! phiên sau không resume — kiểm tra log", flush=True)
+    if branch_args and "rẽ nhánh từ" not in out:
+        print("!!! phiên 1 không rẽ nhánh — kiểm tra log", flush=True)
 
     (ckpt_root / experiment / "latest.tmp").unlink(missing_ok=True)
     shutil.copyfile(REPO_DIR / CONFIG, OUT / f"config_s{SESSION}.yaml")  # bản chụp config đúng commit đã chạy
@@ -147,6 +182,7 @@ def main() -> None:
                        "best_wer": st.get("best_wer")}
     done = bool(metrics) and metrics[-1]["epoch"] >= epochs - 1
     summary = {"experiment": experiment, "session": SESSION, "config": CONFIG, "extra_args": EXTRA_ARGS,
+               "branch_from": BRANCH_FROM, "branch_args": branch_args,
                "run": run_info(), "returncode": code,
                "epochs_target": epochs, "epochs_done": len(metrics), "latest": state_epoch, "finished": done,
                "setup_minutes": setup_minutes, "kernel_minutes": (time.time() - T_KERNEL) / 60, "last_metrics": metrics[-1] if metrics else None}

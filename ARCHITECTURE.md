@@ -133,7 +133,7 @@ chưa đo trên Kaggle. Có BatchNorm → SyncBN khi DDP (khác B1).
 ```mermaid
 flowchart TD
     Y["configs/model_*.yaml<br/>experiment_name + encoder + features + training + data"] --> T["torchrun --nproc_per_node 2 -m src.training.train --config ...<br/>(1 tiến trình: python -m ...)"]
-    T --> R{"ckpt_dir/{experiment_name}/latest.pt<br/>hoặc --resume_from đã có?"}
+    T --> R{"ckpt_dir/{experiment_name}/latest.pt<br/>hoặc --resume_from / --branch_from (v2a) đã có?"}
     R -->|"có (mặc định)"| RES["resume: model + optimizer + scheduler + GradScaler<br/>epoch + step_in_epoch + global_step + best_wer"]
     R -->|"không / --no_resume"| NEW["train từ đầu (seed trong yaml)"]
     RES --> LOOP
@@ -313,4 +313,21 @@ Ký hiệu: ✅ đã chạy thật · 🟡 chạy được một phần · ⬜ c
 - `src/evaluation/average_checkpoints.py`: trung bình `epochs/epochNN.pt` (float trung bình, int lấy cuối).
 - Số tham số (tổng, V = 1001): v1 Conformer 12,46M · B1 12,54M · ConExt 12,50M; v2 cộng conditioning 0,26M;
   `conformer_relpos` encoder 12,73M (+0,53M PE); nhánh 40 ms cộng subsampling 1,84M.
+
+### 8-v2a. Công thức chung v2a (2026-10-12, "A + 40 ms", `configs/v2a/`, thay `configs/v2/`)
+
+- Config = v1 y nguyên + `epochs: 38` + `decay_epochs: 8` (30 hằng + 8 giảm 1-sqrt), không `interctc`; chỉ
+  encoder/subsampling khác giữa các file. `configs/v2/` giữ làm lịch sử (InterCTC, warmup 2840), không dùng.
+- `train.py --branch_from <ckpt>`: rẽ nhánh từ checkpoint **đầy đủ** cuối epoch của lần chạy khác (v1 `latest.pt`
+  sau epoch 29) sang thư mục `experiment_name` mới. Như resume (model/optimizer/scheduler/GradScaler/global_step →
+  LR và hoán vị (seed, epoch) liền mạch) nhưng `best_wer` đặt lại; `wall_seconds_total` giữ cộng dồn từ gốc;
+  `branched_from` ghi vào checkpoint + metrics.jsonl. `check_branch_point` từ chối: file chỉ trọng số
+  (`epochs/epochNN.pt`), dừng giữa epoch, `global_step ≠ (epoch+1)·step/epoch` (khác dữ liệu/batch/số GPU),
+  điểm rẽ ngoài pha hằng, lr/weight_decay checkpoint ≠ config (optimizer.load_state_dict sẽ ghi đè ngầm).
+  Thư mục mới đã có `latest.pt` thì `--branch_from` bị bỏ qua (phiên sau resume bình thường).
+- Kernel `train_full.py`: hằng `BRANCH_FROM = {"experiment", "epoch"}` (launcher điền cho `v2a-mamba`,
+  `v2a-conextbimamba`, `v2a-conformer`); phiên 1 tìm `<experiment>/{latest,best}.pt` trong /kaggle/input, chọn
+  bản đúng epoch + có optimizer (output chạy dài Conformer cùng tên experiment, ep68, bị loại).
+- Giới hạn: RNG (dropout, SpecAugment) không lưu trong checkpoint → nhánh không trùng bit với một lần chạy
+  38 epoch liền mạch (như mọi lần resume giữa phiên từ trước tới nay); thứ tự dữ liệu + speed perturb thì trùng.
 
