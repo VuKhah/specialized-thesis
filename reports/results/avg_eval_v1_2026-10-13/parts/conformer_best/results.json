@@ -1,0 +1,57 @@
+{
+  "runs": {
+    "conformer_best": {
+      "checkpoint": "/kaggle/input/datasets/tieunhi/kltn-best-ckpt/conformer.pt",
+      "checkpoint_epoch": 28,
+      "averaged_epochs": null,
+      "config": "configs/model_conformer.yaml",
+      "device": "cuda",
+      "gpu": "Tesla T4",
+      "amp": true,
+      "decoding": "CTC greedy, không LM",
+      "sets": {
+        "clean_test": {
+          "wer": 0.26463473633284956,
+          "substitutions": 1702,
+          "deletions": 818,
+          "insertions": 215,
+          "hits": 7815,
+          "cer": 0.15983075927124757,
+          "n": 203,
+          "n_hyp_empty": 0,
+          "batch_size": 1,
+          "eval_seconds": 16.6,
+          "n_corrected_text": 11
+        },
+        "val": {
+          "wer": 0.2519289272959746,
+          "substitutions": 39678,
+          "deletions": 18254,
+          "insertions": 4922,
+          "hits": 191559,
+          "cer": 0.15089713606563662,
+          "n": 4824,
+          "n_hyp_empty": 0,
+          "ctc_loss": 0.9766837438540672,
+          "batch_size": 8,
+          "limit": null,
+          "eval_seconds": 55.8
+        },
+        "val_unseen": {
+          "wer": 0.24814493160832193,
+          "substitutions": 24533,
+          "deletions": 11323,
+          "insertions": 3003,
+          "hits": 120742,
+          "cer": 0.1470370888478007,
+          "n": 3011,
+          "n_hyp_empty": 0,
+          "ctc_loss": 0.9627666165368655,
+          "batch_size": 8,
+          "limit": null,
+          "eval_seconds": 32.5
+        }
+      }
+    }
+  }
+}

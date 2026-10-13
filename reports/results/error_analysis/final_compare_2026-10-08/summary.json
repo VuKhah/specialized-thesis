@@ -1,0 +1,2788 @@
+{
+ "header": {
+  "name": "final_compare_2026-10-08",
+  "predictions": "reports/results/final_compare_2026-10-08/predictions.tsv",
+  "manifest": "data/processed/clean_test_manifest.json",
+  "ref_mode": "auto",
+  "ref_counts": {
+   "corrected_text": 11,
+   "pseudo_label": 192
+  },
+  "n_tagged": 0,
+  "run_len": 5,
+  "n_boot": 10000,
+  "seed": 42,
+  "length_bins": [
+   "<40",
+   "40-59",
+   ">=60"
+  ]
+ },
+ "models": {
+  "conformer": {
+   "n_sentences": 203,
+   "n_ref_words": 10335,
+   "counts": {
+    "sub_tone": 43,
+    "sub_diacritic": 15,
+    "sub_other": 1644,
+    "deletions": 818,
+    "insertions": 215,
+    "errors": 2735
+   },
+   "rates": {
+    "sub_tone": 0.004160619254958878,
+    "sub_diacritic": 0.001451378809869376,
+    "sub_other": 0.1590711175616836,
+    "deletions": 0.0791485244315433,
+    "insertions": 0.02080309627479439,
+    "errors": 0.26463473633284956
+   },
+   "ci95": {
+    "sub_tone": [
+     0.002974177426743245,
+     0.00549828350463933
+    ],
+    "sub_diacritic": [
+     0.0008415147265077139,
+     0.0021270424441651357
+    ],
+    "sub_other": [
+     0.14158160851213186,
+     0.17672382337242964
+    ],
+    "deletions": [
+     0.06812511950150084,
+     0.09200524946186431
+    ],
+    "insertions": [
+     0.016405990707888837,
+     0.02559597352105352
+    ],
+    "errors": [
+     0.236890326466872,
+     0.29350278070521907
+    ]
+   },
+   "n_videos": 29,
+   "skipped_empty_ref": 0,
+   "hyp_empty_sentences": 0,
+   "long_insert_runs": 0,
+   "long_insert_words": 0,
+   "long_delete_runs": 6,
+   "long_delete_words": 35,
+   "sentences_with_long_insert": 0,
+   "sentences_with_long_delete": 6,
+   "tagged_group": {
+    "n_sentences": 0,
+    "n_ref_words": 0,
+    "counts": {
+     "sub_tone": 0,
+     "sub_diacritic": 0,
+     "sub_other": 0,
+     "deletions": 0,
+     "insertions": 0,
+     "errors": 0
+    },
+    "rates": {
+     "sub_tone": null,
+     "sub_diacritic": null,
+     "sub_other": null,
+     "deletions": null,
+     "insertions": null,
+     "errors": null
+    }
+   },
+   "untagged_group": {
+    "n_sentences": 203,
+    "n_ref_words": 10335,
+    "counts": {
+     "sub_tone": 43,
+     "sub_diacritic": 15,
+     "sub_other": 1644,
+     "deletions": 818,
+     "insertions": 215,
+     "errors": 2735
+    },
+    "rates": {
+     "sub_tone": 0.004160619254958878,
+     "sub_diacritic": 0.001451378809869376,
+     "sub_other": 0.1590711175616836,
+     "deletions": 0.0791485244315433,
+     "insertions": 0.02080309627479439,
+     "errors": 0.26463473633284956
+    }
+   },
+   "by_length": {
+    "<40": {
+     "n_sentences": 29,
+     "n_ref_words": 984,
+     "counts": {
+      "sub_tone": 6,
+      "sub_diacritic": 1,
+      "sub_other": 187,
+      "deletions": 100,
+      "insertions": 34,
+      "errors": 328
+     },
+     "rates": {
+      "sub_tone": 0.006097560975609756,
+      "sub_diacritic": 0.0010162601626016261,
+      "sub_other": 0.19004065040650406,
+      "deletions": 0.1016260162601626,
+      "insertions": 0.034552845528455285,
+      "errors": 0.3333333333333333
+     }
+    },
+    "40-59": {
+     "n_sentences": 134,
+     "n_ref_words": 6705,
+     "counts": {
+      "sub_tone": 30,
+      "sub_diacritic": 12,
+      "sub_other": 1076,
+      "deletions": 525,
+      "insertions": 137,
+      "errors": 1780
+     },
+     "rates": {
+      "sub_tone": 0.0044742729306487695,
+      "sub_diacritic": 0.0017897091722595079,
+      "sub_other": 0.1604772557792692,
+      "deletions": 0.07829977628635347,
+      "insertions": 0.020432513049962714,
+      "errors": 0.26547352721849365
+     }
+    },
+    ">=60": {
+     "n_sentences": 40,
+     "n_ref_words": 2646,
+     "counts": {
+      "sub_tone": 7,
+      "sub_diacritic": 2,
+      "sub_other": 381,
+      "deletions": 193,
+      "insertions": 44,
+      "errors": 627
+     },
+     "rates": {
+      "sub_tone": 0.0026455026455026454,
+      "sub_diacritic": 0.0007558578987150416,
+      "sub_other": 0.14399092970521543,
+      "deletions": 0.07294028722600152,
+      "insertions": 0.016628873771730914,
+      "errors": 0.23696145124716553
+     }
+    }
+   },
+   "top_confusions": [
+    [
+     "nó",
+     "đó",
+     7
+    ],
+    [
+     "làm",
+     "là",
+     6
+    ],
+    [
+     "nó",
+     "nói",
+     5
+    ],
+    [
+     "và",
+     "mà",
+     5
+    ],
+    [
+     "là",
+     "và",
+     4
+    ],
+    [
+     "và",
+     "vào",
+     4
+    ],
+    [
+     "đó",
+     "nó",
+     4
+    ],
+    [
+     "về",
+     "với",
+     4
+    ],
+    [
+     "là",
+     "lại",
+     3
+    ],
+    [
+     "trong",
+     "cho",
+     3
+    ],
+    [
+     "với",
+     "cái",
+     3
+    ],
+    [
+     "nói",
+     "nó",
+     3
+    ],
+    [
+     "thật",
+     "thực",
+     3
+    ],
+    [
+     "lại",
+     "là",
+     3
+    ],
+    [
+     "uống",
+     "cũng",
+     3
+    ],
+    [
+     "thách",
+     "thá",
+     3
+    ],
+    [
+     "tạ",
+     "tạo",
+     3
+    ],
+    [
+     "stress",
+     "stes",
+     3
+    ],
+    [
+     "là",
+     "làm",
+     2
+    ],
+    [
+     "cái",
+     "các",
+     2
+    ],
+    [
+     "tóm",
+     "tác",
+     2
+    ],
+    [
+     "việc",
+     "biệt",
+     2
+    ],
+    [
+     "trong",
+     "trongòng",
+     2
+    ],
+    [
+     "để",
+     "thể",
+     2
+    ],
+    [
+     "trung",
+     "chung",
+     2
+    ],
+    [
+     "rằng",
+     "là",
+     2
+    ],
+    [
+     "các",
+     "cái",
+     2
+    ],
+    [
+     "top",
+     "to",
+     2
+    ],
+    [
+     "rồi",
+     "phải",
+     2
+    ],
+    [
+     "cản",
+     "cả",
+     2
+    ]
+   ],
+   "top_deleted": [
+    [
+     "là",
+     21
+    ],
+    [
+     "thì",
+     14
+    ],
+    [
+     "em",
+     10
+    ],
+    [
+     "cái",
+     10
+    ],
+    [
+     "một",
+     9
+    ],
+    [
+     "của",
+     8
+    ],
+    [
+     "nó",
+     8
+    ],
+    [
+     "mình",
+     8
+    ],
+    [
+     "hay",
+     7
+    ],
+    [
+     "với",
+     6
+    ],
+    [
+     "và",
+     6
+    ],
+    [
+     "mà",
+     6
+    ],
+    [
+     "á",
+     6
+    ],
+    [
+     "ấy",
+     6
+    ],
+    [
+     "những",
+     5
+    ],
+    [
+     "họ",
+     5
+    ],
+    [
+     "để",
+     5
+    ],
+    [
+     "anh",
+     5
+    ],
+    [
+     "có",
+     5
+    ],
+    [
+     "hết",
+     4
+    ],
+    [
+     "rất",
+     4
+    ],
+    [
+     "vì",
+     4
+    ],
+    [
+     "ở",
+     4
+    ],
+    [
+     "xe",
+     4
+    ],
+    [
+     "như",
+     4
+    ],
+    [
+     "huy",
+     4
+    ],
+    [
+     "đi",
+     4
+    ],
+    [
+     "đó",
+     4
+    ],
+    [
+     "luôn",
+     4
+    ],
+    [
+     "cũng",
+     4
+    ]
+   ],
+   "top_inserted": [
+    [
+     "cái",
+     17
+    ],
+    [
+     "thì",
+     7
+    ],
+    [
+     "l",
+     6
+    ],
+    [
+     "là",
+     6
+    ],
+    [
+     "mà",
+     5
+    ],
+    [
+     "á",
+     5
+    ],
+    [
+     "không",
+     5
+    ],
+    [
+     "một",
+     5
+    ],
+    [
+     "được",
+     4
+    ],
+    [
+     "và",
+     4
+    ],
+    [
+     "hơn",
+     4
+    ],
+    [
+     "có",
+     4
+    ],
+    [
+     "lo",
+     4
+    ],
+    [
+     "cũng",
+     3
+    ],
+    [
+     "những",
+     3
+    ],
+    [
+     "nó",
+     3
+    ],
+    [
+     "nhưng",
+     3
+    ],
+    [
+     "còn",
+     3
+    ],
+    [
+     "cho",
+     3
+    ],
+    [
+     "ở",
+     3
+    ],
+    [
+     "em",
+     2
+    ],
+    [
+     "th",
+     2
+    ],
+    [
+     "s",
+     2
+    ],
+    [
+     "r",
+     2
+    ],
+    [
+     "tr",
+     2
+    ],
+    [
+     "hai",
+     2
+    ],
+    [
+     "tiên",
+     2
+    ],
+    [
+     "mình",
+     2
+    ],
+    [
+     "sẽ",
+     2
+    ],
+    [
+     "hay",
+     2
+    ]
+   ]
+  },
+  "mamba": {
+   "n_sentences": 203,
+   "n_ref_words": 10335,
+   "counts": {
+    "sub_tone": 37,
+    "sub_diacritic": 19,
+    "sub_other": 1190,
+    "deletions": 272,
+    "insertions": 250,
+    "errors": 1768
+   },
+   "rates": {
+    "sub_tone": 0.003580067731011127,
+    "sub_diacritic": 0.001838413159167876,
+    "sub_other": 0.11514271891630382,
+    "deletions": 0.026318335752298017,
+    "insertions": 0.024189646831156264,
+    "errors": 0.1710691823899371
+   },
+   "ci95": {
+    "sub_tone": [
+     0.002369662631650108,
+     0.004873818064332637
+    ],
+    "sub_diacritic": [
+     0.0010698021893551049,
+     0.0026520118481479908
+    ],
+    "sub_other": [
+     0.09943733158179642,
+     0.13252862589225362
+    ],
+    "deletions": [
+     0.021167091053201813,
+     0.03227078727974874
+    ],
+    "insertions": [
+     0.0192418217423531,
+     0.029451503240282152
+    ],
+    "errors": [
+     0.14859003541452168,
+     0.19606062157107787
+    ]
+   },
+   "n_videos": 29,
+   "skipped_empty_ref": 0,
+   "hyp_empty_sentences": 0,
+   "long_insert_runs": 1,
+   "long_insert_words": 5,
+   "long_delete_runs": 1,
+   "long_delete_words": 8,
+   "sentences_with_long_insert": 1,
+   "sentences_with_long_delete": 1,
+   "tagged_group": {
+    "n_sentences": 0,
+    "n_ref_words": 0,
+    "counts": {
+     "sub_tone": 0,
+     "sub_diacritic": 0,
+     "sub_other": 0,
+     "deletions": 0,
+     "insertions": 0,
+     "errors": 0
+    },
+    "rates": {
+     "sub_tone": null,
+     "sub_diacritic": null,
+     "sub_other": null,
+     "deletions": null,
+     "insertions": null,
+     "errors": null
+    }
+   },
+   "untagged_group": {
+    "n_sentences": 203,
+    "n_ref_words": 10335,
+    "counts": {
+     "sub_tone": 37,
+     "sub_diacritic": 19,
+     "sub_other": 1190,
+     "deletions": 272,
+     "insertions": 250,
+     "errors": 1768
+    },
+    "rates": {
+     "sub_tone": 0.003580067731011127,
+     "sub_diacritic": 0.001838413159167876,
+     "sub_other": 0.11514271891630382,
+     "deletions": 0.026318335752298017,
+     "insertions": 0.024189646831156264,
+     "errors": 0.1710691823899371
+    }
+   },
+   "by_length": {
+    "<40": {
+     "n_sentences": 29,
+     "n_ref_words": 984,
+     "counts": {
+      "sub_tone": 5,
+      "sub_diacritic": 1,
+      "sub_other": 156,
+      "deletions": 38,
+      "insertions": 37,
+      "errors": 237
+     },
+     "rates": {
+      "sub_tone": 0.00508130081300813,
+      "sub_diacritic": 0.0010162601626016261,
+      "sub_other": 0.15853658536585366,
+      "deletions": 0.03861788617886179,
+      "insertions": 0.037601626016260166,
+      "errors": 0.24085365853658536
+     }
+    },
+    "40-59": {
+     "n_sentences": 134,
+     "n_ref_words": 6705,
+     "counts": {
+      "sub_tone": 26,
+      "sub_diacritic": 15,
+      "sub_other": 787,
+      "deletions": 161,
+      "insertions": 159,
+      "errors": 1148
+     },
+     "rates": {
+      "sub_tone": 0.003877703206562267,
+      "sub_diacritic": 0.0022371364653243847,
+      "sub_other": 0.11737509321401939,
+      "deletions": 0.02401193139448173,
+      "insertions": 0.02371364653243848,
+      "errors": 0.17121551081282624
+     }
+    },
+    ">=60": {
+     "n_sentences": 40,
+     "n_ref_words": 2646,
+     "counts": {
+      "sub_tone": 6,
+      "sub_diacritic": 3,
+      "sub_other": 247,
+      "deletions": 73,
+      "insertions": 54,
+      "errors": 383
+     },
+     "rates": {
+      "sub_tone": 0.0022675736961451248,
+      "sub_diacritic": 0.0011337868480725624,
+      "sub_other": 0.09334845049130763,
+      "deletions": 0.02758881330309902,
+      "insertions": 0.02040816326530612,
+      "errors": 0.14474678760393045
+     }
+    }
+   },
+   "top_confusions": [
+    [
+     "làm",
+     "là",
+     7
+    ],
+    [
+     "mà",
+     "là",
+     4
+    ],
+    [
+     "đó",
+     "nó",
+     4
+    ],
+    [
+     "về",
+     "với",
+     3
+    ],
+    [
+     "vào",
+     "và",
+     3
+    ],
+    [
+     "nói",
+     "nó",
+     3
+    ],
+    [
+     "mà",
+     "và",
+     2
+    ],
+    [
+     "đi",
+     "thì",
+     2
+    ],
+    [
+     "ngay",
+     "nghe",
+     2
+    ],
+    [
+     "tắt",
+     "tác",
+     2
+    ],
+    [
+     "vuông",
+     "vu",
+     2
+    ],
+    [
+     "là",
+     "nó",
+     2
+    ],
+    [
+     "trung",
+     "chung",
+     2
+    ],
+    [
+     "là",
+     "và",
+     2
+    ],
+    [
+     "các",
+     "cái",
+     2
+    ],
+    [
+     "xe",
+     "sang",
+     2
+    ],
+    [
+     "liên",
+     "lên",
+     2
+    ],
+    [
+     "kỳ",
+     "k",
+     2
+    ],
+    [
+     "ngồi",
+     "người",
+     2
+    ],
+    [
+     "nghĩa",
+     "nghĩ",
+     2
+    ],
+    [
+     "lại",
+     "là",
+     2
+    ],
+    [
+     "nỗ",
+     "nội",
+     2
+    ],
+    [
+     "nó",
+     "đó",
+     2
+    ],
+    [
+     "thầy",
+     "thì",
+     2
+    ],
+    [
+     "tước",
+     "t",
+     2
+    ],
+    [
+     "loại",
+     "lại",
+     2
+    ],
+    [
+     "và",
+     "mà",
+     2
+    ],
+    [
+     "phê",
+     "ph",
+     2
+    ],
+    [
+     "đan",
+     "đang",
+     2
+    ],
+    [
+     "thật",
+     "thực",
+     2
+    ]
+   ],
+   "top_deleted": [
+    [
+     "là",
+     14
+    ],
+    [
+     "thì",
+     8
+    ],
+    [
+     "á",
+     8
+    ],
+    [
+     "mà",
+     8
+    ],
+    [
+     "cái",
+     6
+    ],
+    [
+     "cũng",
+     6
+    ],
+    [
+     "nó",
+     6
+    ],
+    [
+     "em",
+     5
+    ],
+    [
+     "của",
+     5
+    ],
+    [
+     "đã",
+     4
+    ],
+    [
+     "một",
+     4
+    ],
+    [
+     "ấy",
+     4
+    ],
+    [
+     "ở",
+     4
+    ],
+    [
+     "à",
+     4
+    ],
+    [
+     "ừ",
+     3
+    ],
+    [
+     "nha",
+     3
+    ],
+    [
+     "những",
+     3
+    ],
+    [
+     "có",
+     3
+    ],
+    [
+     "huy",
+     3
+    ],
+    [
+     "để",
+     3
+    ],
+    [
+     "vì",
+     2
+    ],
+    [
+     "mình",
+     2
+    ],
+    [
+     "rồi",
+     2
+    ],
+    [
+     "ờ",
+     2
+    ],
+    [
+     "được",
+     2
+    ],
+    [
+     "rất",
+     2
+    ],
+    [
+     "ông",
+     2
+    ],
+    [
+     "đầu",
+     2
+    ],
+    [
+     "đấy",
+     2
+    ],
+    [
+     "my",
+     2
+    ]
+   ],
+   "top_inserted": [
+    [
+     "cái",
+     18
+    ],
+    [
+     "là",
+     15
+    ],
+    [
+     "và",
+     7
+    ],
+    [
+     "thì",
+     6
+    ],
+    [
+     "s",
+     6
+    ],
+    [
+     "á",
+     6
+    ],
+    [
+     "mà",
+     5
+    ],
+    [
+     "không",
+     4
+    ],
+    [
+     "n",
+     4
+    ],
+    [
+     "một",
+     4
+    ],
+    [
+     "mình",
+     4
+    ],
+    [
+     "v",
+     4
+    ],
+    [
+     "cũng",
+     3
+    ],
+    [
+     "b",
+     3
+    ],
+    [
+     "anh",
+     3
+    ],
+    [
+     "nó",
+     3
+    ],
+    [
+     "đ",
+     3
+    ],
+    [
+     "có",
+     3
+    ],
+    [
+     "m",
+     3
+    ],
+    [
+     "như",
+     3
+    ],
+    [
+     "được",
+     3
+    ],
+    [
+     "h",
+     2
+    ],
+    [
+     "d",
+     2
+    ],
+    [
+     "tr",
+     2
+    ],
+    [
+     "thể",
+     2
+    ],
+    [
+     "hay",
+     2
+    ],
+    [
+     "những",
+     2
+    ],
+    [
+     "wor",
+     2
+    ],
+    [
+     "c",
+     2
+    ],
+    [
+     "hơn",
+     2
+    ]
+   ]
+  },
+  "conextbimamba": {
+   "n_sentences": 203,
+   "n_ref_words": 10335,
+   "counts": {
+    "sub_tone": 25,
+    "sub_diacritic": 21,
+    "sub_other": 1404,
+    "deletions": 392,
+    "insertions": 254,
+    "errors": 2096
+   },
+   "rates": {
+    "sub_tone": 0.0024189646831156266,
+    "sub_diacritic": 0.0020319303338171262,
+    "sub_other": 0.13584905660377358,
+    "deletions": 0.03792936623125302,
+    "insertions": 0.024576681180454765,
+    "errors": 0.2028059990324141
+   },
+   "ci95": {
+    "sub_tone": [
+     0.0016142778128184153,
+     0.0032786964296160214
+    ],
+    "sub_diacritic": [
+     0.0010494130451352043,
+     0.003124099993629083
+    ],
+    "sub_other": [
+     0.11810715547454304,
+     0.15440617005709142
+    ],
+    "deletions": [
+     0.032520207886061546,
+     0.04438711567693976
+    ],
+    "insertions": [
+     0.02024689205334367,
+     0.02920964821388503
+    ],
+    "errors": [
+     0.1781536119461843,
+     0.2283606343520033
+    ]
+   },
+   "n_videos": 29,
+   "skipped_empty_ref": 0,
+   "hyp_empty_sentences": 0,
+   "long_insert_runs": 2,
+   "long_insert_words": 10,
+   "long_delete_runs": 2,
+   "long_delete_words": 11,
+   "sentences_with_long_insert": 2,
+   "sentences_with_long_delete": 2,
+   "tagged_group": {
+    "n_sentences": 0,
+    "n_ref_words": 0,
+    "counts": {
+     "sub_tone": 0,
+     "sub_diacritic": 0,
+     "sub_other": 0,
+     "deletions": 0,
+     "insertions": 0,
+     "errors": 0
+    },
+    "rates": {
+     "sub_tone": null,
+     "sub_diacritic": null,
+     "sub_other": null,
+     "deletions": null,
+     "insertions": null,
+     "errors": null
+    }
+   },
+   "untagged_group": {
+    "n_sentences": 203,
+    "n_ref_words": 10335,
+    "counts": {
+     "sub_tone": 25,
+     "sub_diacritic": 21,
+     "sub_other": 1404,
+     "deletions": 392,
+     "insertions": 254,
+     "errors": 2096
+    },
+    "rates": {
+     "sub_tone": 0.0024189646831156266,
+     "sub_diacritic": 0.0020319303338171262,
+     "sub_other": 0.13584905660377358,
+     "deletions": 0.03792936623125302,
+     "insertions": 0.024576681180454765,
+     "errors": 0.2028059990324141
+    }
+   },
+   "by_length": {
+    "<40": {
+     "n_sentences": 29,
+     "n_ref_words": 984,
+     "counts": {
+      "sub_tone": 5,
+      "sub_diacritic": 2,
+      "sub_other": 178,
+      "deletions": 60,
+      "insertions": 32,
+      "errors": 277
+     },
+     "rates": {
+      "sub_tone": 0.00508130081300813,
+      "sub_diacritic": 0.0020325203252032522,
+      "sub_other": 0.18089430894308944,
+      "deletions": 0.06097560975609756,
+      "insertions": 0.032520325203252036,
+      "errors": 0.2815040650406504
+     }
+    },
+    "40-59": {
+     "n_sentences": 134,
+     "n_ref_words": 6705,
+     "counts": {
+      "sub_tone": 14,
+      "sub_diacritic": 18,
+      "sub_other": 905,
+      "deletions": 235,
+      "insertions": 156,
+      "errors": 1328
+     },
+     "rates": {
+      "sub_tone": 0.002087994034302759,
+      "sub_diacritic": 0.0026845637583892616,
+      "sub_other": 0.13497390007457122,
+      "deletions": 0.035048471290082026,
+      "insertions": 0.023266219239373602,
+      "errors": 0.19806114839671887
+     }
+    },
+    ">=60": {
+     "n_sentences": 40,
+     "n_ref_words": 2646,
+     "counts": {
+      "sub_tone": 6,
+      "sub_diacritic": 1,
+      "sub_other": 321,
+      "deletions": 97,
+      "insertions": 66,
+      "errors": 491
+     },
+     "rates": {
+      "sub_tone": 0.0022675736961451248,
+      "sub_diacritic": 0.0003779289493575208,
+      "sub_other": 0.12131519274376418,
+      "deletions": 0.03665910808767952,
+      "insertions": 0.024943310657596373,
+      "errors": 0.1855631141345427
+     }
+    }
+   },
+   "top_confusions": [
+    [
+     "làm",
+     "là",
+     8
+    ],
+    [
+     "mà",
+     "và",
+     6
+    ],
+    [
+     "vào",
+     "và",
+     5
+    ],
+    [
+     "đó",
+     "nó",
+     4
+    ],
+    [
+     "nó",
+     "đó",
+     4
+    ],
+    [
+     "lại",
+     "là",
+     4
+    ],
+    [
+     "và",
+     "mà",
+     4
+    ],
+    [
+     "mà",
+     "là",
+     3
+    ],
+    [
+     "tắt",
+     "t",
+     3
+    ],
+    [
+     "với",
+     "cái",
+     3
+    ],
+    [
+     "bar",
+     "ba",
+     3
+    ],
+    [
+     "thua",
+     "với",
+     2
+    ],
+    [
+     "tóm",
+     "t",
+     2
+    ],
+    [
+     "là",
+     "và",
+     2
+    ],
+    [
+     "trung",
+     "chung",
+     2
+    ],
+    [
+     "rằng",
+     "là",
+     2
+    ],
+    [
+     "các",
+     "cái",
+     2
+    ],
+    [
+     "lái",
+     "là",
+     2
+    ],
+    [
+     "và",
+     "vào",
+     2
+    ],
+    [
+     "như",
+     "nhưng",
+     2
+    ],
+    [
+     "về",
+     "là",
+     2
+    ],
+    [
+     "mỹ",
+     "nghĩ",
+     2
+    ],
+    [
+     "york",
+     "yor",
+     2
+    ],
+    [
+     "lần",
+     "là",
+     2
+    ],
+    [
+     "dịch",
+     "vị",
+     2
+    ],
+    [
+     "hồi",
+     "thôi",
+     2
+    ],
+    [
+     "cái",
+     "cáir",
+     2
+    ],
+    [
+     "nó",
+     "nói",
+     2
+    ],
+    [
+     "cầm",
+     "c",
+     2
+    ],
+    [
+     "gô",
+     "go",
+     2
+    ]
+   ],
+   "top_deleted": [
+    [
+     "là",
+     15
+    ],
+    [
+     "thì",
+     13
+    ],
+    [
+     "á",
+     9
+    ],
+    [
+     "mà",
+     7
+    ],
+    [
+     "của",
+     7
+    ],
+    [
+     "rồi",
+     6
+    ],
+    [
+     "này",
+     6
+    ],
+    [
+     "à",
+     5
+    ],
+    [
+     "muốn",
+     5
+    ],
+    [
+     "một",
+     5
+    ],
+    [
+     "nó",
+     5
+    ],
+    [
+     "mình",
+     4
+    ],
+    [
+     "em",
+     4
+    ],
+    [
+     "cái",
+     4
+    ],
+    [
+     "ờ",
+     4
+    ],
+    [
+     "được",
+     4
+    ],
+    [
+     "để",
+     3
+    ],
+    [
+     "ở",
+     3
+    ],
+    [
+     "có",
+     3
+    ],
+    [
+     "cũng",
+     3
+    ],
+    [
+     "ấy",
+     3
+    ],
+    [
+     "hay",
+     3
+    ],
+    [
+     "những",
+     3
+    ],
+    [
+     "với",
+     3
+    ],
+    [
+     "hết",
+     2
+    ],
+    [
+     "rất",
+     2
+    ],
+    [
+     "vì",
+     2
+    ],
+    [
+     "trách",
+     2
+    ],
+    [
+     "họ",
+     2
+    ],
+    [
+     "ừ",
+     2
+    ]
+   ],
+   "top_inserted": [
+    [
+     "cái",
+     19
+    ],
+    [
+     "một",
+     10
+    ],
+    [
+     "thì",
+     10
+    ],
+    [
+     "là",
+     9
+    ],
+    [
+     "l",
+     6
+    ],
+    [
+     "và",
+     6
+    ],
+    [
+     "m",
+     5
+    ],
+    [
+     "không",
+     5
+    ],
+    [
+     "b",
+     5
+    ],
+    [
+     "đ",
+     4
+    ],
+    [
+     "của",
+     4
+    ],
+    [
+     "á",
+     4
+    ],
+    [
+     "có",
+     4
+    ],
+    [
+     "s",
+     4
+    ],
+    [
+     "anh",
+     3
+    ],
+    [
+     "h",
+     3
+    ],
+    [
+     "d",
+     3
+    ],
+    [
+     "nh",
+     3
+    ],
+    [
+     "mà",
+     3
+    ],
+    [
+     "ở",
+     3
+    ],
+    [
+     "em",
+     2
+    ],
+    [
+     "qu",
+     2
+    ],
+    [
+     "đến",
+     2
+    ],
+    [
+     "a",
+     2
+    ],
+    [
+     "những",
+     2
+    ],
+    [
+     "nó",
+     2
+    ],
+    [
+     "dạ",
+     2
+    ],
+    [
+     "hơn",
+     2
+    ],
+    [
+     "quá",
+     2
+    ],
+    [
+     "với",
+     2
+    ]
+   ]
+  },
+  "phowhisper": {
+   "n_sentences": 203,
+   "n_ref_words": 10335,
+   "counts": {
+    "sub_tone": 36,
+    "sub_diacritic": 14,
+    "sub_other": 801,
+    "deletions": 191,
+    "insertions": 556,
+    "errors": 1598
+   },
+   "rates": {
+    "sub_tone": 0.0034833091436865023,
+    "sub_diacritic": 0.0013546202225447508,
+    "sub_other": 0.07750362844702467,
+    "deletions": 0.018480890179003385,
+    "insertions": 0.05379777455249153,
+    "errors": 0.15462022254475086
+   },
+   "ci95": {
+    "sub_tone": [
+     0.0021710299668188287,
+     0.005046045172944035
+    ],
+    "sub_diacritic": [
+     0.0006521820235086735,
+     0.0022073201577895453
+    ],
+    "sub_other": [
+     0.061976923319514515,
+     0.09404838370091147
+    ],
+    "deletions": [
+     0.015250110284434364,
+     0.021914408962630125
+    ],
+    "insertions": [
+     0.042649463395071786,
+     0.06591841557899351
+    ],
+    "errors": [
+     0.12874583640712672,
+     0.18269264295676427
+    ]
+   },
+   "n_videos": 29,
+   "skipped_empty_ref": 0,
+   "hyp_empty_sentences": 0,
+   "long_insert_runs": 7,
+   "long_insert_words": 46,
+   "long_delete_runs": 0,
+   "long_delete_words": 0,
+   "sentences_with_long_insert": 7,
+   "sentences_with_long_delete": 0,
+   "tagged_group": {
+    "n_sentences": 0,
+    "n_ref_words": 0,
+    "counts": {
+     "sub_tone": 0,
+     "sub_diacritic": 0,
+     "sub_other": 0,
+     "deletions": 0,
+     "insertions": 0,
+     "errors": 0
+    },
+    "rates": {
+     "sub_tone": null,
+     "sub_diacritic": null,
+     "sub_other": null,
+     "deletions": null,
+     "insertions": null,
+     "errors": null
+    }
+   },
+   "untagged_group": {
+    "n_sentences": 203,
+    "n_ref_words": 10335,
+    "counts": {
+     "sub_tone": 36,
+     "sub_diacritic": 14,
+     "sub_other": 801,
+     "deletions": 191,
+     "insertions": 556,
+     "errors": 1598
+    },
+    "rates": {
+     "sub_tone": 0.0034833091436865023,
+     "sub_diacritic": 0.0013546202225447508,
+     "sub_other": 0.07750362844702467,
+     "deletions": 0.018480890179003385,
+     "insertions": 0.05379777455249153,
+     "errors": 0.15462022254475086
+    }
+   },
+   "by_length": {
+    "<40": {
+     "n_sentences": 29,
+     "n_ref_words": 984,
+     "counts": {
+      "sub_tone": 7,
+      "sub_diacritic": 1,
+      "sub_other": 117,
+      "deletions": 23,
+      "insertions": 90,
+      "errors": 238
+     },
+     "rates": {
+      "sub_tone": 0.007113821138211382,
+      "sub_diacritic": 0.0010162601626016261,
+      "sub_other": 0.11890243902439024,
+      "deletions": 0.023373983739837397,
+      "insertions": 0.09146341463414634,
+      "errors": 0.241869918699187
+     }
+    },
+    "40-59": {
+     "n_sentences": 134,
+     "n_ref_words": 6705,
+     "counts": {
+      "sub_tone": 26,
+      "sub_diacritic": 12,
+      "sub_other": 509,
+      "deletions": 105,
+      "insertions": 357,
+      "errors": 1009
+     },
+     "rates": {
+      "sub_tone": 0.003877703206562267,
+      "sub_diacritic": 0.0017897091722595079,
+      "sub_other": 0.07591349739000745,
+      "deletions": 0.015659955257270694,
+      "insertions": 0.053243847874720356,
+      "errors": 0.15048471290082027
+     }
+    },
+    ">=60": {
+     "n_sentences": 40,
+     "n_ref_words": 2646,
+     "counts": {
+      "sub_tone": 3,
+      "sub_diacritic": 1,
+      "sub_other": 175,
+      "deletions": 63,
+      "insertions": 109,
+      "errors": 351
+     },
+     "rates": {
+      "sub_tone": 0.0011337868480725624,
+      "sub_diacritic": 0.0003779289493575208,
+      "sub_other": 0.06613756613756613,
+      "deletions": 0.023809523809523808,
+      "insertions": 0.041194255479969764,
+      "errors": 0.1326530612244898
+     }
+    }
+   },
+   "top_confusions": [
+    [
+     "cảm",
+     "cám",
+     5
+    ],
+    [
+     "ok",
+     "kê",
+     4
+    ],
+    [
+     "ấy",
+     "ý",
+     4
+    ],
+    [
+     "thật",
+     "thực",
+     4
+    ],
+    [
+     "và",
+     "mà",
+     4
+    ],
+    [
+     "đấy",
+     "ấy",
+     3
+    ],
+    [
+     "hóa",
+     "hoá",
+     3
+    ],
+    [
+     "dna",
+     "ây",
+     3
+    ],
+    [
+     "đó",
+     "nó",
+     3
+    ],
+    [
+     "web",
+     "goép",
+     3
+    ],
+    [
+     "mv",
+     "vi",
+     3
+    ],
+    [
+     "john",
+     "rôn",
+     3
+    ],
+    [
+     "ruby",
+     "bi",
+     2
+    ],
+    [
+     "trách",
+     "chếch",
+     2
+    ],
+    [
+     "đấy",
+     "để",
+     2
+    ],
+    [
+     "indonesia",
+     "gia",
+     2
+    ],
+    [
+     "bên",
+     "ven",
+     2
+    ],
+    [
+     "singapore",
+     "sinh",
+     2
+    ],
+    [
+     "nha",
+     "nhau",
+     2
+    ],
+    [
+     "gojec",
+     "trách",
+     2
+    ],
+    [
+     "á",
+     "ớ",
+     2
+    ],
+    [
+     "gô",
+     "cô",
+     2
+    ],
+    [
+     "hòa",
+     "hoàng",
+     2
+    ],
+    [
+     "là",
+     "lời",
+     2
+    ],
+    [
+     "những",
+     "cái",
+     2
+    ],
+    [
+     "việc",
+     "vị",
+     2
+    ],
+    [
+     "cổ",
+     "của",
+     2
+    ],
+    [
+     "d",
+     "đê",
+     2
+    ],
+    [
+     "nhà",
+     "nhạc",
+     2
+    ],
+    [
+     "my",
+     "mê",
+     2
+    ]
+   ],
+   "top_deleted": [
+    [
+     "là",
+     35
+    ],
+    [
+     "cái",
+     29
+    ],
+    [
+     "một",
+     7
+    ],
+    [
+     "mà",
+     7
+    ],
+    [
+     "của",
+     5
+    ],
+    [
+     "thế",
+     4
+    ],
+    [
+     "mình",
+     4
+    ],
+    [
+     "rất",
+     4
+    ],
+    [
+     "á",
+     4
+    ],
+    [
+     "và",
+     3
+    ],
+    [
+     "cũng",
+     3
+    ],
+    [
+     "em",
+     3
+    ],
+    [
+     "đi",
+     2
+    ],
+    [
+     "ra",
+     2
+    ],
+    [
+     "này",
+     2
+    ],
+    [
+     "về",
+     2
+    ],
+    [
+     "ấy",
+     2
+    ],
+    [
+     "những",
+     2
+    ],
+    [
+     "gọi",
+     2
+    ],
+    [
+     "tức",
+     2
+    ],
+    [
+     "đấy",
+     2
+    ],
+    [
+     "thì",
+     2
+    ],
+    [
+     "với",
+     2
+    ],
+    [
+     "hay",
+     2
+    ],
+    [
+     "không",
+     2
+    ],
+    [
+     "nọ",
+     1
+    ],
+    [
+     "phải",
+     1
+    ],
+    [
+     "đó",
+     1
+    ],
+    [
+     "cảm",
+     1
+    ],
+    [
+     "ơn",
+     1
+    ]
+   ],
+   "top_inserted": [
+    [
+     "ờ",
+     36
+    ],
+    [
+     "cái",
+     33
+    ],
+    [
+     "à",
+     23
+    ],
+    [
+     "là",
+     13
+    ],
+    [
+     "đi",
+     9
+    ],
+    [
+     "dạ",
+     9
+    ],
+    [
+     "mình",
+     9
+    ],
+    [
+     "ở",
+     8
+    ],
+    [
+     "thì",
+     8
+    ],
+    [
+     "ô",
+     7
+    ],
+    [
+     "mà",
+     7
+    ],
+    [
+     "en",
+     7
+    ],
+    [
+     "sờ",
+     6
+    ],
+    [
+     "và",
+     6
+    ],
+    [
+     "không",
+     6
+    ],
+    [
+     "nó",
+     6
+    ],
+    [
+     "ừ",
+     6
+    ],
+    [
+     "a",
+     6
+    ],
+    [
+     "in",
+     5
+    ],
+    [
+     "á",
+     5
+    ],
+    [
+     "về",
+     4
+    ],
+    [
+     "ai",
+     4
+    ],
+    [
+     "có",
+     4
+    ],
+    [
+     "em",
+     4
+    ],
+    [
+     "của",
+     4
+    ],
+    [
+     "lai",
+     3
+    ],
+    [
+     "câu",
+     3
+    ],
+    [
+     "bạn",
+     3
+    ],
+    [
+     "kênh",
+     3
+    ],
+    [
+     "một",
+     3
+    ]
+   ]
+  },
+  "parakeet_fp32": {
+   "n_sentences": 203,
+   "n_ref_words": 10335,
+   "counts": {
+    "sub_tone": 17,
+    "sub_diacritic": 11,
+    "sub_other": 754,
+    "deletions": 189,
+    "insertions": 479,
+    "errors": 1450
+   },
+   "rates": {
+    "sub_tone": 0.001644895984518626,
+    "sub_diacritic": 0.0010643444605708758,
+    "sub_other": 0.0729559748427673,
+    "deletions": 0.018287373004354138,
+    "insertions": 0.04634736332849541,
+    "errors": 0.14029995162070633
+   },
+   "ci95": {
+    "sub_tone": [
+     0.0007887815694703917,
+     0.0025994505387862887
+    ],
+    "sub_diacritic": [
+     0.0003786408699248816,
+     0.001917451202878118
+    ],
+    "sub_other": [
+     0.05882900672445465,
+     0.08844879276856753
+    ],
+    "deletions": [
+     0.013728574565719246,
+     0.02319332405378728
+    ],
+    "insertions": [
+     0.03829820429958752,
+     0.05501167602379192
+    ],
+    "errors": [
+     0.11742130763503661,
+     0.1648706543413748
+    ]
+   },
+   "n_videos": 29,
+   "skipped_empty_ref": 0,
+   "hyp_empty_sentences": 0,
+   "long_insert_runs": 3,
+   "long_insert_words": 25,
+   "long_delete_runs": 3,
+   "long_delete_words": 17,
+   "sentences_with_long_insert": 3,
+   "sentences_with_long_delete": 2,
+   "tagged_group": {
+    "n_sentences": 0,
+    "n_ref_words": 0,
+    "counts": {
+     "sub_tone": 0,
+     "sub_diacritic": 0,
+     "sub_other": 0,
+     "deletions": 0,
+     "insertions": 0,
+     "errors": 0
+    },
+    "rates": {
+     "sub_tone": null,
+     "sub_diacritic": null,
+     "sub_other": null,
+     "deletions": null,
+     "insertions": null,
+     "errors": null
+    }
+   },
+   "untagged_group": {
+    "n_sentences": 203,
+    "n_ref_words": 10335,
+    "counts": {
+     "sub_tone": 17,
+     "sub_diacritic": 11,
+     "sub_other": 754,
+     "deletions": 189,
+     "insertions": 479,
+     "errors": 1450
+    },
+    "rates": {
+     "sub_tone": 0.001644895984518626,
+     "sub_diacritic": 0.0010643444605708758,
+     "sub_other": 0.0729559748427673,
+     "deletions": 0.018287373004354138,
+     "insertions": 0.04634736332849541,
+     "errors": 0.14029995162070633
+    }
+   },
+   "by_length": {
+    "<40": {
+     "n_sentences": 29,
+     "n_ref_words": 984,
+     "counts": {
+      "sub_tone": 1,
+      "sub_diacritic": 4,
+      "sub_other": 107,
+      "deletions": 31,
+      "insertions": 83,
+      "errors": 226
+     },
+     "rates": {
+      "sub_tone": 0.0010162601626016261,
+      "sub_diacritic": 0.0040650406504065045,
+      "sub_other": 0.10873983739837398,
+      "deletions": 0.031504065040650404,
+      "insertions": 0.08434959349593496,
+      "errors": 0.22967479674796748
+     }
+    },
+    "40-59": {
+     "n_sentences": 134,
+     "n_ref_words": 6705,
+     "counts": {
+      "sub_tone": 14,
+      "sub_diacritic": 7,
+      "sub_other": 496,
+      "deletions": 117,
+      "insertions": 303,
+      "errors": 937
+     },
+     "rates": {
+      "sub_tone": 0.002087994034302759,
+      "sub_diacritic": 0.0010439970171513796,
+      "sub_other": 0.07397464578672633,
+      "deletions": 0.0174496644295302,
+      "insertions": 0.04519015659955257,
+      "errors": 0.13974645786726322
+     }
+    },
+    ">=60": {
+     "n_sentences": 40,
+     "n_ref_words": 2646,
+     "counts": {
+      "sub_tone": 2,
+      "sub_diacritic": 0,
+      "sub_other": 151,
+      "deletions": 41,
+      "insertions": 93,
+      "errors": 287
+     },
+     "rates": {
+      "sub_tone": 0.0007558578987150416,
+      "sub_diacritic": 0.0,
+      "sub_other": 0.057067271352985637,
+      "deletions": 0.015495086923658353,
+      "insertions": 0.035147392290249435,
+      "errors": 0.10846560846560846
+     }
+    }
+   },
+   "top_confusions": [
+    [
+     "ok",
+     "kê",
+     6
+    ],
+    [
+     "nó",
+     "đó",
+     4
+    ],
+    [
+     "thật",
+     "thực",
+     4
+    ],
+    [
+     "bar",
+     "ba",
+     4
+    ],
+    [
+     "marketing",
+     "tinh",
+     3
+    ],
+    [
+     "và",
+     "mà",
+     3
+    ],
+    [
+     "trung",
+     "chung",
+     2
+    ],
+    [
+     "res",
+     "rít",
+     2
+    ],
+    [
+     "ruby",
+     "rui",
+     2
+    ],
+    [
+     "và",
+     "vào",
+     2
+    ],
+    [
+     "như",
+     "nhưng",
+     2
+    ],
+    [
+     "new",
+     "niu",
+     2
+    ],
+    [
+     "singapore",
+     "sinh",
+     2
+    ],
+    [
+     "gojec",
+     "tráchch",
+     2
+    ],
+    [
+     "mình",
+     "mìnhờ",
+     2
+    ],
+    [
+     "đó",
+     "nó",
+     2
+    ],
+    [
+     "nó",
+     "và",
+     2
+    ],
+    [
+     "d",
+     "đê",
+     2
+    ],
+    [
+     "đan",
+     "đang",
+     2
+    ],
+    [
+     "trong",
+     "cho",
+     2
+    ],
+    [
+     "my",
+     "m",
+     2
+    ],
+    [
+     "nft",
+     "ti",
+     2
+    ],
+    [
+     "dep",
+     "đép",
+     2
+    ],
+    [
+     "web",
+     "quét",
+     2
+    ],
+    [
+     "dum",
+     "đăm",
+     2
+    ],
+    [
+     "mà",
+     "và",
+     2
+    ],
+    [
+     "các",
+     "cái",
+     2
+    ],
+    [
+     "sách",
+     "xét",
+     2
+    ],
+    [
+     "phan",
+     "phen",
+     2
+    ],
+    [
+     "john",
+     "dôn",
+     2
+    ]
+   ],
+   "top_deleted": [
+    [
+     "là",
+     14
+    ],
+    [
+     "cũng",
+     9
+    ],
+    [
+     "cái",
+     7
+    ],
+    [
+     "á",
+     5
+    ],
+    [
+     "thì",
+     4
+    ],
+    [
+     "có",
+     4
+    ],
+    [
+     "thế",
+     4
+    ],
+    [
+     "của",
+     3
+    ],
+    [
+     "ấy",
+     3
+    ],
+    [
+     "mà",
+     3
+    ],
+    [
+     "hay",
+     2
+    ],
+    [
+     "hòa",
+     2
+    ],
+    [
+     "dạ",
+     2
+    ],
+    [
+     "một",
+     2
+    ],
+    [
+     "à",
+     2
+    ],
+    [
+     "vậy",
+     2
+    ],
+    [
+     "đó",
+     2
+    ],
+    [
+     "trái",
+     2
+    ],
+    [
+     "cứ",
+     2
+    ],
+    [
+     "thầy",
+     2
+    ],
+    [
+     "hình",
+     2
+    ],
+    [
+     "cụ",
+     2
+    ],
+    [
+     "y",
+     2
+    ],
+    [
+     "bão",
+     1
+    ],
+    [
+     "thinking",
+     1
+    ],
+    [
+     "quả",
+     1
+    ],
+    [
+     "nên",
+     1
+    ],
+    [
+     "chợ",
+     1
+    ],
+    [
+     "m",
+     1
+    ],
+    [
+     "take",
+     1
+    ]
+   ],
+   "top_inserted": [
+    [
+     "cái",
+     39
+    ],
+    [
+     "đi",
+     11
+    ],
+    [
+     "mình",
+     10
+    ],
+    [
+     "ờ",
+     9
+    ],
+    [
+     "thì",
+     9
+    ],
+    [
+     "là",
+     9
+    ],
+    [
+     "nó",
+     8
+    ],
+    [
+     "em",
+     7
+    ],
+    [
+     "ô",
+     6
+    ],
+    [
+     "mà",
+     6
+    ],
+    [
+     "không",
+     6
+    ],
+    [
+     "ừ",
+     6
+    ],
+    [
+     "một",
+     6
+    ],
+    [
+     "m",
+     5
+    ],
+    [
+     "r",
+     5
+    ],
+    [
+     "và",
+     5
+    ],
+    [
+     "đ",
+     5
+    ],
+    [
+     "á",
+     5
+    ],
+    [
+     "t",
+     5
+    ],
+    [
+     "th",
+     4
+    ],
+    [
+     "h",
+     4
+    ],
+    [
+     "x",
+     4
+    ],
+    [
+     "cô",
+     4
+    ],
+    [
+     "vi",
+     4
+    ],
+    [
+     "còn",
+     4
+    ],
+    [
+     "rít",
+     3
+    ],
+    [
+     "d",
+     3
+    ],
+    [
+     "o",
+     3
+    ],
+    [
+     "in",
+     3
+    ],
+    [
+     "ở",
+     3
+    ]
+   ]
+  }
+ }
+}

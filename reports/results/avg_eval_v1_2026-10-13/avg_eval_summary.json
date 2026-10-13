@@ -1,0 +1,86 @@
+{
+  "commit": "cf1c3ec Pham vi \"A + 40 ms\": quy tac phan tich chot truoc, trung binh checkpoint + kernel eval, do RQ2 cuoi, phan tich loi RQ3",
+  "setup_minutes": 5.5,
+  "kernel_minutes": 15.1,
+  "jobs": {
+    "conextbimamba_avg20-29": {
+      "returncode": 0,
+      "minutes": 2.9,
+      "gpu": 1
+    },
+    "mamba_avg20-29": {
+      "returncode": 0,
+      "minutes": 3.8,
+      "gpu": 0
+    },
+    "conextbimamba_best": {
+      "returncode": 0,
+      "minutes": 2.6,
+      "gpu": 1
+    },
+    "mamba_best": {
+      "returncode": 0,
+      "minutes": 3.5,
+      "gpu": 0
+    },
+    "conformer_avg20-29": {
+      "returncode": 0,
+      "minutes": 2.0,
+      "gpu": 1
+    },
+    "conformer_best": {
+      "returncode": 0,
+      "minutes": 2.0,
+      "gpu": 1
+    }
+  },
+  "wer": {
+    "mamba_avg20-29": {
+      "clean_test": 0.1556,
+      "val": 0.1388,
+      "val_unseen": 0.1361
+    },
+    "mamba_best": {
+      "clean_test": 0.1711,
+      "val": 0.1562,
+      "val_unseen": 0.1547
+    },
+    "conextbimamba_avg20-29": {
+      "clean_test": 0.1833,
+      "val": 0.1671,
+      "val_unseen": 0.1635
+    },
+    "conextbimamba_best": {
+      "clean_test": 0.2028,
+      "val": 0.1875,
+      "val_unseen": 0.1845
+    },
+    "conformer_avg20-29": {
+      "clean_test": 0.2392,
+      "val": 0.2285,
+      "val_unseen": 0.225
+    },
+    "conformer_best": {
+      "clean_test": 0.2646,
+      "val": 0.2519,
+      "val_unseen": 0.2481
+    }
+  },
+  "avg_minus_best": {
+    "mamba": {
+      "clean_test": -0.0155,
+      "val": -0.0174,
+      "val_unseen": -0.0186
+    },
+    "conextbimamba": {
+      "clean_test": -0.0195,
+      "val": -0.0204,
+      "val_unseen": -0.021
+    },
+    "conformer": {
+      "clean_test": -0.0254,
+      "val": -0.0234,
+      "val_unseen": -0.0231
+    }
+  }
+}

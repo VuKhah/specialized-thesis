@@ -1,21 +1,45 @@
 # TODO tổng — Mamba vs Conformer ASR
 
-Cập nhật lần cuối: **2026-10-13** (v2a: B1 xong, ConExt + relPE chạy; trung bình checkpoint v1); trước đó **2026-10-12** (fine-tune Parakeet chạy; công thức v2 code xong); trước đó **2026-10-05** (preflight B OK, kernel train thử thêm log); trước đó **2026-10-04** (ConExtBiMamba code + test CPU; bước 3 code dùng chung; front-end CMVN + SpecAugment, dropout Mamba, giữ CTC; test độc lập theo video). **Nguồn sự thật duy nhất cho việc cần làm /
+Cập nhật lần cuối: **2026-10-13 15:10** (nhóm rẽ nhánh xong; relPE phiên 2; 40 ms ×3 chạy trên A + C); trước đó **2026-10-12** (fine-tune Parakeet chạy; công thức v2 code xong); trước đó **2026-10-05** (preflight B OK, kernel train thử thêm log); trước đó **2026-10-04** (ConExtBiMamba code + test CPU; bước 3 code dùng chung; front-end CMVN + SpecAugment, dropout Mamba, giữ CTC; test độc lập theo video). **Nguồn sự thật duy nhất cho việc cần làm /
 đang chặn / đã xong.** Kế hoạch tuần + quyết định + nhật ký phiên ở
 [`Plan.md`](Plan.md); kiến trúc ở [`ARCHITECTURE.md`](ARCHITECTURE.md).
 
 Câu hỏi cần mang đi hỏi (người dùng/GVHD): [`QA.md`](QA.md).
 
-## ▶▶ PHIÊN SAU BẮT ĐẦU Ở ĐÂY (ghi 2026-10-13 05:10) — chi tiết: `Plan.md` nhật ký "2026-10-13 (đóng phiên ~05:10)"
+## ▶▶▶▶ PHIÊN SAU BẮT ĐẦU Ở ĐÂY (đóng phiên 2026-10-13 ~21:00) — chi tiết `Plan.md` nhật ký cùng ngày
+1. **Hướng mới đã chốt: chất lượng nhãn VietSuperSpeech** → đọc `docs/notes/label_quality_direction.md` (người dùng đọc;
+   mang đi hỏi thầy Dũng cùng đề cương). Không thêm run train cho hướng này.
+2. B relPE s3: s2 hết trần ~22:10 → kiểm returncode + `latest.pt` → `launch.py --model v2a-conformer-relpos --session 3
+   --account B --push` (AI để sẵn script chờ trong phiên 13/10 — **kiểm xem đã đẩy chưa**: `kaggle kernels status
+   vuvanduc1/train-full-v2a-conformer-relpos-s3`). Không in WER relPE.
+3. ✅ Xong 13/10: 40 ms × 3 (38/38, 0 nonfinite; output `reports/results/train_full/v2a-s4-*/s1/`); RQ2 cuối (trọng số
+   ngẫu nhiên, `reports/results/rq2_final_2026-10-13/`, chưa phân tích). WER 40 ms val_unseen (nhãn giả, khám phá):
+   ConExt 0,1115 · B1 0,1134 (relPE 40 ms chưa xem — chờ quy tắc trục GPU-giờ).
+4. ⛔ Chờ người dùng: số epoch "train dài 40 ms" (người dùng thiên về, AI ước ~80 epoch ~33 GPU-h — chưa có config);
+   RQ chất lượng nhãn: RQ riêng hay gộp RQ3; gõ lại từ đầu ~20 câu để đo neo nhãn?; các mục ⛔ cũ ở khối dưới.
+5. Không đề xuất thêm thí nghiệm GPU mới (người dùng 13/10: đổi hướng liên tục tốn thời gian). Độ sâu = nhận xét từ dữ liệu có sẵn.
+6. Quota 13/10 21:00: A 18,2 h · B 22,0 h · C 12,2 h đã dùng (reset 17/10).
 
-1. **Nhắc người dùng review mục lục đề xuất** `docs/khoa_luan/muc_luc_de_xuat.md` (chọn tên Ch2; 10/40 ms ở RQ1 hay RQ4) — chưa trả lời.
-2. ✅ ConExt v2a ep37 0,1525/0,1506 (13/10). A `train-full-v2a-conformer-s1` đẩy 11:40 → kiểm WER ep37 → A đẩy `v2a-s4-conextbimamba`
-   → `v2a-s4-mamba` → `v2a-s4-conformer-relpos`.
-3. B `vuvanduc1/train-full-v2a-conformer-relpos-s1` hết trần ~13:20 → đẩy phiên 2, rồi 3. **Không xem WER relPE** tới khi chốt (4a).
-4. Chờ người dùng: (a) quy tắc trục cùng GPU-giờ; (b) cho AI tự huỷ kernel kẹt khi vắng?; (c) `/loop` nếu muốn tự động;
-   (d) `normalize_text` hóa/hoá; 4 chỗ đề cương; lý do chọn ConExt; eval ngoài miền; tài khoản C; commit nháp đề cương.
-5. Xong 13/10: B1 v2a ep37 0,1271/0,1252 · trung bình checkpoint v1 (B1 0,1361 · ConExt 0,1635 · Conformer 0,2250 val_unseen).
-   Việc tay: hiệu đính (11/203), đề cương + hẹn GVHD, sửa Ch1.
+## ▶▶▶ CẬP NHẬT 2026-10-13 19:25
+- ✅ A `train-full-v2a-s4-conextbimamba-s1` COMPLETE 38/38 (301′, 0 nonfinite, 0,149 s/step, 1,2 GiB): ep37 WER val
+  0,1128 / val_unseen 0,1115 (nhãn giả, khám phá) → `reports/results/train_full/v2a-s4-conextbimamba/s1/`.
+- 🔄 A `rq2-final-asr` đẩy 19:12 (`0090bd7`, trọng số ngẫu nhiên — encoder configs/v2 ≡ v2a khi tắt InterCTC; độ dài
+  mặc định `DEFAULT_LENGTHS_S`), ước 60-80′. Quota A 17,4/30 h lúc đẩy. Kiểm: `fetch` output `rq2_final/`.
+- 19:11: B relPE s2 ep28 (hết trần ~22:10, ~ep34) → đẩy `--session 3 --account B`; C s4-relPE ep32 (xong ~20:00),
+  C s4-mamba ep28 (xong ~20:40) → tải output nhỏ. Sau đó C rảnh: việc kế tiếp là cổng seed 2 (⛔ hỏi người dùng).
+
+## ▶▶ PHIÊN SAU BẮT ĐẦU Ở ĐÂY (ghi 2026-10-13 15:10) — chi tiết: `Plan.md` nhật ký "2026-10-13 (đóng phiên ~15:10)"
+
+1. Kiểm 3 run 40 ms: A `tieunhi/train-full-v2a-s4-conextbimamba-s1` (~22:00), C `<C>/train-full-v2a-s4-conformer-relpos-s1`
+   (~19:30), C `...-v2a-s4-mamba-s1` (~20:30) → tải output nhỏ → `reports/results/train_full/v2a-s4-*/s1/`.
+2. B relPE phiên 2 hết trần ~22:00 (~ep34) → kiểm `latest.pt` → đẩy `--session 3 --account B`. **Không in WER relPE.**
+3. Sau đó: chấm clean-test ep37 cả nhóm → RQ2 cuối.
+4. ⛔ Chờ người dùng: quy tắc trục GPU-giờ (AI đã lỡ thấy 1 số WER relPE 13/10 12:58 — khai khi chốt); review
+   `docs/khoa_luan/muc_luc_de_xuat.md`; xác nhận sửa Ch3 (ep37, không trung bình pha giảm); commit file mới (reports v2a,
+   `scripts/plot_v2a_branch.py`); `vuvanduc1` trong `launch.py` public; các mục cũ (normalize_text, đề cương, lý do ConExt,
+   eval ngoài miền).
+5. ✅ 13/10: ConExt v2a ep37 0,1525/0,1506 · Conformer v2a 0,2094/0,2068 · B1 v2a 0,1271/0,1252 (val/val_unseen, nhãn giả);
+   tài khoản C OK (2x T4, 8 dataset đọc được). Việc tay: hiệu đính (11/203), đề cương + hẹn GVHD trước ~17/10.
 
 ## ▶ PHIÊN SAU BẮT ĐẦU Ở ĐÂY (ghi 2026-10-12; bản 11/10 + cập nhật)
 

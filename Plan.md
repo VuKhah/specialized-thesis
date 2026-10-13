@@ -1452,3 +1452,74 @@ khảo sát dataset, phát hiện sai lệch số liệu, prefetch script, train
 - **Phiên sau bắt đầu từ:** kiểm Conformer v2a (COMPLETE → tải output nhỏ, WER ep37) → A đẩy `v2a-s4-conextbimamba` →
   `v2a-s4-mamba` → `v2a-s4-conformer-relpos`; B relPE hết phiên 1 → đẩy `--session 2 --account B`. Các mục ⛔ chờ người
   dùng giữ nguyên như mục đóng phiên 05:10.
+- **Tài khoản C** (12:40): CLI OK, launcher đọc username từ `kaggle.json` (không ghi tên vào repo public; commit `0090bd7`).
+  Kernel `gpu-check-asr` trên C: **2x T4 được cấp**, torch 2.11+cu128 thấy 2 GPU, matmul fp16 60 s/GPU hữu hạn
+  (23,5 / 19,5 TFLOPS), GPU CHECK OK, tốn 0,04 h. Còn chờ: người dùng chia sẻ 6 dataset A → C; chốt job nào chạy trên C.
+- **B relPE phiên 1 COMPLETE** (511′, dừng epoch 17 step 833/2841, `latest.pt` có, 0 nonfinite, 0,568 s/step, 5,1 GiB).
+  **Sự cố minh bạch:** khi đọc `session_summary.json` AI in cả `best_wer` (val, tới ep16) → **AI đã thấy 1 số WER relPE
+  lúc 12:58, TRƯỚC khi chốt quy tắc trục cùng GPU-giờ**. Ghi để khai đúng thứ tự thời gian quyết định; từ nay lọc trường này.
+- **Đẩy B `train-full-v2a-conformer-relpos-s2`** (12:58, `edd7dd4`): resume đúng epoch 17 step 833 (13:08). Ước hết trần
+  ~22:00 ở ~ep34-35; phiên 3 ~2 h. Quota B 14,37 h đã dùng.
+- A Conformer v2a ep34 lúc 12:57, 0,259 s/step (chậm ep30 chỉ là khởi động) → xong ~13:45. Ước nhánh 40 ms ~20-22 GPU-h
+  (ngoại suy preflight có InterCTC) > A còn ~17,5 h → cần C.
+- **A `train-full-v2a-conformer-s1` COMPLETE** (117′): **ep37 WER val 0,2094 / val_unseen 0,2068** (v1 best ep28
+  0,2519/0,2481; avg20-29 0,2285/0,2250); giảm đều ep30→37, 0 nonfinite, 0,259 s/step (ep30 0,334 = khởi động), 2,9 GiB.
+  Nhóm rẽ nhánh ep37 val_unseen: B1 0,1252 · ConExt 0,1506 · Conformer 0,2068 (1 seed, nhãn giả). Output: scratchpad `conformer_v2a/`.
+- **C:** 8 dataset A đọc được từ C (6 bắt buộc + 2 eval). Kernel kiểm môi trường `train-full-envc-v2a-s4-conextbimamba-s1`
+  (pipeline thật, `--limit_train 1024 --limit_eval 64`, phiên 50′, tag `envc`) đẩy ~13:30.
+- **Đẩy A `train-full-v2a-s4-conextbimamba-s1`** (13:46, `0090bd7` — chỉ khác `edd7dd4` ở launcher/tài liệu). Quota A 12,37 h.
+- **C kiểm môi trường COMPLETE (14:07):** pipeline thật chạy hết 38 epoch trên 1024 câu (returncode 0, `finished`, lưu
+  checkpoint ep37, 0 nonfinite, lịch WSD về lr 0, DDP 2x T4, mamba-ssm 2.3.1). Tốn 0,60 h. **Chép audio chậm: 20′**
+  (A/B ~4-5′; mỗi shard 214-328 s) — có thể do lần đầu gắn dataset trên C; theo dõi lần sau. → **C sẵn sàng train.**
+- 14:02: A s4-ConExt ep0 0,22 s/step, 1,2 GiB (ước 38 epoch ~7,3 h, có thể vừa 1 phiên); B relPE s2 ep18, 0,61 s/step.
+- **Người dùng: "chia bớt việc cho C"** → đẩy C `train-full-v2a-s4-mamba-s1` + `train-full-v2a-s4-conformer-relpos-s1`
+  (~14:15, `0090bd7`), **chạy song song** — Kaggle nhận 2 phiên GPU cùng lúc trên C (cả hai RUNNING). Nhánh 40 ms giờ đủ
+  3 mô hình: ConExt (A), B1 + relPE (C).
+- 15:03: C s4-mamba ep2, 0,187 s/step · C s4-relPE ep2, 0,154 s/step; cả hai 1,3 GiB, 0 nonfinite; chép audio lần này
+  nhanh (đã vào ep2 sau ~25′ phiên). Ước ~6 h / ~5 h → **mỗi run vừa 1 phiên**, xong ~20:00-21:00. Quota C 1,80 h.
+- Trong lúc chờ (người dùng: "việc gì giúp được thì cứ làm"): chép output v2a + avg_eval vào `reports/results/`;
+  `scripts/plot_v2a_branch.py` → `reports/results/v2a_branch_2026-10-13/` (hình WER theo epoch + bảng); sửa nháp Ch3
+  cho khớp quy tắc 9 (bảng chính = ep37, không trung bình pha giảm), điền trạng thái Bảng 3.9, tài khoản thứ ba.
+
+### 2026-10-13 (đóng phiên ~15:10)
+- **Đã làm:** ConExt v2a + Conformer v2a xong → nhóm rẽ nhánh đủ 3 mô hình (ep37 val_unseen B1 0,1252 · ConExt 0,1506 ·
+  Conformer 0,2068); tài khoản C kết nối + kiểm môi trường OK (commit `0090bd7` đã push); đẩy relPE phiên 2 (B), s4-ConExt
+  (A), s4-mamba + s4-relPE (C, song song); gom output vào `reports/results/`; script + hình nhóm rẽ nhánh; sửa nháp Ch3.
+- **Sự cố minh bạch:** AI đã thấy 1 số WER relPE (val best tới ep16) lúc 12:58, trước khi chốt quy tắc GPU-giờ.
+- **Chưa commit:** `Plan.md`, `TODO.md`, `scripts/plot_v2a_branch.py`, `reports/results/{train_full/v2a-*, avg_eval_v1_2026-10-13,
+  v2a_branch_2026-10-13}`. Vẫn không track: `docs/notes/de_cuong_moi_nhap.md`, `reports/results/error_analysis/` (chưa kiểm).
+- **Kernel lúc đóng phiên (15:05):**
+  - A `tieunhi/train-full-v2a-s4-conextbimamba-s1` (đẩy 13:46): 0,22 s/step → xong ~21:30-22:00 (1 phiên). Quota A ~13 h.
+  - B `vuvanduc1/train-full-v2a-conformer-relpos-s2` (đẩy 12:58, resume ep17 step 833): ~0,6 s/step → hết trần ~22:00 ở
+    ~ep34. Quota B ~15,5 h.
+  - C `<C>/train-full-v2a-s4-conformer-relpos-s1` (~19:30) + `train-full-v2a-s4-mamba-s1` (~20:30), 1 phiên mỗi run.
+- **Phiên sau bắt đầu từ:**
+  1. Kiểm 3 run 40 ms (A, C×2): COMPLETE → tải output nhỏ (`--file-pattern '.*\.(json|jsonl|log|csv)$'`), chép vào
+     `reports/results/train_full/v2a-s4-*/s1/`. **WER 40 ms là khám phá** (Plan 3.2.4).
+  2. B relPE hết phiên 2 → kiểm `latest.pt` + returncode → đẩy `--model v2a-conformer-relpos --session 3 --account B`.
+     **Không in `best_wer`/WER relPE** khi kiểm (lọc `session_summary.json`, log).
+  3. Sau khi relPE + 40 ms xong: chấm clean-test checkpoint ep37 cả nhóm (kernel eval) → RQ2 cuối (`rq2_final`).
+  4. ⛔ Chờ người dùng: quy tắc trục GPU-giờ (giờ cần ghi kèm sự cố đã thấy số relPE); review `muc_luc_de_xuat.md`;
+     xác nhận sửa Ch3 theo quy tắc 9 (ep37, không trung bình pha giảm); commit các file trên; các mục cũ (normalize_text
+     hóa/hoá, 4 chỗ đề cương, lý do chọn ConExt, eval ngoài miền, commit nháp đề cương, `vuvanduc1` trong launch.py public).
+  5. Việc tay: hiệu đính clean-test (11/203), gửi đề cương + hẹn GVHD trước ~17/10.
+
+### 2026-10-13 (tối ~19:25) — ConExt 40 ms xong; đẩy RQ2 cuối (A)
+- A s4-ConExt COMPLETE 38/38: ep37 WER val 0,1128 / val_unseen 0,1115 (nhãn giả, khám phá). Output → reports.
+- Đẩy A `rq2-final-asr` 19:12 (`0090bd7`, trọng số ngẫu nhiên); 10′ đầu chạy bình thường (đang đo ConExt tới 1.800 s).
+- B relPE s2 + C×2 vẫn RUNNING. **Phiên sau:** kiểm RQ2; C xong → tải output; B s2 hết trần → đẩy s3; hỏi người dùng về
+  cổng seed 2 trước khi giao việc mới cho C.
+
+### 2026-10-13 (đóng phiên ~21:00) — 40 ms xong cả ba; RQ2 cuối; chốt hướng chất lượng nhãn
+- **Kernel:** C s4-relPE COMPLETE (38/38, 330′) · C s4-mamba COMPLETE (38/38, 369′, ep37 val 0,1128 / val_unseen
+  0,1134) · A `rq2-final-asr` COMPLETE (50′, nhóm train từ đầu + Parakeet returncode 0). Output chép vào `reports/`.
+  B relPE s2 RUNNING tới ~22:10.
+- **Thảo luận phạm vi với người dùng:** seed 2 (~50 GPU-h) không ưu tiên; "train dài 40 ms" người dùng thiên về, chưa chốt
+  epoch; dashboard mô phỏng chương 3 (số giả) https://claude.ai/artifact/BjsgBGGfZyamnsw9RBXx8y; AI đề xuất đặc trưng pitch
+  → người dùng bác (thêm run + bảng). Người dùng nhắc: AI đổi đề xuất liên tục, tốn thời gian → từ nay không đề xuất thêm
+  thí nghiệm GPU; độ sâu đến từ nhận xét.
+- **Chốt (người dùng):** thêm hướng **chất lượng nhãn VietSuperSpeech** (nhãn Zipformer, không kiểm tay) — L1-L4 ở
+  `docs/notes/label_quality_direction.md`; 0 GPU-h, dựa trên bộ hiệu đính clean-test.
+- Đã che username tài khoản C trong Plan/TODO trước khi commit (repo public).
+- **Phiên sau bắt đầu từ:** TODO khối "▶▶▶▶" (kiểm B relPE s3 đã đẩy chưa; chờ người dùng số epoch train dài 40 ms).
+

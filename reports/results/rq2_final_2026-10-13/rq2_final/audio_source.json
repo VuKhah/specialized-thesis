@@ -1,0 +1,23 @@
+{
+ "total_s": 3602.800125,
+ "requested_s": 3600.0,
+ "enough": true,
+ "n_videos": 1,
+ "n_segments": 274,
+ "videos": [
+  {
+   "video": "7_thanh_vien_cua_Sai_Gon_Teu_ke_chuyen_di_dien_Hai_doc_thoai_Have_A_Sip_Special_Episode",
+   "segments": 274,
+   "seg_first": 0,
+   "seg_last": 274
+  }
+ ],
+ "manifests": [
+  "train_shard0",
+  "train_shard1",
+  "train_shard2",
+  "train_shard3",
+  "val"
+ ],
+ "allow_missing": false
+}

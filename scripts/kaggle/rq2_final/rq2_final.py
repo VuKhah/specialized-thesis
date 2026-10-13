@@ -26,7 +26,7 @@ from pathlib import Path
 
 sys.stdout.reconfigure(encoding="utf-8")
 
-COMMIT = ""  # ĐIỀN commit đã push chứa src/evaluation/rtf.py + src/data/concat_audio.py mới (kernel tự dừng nếu rỗng)
+COMMIT = "0090bd75535c980542885aa680a50789b9991630"  # ĐIỀN commit đã push chứa src/evaluation/rtf.py + src/data/concat_audio.py mới (kernel tự dừng nếu rỗng)
 REPO_URL = "https://github.com/VuKhah/specialized-thesis"
 REPO_DIR = Path("/tmp/specialized-thesis")
 OUT = Path("/kaggle/working")

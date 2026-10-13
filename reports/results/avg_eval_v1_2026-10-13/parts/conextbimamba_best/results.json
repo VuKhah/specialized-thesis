@@ -1,0 +1,57 @@
+{
+  "runs": {
+    "conextbimamba_best": {
+      "checkpoint": "/kaggle/input/datasets/tieunhi/kltn-best-ckpt/conextbimamba.pt",
+      "checkpoint_epoch": 28,
+      "averaged_epochs": null,
+      "config": "configs/model_conextbimamba.yaml",
+      "device": "cuda",
+      "gpu": "Tesla T4",
+      "amp": true,
+      "decoding": "CTC greedy, không LM",
+      "sets": {
+        "clean_test": {
+          "wer": 0.2028059990324141,
+          "substitutions": 1450,
+          "deletions": 392,
+          "insertions": 254,
+          "hits": 8493,
+          "cer": 0.12600573383889763,
+          "n": 203,
+          "n_hyp_empty": 0,
+          "batch_size": 1,
+          "eval_seconds": 19.0,
+          "n_corrected_text": 11
+        },
+        "val": {
+          "wer": 0.1875458433370342,
+          "substitutions": 31732,
+          "deletions": 9483,
+          "insertions": 5576,
+          "hits": 208276,
+          "cer": 0.11512191849097113,
+          "n": 4824,
+          "n_hyp_empty": 0,
+          "ctc_loss": 0.7600595768955019,
+          "batch_size": 8,
+          "limit": null,
+          "eval_seconds": 74.2
+        },
+        "val_unseen": {
+          "wer": 0.18454258675078863,
+          "substitutions": 19707,
+          "deletions": 5707,
+          "insertions": 3485,
+          "hits": 131184,
+          "cer": 0.11280684361619307,
+          "n": 3011,
+          "n_hyp_empty": 0,
+          "ctc_loss": 0.7562865197401195,
+          "batch_size": 8,
+          "limit": null,
+          "eval_seconds": 44.3
+        }
+      }
+    }
+  }
+}
