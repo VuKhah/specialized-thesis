@@ -217,3 +217,20 @@ và lý do, và khóa luận phải báo cả cách đọc cũ.
 6. **1 seed:** mọi chênh lệch giữa mô hình ghi kèm "1 seed; CI chỉ phản ánh biến thiên do mẫu test, không do train".
 7. **Nhóm pre-train** không xếp hạng chung với nhóm train từ đầu; luôn ghi khác dữ liệu/cỡ/khả năng rò rỉ.
 8. **RQ2** báo đường cong đầy đủ (kể cả OOM), điểm giao chỉ là quan sát trên T4 + batch 1 + chế độ số học đã chốt.
+9. **Checkpoint bảng chính (người dùng chốt 2026-10-12, trước khi có số):** checkpoint **cuối pha giảm (ep37)** cho
+   mọi run Bảng 1/2 — không best.pt, không trung bình trong pha giảm (chưa có nguồn đã kiểm; epoch đầu pha giảm LR còn
+   cao). Trung bình checkpoint chỉ dùng cho v1 (LR hằng) làm số tham chiếu.
+10. **Trục cùng GPU-giờ (đề xuất, CHƯA CHỐT — chốt sau khi có s/step thật của Conformer PE, trước khi xem WER của nó):**
+   quy tắc phải định trước theo ngân sách, không theo "nếu tốt hơn thì train thêm".
+
+### 9.5 Tra cứu cải tiến ConExt (agent, 2026-10-12 tối; 17 nguồn đã mở)
+- **Code tác giả** (github.com/Tonyyouyou/Mamba-in-Speech, `ASR/Espnet_file/example_yaml.yaml`): `input_layer: conv2d`
+  (= subsampling 4× ESPnet) → **đính chính 9.3**: bài không nêu, nhưng code mẫu có 4×. LR 2,5e-3, warmup 40k, 50 epoch,
+  batch_bins 35M × accum 4 (batch rất lớn), giữ 10 checkpoint tốt nhất. Hai chiều **nối + Linear(2d→d)** (bài ghi cộng),
+  đảo bằng `flip` cả padding, không mask. Issue #4: code công bố **không có** khởi tạo A Gaussian của Bảng XIV.
+- Bảng XIV (LS-100): A Gaussian 5,9/6,0 so với mặc định 6,1/6,2; N=32, E_f=4, bỏ dropout: không đổi đáng kể.
+- **4 lệch bài của dự án: không lệch nào là lỗi cần sửa** (ffn 928 = khớp 12M có chủ đích; không chia out_proj = khớp code
+  tác giả [suy luận, chưa mở lại mamba-ssm]; xoá padding = đúng hơn code tác giả; A Gaussian = chỉ được làm ablation riêng).
+- Không có bằng chứng công bố nào về thay đổi riêng cho ConExt thu hẹp đáng kể khoảng cách với B1 (lớn nhất 0,2 điểm, 1 lần chạy).
+- Công thức công bố đều có LR đỉnh 1e-3 – 2,5e-3 với batch lớn hơn nhiều (dự án: 3e-4, batch toàn cục 16) → không suy ra
+  LR tối ưu cho dự án; dò LR chỉ khi qua cổng, cho cả ba (~45-50 GPU-h mỗi giá trị LR thêm ở 10 ms).

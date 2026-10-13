@@ -1354,3 +1354,101 @@ khảo sát dataset, phát hiện sai lệch số liệu, prefetch script, train
   agent đó (giữ ngữ cảnh), không giao lại từ đầu.
 - **Chờ người dùng:** commit + push để đẩy kernel; sửa `normalize_text` thống nhất dấu thanh (hóa/hoá); N trung bình pha
   giảm (AI nghiêng: cả 8 epoch); 4 chỗ đề cương; lý do thật chọn ConExt làm mô hình chính (ghi vào Ch2).
+- **Đẩy kernel (AI, theo quyền người dùng giao):** commit `cf1c3ec` (trung bình checkpoint, RQ2, RQ3, tài liệu) và
+  `edd7dd4` (configs/v2a + rẽ nhánh v1) đã push. Dataset riêng tư `tieunhi/kltn-v1-avg20-29` (3 file trung bình ep20-29).
+  **Đang chạy:** A `tieunhi/avg-eval-v1-asr` (đẩy 19:01, ước 25-35′); B `vuvanduc1/train-full-v2a-mamba-s1` (đẩy 19:10,
+  nhánh pha giảm B1 từ `train-full-mamba-s2` ep29, ước ~4,5 GPU-h). Sau avg_eval: A đẩy nhánh ConExt (~2,7 h) rồi
+  Conformer v1 (~1,8 h); relPE 38 epoch và nhánh 40 ms xếp sau.
+- **Chờ người dùng:** quy tắc chọn checkpoint bảng chính (AI đề xuất: trung bình cả 8 epoch pha giảm ep30-37, áp
+  y hệt mọi run kể cả relPE và 40 ms — không dùng best.pt vì nhánh rẽ chỉ chọn trong ep30-37 còn run từ đầu chọn
+  trong ep0-37). Segfault relPE 10 ms ở CPU local (nghi hết RAM; preflight GPU đã qua) — theo dõi ở run GPU.
+- **Người dùng chốt: Conformer dài (69 ep, LR hằng) để ở phụ lục**, không train thêm (tạm thời).
+- **Người dùng chốt: checkpoint bảng chính = cuối pha giảm (ep37)** cho mọi run (note gap 9.4 mục 9). Người dùng muốn báo cáo tốc độ Conformer PE và, nếu Conformer nhanh hơn, train thêm cho cùng GPU-giờ — AI đề xuất quy tắc ngân sách định trước (note 9.4 mục 10).
+
+### 2026-10-12 (đóng phiên ~21:50)
+- **Đã làm trong phiên:** rà soát lộ trình 3 góc → chốt phạm vi **"A + 40 ms"**; mô hình chính = **ConExtBiMamba**; quy
+  tắc phân tích chốt trước (note gap 9.4); checkpoint bảng chính = **cuối pha giảm (ep37)**; Conformer dài để phụ lục.
+  Code (commit `cf1c3ec`, `edd7dd4`, đã push): `configs/v2a/`, rẽ nhánh từ v1 (`--branch_from`), trung bình checkpoint +
+  kernel `avg_eval`, `rtf.py` + `concat_audio.py` + kernel `rq2_final`, `error_analysis.py`. Tra cứu cải tiến ConExt (9.5):
+  code tác giả dùng subsampling 4×; 4 lệch bài không phải lỗi. Nháp: đề cương (`docs/notes/de_cuong_moi_nhap.md`, chưa
+  commit — chờ người dùng quyết có đưa lên repo public không), `docs/khoa_luan/` (gitignore): `ch1_kiem_trich_dan.md`
+  ([10] ghép số hai cấu hình — phải sửa trong Word), `ch2_nhap.md`, `ch3_dulieu_phuongphap_nhap.md`, **`muc_luc_de_xuat.md`**.
+- **Kernel lúc đóng phiên:**
+  - B `vuvanduc1/train-full-v2a-mamba-s1` RUNNING (đẩy 19:10; xong ~23:45). WER val/val_unseen theo epoch pha giảm:
+    ep30 0,1445/0,1427 · ep31 0,1421/0,1398 · ep32 0,1378/0,1350 · ep33 0,1343/0,1322 (v1 best 0,1562/0,1547; nhãn giả;
+    số chính thức = ep37). Quota B 3,75 h.
+  - A `tieunhi/avg-eval-v1-asr` **version 3 QUEUED** từ 20:57 (chưa cấp máy, quota A 7,33 h không đổi). Version 1 chạy
+    81′ không 0 dòng log (sự cố cấp máy Kaggle, người dùng cancel, quota hoàn); version 2 QUEUED rồi cancel.
+- **Phiên sau bắt đầu từ:**
+  1. **Nhắc người dùng review `docs/khoa_luan/muc_luc_de_xuat.md`** (2 chỗ chọn: tên Ch2; Bảng 2 10/40 ms ở RQ1 hay RQ4).
+  2. Kiểm B1: COMPLETE? tải output nhỏ (`fetch.py --model v2a-mamba --session 1 --account B` hoặc
+     `kaggle kernels output ... --file-pattern '.*\.(json|jsonl|log|csv)$'`), lấy WER ep37 val/val_unseen.
+  3. Kiểm avg_eval A: nếu đã chạy → trong 10′ đầu phải có log, không thì báo người dùng cancel; nếu vẫn QUEUED → chạy trên
+     B (cần người dùng share `tieunhi/kltn-v1-avg20-29` + `tieunhi/kltn-best-ckpt` cho `vuvanduc1`; sửa `id`/sources).
+     Đẩy lại avg_eval: điền `COMMIT = "cf1c3ec"` tạm trong `avg_eval.py` rồi `git checkout` lại (không commit hash).
+  4. Đẩy tiếp (AI có quyền quyết, báo sau): B → `v2a-conformer-relpos` (đo s/step thật 15′ đầu → báo cáo tốc độ +
+     đề xuất quy tắc trục cùng GPU-giờ, người dùng chốt **trước khi xem WER**); A → `v2a-conextbimamba` rồi `v2a-conformer`
+     (nguồn rẽ nhánh là output kernel A). Nhánh 40 ms (`v2a-s4-*`) sau đó. Theo dõi 10′ đầu mỗi kernel.
+  5. Chờ người dùng: sửa `normalize_text` thống nhất dấu thanh (hóa/hoá) trước lần chấm cuối; 4 chỗ đề cương; lý do thật
+     chọn ConExt (ghi Ch2); có đánh giá ngoài miền (VIVOS/Common Voice, chỉ eval) sau 01/11 không; tài khoản C.
+  6. Việc tay song song: hiệu đính clean-test (11/203 — mục tiêu ≥ 80 trước 18/10); gửi đề cương + hẹn GVHD trước ~17/10;
+     sửa Ch1 theo `ch1_kiem_trich_dan.md`.
+- **Quản lý agent:** ≤ 2-3 agent song song, phạm vi hẹp, báo cáo ngắn; agent bị ngắt → làm tiếp bằng chính agent đó.
+
+### 2026-10-13 (sáng ~04:20) — B1 pha giảm xong; huỷ avg_eval kẹt
+- **B `train-full-v2a-mamba-s1` COMPLETE** (279′, commit `edd7dd4`, rẽ nhánh từ `train-full-mamba-s2` ep29): **ep37 WER
+  val 0,1271 / val_unseen 0,1252** (v1 best 0,1562/0,1547; nhãn giả). Giảm đều ep30→37; 0 step không hữu hạn; 0,69 s/step;
+  VRAM đỉnh 3,6 GiB. Output nhỏ ở scratchpad phiên (`b1_v2a/`). Quota B 5,70 h.
+- **A `avg-eval-v1-asr` v3 kẹt** (RUNNING ~5,9 h, 0 log, output 0 B; quota A lên 13,22 h) → người dùng cho huỷ, AI bấm
+  Stop Session qua Chrome → `CANCEL_ACKNOWLEDGED`, **quota A hoàn về 7,33 h**. Lần thứ 2 kernel này kẹt ở cấp máy A.
+- **Đẩy lại (người dùng duyệt "chạy lại và đẩy tiếp theo kế hoạch"):** A `avg-eval-v1-asr` v4 (04:20, `cf1c3ec`) **COMPLETE
+  ~14′**; B `train-full-v2a-conformer-relpos-s1` (04:20, `edd7dd4`, phiên 1/≈5); A `train-full-v2a-conextbimamba-s1` (04:38).
+- **Trung bình checkpoint v1 (ep20-29, LR hằng) — số tham chiếu, nhãn giả** (best.pt chấm lại khớp số cũ → cùng đường đo):
+
+  | | clean_test | val | val_unseen |
+  |---|---|---|---|
+  | B1 best ep28 → avg20-29 | 0,1711 → 0,1556 | 0,1562 → 0,1388 | 0,1547 → 0,1361 |
+  | ConExt best ep28 → avg | 0,2028 → 0,1833 | 0,1875 → 0,1671 | 0,1845 → 0,1635 |
+  | Conformer best ep28 → avg | 0,2646 → 0,2392 | 0,2519 → 0,2285 | 0,2481 → 0,2250 |
+
+  Output nhỏ ở scratchpad phiên (`avg_eval/`). Thứ hạng không đổi; khoảng B1–ConExt ~2,7 điểm (best: 3,0).
+- **relPE s/step:** 1,42 ở step 100 là trung bình cộng dồn gồm khởi động — **đính chính:** nhịp ổn định step 750→850 ~0,57 s/step (50 step / ~28,5 s; cộng dồn 0,79 và đang giảm) → ước ~17-18 GPU-h / 38 epoch, **nhanh hơn B1 (0,69) ~15-20%**. Chốt số sau epoch 0 (`s_per_step` trong metrics). Quy tắc trục cùng GPU-giờ: chờ người dùng, chốt trước khi xem WER relPE.
+- **Đính chính tốc độ:** ConExt v1 train 0,40 s/step (log train full), không phải 0,81 (đó là preflight có InterCTC).
+  Nhánh ConExt v2a nhịp ổn định ~0,40; relPE ~0,57-0,60 (cộng dồn epoch 1: 0,566). Thứ tự train: Conformer v1 0,26 <
+  ConExt 0,40 < relPE ~0,58 < B1 0,69. Giải thích + lập luận cho ConExt (Pareto WER–tốc độ audio dài; rủi ro: Conformer
+  v1 không PE nên khoảng WER có thể co lại với relPE) đã trình người dùng — dựa trên `rq2_pilot_2026-10-05.md`,
+  `subsample_speed_2026-10-08.md`. Người dùng hỏi vì sao giữ v1: v1 = 30 epoch đầu (pha hằng) của run 38 epoch; chỉ
+  relPE và 40 ms train từ đầu (kiến trúc/front-end khác).
+
+### 2026-10-13 (đóng phiên ~05:10)
+- **Đã làm:** B1 v2a xong (ep37 0,1271/0,1252); huỷ avg_eval kẹt (quota hoàn); avg_eval v4 xong (bảng ở trên); đẩy relPE
+  (B) + nhánh ConExt (A). AI chưa xem WER relPE (giữ đến khi chốt quy tắc cùng GPU-giờ).
+- **Kernel lúc đóng phiên (05:08):**
+  - A `tieunhi/train-full-v2a-conextbimamba-s1` RUNNING (đẩy 04:38), ep30 step 2450, 0 step lỗi, VRAM 3,2 GiB → xong
+    ~07:50-08:20. Quota A 8,06 h.
+  - B `vuvanduc1/train-full-v2a-conformer-relpos-s1` RUNNING (đẩy 04:20), ep1 step 850 → hết trần 540′ ~13:20 (~16-17
+    epoch). Quota B 6,49 h.
+- **Phiên sau bắt đầu từ:**
+  1. **Nhắc người dùng review `docs/khoa_luan/muc_luc_de_xuat.md`** (tên Ch2; Bảng 2 10/40 ms ở RQ1 hay RQ4) — đã nhắc 13/10, chưa trả lời.
+  2. Kiểm ConExt: COMPLETE → tải output nhỏ (`kaggle kernels output ... --file-pattern '.*\.(json|jsonl|log|csv)$'`), WER ep37
+     → A đẩy `v2a-conformer` (`launch.py --model v2a-conformer --session 1 --account A --push`) → rồi `v2a-s4-conextbimamba`
+     → `v2a-s4-mamba` → `v2a-s4-conformer-relpos` (thứ tự AI đề xuất, ConExt trước vì là mô hình chính).
+  3. relPE: hết phiên 1 (~13:20) → đẩy phiên 2 (`--session 2 --account B`), rồi phiên 3. Lọc dòng WER khi đọc log relPE.
+  4. ⛔ Chờ người dùng: (a) quy tắc trục cùng GPU-giờ — AI đề xuất bảng chính cùng 38 epoch + cột GPU-h + đường WER theo
+     GPU-h từ điểm eval mỗi epoch, không train bù; (b) có cho AI tự huỷ kernel kẹt (RUNNING, quota tăng, 0 log mới > 15′)
+     khi vắng không; (c) muốn chạy tự động thì người dùng gõ `/loop ...` (AI không tự thức được); (d) các mục chờ cũ:
+     `normalize_text` hóa/hoá, 4 chỗ đề cương, lý do chọn ConExt (Ch2), eval ngoài miền, tài khoản C, commit nháp đề cương.
+  5. Việc tay: hiệu đính clean-test (11/203, mục tiêu ≥ 80 trước 18/10); gửi đề cương + hẹn GVHD trước ~17/10; sửa Ch1.
+
+### 2026-10-13 (trưa ~11:50) — ConExt v2a xong; đẩy Conformer v2a
+- **A `train-full-v2a-conextbimamba-s1` COMPLETE** (170′, `edd7dd4`, rẽ nhánh `conextbimamba_ctc` ep29): **ep37 WER val
+  0,1525 / val_unseen 0,1506** (v1 best 0,1875/0,1845; nhãn giả). Giảm đều ep30→37; 0 step không hữu hạn (amp bỏ ≤ 2
+  step/epoch); 0,40 s/step; VRAM đỉnh 3,2 GiB. Khoảng B1–ConExt sau pha giảm: ~2,5 điểm (val_unseen 0,1252 vs 0,1506).
+  Output nhỏ ở scratchpad phiên (`conext_v2a/`).
+- **Đẩy A `train-full-v2a-conformer-s1`** (11:40, `edd7dd4`, rẽ nhánh `tieunhi/train-full-conformer-s1` latest ep29 —
+  launcher chọn đúng `latest.pt`, bỏ `best.pt` ep28). Theo dõi 7′: cài wheel OK, đang giải nén audio, không lỗi khởi động.
+  Quota A 10,52 h lúc đó. Ước ~8 epoch × 2841 step × ~0,26 s ≈ 1,7 h.
+- B relPE s1 vẫn RUNNING (hết trần ~13:20). Chưa xem WER relPE.
+- **Phiên sau bắt đầu từ:** kiểm Conformer v2a (COMPLETE → tải output nhỏ, WER ep37) → A đẩy `v2a-s4-conextbimamba` →
+  `v2a-s4-mamba` → `v2a-s4-conformer-relpos`; B relPE hết phiên 1 → đẩy `--session 2 --account B`. Các mục ⛔ chờ người
+  dùng giữ nguyên như mục đóng phiên 05:10.

@@ -1,10 +1,21 @@
 # TODO tổng — Mamba vs Conformer ASR
 
-Cập nhật lần cuối: **2026-10-12** (fine-tune Parakeet chạy; công thức v2 code xong); trước đó **2026-10-05** (preflight B OK, kernel train thử thêm log); trước đó **2026-10-04** (ConExtBiMamba code + test CPU; bước 3 code dùng chung; front-end CMVN + SpecAugment, dropout Mamba, giữ CTC; test độc lập theo video). **Nguồn sự thật duy nhất cho việc cần làm /
+Cập nhật lần cuối: **2026-10-13** (v2a: B1 xong, ConExt + relPE chạy; trung bình checkpoint v1); trước đó **2026-10-12** (fine-tune Parakeet chạy; công thức v2 code xong); trước đó **2026-10-05** (preflight B OK, kernel train thử thêm log); trước đó **2026-10-04** (ConExtBiMamba code + test CPU; bước 3 code dùng chung; front-end CMVN + SpecAugment, dropout Mamba, giữ CTC; test độc lập theo video). **Nguồn sự thật duy nhất cho việc cần làm /
 đang chặn / đã xong.** Kế hoạch tuần + quyết định + nhật ký phiên ở
 [`Plan.md`](Plan.md); kiến trúc ở [`ARCHITECTURE.md`](ARCHITECTURE.md).
 
 Câu hỏi cần mang đi hỏi (người dùng/GVHD): [`QA.md`](QA.md).
+
+## ▶▶ PHIÊN SAU BẮT ĐẦU Ở ĐÂY (ghi 2026-10-13 05:10) — chi tiết: `Plan.md` nhật ký "2026-10-13 (đóng phiên ~05:10)"
+
+1. **Nhắc người dùng review mục lục đề xuất** `docs/khoa_luan/muc_luc_de_xuat.md` (chọn tên Ch2; 10/40 ms ở RQ1 hay RQ4) — chưa trả lời.
+2. ✅ ConExt v2a ep37 0,1525/0,1506 (13/10). A `train-full-v2a-conformer-s1` đẩy 11:40 → kiểm WER ep37 → A đẩy `v2a-s4-conextbimamba`
+   → `v2a-s4-mamba` → `v2a-s4-conformer-relpos`.
+3. B `vuvanduc1/train-full-v2a-conformer-relpos-s1` hết trần ~13:20 → đẩy phiên 2, rồi 3. **Không xem WER relPE** tới khi chốt (4a).
+4. Chờ người dùng: (a) quy tắc trục cùng GPU-giờ; (b) cho AI tự huỷ kernel kẹt khi vắng?; (c) `/loop` nếu muốn tự động;
+   (d) `normalize_text` hóa/hoá; 4 chỗ đề cương; lý do chọn ConExt; eval ngoài miền; tài khoản C; commit nháp đề cương.
+5. Xong 13/10: B1 v2a ep37 0,1271/0,1252 · trung bình checkpoint v1 (B1 0,1361 · ConExt 0,1635 · Conformer 0,2250 val_unseen).
+   Việc tay: hiệu đính (11/203), đề cương + hẹn GVHD, sửa Ch1.
 
 ## ▶ PHIÊN SAU BẮT ĐẦU Ở ĐÂY (ghi 2026-10-12; bản 11/10 + cập nhật)
 

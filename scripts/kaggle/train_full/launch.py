@@ -40,8 +40,8 @@ BUILD = HERE / "_build"
 ACCOUNTS = {  # tài khoản → (username Kaggle, KAGGLE_CONFIG_DIR) — xem memory/kaggle CLI
     "A": ("tieunhi", None),
     "B": ("vuvanduc1", "C:/Users/Dell/.kaggle_Duc"),
-    # C (2026-10-12): người dùng cấp thêm; điền username + thư mục khoá khi có (không đọc nội dung khoá).
-    "C": (None, "C:/Users/Dell/.kaggle_C"),
+    # C (2026-10-13): username giống họ tên người thứ ba, repo public → đọc trường `username` trong kaggle.json lúc chạy.
+    "C": (None, "C:/Users/Dell/.kaggle_Nhan"),
 }
 MODELS = {"conformer": "configs/model_conformer.yaml", "mamba": "configs/model_mamba.yaml",
           "conextbimamba": "configs/model_conextbimamba.yaml",
@@ -100,6 +100,8 @@ def main() -> None:
             sys.exit("LỖI: v2a-* phải chỉ định --account (phân bổ tài khoản do người dùng chốt)")
         args.account = "A"
     user, config_dir = ACCOUNTS[args.account]
+    if user is None and config_dir and (Path(config_dir) / "kaggle.json").exists():
+        user = json.loads((Path(config_dir) / "kaggle.json").read_text(encoding="utf-8"))["username"]
     if user is None:
         sys.exit(f"LỖI: tài khoản {args.account} chưa có username — điền ACCOUNTS trong launch.py")
     name = slug(args.model, args.session, args.tag)
