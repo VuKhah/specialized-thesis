@@ -28,7 +28,7 @@ Mục mở cũ còn giữ: ngày gặp GVHD gần nhất/kế tiếp (ghi `Plan.
 
 ## 🟡 Sẵn sàng làm ngay (theo thứ tự; chi tiết review mục 2.2)
 
-- [ ] **L1 — tải output còn thiếu (0 GPU-h).** ✅ 16/10: B relPE 10 ms s3 COMPLETE, 38/38, returncode 0, 0 nonfinite,
+- [x] **L1 — tải output còn thiếu (0 GPU-h).** ✅ 16/10: B relPE 10 ms s3 COMPLETE, 38/38, returncode 0, 0 nonfinite,
       19,2 GPU-h, encoder 12,73M; file nhỏ ở `reports/results/train_full/v2a-conformer-relpos/s3/`; `epoch37.pt` có trên Kaggle
       (cột size của `kaggle kernels files` sai, chưa kiểm dung lượng). **Còn:** kiểm 3 nhánh 10 ms còn `epoch37.pt`. Bản cũ: B `train-full-v2a-conformer-relpos-s3` (10 ms, đẩy 14/10 01:10): kiểm
       status, `session_summary.json` (returncode 0, `latest.epoch` = 37, `finished`), tải file nhỏ
@@ -36,7 +36,7 @@ Mục mở cũ còn giữ: ngày gặp GVHD gần nhất/kế tiếp (ghi `Plan.
       (tài khoản B: đặt `KAGGLE_CONFIG_DIR` trỏ tới thư mục khoá của B, ngoài repo). Kiểm 3 nhánh 10 ms (`v2a-mamba` B, `v2a-conextbimamba` A,
       `v2a-conformer` A) còn `latest.pt`/`epochs/epoch37.pt` trong output. **Không in WER relPE** cho tới khi quyết định
       #6 chốt. Nếu output B mất → báo người dùng (review 5.2: chạy lại ~18 GPU-h chỉ nếu xong trước 25/10).
-- [ ] **L2 — kernel dump log-prob (~0,3 GPU-h, sau reset 17/10).** ▶ 16/10 08:34 đẩy A `dump-greedy-v2a-10ms`
+- [x] **L2 — kernel dump log-prob (~0,3 GPU-h, sau reset 17/10).** ✅ 16/10 xong (5,5′; số ở `clean_test_results` bổ sung 16/10) ▶ 16/10 08:34 đẩy A `dump-greedy-v2a-10ms`
       (`scripts/kaggle/dump_greedy_10ms/`, dataset `kltn-v2a-10ms-ep37`; chỉ greedy, không log-prob — 10 ms quá lớn) →
       tải `greedy.json` vào `reports/results/dump_greedy_10ms_2026-10-16/` → `python -m src.evaluation.score_clean_test`
       (đã thêm 5 hệ thống, ghi `clean_test_scored_2026-10-16/`). Bản cũ: Mở rộng `scripts/kaggle/dump_logprobs/` cho 4
@@ -44,8 +44,7 @@ Mục mở cũ còn giữ: ngày gặp GVHD gần nhất/kế tiếp (ghi `Plan.
       giải mã Parakeet fine-tune `best.pt` (2,27 GB, output `finetune-parakeet-main` A) trên clean-test. Rồi
       `python -m src.evaluation.score_clean_test` (bổ sung hệ thống mới) → cập nhật `clean_test_results_2026-10-15.md`.
 - [ ] **L3 — 6 run seed 40 ms (~32 GPU-h).** ▶ 16/10 08:36 đẩy B relPE seed43/44 + C B1 seed43/44 (`launch.py --tag
-      seed<N> --commit 0090bd75 --extra --seed <N> --experiment_name v2a_s4_<model>_seed<N>`); A ConExt ×2 đẩy sau khi
-      L2 xong. Tiêu chí đã ghi note gap 9.6. Bản cũ: Trước khi đẩy: ghi tiêu chí review 2.3 vào
+      seed<N> --commit 0090bd75 --extra --seed <N> --experiment_name v2a_s4_<model>_seed<N>`); A ConExt ×2 đẩy 08:49 → **6/6 đang chạy**. Tiêu chí đã ghi note gap 9.6. Bản cũ: Trước khi đẩy: ghi tiêu chí review 2.3 vào
       `conextbimamba_gap_2026-10-12.md` mục 9.6 (người dùng duyệt). Config `configs/v2a/model_*_sub4.yaml` y nguyên,
       chỉ `--seed 43` / `44` + `experiment_name` riêng (kiểm `launch.py --help`: `--tag`, `--extra`); ep37; cuối kernel
       dump log-prob clean-test + nửa dev. Phân bổ: A ConExt ×2 (≈4,9 h/run) · B relPE ×2 (≈5,3) · C B1 ×2 (≈6,0);

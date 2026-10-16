@@ -1,4 +1,6 @@
 # ĐỀ CƯƠNG KHÓA LUẬN TỐT NGHIỆP (bản điều chỉnh)
+> **Đã thay bằng `docs/de_cuong/de_cuong_moi_2026-10-16.md` (16/10).** Giữ để truy vết.
+
 
 > **BẢN NHÁP — chưa duyệt.** Soạn 2026-10-12 để người dùng duyệt, sau đó người dùng tự chuyển sang Word theo
 > Mẫu 4. Không thay `docs/de_cuong/*.docx` đã nộp (giữ làm lưu trữ). Dàn mục theo đề cương chi tiết cũ.

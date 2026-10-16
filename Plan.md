@@ -80,16 +80,15 @@ RQ2, mục Hạn chế.
 |---|---|---|
 | Dữ liệu, pipeline, Kaggle Dataset | ✅ | 3 tài khoản A/B/C đều train được |
 | v1 30 epoch ×3 + Conformer dài 69 ep | ✅ | phụ lục; avg ep20–29 là số tham chiếu |
-| Nhánh pha giảm 10 ms ×3 (ep37) | ✅ train; ⬜ **chưa chấm clean-test ep37** | val_unseen nhãn giả: B1 0,1252 · ConExt 0,1506 · Conformer không PE 0,2068 |
-| Conformer relPE 10 ms (B, 3 phiên) | ⚠️ **output chưa tải, chưa có số nào trong repo** | L1 trong `TODO.md` |
+| 10 ms ×4 ep37 (B1, ConExt, relPE, không PE) | ✅ train + chấm clean-test 16/10 | B1 0,1432 · relPE 0,1694 · ConExt 0,1705 · không PE 0,2235 (`clean_test_results` bổ sung 16/10) |
 | 40 ms ×3 seed 42 (ep37) | ✅ train + chấm clean-test | relPE 0,1211 · B1 0,1264 · ConExt 0,1309 (greedy); + LM 0,1024 / 0,1115 / 0,1081 |
-| Seed 43/44 ở 40 ms | ⛔ chờ chốt #4 | ~32 GPU-h |
-| Parakeet zero-shot / fine-tune | ✅ / ✅ train, ⬜ chưa chấm clean-test | zero-shot 0,1378; FT val_unseen nhãn giả 8,0% |
+| Seed 43/44 ở 40 ms | ▶ 6/6 run đẩy 16/10 08:36–08:49 (A ConExt, B relPE, C B1) | ~32 GPU-h, xong ~14:00–15:00 |
+| Parakeet zero-shot / fine-tune | ✅ / ✅ chấm clean-test | zero-shot 0,1378; FT 0,0943 |
 | PhoWhisper zero-shot | ✅ | 0,1490 |
 | RQ2 cuối | ✅ 7 cấu hình + Parakeet | `reports/results/rq2_final_2026-10-13/` |
 | Clean-test hiệu đính + quy tắc chấm | ✅ 203/203, chấm 15/10 | `clean_test_results_2026-10-15.md`; gõ mù 20 câu ⛔ #8 |
 | RQ3 / chất lượng nhãn | 🟡 từ dính đã đếm; L1, L2, L4 có số; L3 chưa | 0 GPU |
-| Đề cương mới | 🔴 nháp, chưa gửi | trước buổi GVHD tuần 9 |
+| Đề cương mới | 🟡 soạn lại 16/10, chờ người dùng chuyển Word + gửi | `docs/de_cuong/de_cuong_moi_2026-10-16.md` |
 | Khóa luận (quyển) | 🔴 Ch1 nháp; Ch2/Ch3 chỉ là note | đường găng |
 | Demo | 🟡 CPU, v1 | thêm 40 ms ở Ch4 |
 
@@ -595,3 +594,22 @@ Mỗi mục: làm gì · chốt gì · phiên sau bắt đầu từ đâu. Các 
   −5,68. Ngược thứ hạng 40 ms (relPE dẫn). Số chính thức chờ clean-test ep37 (L2).
 - **Phiên sau bắt đầu từ:** kiểm 3 nhánh 10 ms còn `epoch37.pt` → L2 (mở rộng `scripts/kaggle/dump_logprobs/` cho 4
   checkpoint 10 ms + Parakeet FT, đẩy kernel, báo) → L3 6 run seed 40 ms (cần code bootstrap hai tầng trước khi chấm, CPU).
+
+### 2026-10-16 (sáng ~09:00) — L2 xong, 6 run seed đã đẩy, commit, đề cương mới
+- **Commit `e4c30b8`** (người dùng yêu cầu; chưa push): rà repo public — không khoá/token/username C/tên người thứ ba;
+  username A/B trong 6 file mới thay bằng `<A>`/`<B>` (còn trong `launch.py` và note cũ đã commit).
+- **Người dùng chốt: không gõ mù** (thay #8) → khai hạn chế neo nhãn bằng số đã có.
+- **L2** (A `dump-greedy-v2a-10ms`, 5,5′): clean-test 10 ms ep37 B1 0,1432 · relPE 0,1694 · ConExt 0,1705 · không PE
+  0,2235; Parakeet FT 0,0943. B1 − relPE −2,62 [−3,25; −1,99] → B1 tốt hơn (9.6 điều 6); ConExt ≈ relPE (CI chứa 0).
+  **Thứ hạng đảo giữa 10 ms và 40 ms.** Chi tiết: `clean_test_results_2026-10-15.md` mục bổ sung 16/10. Hai lỗ hổng
+  review #1 đóng.
+- **L3:** 6/6 run seed 43/44 đã đẩy (B relPE, C B1 08:36; A ConExt 08:49), commit `0090bd75` như seed 42; B/C qua 7′
+  đầu RUNNING. Ước xong ~14:00–15:00.
+- **#11:** `normalize_text` không thống nhất vị trí dấu thanh; trên clean-test chỉ 3 cặp (hoá/hóa, thoả/thỏa, khoá/khóa),
+  phạt oan PhoWhisper 4 từ, ConExt v1 1 từ (< 0,05% WER) — chờ người dùng: (a) giữ quy tắc + khai, (b) thêm vào
+  `alt_spellings` rồi chấm lại một lần khi đủ run.
+- Code: `two_level_bootstrap` (`src/evaluation/bootstrap.py`, khớp bootstrap cặp khi 1 seed); scorer thêm 5 hệ thống.
+- **Đề cương mới** `docs/de_cuong/de_cuong_moi_2026-10-16.md` viết lại toàn bộ (thay nháp 12/10), đã có số 10 ms.
+- **Phiên sau bắt đầu từ:** tải output 6 run seed khi xong (file nhỏ → `reports/results/train_full/v2a-s4-*/seed43|44/`),
+  dump log-prob/greedy clean-test (mở rộng `dump_logprobs/`), chấm bằng `two_level_bootstrap`, giải mã beam + LM CPU;
+  người dùng chuyển đề cương sang Word, gửi GVHD; khung Ch3.

@@ -72,3 +72,31 @@ Chưa có: Parakeet fine-tune (val_unseen 8,0% nhãn giả) trên clean-test —
    thứ hạng giữ nguyên — kể cả mô hình 40 ms (chưa từng hiện cho người dùng) → do độ khó câu, không do thiên lệch.
 8. **Hạn chế còn lại:** 1 seed mỗi cấu hình (khác biệt 0,4–1 điểm giữa ba encoder 40 ms có thể nằm trong dao động
    seed — chưa đo); 29 video → CI rộng ±2 điểm; một người hiệu đính, chưa đo độ đồng thuận.
+
+## Bổ sung 2026-10-16 — 10 ms ep37 (đủ 4 encoder) + Parakeet fine-tune
+
+Kernel `scripts/kaggle/dump_greedy_10ms/` (A, 5,5 phút GPU, commit `edd7dd4` = commit train), batch 1, fp16 (Parakeet
+fp32); output `reports/results/dump_greedy_10ms_2026-10-16/`; chấm bằng cùng quy tắc mục 1 →
+`reports/results/clean_test_scored_2026-10-16/`. Kiểm nạp đúng: 100 câu val_unseen trùng eval lúc train B1 97 · ConExt
+99 · relPE 98 · Conformer không PE **75** — bản không PE (conv v1 chưa sửa padding) phụ thuộc padding của batch lúc
+eval; WER 100 câu gần như không đổi (0,1816 batched → 0,1790 batch 1), nên không phải lỗi nạp.
+
+| Hệ thống (10 ms, ep37) | WER | CI 95% | Việt | ngoại |
+|---|---|---|---|---|
+| Conformer relPE | 0,1694 | [0,1473; 0,1946] | 0,1444 | 0,9560 |
+| B1 Mamba | **0,1432** | [0,1230; 0,1665] | 0,1174 | 0,9560 |
+| ConExtBiMamba | 0,1705 | [0,1460; 0,1977] | 0,1450 | 0,9748 |
+| Conformer không PE (ablation) | 0,2235 | [0,1994; 0,2486] | 0,1989 | 0,9969 |
+| Parakeet fine-tune `best.pt` (step 9379, chọn trên val) | 0,0943 | [0,0773; 0,1127] | 0,0705 | 0,8459 |
+
+So cặp (bootstrap theo video), đọc theo note gap 9.6 điều 6 (10 ms 1 seed: |hiệu| > 2 điểm **và** CI không chứa 0):
+- B1 − relPE −0,0262 [−0,0325; −0,0199] → **B1 tốt hơn** (1 seed).
+- ConExt − relPE +0,0012 [−0,0063; +0,0087] → **không phân biệt được**.
+- B1 − ConExt −0,0273 [−0,0336; −0,0211] → B1 tốt hơn.
+- relPE − không PE −0,0542 [−0,0639; −0,0445] → PE giúp Conformer ở 10 ms.
+- Parakeet FT − Parakeet zero-shot −0,0436 [−0,0525; −0,0349] (nhóm pre-train, tham chiếu).
+
+Nhận xét: thứ hạng **đảo** giữa hai cấu hình — 10 ms: B1 > relPE ≈ ConExt; 40 ms (seed 42): relPE > B1 ≈ ConExt. Theo
+9.4 điều 5: "phù hợp với giả thuyết độ phân giải", không "chứng minh" (1 seed ở 10 ms; cấu hình 40 ms gộp 4 khác biệt).
+Cả ba encoder đều tốt hơn ở 40 ms. Thứ hạng trên clean-test khớp thứ hạng val_unseen nhãn giả (B1 0,1252 · relPE 0,1501
+· ConExt 0,1506 · không PE 0,2068).

@@ -1,0 +1,33 @@
+{
+ "commit": "edd7dd40d8057cf931d259038092a2c0d0d5c64e",
+ "minutes": 5.5,
+ "errors": [],
+ "models": {
+  "mamba": {
+   "epoch": 37,
+   "encoder_params": 12285696
+  },
+  "conextbimamba": {
+   "epoch": 37,
+   "encoder_params": 12241536
+  },
+  "conformer_relpos": {
+   "epoch": 37,
+   "encoder_params": 12732672
+  },
+  "conformer": {
+   "epoch": 37,
+   "encoder_params": 12204288
+  },
+  "parakeet_ft": {}
+ },
+ "parakeet_ft_ckpt": {
+  "global_step": 9379,
+  "wer_val": 0.08182659895547334,
+  "wer_val_unseen": 0.08021175238508793
+ },
+ "n": {
+  "clean_test": 203,
+  "val_unseen_check": 100
+ }
+}
