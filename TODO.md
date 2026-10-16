@@ -4,7 +4,21 @@ Viết lại gọn **2026-10-15** sau bản rà soát `docs/notes/review_fable_2
 checklist kiểm kernel, lệnh đẩy từng phiên) lưu nguyên văn ở `docs/notes/todo_luu_tru_2026-10-15.md`. **Nguồn sự thật
 duy nhất cho việc cần làm / đang chặn / đã xong.** Kế hoạch và quyết định ở `Plan.md`; kiến trúc ở `ARCHITECTURE.md`.
 
-## ▶ PHIÊN SAU BẮT ĐẦU Ở ĐÂY (ghi 2026-10-15 khuya)
+## ▶ PHIÊN SAU BẮT ĐẦU Ở ĐÂY (ghi 2026-10-16 ~10:50)
+
+1. **6 run seed 40 ms đang chạy** (A ConExt ×2 đẩy 08:49; B relPE ×2, C B1 ×2 đẩy 08:36). Ước xong (setup ~6′ +
+   GPU-h seed 42, nếu không chờ cấp máy): ConExt ~13:50 · relPE ~14:00 · B1 ~14:45 (16/10). Kiểm bằng
+   `python scripts/kaggle/train_full/collect_seeds.py`; xong thì chạy "Quy trình chấm seed" ở mục 🟡 (5 bước).
+2. **Hình 3.4: người dùng bác thiết kế 2×2** — hỏi người dùng muốn thiết kế nào trước khi vẽ lại. **Hình 3.5: người dùng
+   sẽ hỏi lại** — chưa chốt. Không tự vẽ lại.
+3. Việc tay người dùng: đề cương mới (`docs/de_cuong/de_cuong_moi_2026-10-16.md`) → Word → gửi GVHD + xin lịch tuần
+   19–25/10; duyệt mục lục mới (`docs/khoa_luan/muc_luc_de_xuat.md`).
+4. Chưa commit (từ sau `1a2e865`): `src/evaluation/{lm_decode.py,score_clean_test.py}`,
+   `scripts/kaggle/{dump_seeds_40ms/,train_full/collect_seeds.py}`, `scripts/rq2_final_tables.py`,
+   `reports/results/{decode_v2a_s4_2026-10-15,rq2_tables_2026-10-16}/`, `reports/figures/rq2/`,
+   `docs/notes/rq2_ket_qua_cuoi_2026-10-16.md`, Plan/TODO/notes. Chỉ commit khi người dùng yêu cầu.
+
+## ▷ Khối cũ (ghi 2026-10-15 khuya — phần lớn đã xong 16/10)
 
 1. Đọc cùng người dùng: `review_fable_2026-10-15.md` (phương án), `review_fable_scorecard_2026-10-15.md` (điểm +
    việc kế tiếp), `ket_qua_cuoi_khung_2026-10-15.md` (bảng/kết luận viết sẵn). 12 mục ⛔ đã chốt 16/10.
@@ -21,7 +35,7 @@ duy nhất cho việc cần làm / đang chặn / đã xong.** Kế hoạch và 
 
 **12 quyết định sau rà soát: ĐÃ CHỐT 2026-10-16** theo khuyến nghị review mục 4 (ghi `Plan.md` mục 4). Khác review:
 tiêu chí 3 seed = bootstrap hai tầng (`conextbimamba_gap_2026-10-12.md` mục **9.6**, thay điều 4a/5 của review 2.3);
-10 ms giữ 1 seed, không cổng seed.
+10 ms giữ 1 seed, không cổng seed. #11 chốt 16/10: `canon_tone` (vị trí dấu thanh) trong scorer, áp ở lần chấm chung.
 
 Mục mở cũ còn giữ: ngày gặp GVHD gần nhất/kế tiếp (ghi `Plan.md` mục 6); tên đề tài trên bìa (`Conformer` hay
 `Con-Former`); hình thức nộp (biểu mẫu 2018); dạng "thiết kế" Ch2; bản `.docx` đề cương nào là bản đã nộp (Q4 cũ).
@@ -50,6 +64,20 @@ Mục mở cũ còn giữ: ngày gặp GVHD gần nhất/kế tiếp (ghi `Plan.
       dump log-prob clean-test + nửa dev. Phân bổ: A ConExt ×2 (≈4,9 h/run) · B relPE ×2 (≈5,3) · C B1 ×2 (≈6,0);
       2 kernel song song mỗi tài khoản. Theo dõi 10′ đầu; kẹt cấp máy → huỷ, đẩy lại cùng seed. Tải output nhỏ vào
       `reports/results/train_full/v2a-s4-*/seed43|44/` ngay khi xong.
+- [x] **RQ2 hoàn chỉnh (16/10):** Bảng 3.6, 3.7, điểm giao, điều kiện số học, Hình 3.4, 3.5 — `scripts/rq2_final_tables.py`,
+      note `docs/notes/rq2_ket_qua_cuoi_2026-10-16.md`. Chạy lại khi seed về (GPU-h, WER 40 ms trung bình 3 seed).
+- [ ] **Quy trình chấm seed (viết sẵn 16/10, chạy khi 6 run COMPLETE):**
+      1. `python scripts/kaggle/train_full/collect_seeds.py` — trạng thái, tải file nhỏ, kiểm toàn vẹn (không in WER).
+      2. `... collect_seeds.py --ckpt --push` — tải 6 `epoch37.pt` vào `checkpoints/v2a_s4_seeds/`, tạo dataset
+         `<A>/kltn-v2a-s4-seeds-ep37` (đợi status `ready`).
+      3. `kaggle kernels push -p scripts/kaggle/dump_seeds_40ms -t 3600` (A, ~10′ GPU) → tải output (npz clean-test
+         ~130 MB/run) vào `checkpoints/v2a_s4_seeds/logprobs/`; đối chiếu `val_unseen_check` với eval lúc train.
+      4. `python -m src.evaluation.lm_decode decode --npz v2a_<m>_seed<N>=<lp>.npz ... --out
+         reports/results/decode_v2a_s4_seeds/cleantest_hyps.tsv` (LM ở `checkpoints/lm/`, dựng lại bằng `build --text`).
+      5. **Lần chấm chung duy nhất:** sửa `OUT` trong `score_clean_test.py` sang thư mục ngày chấm →
+         `python -m src.evaluation.score_clean_test` (áp `canon_tone`; in bootstrap hai tầng `paired_seeds`).
+      Đã kiểm 16/10: `lm_decode` tái lập 203/203 câu × 6 cột của 15/10; đường hai tầng với seed giả (nhân bản seed 42)
+      cho sd 0, CI trùng bootstrap cặp.
 - [ ] **L4 — giải mã beam + LM (CPU)** cho 9 run 40 ms, lmw 0,8 / ws 1,0 giữ nguyên; bootstrap; bảng 3.2–3.4.
       Code: `D:/Model/kltn_decoding_2026-10-15/decoding/` (ngoài repo — cân nhắc đưa phần dùng lại vào `src/evaluation/`).
 - [x] ~~**L5 — gõ mù 20 câu**~~ **BỎ (người dùng 16/10)** — chỉ khai hạn chế neo nhãn bằng số đã có (`Plan.md` mục 4). Bản cũ: (người dùng, ~1 h): chọn ngẫu nhiên seed 42 trải đều video; so với bản hiệu đính → số

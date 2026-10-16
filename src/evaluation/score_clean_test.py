@@ -17,13 +17,16 @@ Quy tắc chốt trước khi xem điểm (người dùng duyệt 15/10; từ đ
 
 import csv
 import json
+import re
 import sys
+import unicodedata
 from pathlib import Path
 
 import jiwer
 import numpy as np
 
 from src.data.correct_clean_test import OURS_VISIBLE_FROM
+from src.evaluation.bootstrap import two_level_bootstrap
 from src.evaluation.text_normalize import normalize_text
 from src.evaluation.vi_syllable import is_valid_syllable, is_vi_marked
 
@@ -31,7 +34,12 @@ MANIFEST = Path("data/processed/clean_test_manifest.json")
 TAGS = Path("data/processed/clean_test_word_tags.tsv")
 ALT = Path("configs/scoring/alt_spellings.tsv")
 PRED_0810 = Path("reports/results/final_compare_2026-10-08/predictions.tsv")
-HYP_40MS = Path("D:/Model/kltn_decoding_2026-10-15/decoding/cleantest_hyps.tsv")
+# Giải mã greedy + beam/LM của 3 run 40 ms seed 42 (15/10; tái lập 203/203 bằng `src.evaluation.lm_decode` 16/10).
+HYP_40MS = Path("reports/results/decode_v2a_s4_2026-10-15/cleantest_hyps.tsv")
+# Seed 43/44 (L3): `lm_decode decode` trên log-prob của kernel `dump_seeds_40ms`; cột v2a_<mô hình>_seed<N>_{greedy,lm}.
+HYP_SEEDS = Path("reports/results/decode_v2a_s4_seeds/cleantest_hyps.tsv")
+SEED_MODELS = [("conformer_relpos", "Conformer relPE"), ("mamba", "B1 Mamba"), ("conextbimamba", "ConExtBiMamba")]
+SEEDS = (43, 44)
 # Kernel `scripts/kaggle/dump_greedy_10ms/` (16/10): 4 checkpoint ep37 10 ms + Parakeet fine-tune, khoá "clean_test|split:index".
 HYP_10MS = Path("reports/results/dump_greedy_10ms_2026-10-16/greedy.json")
 OUT = Path("reports/results/clean_test_scored_2026-10-16")
@@ -72,8 +80,32 @@ def load_alt() -> list[tuple[tuple[str, ...], str]]:
     return sorted(pairs, key=lambda p: -len(p[0]))  # khớp dài nhất trước
 
 
+_TONES = "̣́̀̉̃"  # sắc, huyền, hỏi, ngã, nặng (dạng tổ hợp NFD)
+_TONE_OPEN = re.compile(r"(?<!q)(oa|oe|uy)$")
+
+
+def canon_tone(word: str) -> str:
+    """Thống nhất vị trí dấu thanh ở vần mở oa/oe/uy (hóa/hoá, khỏe/khoẻ, thủy/thuỷ) về kiểu đặt ở nguyên âm sau.
+
+    Hai kiểu là cùng một từ, cùng cách đọc (kiểu cũ đặt dấu ở o/u, kiểu mới ở a/e/y) — chấm khác nhau là đo định dạng
+    chữ viết, không đo nhận dạng. Người dùng chốt 16/10 (quyết định #11), trước khi có kết quả seed 43/44; đo trên
+    output đã có: ảnh hưởng ≤ 4 từ/hệ thống. Chỉ áp khi chấm clean-test, **không** đổi `normalize_text` (dùng lúc
+    train). Bỏ qua sau `q` (qua/que/quy: `qu` là âm đầu, dấu luôn ở nguyên âm sau) và vần đóng (hoàn, khuyết: không có
+    hai cách viết)."""
+    d = unicodedata.normalize("NFD", word)
+    tones = [c for c in d if c in _TONES]
+    if len(tones) != 1:
+        return word
+    base = "".join(c for c in d if c not in _TONES)
+    if not _TONE_OPEN.search(unicodedata.normalize("NFC", base)):
+        return word
+    return unicodedata.normalize("NFC", base + tones[0])
+
+
 def canonicalize(tokens: list[tuple[str, str, bool]], alt) -> list[tuple[str, str, bool]]:
-    """tokens = (từ, nhóm, tuỳ chọn). Gộp dạng nhiều chữ về dạng chuẩn; nhóm "ngoại" nếu có phần nào ngoại."""
+    """tokens = (từ, nhóm, tuỳ chọn). Gộp dạng nhiều chữ về dạng chuẩn; nhóm "ngoại" nếu có phần nào ngoại.
+    Vị trí dấu thanh thống nhất trước (`canon_tone`) để bảng cách viết thay thế chỉ cần một dạng."""
+    tokens = [(canon_tone(t[0]), *t[1:]) for t in tokens]
     out, i = [], 0
     while i < len(tokens):
         for var, canon in alt:
@@ -167,6 +199,14 @@ def main() -> None:
     with HYP_40MS.open(encoding="utf-8") as f:
         for r in csv.DictReader(f, delimiter="\t"):
             hyps[r["key"]].update({k: v for k, v in r.items() if k != "key"})
+    systems = list(SYSTEMS)
+    if HYP_SEEDS.exists():
+        with HYP_SEEDS.open(encoding="utf-8") as f:
+            for r in csv.DictReader(f, delimiter="	"):
+                hyps[r["key"]].update({k: v for k, v in r.items() if k != "key"})
+        for mode, label, group in (("greedy", "greedy", "train từ đầu 40 ms"), ("lm", "beam+LM", "40 ms + giải mã")):
+            systems += [(f"v2a_{m}_seed{sd}_{mode}", f"{name} 40 ms ep37 seed {sd} · {label}", group)
+                        for m, name in SEED_MODELS for sd in SEEDS]
     for model, greedy in json.loads(HYP_10MS.read_text(encoding="utf-8")).items():
         for key, hyp in greedy.items():
             set_name, sent = key.split("|", 1)
@@ -176,7 +216,7 @@ def main() -> None:
     videos = sorted({s["source"] for s in samples})
     pre_mark = [not s.get("corrected_at") or s["corrected_at"] < OURS_VISIBLE_FROM for s in samples]
     results, per_sent = {}, []
-    for col, name, group in SYSTEMS:
+    for col, name, group in systems:
         rows = {}
         for drop in (True, False):
             E = np.zeros((len(samples), 2)); W = np.zeros((len(samples), 2))
@@ -221,11 +261,23 @@ def main() -> None:
         paired.append({"a": a, "b": b, "diff": ra["wer"] - rb["wer"],
                        "ci": [float(np.quantile(d, 0.025)), float(np.quantile(d, 0.975))]})
 
+    # 40 ms nhiều seed: bootstrap hai tầng video × seed (note gap 9.6 điều 4); seed 42 là cột không hậu tố.
+    paired_seeds = []
+    for mode in ("greedy", "lm"):
+        cols = {m: [c for c in [f"v2a_{m}_{mode}"] + [f"v2a_{m}_seed{sd}_{mode}" for sd in SEEDS] if c in results]
+                for m, _ in SEED_MODELS}
+        if min(len(v) for v in cols.values()) < 2:
+            continue
+        for a, b in [("mamba", "conextbimamba"), ("mamba", "conformer_relpos"), ("conextbimamba", "conformer_relpos")]:
+            r = two_level_bootstrap(np.stack([results[c]["_ev"] for c in cols[a]]),
+                                    np.stack([results[c]["_ev"] for c in cols[b]]), results[cols[a][0]]["_wv"])
+            paired_seeds.append({"mode": mode, "a": a, "b": b, "seeds_a": cols[a], "seeds_b": cols[b], **r})
+
     OUT.mkdir(parents=True, exist_ok=True)
     clean = {k: {kk: vv for kk, vv in v.items() if not kk.startswith("_")} for k, v in results.items()}
     meta = {"n_sentences": len(samples), "n_videos": len(videos), "fillers": sorted(FILLERS),
             "fragments": sorted(FRAGMENTS), "alt_spellings": str(ALT), "ours_visible_from": OURS_VISIBLE_FROM}
-    (OUT / "results.json").write_text(json.dumps({"meta": meta, "systems": clean, "paired": paired}, ensure_ascii=False,
+    (OUT / "results.json").write_text(json.dumps({"meta": meta, "systems": clean, "paired": paired, "paired_seeds": paired_seeds}, ensure_ascii=False,
                                                  indent=2, default=float), encoding="utf-8")
     with (OUT / "per_sentence.tsv").open("w", encoding="utf-8", newline="") as f:
         w = csv.DictWriter(f, list(per_sent[0]), delimiter="\t"); w.writeheader(); w.writerows(per_sent)
@@ -234,7 +286,7 @@ def main() -> None:
     print(f"{len(samples)} câu · {len(videos)} video · từ ref: Việt {r0['words'][0]:.0f} · ngoại {r0['words'][1]:.0f} "
           f"· {r0['n_pre_mark']} câu hiệu đính trước mốc {OURS_VISIBLE_FROM}")
     print(f"{'Hệ thống':42} {'WER':>6} {'CI 95%':>15} {'Việt':>6} {'ngoại':>6} {'trước mốc':>9} {'không bỏ đệm':>12}")
-    for col, *_ in SYSTEMS:
+    for col, *_ in systems:
         r = results[col]
         print(f"{r['name']:42} {r['wer']:6.4f} [{r['ci'][0]:.4f};{r['ci'][1]:.4f}] {r['wer_vi']:6.4f} {r['wer_fx']:6.4f}"
               f" {r['wer_pre_mark']:9.4f} {r['wer_no_filler_rule']:12.4f}")
@@ -242,6 +294,12 @@ def main() -> None:
     for p in paired:
         print(f"  {p['a']} − {p['b']}: {p['diff']:+.4f} [{p['ci'][0]:+.4f}; {p['ci'][1]:+.4f}]")
 
+    if paired_seeds:
+        print("40 ms nhiều seed — bootstrap hai tầng video × seed (A − B, CI 95%; trung bình ± sd từng mô hình):")
+        for p in paired_seeds:
+            print(f"  [{p['mode']}] {p['a']} {p['wer_a_mean']:.4f}±{p['wer_a_sd']:.4f} − {p['b']} "
+                  f"{p['wer_b_mean']:.4f}±{p['wer_b_sd']:.4f}: {p['diff']:+.4f} [{p['ci_low']:+.4f}; {p['ci_high']:+.4f}]"
+                  f" · cặp seed cùng dấu {p['pairs_same_sign']}/{len(p['pairs'])}")
 
 if __name__ == "__main__":
     main()

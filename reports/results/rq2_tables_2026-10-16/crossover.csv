@@ -1,0 +1,13 @@
+﻿Mamba,Conformer,Mamba nhanh hơn từ (s),ghi chú,"nhanh hơn ≥ 1,5× từ (s)"
+B1 40 ms,Conformer PE 40 ms,53,giữa 45 và 60 s,90
+B1 40 ms,Conformer PE 10 ms,14,giữa 10 và 15 s,20
+B1 40 ms,Conformer không PE 10 ms,35,giữa 30 và 45 s,60
+ConExt 40 ms,Conformer PE 40 ms,5,nhanh hơn ở mọi độ dài,60
+ConExt 40 ms,Conformer PE 10 ms,7,giữa 5 và 10 s,15
+ConExt 40 ms,Conformer không PE 10 ms,27,giữa 20 và 30 s,45
+B1 10 ms,Conformer PE 40 ms,174,giữa 150 và 180 s,300
+B1 10 ms,Conformer PE 10 ms,13,giữa 10 và 15 s,20
+B1 10 ms,Conformer không PE 10 ms,90,giữa 90 và 105 s,180
+ConExt 10 ms,Conformer PE 40 ms,114,giữa 105 và 120 s,240
+ConExt 10 ms,Conformer PE 10 ms,6,giữa 5 và 10 s,20
+ConExt 10 ms,Conformer không PE 10 ms,45,giữa 45 và 60 s,105

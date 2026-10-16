@@ -100,3 +100,9 @@ Nhận xét: thứ hạng **đảo** giữa hai cấu hình — 10 ms: B1 > relP
 9.4 điều 5: "phù hợp với giả thuyết độ phân giải", không "chứng minh" (1 seed ở 10 ms; cấu hình 40 ms gộp 4 khác biệt).
 Cả ba encoder đều tốt hơn ở 40 ms. Thứ hạng trên clean-test khớp thứ hạng val_unseen nhãn giả (B1 0,1252 · relPE 0,1501
 · ConExt 0,1506 · không PE 0,2068).
+
+### Quy tắc bổ sung 2026-10-16 — vị trí dấu thanh (quyết định #11)
+`canon_tone` trong `src/evaluation/score_clean_test.py`: vần mở oa/oe/uy có đúng một dấu thanh → đặt dấu ở nguyên âm
+sau (hóa → hoá, khỏe → khoẻ, thủy → thuỷ), cả ref và hyp; bỏ qua sau `q`. Thêm **sau** lần chấm 15/10 và sau khi đã đo
+ảnh hưởng (chỉ 3 cặp xuất hiện: hoá/hóa, thoả/thỏa, khoá/khóa): PhoWhisper −4 lỗi, ConExt v1 −1, mọi hệ thống khác 0.
+Bảng `clean_test_scored_2026-10-16/` hiện **chưa** áp quy tắc này; áp ở lần chấm chung khi đủ 9 run 40 ms.

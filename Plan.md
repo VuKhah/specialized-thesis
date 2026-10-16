@@ -119,6 +119,7 @@ Theo thứ tự thời gian. Quyết định bị thay thế giữ lại để t
 | 2026-10-15 | **Quy tắc chấm clean-test**: cách viết thay thế (`configs/scoring/alt_spellings.tsv`), bỏ từ đệm phi từ vựng cả hai phía, lặp từ chấm thường, WER tách từ Việt / từ ngoại theo bảng từ; LM giải mã chỉ từ `train_transcripts_filtered.txt` | `clean_test_results_2026-10-15.md` mục 1; `glued_words_2026-10-15.md` |
 | 2026-10-16 | **12 quyết định sau rà soát Fable 15/10, chốt theo khuyến nghị** (review mục 4): (1) luận điểm + RQ như review 2.1, 10/40 ms ở RQ1; (2) **bỏ nhãn "mô hình chính"** (thay quyết định 12/10), viết thành khảo sát hai encoder Mamba; (3) vá bảng 10 ms (L1, L2) trước mọi run mới; (4) **seed 43/44 × 3 mô hình 40 ms** (~32 GPU-h), tiêu chí **9.6** (bootstrap hai tầng thay điều 4a/5 của review 2.3); (5) không CR-CTC/BPE3000, chỉ bảng phụ giải mã; (6) **trục GPU-giờ: chỉ báo cột GPU-h + đường WER theo GPU-h, không train bù** (đóng 9.4 điều 10; khai sự cố 13/10); (7) chấm Parakeet FT trên clean-test (gộp L2); (8) gõ mù ~20 câu; (9) chất lượng nhãn gộp RQ3; (10) **đóng băng GPU 25/10** (dự phòng 01/11 chỉ cho run seed lỗi); (11) kiểm `normalize_text`/`alt_spellings`, đổi thì chấm lại toàn bộ một lần; (12) commit file chưa track sau rà repo public. **10 ms: 1 seed, không cổng seed** (người dùng loại đề xuất cổng của AI) | Người dùng ~08:20, trước khi xem WER relPE 10 ms; `conextbimamba_gap_2026-10-12.md` mục 9.6 |
 | 2026-10-16 | **Không gõ mù 20 câu** (thay #8 vừa chốt): mức neo nhãn không đo; khai hạn chế bằng số đã có (ô hiệu đính điền sẵn nhãn giả; 80/113 câu đầu giữ y nhãn giả; bản hiệu đính cách nhãn giả 1,5–1,8% WER; một người hiệu đính) | Người dùng ~08:45 |
+| 2026-10-16 | **#11: thống nhất vị trí dấu thanh ở vần mở oa/oe/uy** (hóa→hoá, thủy→thuỷ; bỏ qua sau `q`) — quy tắc chung trong `score_clean_test.py` (`canon_tone`), **không** đổi `normalize_text`; chốt trước kết quả seed 43/44, áp ở lần chấm chung khi đủ run. Đo trên output hiện có: PhoWhisper −4 lỗi (0,1490 → 0,1486), ConExt v1 −1, còn lại 0 | Người dùng ~09:05; khai ở Ch2 (quy tắc thêm sau lần chấm 15/10) |
 
 ## 5. Quyết định đang mở / rủi ro đã biết
 
@@ -613,3 +614,24 @@ Mỗi mục: làm gì · chốt gì · phiên sau bắt đầu từ đâu. Các 
 - **Phiên sau bắt đầu từ:** tải output 6 run seed khi xong (file nhỏ → `reports/results/train_full/v2a-s4-*/seed43|44/`),
   dump log-prob/greedy clean-test (mở rộng `dump_logprobs/`), chấm bằng `two_level_bootstrap`, giải mã beam + LM CPU;
   người dùng chuyển đề cương sang Word, gửi GVHD; khung Ch3.
+- **(~10:30) RQ2 hoàn chỉnh** (0 GPU): `scripts/rq2_final_tables.py` → Bảng 3.6/3.7, điểm giao, `numerics.md`, Hình 3.4/3.5;
+  note `rq2_ket_qua_cuoi_2026-10-16.md` (thay KL3). Đính chính: điểm giao "~45 s" cũ là chỗ đường cong tách — cùng
+  cấu hình 40 ms ConExt nhanh hơn relPE ở mọi độ dài nhưng chỉ 1–2 ms tới 45 s, ≥ 1,5× từ 60 s; B1 từ ~53 s (≥ 1,5× từ
+  90 s). Phát hiện: VRAM 1 giờ audio Mamba 40 ms 8,7 GiB > 10 ms 5,7–6,0 GiB (suy luận: Conv2d subsampling).
+  Pipeline chấm seed viết sẵn (`collect_seeds.py`, `dump_seeds_40ms/`, `lm_decode.py`, scorer hai tầng) — `lm_decode`
+  tái lập 203/203 câu × 6 cột của 15/10. Chưa commit.
+
+### 2026-10-16 (đóng phiên ~10:50)
+- **Đã làm thêm sau 09:00:** pipeline chấm seed (`collect_seeds.py`, kernel `dump_seeds_40ms/`, `lm_decode.py` đưa giải
+  mã beam + LM vào repo — tái lập 203/203 × 6 cột của 15/10; scorer đọc seed + bootstrap hai tầng, kiểm bằng seed
+  giả); RQ2 hoàn chỉnh (`scripts/rq2_final_tables.py`, note `rq2_ket_qua_cuoi_2026-10-16.md`); mục lục đề xuất viết
+  lại + nhận định Ch1 (`docs/khoa_luan/muc_luc_de_xuat.md`, Drive); 3 agent phản biện RQ2 (thiết kế hình, phương pháp,
+  VRAM) → kết luận RQ2 thu hẹp phạm vi; VRAM 40 ms > 10 ms giải thích bằng activation Conv2d subsampling (đếm numel).
+- **Người dùng chốt:** quy tắc `canon_tone` (#11); **bác Hình 3.4 dạng 2×2**; Hình 3.5 sẽ hỏi lại.
+- **Xếp hạng clean-test (16/10, greedy, 40 ms mới seed 42):** Parakeet FT 9,4 › Conformer PE 40 ms 12,1 › B1 40 ms 12,6
+  ≈ ConExt 40 ms 13,1 ≈ Parakeet zero-shot 13,8 › B1 10 ms 14,3 ≈ PhoWhisper 14,9 › Conformer PE 10 ms 16,9 ≈ ConExt
+  10 ms 17,1 › không PE 22,4 (nhóm theo bootstrap cặp theo video). Parakeet FT − Conformer PE 40 ms −2,7 [−3,5; −1,9].
+- **Người dùng phản hồi:** bị rối vì AI liệt kê quá nhiều giới hạn mà không nói rõ cái đã có → trả lời bằng bảng
+  "câu hỏi → trả lời", giới hạn tách riêng và ngắn.
+- **Kernel:** 6 run seed RUNNING lúc 10:48; ước xong ~13:50–14:45.
+- **Phiên sau bắt đầu từ:** TODO khối ▶ (16/10 ~10:50).
