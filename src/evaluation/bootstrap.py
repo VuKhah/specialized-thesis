@@ -78,6 +78,32 @@ def paired_block_bootstrap(records_a: list[dict], records_b: list[dict], n_boot:
             "p_a_better": float((diff < 0).mean()), "n_videos": len(videos), "n_boot": n_boot}
 
 
+def two_level_bootstrap(err_a: np.ndarray, err_b: np.ndarray, words: np.ndarray, n_boot: int = 10_000,
+                        seed: int = 42, alpha: float = 0.05) -> dict:
+    """Hiệu WER(A) − WER(B) khi mỗi mô hình có nhiều seed — tiêu chí chốt ở `conextbimamba_gap_2026-10-12.md` 9.6.
+
+    `err_a` [số seed A, số video], `err_b` [số seed B, số video]: số lỗi theo video; `words` [số video]: số từ ref
+    (chung mọi hệ thống). Mỗi lần lặp lấy lại video có hoàn lại **và** chọn ngẫu nhiên đều một seed cho A, độc lập một
+    seed cho B — CI gộp dao động do mẫu test lẫn do huấn luyện. Với 3 seed phần do huấn luyện ước thô (thường hẹp
+    hơn thật). Điểm ước lượng = hiệu WER trung bình các seed; `pairs` = hiệu từng cặp seed, chỉ để mô tả."""
+    err_a, err_b = np.atleast_2d(err_a).astype(np.float64), np.atleast_2d(err_b).astype(np.float64)
+    words = np.asarray(words, dtype=np.float64)
+    rng = np.random.default_rng(seed)
+    idx = rng.integers(0, len(words), size=(n_boot, len(words)))
+    sa, sb = rng.integers(0, len(err_a), size=n_boot), rng.integers(0, len(err_b), size=n_boot)
+    w = words[idx].sum(1)
+    diff = (np.take_along_axis(err_a[sa], idx, 1).sum(1) - np.take_along_axis(err_b[sb], idx, 1).sum(1)) / w
+    lo, hi = np.quantile(diff, [alpha / 2, 1 - alpha / 2])
+    wer_a, wer_b = err_a.sum(1) / words.sum(), err_b.sum(1) / words.sum()
+    pairs = (wer_a[:, None] - wer_b[None, :]).ravel()
+    return {"wer_a_mean": float(wer_a.mean()), "wer_a_sd": float(wer_a.std(ddof=1)) if len(wer_a) > 1 else None,
+            "wer_b_mean": float(wer_b.mean()), "wer_b_sd": float(wer_b.std(ddof=1)) if len(wer_b) > 1 else None,
+            "wer_a_seeds": wer_a.tolist(), "wer_b_seeds": wer_b.tolist(),
+            "diff": float(wer_a.mean() - wer_b.mean()), "ci_low": float(lo), "ci_high": float(hi),
+            "pairs": pairs.tolist(), "pairs_same_sign": int(max((pairs < 0).sum(), (pairs > 0).sum())),
+            "n_videos": len(words), "n_boot": n_boot}
+
+
 def main() -> None:
     sys.stdout.reconfigure(encoding="utf-8")
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])

@@ -14,6 +14,7 @@ data/processed/*
 # Manifest hiệu đính thủ công (clean-test) là công sức tay, PHẢI track dù
 # nằm trong data/processed/ — chỉ audio/transcript thô mới loại trừ.
 !data/processed/clean_test_manifest.json
+!data/processed/clean_test_word_tags.tsv
 checkpoints/*
 !checkpoints/.gitkeep
 *.pt

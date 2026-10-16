@@ -1,1238 +1,181 @@
 # Plan.md — Kế hoạch, trạng thái & quyết định
 
-Cập nhật lần cuối: **2026-10-04** (viết lại mục 1-5 theo định hướng khảo sát sau
-buổi GVHD lần 1). Đây là nơi để **nối tiếp giữa các phiên làm việc**: kế hoạch
-theo tuần, trạng thái mức tuần, quyết định đã chốt/đang treo, nhật ký phiên.
-Việc chi tiết ở [`TODO.md`](TODO.md); kiến trúc ở
-[`ARCHITECTURE.md`](ARCHITECTURE.md); luật cho AI ở [`CLAUDE.md`](CLAUDE.md);
-quy ước ở [`docs/CONVENTIONS.md`](docs/CONVENTIONS.md).
+Cập nhật lần cuối: **2026-10-15** (dọn lại mục 1–6 sau bản rà soát độc lập
+`docs/notes/review_fable_2026-10-15.md`; nhật ký trước 2026-10-11 chuyển nguyên
+văn sang `docs/notes/plan_nhat_ky_luu_tru_den_2026-10-08.md`). Đây là nơi **nối
+tiếp giữa các phiên**: kế hoạch theo tuần, trạng thái, quyết định đã chốt/đang
+mở, nhật ký phiên. Việc chi tiết ở [`TODO.md`](TODO.md); kiến trúc ở
+[`ARCHITECTURE.md`](ARCHITECTURE.md); luật cho AI ở [`CLAUDE.md`](CLAUDE.md).
 
-> Đọc nhanh khi mở phiên mới: mục 3 (đang ở đâu) → mục 5 (quyết định đang mở)
-> → mục 6 (khóa luận, lịch gặp GVHD) → **mục cuối của nhật ký (mục 7)**.
+> Đọc nhanh khi mở phiên mới: mục 3 (đang ở đâu) → mục 5 (quyết định mở) → mục 6
+> (khóa luận, lịch gặp GVHD) → **mục cuối của nhật ký (mục 7)**.
 
-## 1. Mục tiêu
+## 1. Mục tiêu, đội hình, câu hỏi nghiên cứu
 
-**Khảo sát Mamba (trọng tâm) làm encoder ASR tiếng Việt hội thoại** trên
-VietSuperSpeech (sau lọc A1 và giữ riêng video test: train 45.442 câu / 165,18 h), nhận xét theo đánh
-đổi **độ chính xác – tốc độ – tài nguyên** (GVHD lần 1, 2026-10-01). Đề cương
-đã nộp (so sánh có kiểm soát Mamba vs Conformer) sẽ được thay bằng **đề cương
-mới** trước buổi Tuần 9; `docs/de_cuong/*.docx` cũ giữ nguyên.
+**Khảo sát Mamba làm encoder ASR tiếng Việt hội thoại** trên VietSuperSpeech
+(sau lọc A1 + giữ riêng 29 video: train 45.442 câu / 165,18 h; val 4.824; val_unseen
+3.011; clean-test 203 câu đã hiệu đính tay), nhận xét theo đánh đổi **độ chính xác
+– tốc độ – tài nguyên** (GVHD lần 1, 2026-10-01). Đề cương đã nộp sẽ được thay
+bằng **đề cương mới** (nháp `docs/notes/de_cuong_moi_nhap.md`, chưa duyệt);
+`docs/de_cuong/*.docx` cũ giữ nguyên.
 
-**Đội hình (chốt 2026-10-03, `docs/notes/lineup_preparation.md`):**
+**Đội hình:**
 
-| # | Mô hình | Vai trò | Cách dùng |
+| # | Mô hình | Vai trò | Cấu hình |
 |---|---|---|---|
-| 1 | Mamba hai chiều B1 (ExtBiMamba chồng) | Đối chứng trong họ Mamba (trước 2026-10-12: trọng tâm) | Train từ đầu ~12M |
-| 5 | ConExtBiMamba (khung Conformer, MHSA → ExtBiMamba) | **Mô hình chính** (người dùng chốt 2026-10-12) | Train từ đầu ~12M |
-| 2 | Conformer-12M | Baseline có kiểm soát | Train từ đầu, cùng pipeline |
-| 4 | Parakeet-CTC-0.6B-vi (dự bị PhoWhisper-small) | Tham chiếu có pre-train | Zero-shot → fine-tune nếu còn quota |
-| 3 | Mamba một chiều | Chỉ trích dẫn (arXiv:2405.12609) | Không train |
+| 1 | Mamba hai chiều B1 (ExtBiMamba chồng, 14 lớp × 2 khối) | Encoder Mamba, cách 1 | train từ đầu ~12M, 10 ms và 40 ms |
+| 2 | ConExtBiMamba (khung Conformer, MHSA → ExtBiMamba) | Encoder Mamba, cách 2 (chốt 12/10 là "mô hình chính" — ⛔ #2 đề nghị bỏ nhãn này) | như trên |
+| 3 | Conformer-12M PE tương đối (relPE) | Baseline chuẩn | như trên; bản **không PE** (v1) là ablation ở 10 ms |
+| 4 | Parakeet-CTC-0.6B-vi | Tham chiếu pre-train (zero-shot + fine-tune 7 GPU-h) | pipeline riêng |
+| 5 | PhoWhisper-small | Tham chiếu pre-train (zero-shot) | pipeline riêng |
+| — | Mamba một chiều | Chỉ trích dẫn (arXiv:2405.12609) | không train |
 
-**Hai mức so sánh — không trộn khi kết luận:**
-- **Nhóm train từ đầu (#1/#5, #2): có kiểm soát.** Cùng front-end (log-mel +
-  CMVN toàn cục + SpecAugment), tokenizer BPE 1000, CTC head, `train.py`, eval;
-  ~12M tham số, không subsampling. **Chỉ encoder khác nhau** — luật trong
-  `CLAUDE.md` vẫn áp cho nhóm này.
-- **Nhóm pre-train (#4): tham chiếu.** Pipeline, front-end, dữ liệu, kích
-  thước riêng của mô hình; chỉ dùng chung chuẩn hóa văn bản trước WER và tập
-  đánh giá.
+**Hai mức so sánh — không trộn khi kết luận:** nhóm train từ đầu (#1–#3) có kiểm
+soát, chỉ encoder khác; nhóm pre-train (#4–#5) chỉ dùng chung `normalize_text`
+và tập đánh giá.
 
-**Câu hỏi nghiên cứu (bản làm việc, chờ đề cương mới):**
-- **RQ1 — độ chính xác:** WER (greedy, không LM, sau `normalize_text`) trên
-  clean-test 203 câu (video giữ riêng, hiệu đính tay), val_unseen 3.011 câu
-  (video giữ riêng) và val 4.824 câu (video đã gặp), theo epoch cho nhóm train
-  từ đầu; khoảng tin cậy bằng bootstrap theo khối video.
-- **RQ2 — hiệu quả:** RTF, độ trễ, VRAM, số tham số, GPU-giờ train; theo độ dài
-  trên **audio ghép nhân tạo** (chốt 2026-10-03, chỉ để đo, không đo WER audio dài).
-- **RQ3 — phân tích lỗi** định tính trên clean-test.
+**Công thức chung nhóm train từ đầu (`configs/v2a/`):** CTC, BPE1000, log-mel
+80 + CMVN + SpecAugment, speed perturb, AdamW LR 3e-4 warmup 1000, batch 16,
+DDP 2×T4 + AMP (khối Mamba fp32), 30 epoch LR hằng + 8 epoch giảm 1-sqrt = 38
+epoch; **checkpoint bảng chính = ep37**. Cấu hình 10 ms: không subsampling, rẽ
+nhánh từ v1 ep29 (relPE train từ đầu). Cấu hình 40 ms: `Conv2dSubsampling4`,
+train từ đầu, seed 42 (⛔ #4: thêm seed 43, 44).
 
-## 2. Lộ trình (viết lại 2026-10-04, thay lộ trình 15 tuần của đề cương cũ)
+**Câu hỏi nghiên cứu** — bản đề xuất của review 15/10 mục 2.1, **⛔ #1 chờ chốt**
+(bản làm việc cũ 04/10 ở nhật ký lưu trữ):
+- **RQ1 — Độ chính xác.** Cùng pipeline CTC, ~12M, cùng công thức: hai encoder
+  Mamba đạt WER thế nào so với Conformer relPE ở hai cấu hình 10 ms và 40 ms?
+  Thứ hạng có giữ nguyên giữa hai cấu hình không?
+- **RQ2 — Hiệu quả.** Chi phí suy luận (độ trễ, RTF, VRAM) theo độ dài audio
+  5–3.600 s (audio ghép nhân tạo) và chi phí huấn luyện (GPU-giờ); từ độ dài nào
+  Mamba có lợi?
+- **RQ3 — Đặc điểm lỗi và chất lượng nhãn.** Loại lỗi theo encoder (từ dính
+  CTC, tiếng Anh/tên riêng, xoá/chèn, thanh điệu); nhãn giả sai bao nhiêu, mô
+  hình có vượt "thầy", xếp hạng trên nhãn giả có giữ khi đo trên nhãn thật?
 
-Mốc ngày suy từ "Tuần 6 ≈ 2026-10-01" (nhật ký GVHD); tuần tính từ thứ Hai.
-Quota: 30 GPU-h/tuần × 2 tài khoản Kaggle (A, B). Ước train full 30 epoch sau
-A1 (×0,80 số D8): Conformer ~18,5 h, Mamba B1 ~12,8 h — **kiểm lại bằng số đo
-thật ở train thử**.
+Bảng, hình, kết luận viết sẵn theo nhánh: `docs/notes/ket_qua_cuoi_khung_2026-10-15.md`.
+Quy tắc phân tích chốt trước khi có số: `docs/notes/conextbimamba_gap_2026-10-12.md` mục 9.4.
 
-| Tuần | Ngày (≈) | Nội dung |
-|---|---|---|
-| 6 | 28/09–04/10 | ✅ A1 lọc dữ liệu, tokenizer mới, RQ2 chốt, đội hình chốt; bước 3 code dùng chung; front-end CMVN + SpecAugment, dropout Mamba |
-| 7 | 05/10–11/10 | `ConExtBiMambaEncoder` (~12M, test CPU khối giả); 5 Kaggle Dataset (UI); tiêu chí "đủ tốt để giữ" (người dùng duyệt); **kernel train thử** 1 shard × 5 epoch × 3 mô hình (~2,5-3,5 GPU-h, kèm kiểm DDP/AMP/Mamba thật); kernel zero-shot Parakeet + PhoWhisper (203 câu, kiểm NeMo/T4) |
-| 8 | 12/10–18/10 | Chốt giữ 2 hay 3 mô hình; **bắt đầu train full song song** (A: Conformer, B: Mamba; giữ 3 thì xếp lại lịch quota); code RQ2 (ghép audio, sửa `rtf.py`), đo RTF/VRAM bằng trọng số ngẫu nhiên; khung đề cương mới |
-| 9 | 19/10–25/10 | Train full tiếp; **gặp GVHD lần 2**: đề cương mới, kết quả train thử, zero-shot, các quyết định front-end/CTC |
-| 10 | 26/10–01/11 | Hết train full; WER theo epoch trên val, clean-test; ước VRAM/thời gian fine-tune Parakeet (vài step) |
-| 11 | 02/11–08/11 | Fine-tune Parakeet (hoặc PhoWhisper) nếu quota cho phép; đo RQ2 mọi mô hình **trên cùng một máy** |
-| 12 | 09/11–15/11 | Tổng hợp RQ1 + RQ2 (bảng, biểu đồ đánh đổi); clean-test đã hiệu đính tay xong (việc tay, làm dần từ bây giờ) |
-| 13 | 16/11–22/11 | RQ3 phân tích lỗi; Ch3 Thực nghiệm |
-| 14 | 23/11–29/11 | Demo Gradio; hoàn thiện mã; Ch2, Ch4 |
-| 15 | 30/11–06/12 | Hoàn thiện khóa luận, slide, báo cáo thử, nộp GVHD |
+## 2. Lộ trình còn lại (đề xuất review 15/10 mục 5.1 — ⛔ #10 mốc đóng băng GPU)
 
-Dự phòng: train full có thể kéo sang Tuần 11 (Kaggle cắt phiên, train lại khi
-lỗi); fine-tune pre-train là phần **bỏ được đầu tiên** nếu thiếu quota/thời gian
-("đừng ôm đồm") — khi đó #4 chỉ có zero-shot.
+Tuần tính từ thứ Hai; "Tuần 6 ≈ 2026-10-01". Quota: 3 tài khoản A/B/C × 30 GPU-h/tuần, reset thứ Sáu (17/10, 24/10…).
 
-## 3. Trạng thái hiện tại (mức tuần — chi tiết ở `TODO.md`)
+| Tuần | Ngày | GPU | Viết / việc tay | GVHD |
+|---|---|---|---|---|
+| 8 | 16–18/10 | L1 tải output; 17/10 L2 kernel dump (~0,3 h); đẩy 6 run seed 40 ms (A/B/C) | chốt 12 ⛔; đề cương mới → Word → gửi; commit; khung Ch3 | gửi đề cương + xin lịch |
+| 9 | 19–25/10 | seed xong ~20/10; dump log-prob; giải mã CPU; **chấm một lần**; **đóng băng GPU 25/10** (đề xuất) | gõ mù 20 câu; sửa Ch1 | **gặp lần 2** |
+| 10 | 26/10–01/11 | (dự phòng seed lỗi; mốc cũ 01/11) | RQ3 + L1–L4; hình RQ2; Ch2 nháp | — |
+| 11 | 02–08/11 | — | **đóng băng số liệu 08/11**; bảng/hình cuối; Ch3 RQ1–RQ2 | gặp lần 3 |
+| 12 | 09–15/11 | — | Ch3 RQ3 + thảo luận + hạn chế; **nháp Ch3 15/11** | — |
+| 13 | 16–22/11 | — | Ch1, Ch2 hoàn thiện; Ch4 demo | gặp lần 4 |
+| 14 | 23–29/11 | — | Mở đầu, Kết luận, TLTK, Phụ lục; **bản đủ 27/11** | góp ý |
+| 15 | 30/11–06/12 | — | sửa, slide, chạy thử demo, in, CD (sao lưu checkpoint lên Drive trước) | **nộp** |
 
-Đang ở **giữa Tuần 7** (2026-10-08) — **sớm hơn lộ trình mục 2 khoảng 2-3 tuần** ở phần train.
+Cắt giảm nếu chậm (theo thứ tự): L3 "nhại" (RQ3) → bảng phụ LM → phân rã theo âm tiết. Không cắt Bảng 3.1–3.3,
+RQ2, mục Hạn chế.
+
+## 3. Trạng thái hiện tại (2026-10-15 khuya)
 
 | Hạng mục | Trạng thái | Ghi chú |
 |---|---|---|
-| Dữ liệu | ✅ | Manifest, A1, video giữ riêng, 5 Kaggle Dataset |
-| Pipeline chung | ✅ | DDP/AMP/resume chạy thật trên Kaggle |
-| Train full 30 epoch (#1, #2, #5) | ✅ (lộ trình: Tuần 10) | WER val: Mamba B1 0,156 · ConExt 0,188 · Conformer 0,252; Conformer dài 69 ep 0,194. Checkpoint lưu `D:\Model\kltn_checkpoints\` |
-| Zero-shot #4 | 🟡 | PhoWhisper 0,155 (203 câu); Parakeet chạy lại fp32 đủ 203 câu chưa làm |
-| Eval clean-test 3 mô hình, trung bình checkpoint, bootstrap | ⬜ | Không cần GPU |
-| RQ2 | 🟡 | Pilot xong (`rq2_pilot_2026-10-05.md`) + đo tốc độ subsampling (`subsample_speed_2026-10-08.md`); đo cuối chưa |
-| clean-test hiệu đính tay | ⬜ | 203 câu, việc tay — WER clean-test hiện so với nhãn giả |
-| Đề cương mới | ⬜ 🔴 | Trước buổi GVHD lần 2 |
-| Demo | ✅ (lộ trình: Tuần 14) | 3 mô hình, CPU |
-| Khóa luận | 🔄 | Khung + nháp Ch1 |
+| Dữ liệu, pipeline, Kaggle Dataset | ✅ | 3 tài khoản A/B/C đều train được |
+| v1 30 epoch ×3 + Conformer dài 69 ep | ✅ | phụ lục; avg ep20–29 là số tham chiếu |
+| Nhánh pha giảm 10 ms ×3 (ep37) | ✅ train; ⬜ **chưa chấm clean-test ep37** | val_unseen nhãn giả: B1 0,1252 · ConExt 0,1506 · Conformer không PE 0,2068 |
+| Conformer relPE 10 ms (B, 3 phiên) | ⚠️ **output chưa tải, chưa có số nào trong repo** | L1 trong `TODO.md` |
+| 40 ms ×3 seed 42 (ep37) | ✅ train + chấm clean-test | relPE 0,1211 · B1 0,1264 · ConExt 0,1309 (greedy); + LM 0,1024 / 0,1115 / 0,1081 |
+| Seed 43/44 ở 40 ms | ⛔ chờ chốt #4 | ~32 GPU-h |
+| Parakeet zero-shot / fine-tune | ✅ / ✅ train, ⬜ chưa chấm clean-test | zero-shot 0,1378; FT val_unseen nhãn giả 8,0% |
+| PhoWhisper zero-shot | ✅ | 0,1490 |
+| RQ2 cuối | ✅ 7 cấu hình + Parakeet | `reports/results/rq2_final_2026-10-13/` |
+| Clean-test hiệu đính + quy tắc chấm | ✅ 203/203, chấm 15/10 | `clean_test_results_2026-10-15.md`; gõ mù 20 câu ⛔ #8 |
+| RQ3 / chất lượng nhãn | 🟡 từ dính đã đếm; L1, L2, L4 có số; L3 chưa | 0 GPU |
+| Đề cương mới | 🔴 nháp, chưa gửi | trước buổi GVHD tuần 9 |
+| Khóa luận (quyển) | 🔴 Ch1 nháp; Ch2/Ch3 chỉ là note | đường găng |
+| Demo | 🟡 CPU, v1 | thêm 40 ms ở Ch4 |
 
 ## 4. Quyết định đã chốt
 
-Theo thứ tự thời gian. Quyết định bị thay thế giữ lại để truy vết, đánh dấu
-**(thay bởi …)**.
+Theo thứ tự thời gian. Quyết định bị thay thế giữ lại để truy vết, đánh dấu **(thay bởi …)**.
 
 | Ngày | Quyết định | Lý do / nơi ghi |
 |---|---|---|
-| 2026-09-14 | Hạ tầng thật là **Kaggle** (2x T4), không phải Colab; chỉ sửa tài liệu nội bộ, **giữ nguyên** `.docx` đã nộp | Lệch có chủ đích. `docs/notes/mamba_ssm_install_log.md` |
-| 2026-09-14 | Dùng **Mamba-1/S6**, pin `mamba-ssm` tag `v2.3.1`; **Mamba-3 tạm gác** (chỉ nhắc như hướng phát triển) | Khớp trích dẫn đề cương; tránh lỗi tilelang/tvm. `docs/notes/mamba_versions.md` |
-| 2026-09-14 | Tokenizer BPE `vocab_size=1000`; clean-test 250 mẫu, seed 42, lấy từ `validation` | Tuần 3. Sau A1: tokenizer train lại trên nhãn đã lọc, clean-test còn 192 |
-| 2026-09-16 | Prefetch **chỉ đúng 67.405 file** cần dùng, không `snapshot_download` cả thư mục | Repo HF có 118.259 file, thừa ~43% |
-| — | ~~Train Conformer baseline trước, Mamba sau~~ **(thay bởi 09-28: train song song 2 tài khoản)** | Thứ tự đề cương cũ |
-| 2026-09-19 | **Tài liệu nhị phân (`.docx`, biểu mẫu) lưu trên Google Drive, không đưa lên GitHub** (repo public); gỡ 12 file khỏi index | `docs/CONVENTIONS.md` mục 7 |
-| 2026-09-19 | **Khóa luận viết bằng Word (`.docx` + PDF) theo Mẫu 5**, lưu `docs/khoa_luan/` (gitignore) + sao lưu Drive; **viết song song theo chương từ sớm** | Mẫu 3 "vừa làm vừa viết", Mẫu 5 yêu cầu 50-100 trang. Mục 6 |
-| 2026-09-19 | Chuẩn tài liệu gốc: `CLAUDE.md` (luật AI) · `Plan.md` (kế hoạch/trạng thái) · `ARCHITECTURE.md` (sơ đồ) · `TODO.md` · `README.md` (người ngoài) · quy ước → `docs/CONVENTIONS.md` | Chống lệch trạng thái giữa nhiều file |
-| 2026-09-24 | ~~Mamba một chiều `n_layers: 28`~~ khớp tham số bằng **tăng độ sâu**, `expand: 2`, `d_model: 256`, `d_state: 16` **(thay bởi 10-02: B1 14 lớp × 2 khối, vẫn 28 khối)** | Giữ siêu tham số mặc định bài Mamba gốc |
-| 2026-09-26 | **Giữ không subsampling** (`T' = T`) | Subsampling rút ngắn chuỗi → làm yếu RQ2. Không đề xuất lại làm cách tăng tốc. `docs/notes/training_plan_kaggle.md` |
-| 2026-09-26 | **2 tài khoản Kaggle của 2 người khác nhau**; train **chế độ nền** (≤ 9 h/phiên). ~~3 shard~~ **(thay bởi 09-28: 4 shard)** | `docs/notes/training_plan_kaggle.md` |
-| 2026-09-28 | **Duyệt D1-D11** (`training_plan_kaggle.md` mục 5): A train Conformer / B train Mamba; WAV; **4 shard** vòng tròn theo video seed 42 + 1 dataset val; gắn cả shard, xáo chung; val = `validation` trừ clean-test (**ghi rõ ở Chương 3**); notebook CPU tạo dataset; `--max_minutes` + checkpoint theo step; pin HF `cbf624ae9b`; giữ 30 epoch | Đĩa đỉnh lúc tạo ~12,7 GB / 20 GB |
-| 2026-09-28 | **Train full dữ liệu, lấy kết quả theo epoch**; so sánh ở cùng số epoch; không train tập con làm cách train chính | Dừng lúc nào cũng có kết quả hợp lệ. Ràng buộc: lịch LR warmup + hằng số. (Train thử 1 shard ngày 10-03 là để **chọn thiết kế**, không phải cách train chính) |
-| 2026-09-30 | **D8: DDP 2 GPU + SyncBatchNorm + AMP** (fp16 autocast, tham số fp32), batch toàn cục 16 | Benchmark: Conformer 23,2 h, Mamba 16,0 h / 30 epoch (trước A1). `training_plan_kaggle.md` mục 5 |
-| 2026-09-30 | **Dataset dạng tar** (`PACK_TAR = True`), giải nén vào `/tmp` đầu mỗi phiên | Số đo tốc độ chỉ đúng khi đọc đĩa local |
-| 2026-09-30 | Theo khuyến nghị tác giả Mamba: miễn weight decay `A_log`/`D`, `norm_f`, chia `out_proj` cho √(số khối), residual fp32; **không** LR riêng cho Δ, **không** document packing | Mã nguồn mamba-ssm v2.3.1 |
-| 2026-10-02 | ~~Đội hình 5 mô hình (thêm wav2vec2-base-vi)~~ **(thay bởi 10-03)**. Định hướng **khảo sát**, Mamba trọng tâm; loại `kyle/vi-asr-fastconformer-114m` (đã train trên VietSuperSpeech), Zipformer-30M (mô hình sinh nhãn, license ND) | Sau buổi GVHD lần 1. `docs/notes/gvhd_buoi_1.md`, `survey_model_candidates.md` |
-| 2026-10-02 | **Mamba hai chiều B1** (14 lớp × 2 khối xuôi/ngược, chung LN, cộng; 12.285.696 tham số) | `docs/notes/mamba_bidirectional.md`. Code `df72f11` |
-| 2026-10-02 | **Duyệt thay đổi phép đo**: chuẩn hóa văn bản chung trước WER; A3 giữ + nêu hạn chế; tách nhóm zero-shot/fine-tune khi bàn | `survey_model_candidates.md` |
-| 2026-10-03 | **A1: lọc C ∩ L** — loại LID Whisper-small ≠ `vi`, 149 video phỏng vấn nước ngoài, nhãn < 20% dấu. Train 175,77 h (48.340 câu), val 18,65 h (5.140), clean-test 192. Khóa luận coi dữ liệu là tiếng Việt, một mức WER | `survey_model_candidates.md` mục 6, `data/splits/excluded.tsv` |
-| 2026-10-03 | **RQ2: phương án 2 + đổi cách hỏi** — so hiệu quả giữa mô hình (RTF, độ trễ, VRAM, tham số, GPU-giờ); dải độ dài từ **audio ghép nhân tạo** (đoạn liên tiếp cùng video, train + val); WER chỉ trên đoạn gốc 10-15 s | `docs/notes/dataset_discrepancy.md` |
-| 2026-10-03 | **Không train Mamba một chiều** — chỉ trích dẫn arXiv:2405.12609 (Bảng XII) | "Đừng ôm đồm"; cờ `bidirectional: false` giữ trong code |
-| 2026-10-03 | **Giữ kích thước ~12M** cho nhóm train từ đầu | Cỡ Conformer-S (Gulati 2020); vừa quota; đầu "siêu nhẹ" trên trục đánh đổi |
-| 2026-10-03 | **Đội hình hiện hành** (mục 1): B1 + ConExtBiMamba (chọn một sau train thử 1 shard × ~5 epoch × 3 mô hình) + Conformer-12M + Parakeet-CTC-0.6B-vi (dự bị PhoWhisper-small) + Mamba một chiều chỉ trích dẫn | `docs/notes/lineup_preparation.md` |
-| 2026-10-04 | **Giữ CTC** (không decoder attention/Mamba, không transducer) | Speech Slytherin Bảng 3; transducer không khả thi khi không subsampling. `docs/notes/frontend_decoder_survey.md` |
-| 2026-10-04 | **Front-end: CMVN toàn cục + SpecAugment** (2 freq mask F=27, 10 time mask ≤ 5%, không time warp, chỉ lúc train); giữ log-mel 80 / 25 / 10 ms | SpecAugment Bảng 3/4/6; mọi hệ đối chứng đều chuẩn hoá. Cùng note |
-| 2026-10-04 | **Dropout 0,1 cho Mamba** (đầu ra mỗi khối, trước residual) | 2405.12609 Bảng I-III, ConMamba yaml. Cùng note |
-| 2026-10-04 | **Giữ B1, không làm biến thể B1 + FFN** | 2405.12609 Bảng XVI/XII. Cùng note |
-| 2026-10-04 | **Test độc lập theo video** (thay clean-test 09-14 và một phần D5): giữ riêng ngẫu nhiên 29 video (~6%, seed 42, video ≥ 20 câu) khỏi train/val; clean-test mới 203 câu (7/video) để hiệu đính; phần còn lại = val_unseen 3.011 câu; val chọn checkpoint = 4.824 câu. Train 45.442 câu / 165,18 h. Tokenizer + CMVN tính lại | 561/562 video `validation` trùng train → test cũ chỉ đo "đã gặp", lệch khi so với pre-train. Chuẩn: LibriSpeech, VIVOS tách theo người nói. Chọn theo video (không theo chương trình) để test đại diện phân bố; hạn chế: MC chương trình lớn có thể đã gặp. `src/data/make_heldout.py`, `docs/notes/dataset_discrepancy.md` |
-| 2026-10-04 | **Train thử không còn để chọn 1 trong #1/#5**: sau train thử chốt giữ 2 hay 3 mô hình (mong cả 3 đủ tốt); 1 seed + biện pháp ổn định (bỏ step không hữu hạn, đo grad norm/s/step/VRAM, CI bootstrap theo video) | Người dùng. `lineup_preparation.md` mục Train thử |
-| 2026-10-05 | **Khối Mamba fp32** (`mamba_fp32`, B1 + ConExt, cả lúc đo RQ2) | U-Mamba (code), README mamba-ssm; bf16 không có trên T4. `docs/notes/mamba_precision_survey.md` |
-| 2026-10-05 | **Speed perturbation on-the-fly 0,9/1,0/1,1** (cả 3 mô hình, chỉ train) + kiểm 16 kHz mono; không volume perturbation; giữ CMVN toàn cục | Ko 2015; thực hành ESPnet/icefall/ConMamba. `audio_preprocessing_survey.md` mục 5. Preflight: không nghẽn dữ liệu |
-| 2026-10-05 | **`out_proj` chia √28** cho B1 (giữ) | `_init_weights` mamba-ssm / GPT-2; N đếm theo số nhánh `out_proj` cộng vào residual (lựa chọn dự án) |
-| 2026-10-06 | **Không early stopping**: train cố định 30 epoch, best.pt theo WER val; lưu trọng số mỗi epoch (trung bình checkpoint để ngỏ, làm sau train) | Thực hành icefall/ESPnet (epoch cố định + chọn/trung bình checkpoint); so sánh công bằng cùng ngân sách; giai đoạn blank của Conformer + WER val trên nhãn giả nhiễu dễ dừng nhầm |
-| 2026-10-12 | **Phạm vi thực nghiệm "A + 40 ms"** (thay bộ v2 ~255 GPU-h): công thức chung = v1 + pha giảm 1-sqrt 8 epoch (38 epoch) + trung bình checkpoint, **không InterCTC**; (1) trung bình checkpoint v1; (2) pha giảm rẽ nhánh từ v1 cho B1/ConExt/Conformer v1; (3) Conformer PE tương đối từ đầu; (4) nhánh 40 ms 3 mô hình × 1 seed; (5) RQ2 lại. Seed 2 → dò LR chỉ khi xong trước ~22/10 và còn ≥ 60 GPU-h. Đóng băng GPU 01/11 | Rà soát 3 góc 12/10: đường găng là hiệu đính + viết + GVHD; InterCTC không phục vụ RQ. `docs/notes/conextbimamba_gap_2026-10-12.md` mục 9 |
-| 2026-10-12 | **Mô hình chính của khóa luận = ConExtBiMamba**; B1 thành đối chứng trong họ Mamba | Người dùng. Kết quả v1 B1 tốt hơn ConExt 3,2 điểm → khi viết phải nêu thẳng, không giấu (nhánh 40 ms kiểm giả thuyết độ phân giải) |
+| 2026-09-14 | Hạ tầng thật là **Kaggle** (2x T4), không phải Colab; giữ nguyên `.docx` đã nộp | Lệch có chủ đích. `docs/notes/mamba_ssm_install_log.md` |
+| 2026-09-14 | **Mamba-1/S6**, pin `mamba-ssm` `v2.3.1`; Mamba-3 chỉ nhắc như hướng phát triển | `docs/notes/mamba_versions.md` |
+| 2026-09-14 | Tokenizer BPE `vocab_size=1000`; clean-test seed 42 | Sau A1 train lại tokenizer; clean-test đổi theo video giữ riêng (10-04) |
+| 2026-09-16 | Prefetch chỉ 67.405 file cần dùng | Repo HF có 118.259 file |
+| 2026-09-19 | Tài liệu nhị phân lưu Drive, không lên GitHub; khóa luận Word Mẫu 5 ở `docs/khoa_luan/` (gitignore), viết song song | `docs/CONVENTIONS.md` mục 7; mục 6 |
+| 2026-09-26 | ~~Giữ không subsampling~~ **(thay bởi 10-12: hai cấu hình 10 ms / 40 ms)**; 2 tài khoản Kaggle, train nền | `training_plan_kaggle.md` |
+| 2026-09-28 | Duyệt D1-D11: 4 shard theo video, val = `validation` trừ clean-test, train full lấy kết quả theo epoch, pin HF `cbf624ae9b` | `training_plan_kaggle.md` mục 5 |
+| 2026-09-30 | DDP 2 GPU + SyncBN + AMP, batch 16; dataset tar; khuyến nghị tác giả Mamba (miễn wd `A_log`/`D`, `norm_f`, chia `out_proj`) | `training_plan_kaggle.md`; mã mamba-ssm |
+| 2026-10-02 | Định hướng **khảo sát**; **Mamba hai chiều B1**; chuẩn hóa văn bản chung trước WER; tách nhóm zero-shot/fine-tune | `gvhd_buoi_1.md`, `mamba_bidirectional.md` |
+| 2026-10-03 | **A1 lọc C ∩ L**; **RQ2 audio ghép nhân tạo**, WER chỉ trên đoạn gốc; không train Mamba một chiều; ~12M; đội hình B1 + ConExt + Conformer + Parakeet (dự bị PhoWhisper) | `survey_model_candidates.md` mục 6; `dataset_discrepancy.md`; `lineup_preparation.md` |
+| 2026-10-04 | **Giữ CTC**; CMVN toàn cục + SpecAugment; dropout 0,1 Mamba; không B1 + FFN; **test độc lập theo video** (29 video, clean-test 203, val_unseen 3.011); train thử để chốt giữ 2 hay 3 (giữ cả 3) | `frontend_decoder_survey.md`; `make_heldout.py` |
+| 2026-10-05 | Khối Mamba fp32; speed perturbation 0,9/1/1,1; `out_proj` chia √28; bucketing | `mamba_precision_survey.md`, `audio_preprocessing_survey.md` |
+| 2026-10-06 | Không early stopping; train cố định; lưu trọng số mỗi epoch | icefall/ESPnet |
+| 2026-10-11 | Chỉ fine-tune Parakeet (~7 GPU-h, LR 1e-4 theo config NeMo, fp32); PhoWhisper zero-shot; chấm clean-test sau hiệu đính | `lineup_preparation.md` mục 4 |
+| 2026-10-12 | **Phạm vi "A + 40 ms"**: công thức v1 + pha giảm 1-sqrt 8 epoch (38 ep) không InterCTC; (1) avg v1, (2) pha giảm rẽ nhánh 10 ms ×3, (3) Conformer relPE từ đầu, (4) 40 ms ×3 × 1 seed, (5) RQ2 lại; đóng băng GPU 01/11; cổng seed 2 | `conextbimamba_gap_2026-10-12.md` mục 9 |
+| 2026-10-12 | Checkpoint bảng chính = **ep37** cho mọi run; Conformer dài để phụ lục; quy tắc phân tích 9.4 viết trước khi có số; **mô hình chính = ConExtBiMamba** (⛔ #2 đề nghị bỏ nhãn) | Người dùng; note gap 9.4 |
+| 2026-10-13 | Thêm hướng **chất lượng nhãn** (L1–L4, 0 GPU); **không đề xuất thí nghiệm GPU mới**; seed 2 không ưu tiên (xem lại ở ⛔ #4) | `label_quality_direction.md`; người dùng |
+| 2026-10-14 | Hiệu đính: cố vấn Whisper large-v3 (ngoài đội hình), bảng tên chuẩn; hiện output mô hình trong công cụ từ 23:17 (mốc `OURS_VISIBLE_FROM`) | `clean_test_correction_guide.md`, `clean_test_entities.md` |
+| 2026-10-15 | **Quy tắc chấm clean-test**: cách viết thay thế (`configs/scoring/alt_spellings.tsv`), bỏ từ đệm phi từ vựng cả hai phía, lặp từ chấm thường, WER tách từ Việt / từ ngoại theo bảng từ; LM giải mã chỉ từ `train_transcripts_filtered.txt` | `clean_test_results_2026-10-15.md` mục 1; `glued_words_2026-10-15.md` |
+| 2026-10-16 | **12 quyết định sau rà soát Fable 15/10, chốt theo khuyến nghị** (review mục 4): (1) luận điểm + RQ như review 2.1, 10/40 ms ở RQ1; (2) **bỏ nhãn "mô hình chính"** (thay quyết định 12/10), viết thành khảo sát hai encoder Mamba; (3) vá bảng 10 ms (L1, L2) trước mọi run mới; (4) **seed 43/44 × 3 mô hình 40 ms** (~32 GPU-h), tiêu chí **9.6** (bootstrap hai tầng thay điều 4a/5 của review 2.3); (5) không CR-CTC/BPE3000, chỉ bảng phụ giải mã; (6) **trục GPU-giờ: chỉ báo cột GPU-h + đường WER theo GPU-h, không train bù** (đóng 9.4 điều 10; khai sự cố 13/10); (7) chấm Parakeet FT trên clean-test (gộp L2); (8) gõ mù ~20 câu; (9) chất lượng nhãn gộp RQ3; (10) **đóng băng GPU 25/10** (dự phòng 01/11 chỉ cho run seed lỗi); (11) kiểm `normalize_text`/`alt_spellings`, đổi thì chấm lại toàn bộ một lần; (12) commit file chưa track sau rà repo public. **10 ms: 1 seed, không cổng seed** (người dùng loại đề xuất cổng của AI) | Người dùng ~08:20, trước khi xem WER relPE 10 ms; `conextbimamba_gap_2026-10-12.md` mục 9.6 |
+| 2026-10-16 | **Không gõ mù 20 câu** (thay #8 vừa chốt): mức neo nhãn không đo; khai hạn chế bằng số đã có (ô hiệu đính điền sẵn nhãn giả; 80/113 câu đầu giữ y nhãn giả; bản hiệu đính cách nhãn giả 1,5–1,8% WER; một người hiệu đính) | Người dùng ~08:45 |
 
-## 5. Quyết định đang mở / treo / rủi ro đã biết
+## 5. Quyết định đang mở / rủi ro đã biết
+
+12 quyết định sau rà soát 15/10: **đã chốt 2026-10-16** (mục 4).
 
 | Trạng thái | Vấn đề | Chi tiết |
 |---|---|---|
-| 🔴 Chờ viết + GVHD duyệt | **Đề cương mới** (mục tiêu, đội hình, RQ, lộ trình theo mục 1-2) — trước buổi Tuần 9 | `docs/notes/gvhd_buoi_1.md`; mục 1-2 ở trên là bản làm việc |
-| 🟡 AI đã đề xuất → chờ người dùng duyệt | **Tiêu chí "đủ tốt để giữ"** cho 3 mô hình sau train thử (giữ 2 hay 3) — phải duyệt **trước** khi chạy kernel | `docs/notes/lineup_preparation.md` mục Train thử |
-| 🟡 Chờ người dùng xác nhận | 4 lệch bài của ConExtBiMamba (ffn 928, khởi tạo A S4D-Real, không chia `out_proj`, xoá padding trước conv) | `lineup_preparation.md` mục 5 |
-| 🟡 Chờ AI đề xuất → người dùng duyệt | Các mức độ dài audio ghép cho RQ2 | `TODO.md` RQ2 |
-| 🟡 Chờ người dùng xác nhận | Thiết lập AI tự chọn: `out_proj` chia √28; greedy không LM; chữ số giữ nguyên; đo RTF batch 1 fp16; vị trí dropout trong khối Mamba; 10 time mask (NeMo gợi ý ít hơn cho mô hình nhỏ — núm chỉnh nếu hội tụ chậm) | `docs/notes/frontend_decoder_survey.md` |
-| ⚠️ Rủi ro | Parakeet chưa chắc chạy được trên T4/NeMo; dữ liệu pre-train có thể trùng VietSuperSpeech (rò rỉ) | `lineup_preparation.md` mục 4; dự bị PhoWhisper |
-| ⚠️ Rủi ro | `train.py` mới chưa chạy trên GPU (DDP/NCCL/SyncBN/AMP), Mamba chưa chạy CUDA thật sau B1 | Kiểm ở bước đầu kernel train thử |
-| ⚠️ Việc tay | 5 Kaggle Dataset trên UI + chia sẻ tài khoản B; hiệu đính 203 câu clean-test | `TODO.md` 🟡 bước 5, 🟢 |
-| ⚠️ Biết, chưa xử lý | `notebooks/02_dataset_eda.ipynb` nhúng audio YouTube trong repo **public**, có cả trong lịch sử git | Người dùng chọn bỏ qua (2026-09-19). Chưa kiểm license VietSuperSpeech |
-| ⚠️ Chưa quyết | Tên người thứ ba + MSSV trong tên file TLCN (còn trong lịch sử git); xoá cần viết lại lịch sử + force push | Chỉ làm khi người dùng yêu cầu |
+| 🔴 | Đề cương mới chưa gửi/duyệt; đã quá 2 tuần chưa gặp GVHD | mục 6; Mẫu 3 |
+| 🔴 | Quyển chưa có Ch2/Ch3 | mục 2 lịch viết |
+| ✅ | Output Conformer relPE 10 ms còn đủ (38/38, returncode 0, `epoch37.pt` trên Kaggle B) — 16/10 | `reports/results/train_full/v2a-conformer-relpos/s3/` |
+| ⚠️ | Kernel kẹt cấp máy Kaggle (3 lần) | huỷ → quota hoàn |
+| ⚠️ | Dữ liệu pre-train Parakeet có thể trùng VietSuperSpeech; card không nêu | chỉ khai |
+| ⚠️ | Notebook EDA nhúng audio; `.docx`/file TLCN trong lịch sử git | chỉ xử lý khi người dùng yêu cầu |
+| ⚠️ | `docs/de_cuong/*.docx` trên đĩa khác bản commit; bản nào đã nộp (Q4 cũ) | người dùng xác nhận |
 
 ## 6. Khóa luận (bản viết) và làm việc với GVHD
 
-Bản khóa luận viết theo các biểu mẫu của khoa (Mẫu 0/3/5, ban hành 2018, lưu ở
-`docs/bieu_mau/` trên máy + Drive). Đề cương chỉ ghi Tuần 14
-(Chương 1-4) và Tuần 15 (Mở đầu, Kết luận, TLTK, nộp GVHD); Mẫu 3 dặn *"vừa
-làm vừa viết"* và Mẫu 5 yêu cầu **50-100 trang** nội dung → viết song song theo
-chương từ sớm (đề xuất được người dùng đồng ý 2026-09-19; không đổi kế hoạch đã
-đăng ký). **Đã dựng file khung + bản nháp Chương 1 (2026-09-21)** — xem nhật ký.
+Viết theo biểu mẫu khoa (Mẫu 0/3/5, 2018, `docs/bieu_mau/` trên máy + Drive). Mẫu 3 dặn *"vừa làm vừa viết"*, Mẫu 5
+yêu cầu **50–100 trang** → viết song song theo chương. File Word `docs/khoa_luan/KhoaLuan_Mamba_vs_Conformer_ASR.docx`
+(gitignore, sao lưu Drive) là **bản làm việc duy nhất**; script sinh đã bỏ, đừng dựng lại. Mục lục đề xuất:
+`docs/khoa_luan/muc_luc_de_xuat.md` (Ch2 = vì sao thiết kế, Ch3 = đã đo gì; ~66–80 trang). Nháp hiện có:
+`ch1/`, `ch1_kiem_trich_dan.md`, `ch2_nhap.md`, `ch3_dulieu_phuongphap_nhap.md`.
 
-**Lưu ở đâu:** Word `.docx` (+ xuất PDF) trong `docs/khoa_luan/` trên máy
-(gitignore, không lên GitHub), sao lưu Drive `specialized-thesis/khoa_luan/`.
-Chỉ giữ **một bản làm việc** để khỏi lệch. Hình/bảng số liệu vẫn sinh từ code
-vào `reports/`, rồi mới chèn vào Word.
+| Phần | Lấy từ | Trạng thái |
+|---|---|---|
+| Mở đầu | đề cương mới | ⬜ khung |
+| Ch1 Cơ sở lý thuyết | nháp ~9 trang; sửa theo `ch1_kiem_trich_dan.md` | 🔄 |
+| Ch2 Phương pháp và thiết kế | `ch2_nhap.md`, `ARCHITECTURE.md`, note gap 9.4 | ⬜ |
+| Ch3 Thực nghiệm | `ket_qua_cuoi_khung_2026-10-15.md`, `reports/` | ⬜ dựng khung ngay |
+| Ch4 Demo và tổng kết | `src/demo/` | ⬜ |
+| Kết luận, TLTK, Phụ lục | — | ⬜; TLTK ghi dần, đối chiếu nguồn |
 
-### Cấu trúc và mốc viết (theo đề cương; cột "khi nào" là đề xuất)
+**Hình thức (Mẫu 5):** A4, Times New Roman, dãn 1,5; lề trên/dưới/phải 2 cm, trái 3 cm; số trang giữa dưới; chương
+14 HOA đậm giữa · mục 1 13 HOA đậm · mục 2 13 đậm · mục 3 13 nghiêng · nội dung 13 · bảng 12 · tên bảng 11 đậm trên
+bảng · tên hình 11 đậm dưới hình · TLTK 11. Thứ tự quyển: bìa chính → bìa phụ → nhận xét GVHD → GVPB → cám ơn →
+**đề cương có chữ ký** → mục lục → danh mục → tóm tắt → Mở đầu/Nội dung/Kết luận → TLTK → Phụ lục.
 
-| Phần | Lấy từ | Khi nào | Trạng thái |
+**Khi nộp (Mẫu 3, 5):** GVHD duyệt trước khi in; 2 cuốn bìa mềm + 2 CD (`<Tên phần mềm>/{SETUP,SOURCE}`,
+`THESIS/{DOC,PDF}`, `REF`, `SOFT` — `SETUP` cần checkpoint ep37 khớp báo cáo → sao lưu Drive trước); bảo vệ ~15′ +
+demo 5′ + hỏi đáp ~10′; sau bảo vệ sửa theo hội đồng, nộp lại.
+
+**Nhật ký gặp GVHD** (≤ 2 tuần/lần, GVHD ký logbook; người dùng cung cấp, AI không tự điền):
+
+| Ngày gặp | Đã báo cáo | GVHD dặn | Hẹn buổi sau |
 |---|---|---|---|
-| Mở đầu | Phần Mở đầu trong đề cương | Dựng khung sớm, hoàn thiện Tuần 15 | 🔄 khung 6 mục, chưa có nội dung |
-| Ch1 Cơ sở lý thuyết | `docs/notes/mamba_versions.md`, tài liệu đã đọc Tuần 1-2 | Từ nay đến Tuần 7 (không phụ thuộc kết quả) | 🔄 bản nháp đầu, chờ rà |
-| Ch2 Phân tích và thiết kế hệ thống | `ARCHITECTURE.md`, `docs/CONVENTIONS.md` | Tuần 6-7 (lúc chờ máy train) | ⬜ (đã có khung mục) |
-| Ch3 Thực nghiệm và đánh giá | `reports/`, `docs/notes/dataset_discrepancy.md`, `survey_model_candidates.md` mục 6 (A1), `frontend_decoder_survey.md` | Mô tả dữ liệu viết được ngay (A1, RQ2 đã chốt); chèn kết quả sau Tuần 10, 12, 13 (mục 2) | ⬜ |
-| Ch4 Ứng dụng minh họa và tổng kết | `src/demo/` | Tuần 14 | ⬜ |
-| Kết luận, Tóm tắt, Phụ lục | — | Tuần 15 | ⬜ |
-| Tài liệu tham khảo | — | **Ghi dần từ bây giờ** (chỉ liệt kê tài liệu thực sự được trích dẫn) | 🔄 12 mục, chưa đối chiếu nguồn |
+| Tuần 6 (≈ 2026-10-01), lần 1 | Tiến độ Tuần 4–5, câu hỏi A1–A4/B1/C1–C4 | Đổi sang khảo sát, Mamba trọng tâm, thêm mô hình pre-train + baseline, nhận xét theo đánh đổi; A1 tự quyết; **"đừng ôm đồm"**; sẽ sửa đề cương. `gvhd_buoi_1.md` | Tuần 9 (19–25/10) — chưa có ngày |
+| (thư 08/10: báo cáo lần 2, xin đổi tên đề tài, xin báo cáo sớm) | người dùng tự gửi | ⛔ đã trả lời chưa? | — |
 
-### Hình thức (Mẫu 5, tóm tắt)
-
-- A4 dọc, Times New Roman, dãn dòng 1,5; lề trên/dưới/phải 2 cm, trái 3 cm; số
-  trang giữa bên dưới. Chương/mục đánh số Ả-rập (`2.1`, `2.1.1`), không dùng La Mã.
-- Cỡ chữ: tên chương 14 (HOA, đậm, giữa) · mục 1: 13 (HOA, đậm, trái) · mục 2:
-  13 (thường, đậm) · mục 3: 13 (thường, nghiêng) · nội dung 13 (đều 2 bên) ·
-  bảng 12 · tên bảng 11 đậm (giữa, **trên** bảng) · tên hình 11 đậm (giữa,
-  **dưới** hình) · chú thích bảng 10 nghiêng · TLTK 11.
-- Thứ tự trong quyển: bìa chính → bìa phụ → nhận xét GVHD → nhận xét GVPB →
-  lời cám ơn → **đề cương chi tiết có chữ ký GVHD** → mục lục → danh mục hình/
-  bảng/ký hiệu → tóm tắt → Mở đầu / Nội dung / Kết luận → TLTK → Phụ lục.
-- Nên dựng ngay file Word với style Heading 1/2/3 đúng cỡ chữ trên, để viết
-  đến đâu đúng hình thức đến đó.
-
-### Danh sách kiểm tra khi nộp (Mẫu 3, 5)
-
-- [ ] GVHD duyệt lần cuối **trước** khi in đóng bìa.
-- [ ] 2 cuốn bìa mềm bao phim + 2 CD/DVD dán bìa sau, nhãn đĩa đúng mẫu.
-- [ ] CD có: `<Tên phần mềm>/{SETUP,SOURCE}` · `THESIS/{DOC,PDF}` · `REF` ·
-      `SOFT` · file hướng dẫn + thông tin liên lạc. `SETUP` cần dữ liệu thử
-      khớp kết quả báo cáo → **sao lưu `best.pt` của cả hai thí nghiệm ra khỏi
-      Kaggle lên Drive** trước khi hết đợt.
-- [ ] Đề cương chi tiết có chữ ký đóng vào quyển.
-- [ ] Bảo vệ: trình bày ~15 phút (tối đa 20) + chạy thử 5 phút + hỏi đáp ~10
-      phút; hội đồng ≥3 người chấm theo rubric (Mẫu 2), lệch >1,5 điểm thì
-      thương thảo lại.
-- [ ] Sau bảo vệ: sửa theo hội đồng, in lại, có trang nhận xét GVHD/GVPB (GVPB ký
-      xác nhận đã sửa), nộp lại quyển + CD.
-
-### Nhật ký gặp GVHD (Mẫu 0/3: gặp **tối đa 2 tuần/lần**, GVHD ký logbook)
-
-Không báo cáo định kỳ có thể bị coi như không làm luận văn (Mẫu 3). Sổ logbook
-giấy do GVHD giữ; bảng này chỉ để không quên lịch và để phiên sau biết GVHD
-đã dặn gì. Người dùng cung cấp thông tin, AI không tự điền.
-
-| Ngày gặp | Đã báo cáo | GVHD dặn / quyết định | Hẹn buổi sau (≤ 2 tuần) |
-|---|---|---|---|
-| Tuần 6 (≈ 2026-10-01) — buổi báo cáo lần 1 | Tiến độ Tuần 4-5, câu hỏi A1-A4/B1/C1-C4 (`docs/tong_ket/2026-09-30/`) | **Đổi định hướng:** khảo sát so sánh nhiều mô hình, Mamba là trọng tâm; đối chứng không cần giống hệt, Conformer nên dùng bản pre-train + fine-tune; thêm 2-3 mô hình khác + 1 baseline; nhận xét theo đánh đổi độ chính xác/tốc độ/tài nguyên. A1 nhãn tiếng Anh: "tự đọc rồi làm" (xét theo ngôn ngữ pre-train). "Đừng ôm đồm". **Sẽ sửa đề cương** (bản mới). Chi tiết `docs/notes/gvhd_buoi_1.md` | Dự kiến **Tuần 9** (> 2 tuần — lưu ý Mẫu 3) |
-
-**Câu hỏi nên hỏi ở buổi gặp tới:** (1) báo cáo RQ2 đã chốt phương án 2 + đổi cách
-hỏi (audio ghép nhân tạo, không đo WER audio dài) để thầy biết khi duyệt đề
-cương mới (`docs/notes/dataset_discrepancy.md`); (2) hình thức nộp hiện hành (biểu mẫu
-ban hành 2018: bìa mềm + CD còn áp dụng không); (3) phần "thiết kế" ở Ch2 cần
-dạng nào (Mẫu 5 nhắc UML cho đề tài ứng dụng, đề tài này thiên về nghiên cứu). (4) duyệt đề cương mới theo mục 1-2 (đội hình, hai
-mức so sánh, RQ); (5) báo cáo các lựa chọn kỹ thuật có căn cứ tài liệu: giữ
-CTC, CMVN + SpecAugment, dropout Mamba (`docs/notes/frontend_decoder_survey.md`).
+**Hỏi ở buổi tới (giới hạn 3–4 câu):** duyệt đề cương mới (RQ, đội hình, hai cấu hình); dạng "thiết kế" Ch2 cho đề tài
+nghiên cứu; hình thức nộp hiện hành; tên đề tài/bìa. Trình kèm Bảng 3.1–3.2 có CI, hình RQ2, lịch viết. Không hỏi
+"có nên làm thêm X".
 
 ## 7. Nhật ký phiên (chỉ thêm vào cuối, không sửa mục cũ)
 
-Mỗi mục: làm gì · chốt gì · phiên sau bắt đầu từ đâu.
-
-### Trước 2026-09-19
-Xem `git log` (Tuần 1 → Tuần 4). Mốc chính: cài `mamba-ssm` (4 lần thử),
-khảo sát dataset, phát hiện sai lệch số liệu, prefetch script, train loop thật
-(`139f018`).
-
-### 2026-09-19
-- **Làm:** rà lại toàn bộ tài liệu gốc và tách thành bộ nguồn sự thật mới
-  (`CLAUDE.md`, `Plan.md`, `ARCHITECTURE.md`, `docs/CONVENTIONS.md`, `TODO.md`,
-  `README.md`). Đọc code thật để viết `ARCHITECTURE.md` (shape, interface,
-  bản đồ file). Rà repo public: phát hiện notebook EDA nhúng audio, tên người
-  thứ ba trong tên file; thêm rule `.gitignore`; gỡ 12 file nhị phân khỏi index.
-- **Chốt:** tài liệu nhị phân → Google Drive; bỏ qua notebook EDA; treo quyết
-  định prefetch (mục 5); khóa luận viết bằng Word ở `docs/khoa_luan/` + Drive,
-  viết song song theo chương (mục 6). Người dùng đã tự xoá file TLCN khỏi đĩa.
-- **Đã đọc biểu mẫu khoa (Mẫu 0/3/5)** để dựng mục 6: hình thức, cấu trúc quyển,
-  danh sách nộp, quy định gặp GVHD ≤ 2 tuần/lần.
-- **Phát hiện khi đọc code (chưa sửa, ghi ở `ARCHITECTURE.md` mục 8):**
-  `param_count.py` không đọc yaml; hai encoder không subsampling (T'=T, 100
-  khung/s); Mamba đơn hướng và chưa mask padding; `train.py` 1 GPU, không AMP;
-  clean-test nằm trong `validation` dùng chọn `best.pt`.
-- **Kết phiên:** đã commit local toàn bộ thay đổi tài liệu/`.gitignore`;
-  **chưa push** (GitHub vẫn hiển thị `.docx` cũ cho tới khi push).
-- **Phiên sau bắt đầu từ:** (1) upload `.docx` lên Drive, cho link để sửa link
-  trong README, rồi mới quyết định push (xem `TODO.md` 🟡); (2) tune tham số Mamba (cần sửa `param_count.py`
-  đọc yaml trước); (3) khi có quyết định: prefetch trên Kaggle; (4) **khóa
-  luận:** người dùng cho biết ngày gặp GVHD gần nhất để điền bảng ở mục 6, rồi
-  dựng file Word đúng Mẫu 5 và bắt đầu Ch1.
-
-### 2026-09-21
-- **Làm:** sửa `src/models/param_count.py` để đọc `configs/model_*.yaml` và dựng
-  encoder qua `build_encoder` của `train.py` (trước đó gọi constructor bằng
-  tham số mặc định nên chỉnh yaml không đổi kết quả). Cập nhật `CLAUDE.md`,
-  `ARCHITECTURE.md` (bảng file + mục 8-f), `TODO.md`.
-- **Test:** local (không CUDA) — Conformer theo yaml = 12.204.288, khớp số đã đo;
-  đổi `n_layers` 8→4 trong yaml tạm thì ra 6.112.512 (script thật sự đọc yaml).
-  **Nhánh Mamba chưa chạy** (cần `mamba-ssm`, chỉ có trên Kaggle).
-- **Phiên sau bắt đầu từ:** chạy `python -m src.models.param_count` trên Kaggle
-  để có số Mamba, chỉnh `configs/model_mamba.yaml` tới chênh < 5%; các mục còn
-  lại của phiên 2026-09-19 (Drive/push, prefetch, khóa luận, bảng GVHD) vẫn mở.
-- **Làm (tiếp):** viết `src/evaluation/eval_clean_test.py` — đo WER 1 checkpoint
-  trên clean-test, dùng chung cho hai encoder (`--config`), ghi
-  `reports/results/<exp>_clean_test.json` gồm ref/hyp từng câu cho RQ3. Sửa hai
-  docstring lỗi thời (`wer.py`, `vietsuperspeech_dataset.py`).
-- **Test:** chạy thật 250 câu clean-test (tải audio thật), Conformer, CPU, trọng
-  số ngẫu nhiên (`--allow_random_init`) → chạy hết pipeline, WER 4,34 (vô nghĩa,
-  chỉ chứng minh script chạy). Chưa test với checkpoint đã train (chưa có) và
-  chưa test Mamba (cần CUDA). Suy luận CPU batch 1 mất ~13 phút cho 250 câu.
-- **Chốt trong code:** reference = `corrected_text` nếu có, không thì
-  `pseudo_label` (hiện 0/250 câu đã hiệu đính); `batch_size` mặc định 1 vì
-  Mamba chưa mask padding.
-- **Ghi nhận (cuối phiên):** người dùng xác nhận hạn mức `/kaggle/working` = 20 GB,
-  nhỏ hơn ~27 GB audio → prefetch nguyên bản không vừa. Quyết định ⏸ vẫn treo,
-  chưa chọn phương án; xem `TODO.md` ⏸.
-
-### 2026-09-21 (khóa luận)
-- **Làm:** dựng file Word `docs/khoa_luan/KhoaLuan_Mamba_vs_Conformer_ASR.docx`
-  (gitignore) theo Mẫu 5: A4, Times New Roman, dãn 1,5, lề 2/2/3/2 cm, số trang
-  giữa dưới, style chương/mục đúng cỡ chữ, đánh số tự động `Chương n:` / `n.m` /
-  `n.m.k`, mục lục tự sinh, bảng viết tắt. Trang trước nội dung: bìa chính + bìa
-  phụ, chỗ đóng phiếu GVHD/GVPB, lời cám ơn, đề cương có chữ ký, mục lục, danh
-  mục, tóm tắt. Khung Mở đầu, Ch2-4, Kết luận, TLTK, Phụ lục. **Viết bản nháp
-  Chương 1** (~9 trang: ASR/log-mel/CTC, Transformer/Conformer, SSM/S4/Mamba,
-  Bảng 1.1 so sánh độ phức tạp, 12 mục TLTK).
-- **Kiểm tra:** validate schema OK; mở bằng Word, cập nhật mục lục, xuất PDF (26
-  trang) và xem lại bìa, mục lục, trang công thức, trang bảng.
-- **Chốt / lưu ý:** file Word là **bản làm việc duy nhất** — script sinh đã bỏ,
-  đừng dựng lại. Chưa điền: Bộ môn, Khóa, logo (tô vàng). Bìa ghi `Conformer`,
-  đề cương đã nộp ghi `Con-Former` — chờ người dùng/GVHD quyết định. 12 trích
-  dẫn điền từ trí nhớ AI, **chưa đối chiếu nguồn**. Ba hình (1.1-1.3) chỉ là ô
-  giữ chỗ.
-- **Phát hiện khi viết Ch1 (ghi vào bản nháp, chưa vào `ARCHITECTURE.md`):**
-  `torchaudio.models.Conformer` (2.8.0) dùng `MultiheadAttention` thường, **không
-  có mã hóa vị trí tương đối** như bài báo Conformer gốc, và encoder của dự án
-  cũng không cộng mã hóa vị trí nào → vị trí chỉ đến từ tích chập. Cùng với
-  việc không subsampling, cần thảo luận ở Ch2/Hạn chế.
-- **Phát hiện khác:** `docs/de_cuong/De_Cuong_Chi_Tiet_Mamba_ASR.docx` trên đĩa
-  ghi 67.405 mẫu/245,42 h, **khác** con số 52.023/267,39 h mà `TODO.md` 🔴 nói
-  là đề cương đã đăng ký (phạm vi vẫn ghi Colab, `dev-test`). Nhiều khả năng
-  bản trên đĩa đã được sửa tay sau khi đăng ký (khớp cảnh báo "khác bản đã
-  commit" ở `TODO.md`). Chưa sửa/kiểm chứng — người dùng cần xác nhận bản nào là
-  bản đã nộp GVHD trước khi dựa vào con số nào.
-- **Phiên sau bắt đầu từ:** sao lưu file Word lên Drive; điền bìa; rà Ch1 theo
-  đoạn tô vàng; Mở đầu chờ ý kiến GVHD; các mục treo khác (🔴 RQ2, ⏸ prefetch —
-  hạn mức Kaggle 20 GB < 27 GB) vẫn mở.
-
-### 2026-09-24
-- **Làm:** tune số tham số Mamba khớp Conformer. Không có CUDA local nên đếm
-  bằng bản sao shape của `mamba_ssm.Mamba` (đọc `mamba_simple.py` tag v2.3.1
-  trên GitHub): mỗi block 437.760 + LayerNorm 512, `input_proj` 20.736. Cấu
-  hình cũ (10 layer) chỉ 4,40 M (−64 %).
-- **Chốt (người dùng chọn):** `n_layers: 28`, `expand: 2` → 12.292.352 tham số
-  (+0,72 %). Đã sửa `configs/model_mamba.yaml`, `ARCHITECTURE.md`.
-- **Chưa kiểm chứng:** chưa chạy `param_count.py` với mamba-ssm thật; chưa chạy
-  forward/train với 28 layer (VRAM, tốc độ trên T4).
-- **Phiên sau bắt đầu từ:** trên Kaggle chạy `param_count` + vài step
-  `train.py` cho Mamba; các mục 🔴/⏸ vẫn mở.
-- **Chốt thêm (người dùng):** bỏ qua việc upload tài liệu `.docx` lên Google
-  Drive; push không còn phụ thuộc việc này. Sửa `README.md` (bỏ câu "lưu trên
-  Drive"), `TODO.md`. Mục sao lưu file Word khóa luận vẫn giữ.
-- **Push:** đã push 6 commit lên `origin/master` (`98406d9..f8d5af4`) theo yêu cầu
-  người dùng. Phiên sau: lên Kaggle `git pull` rồi chạy `param_count` + vài step
-  `train.py` cho Mamba.
-- **Kaggle từ máy local:** cài Kaggle CLI (khoá `~/.kaggle/kaggle.json` có sẵn),
-  viết `scripts/kaggle/verify_mamba.py` (build wheel `causal-conv1d` v1.5.4 +
-  `mamba-ssm` v2.3.1, `param_count`, 5 step train + eval cho cả hai encoder) và
-  gửi chạy bằng `kaggle kernels push`. `kernel-metadata.json` gitignore vì chứa
-  username. **Kết quả (kernel ~18 phút):** `param_count` 0,72% ĐẠT; smoke test 5
-  step batch 16 cả hai encoder chạy qua — Conformer 1,35 s/step, 7,76 GiB;
-  Mamba 1,29 s/step, 5,95 GiB. Build `causal-conv1d` mất ~13 phút, `mamba-ssm`
-  lấy wheel dựng sẵn. Ghi vào `mamba_ssm_install_log.md` (Lần 5).
-- **Phát hiện:** ước lượng ~80 phút/epoch → 30 epoch ≈ 40 GPU-giờ/mô hình, vượt
-  hạn mức 30 GPU-giờ/tuần. Ghi ⚠️ `TODO.md`, chưa quyết hướng xử lý (AMP / 2 GPU
-  / giảm epoch).
-- **Phiên sau bắt đầu từ:** quyết định chi phí train (mục trên) và ⏸ prefetch —
-  hai việc này cùng chặn train Conformer thật.
-- **Kết phiên:** tạo `QA.md` (9 câu hỏi mở: 3 chặn tiến độ — RQ2, prefetch, chi
-  phí train; 6 cần xác nhận), đăng ký vai trò trong `docs/CONVENTIONS.md` mục 1.
-- **Phiên sau bắt đầu từ:** đọc `QA.md` xem câu nào đã có trả lời. Nếu chưa có:
-  đề xuất đo AMP / 2 GPU / thời gian tải dữ liệu trên Kaggle (Q3, cần người
-  dùng đồng ý), hoặc làm trích dẫn + hình Chương 1. Wheel `mamba-ssm` +
-  `causal-conv1d` nằm trong output kernel `verify-mamba-asr` — tái dùng thay vì
-  build lại.
-
-### 2026-09-26
-- **Làm:** review dataset cho Q2 (người dùng yêu cầu, có tra web) →
-  `docs/notes/prefetch_storage_review.md`. Đo bằng HF API: cần đúng 67.405
-  file = **28,27 GB (26,33 GiB)**; FLAC lossless ~60,5 % (~17,1 GB, đo 300
-  file); HF rate limit 3.000 (ẩn danh)/5.000 (token) resolver/5 phút ⇒ tải
-  lại mỗi phiên tốn ≥ 67-112 phút. So sánh 5 phương án A-E, **chưa chọn**.
-- **Phát hiện (liên quan Q1/Q4):** train+dev chỉ gồm kênh **vietcetera**
-  (manifest liệt kê 4 nguồn); README card HF đã cũ (32.267 mẫu/103 h). Repo HF
-  đứng yên từ 2026-02-22 (`cbf624ae9b`), code chưa pin revision.
-- **Thảo luận tiếp (cùng phiên):** chia dữ liệu nhiều tài khoản / gộp trọng
-  số kiểu LLM (DiLoCo) → với 2 tài khoản không lợi, đề xuất mỗi tài khoản 1 mô
-  hình; nguyên nhân ~80 phút/epoch; chạy nền khi tắt máy; chia 3 shard phân
-  tầng (mô phỏng thật: lệch ≤ 0,1 điểm %); phát hiện val gần như toàn bộ từ
-  video đã có trong train (Q10); độ liền mạch các đoạn cho phương án ghép RQ2.
-- **Chốt (người dùng):** giữ không subsampling; chia train thành 3 Kaggle
-  Dataset; dùng 2 tài khoản; train chế độ nền. Ghi ở mục 4.
-- **Tổng hợp + đề xuất D1-D14 (chờ duyệt):** `docs/notes/training_plan_kaggle.md`.
-  Chưa sửa code, chưa tạo dataset.
-- **Xác nhận (người dùng):** 2 tài khoản Kaggle thuộc 2 người khác nhau → D14
-  đã giải quyết (Q11 đóng).
-- **Phiên sau bắt đầu từ:** người dùng duyệt D1-D13 (nhất là D9: chạy kernel
-  CPU + GPU benchmark). D12/D13 mang đi hỏi GVHD.
-
-### 2026-09-27
-- **Làm:** tổng hợp các câu hỏi cần thầy Dũng giải đáp vào `Report.md` (gốc
-  repo): A — cần quyết định (RQ2/Q1 → đề xuất phương án 2; val trùng video/Q10
-  → giữ split, nêu hạn chế; hạn chế kiến trúc/Q9; số epoch/Q3 → giữ 30),
-  B — hình thức (Q5, Q6), C — lệch đề cương đã xử lý. `QA.md` trỏ tới file này.
-- **Phiên sau bắt đầu từ:** ghi câu trả lời của GVHD vào `Plan.md` mục 4/6,
-  xoá mục tương ứng khỏi `QA.md`/`Report.md`; người dùng duyệt D1-D13.
-
-### 2026-09-28
-- **Làm:** giải thích D1-D11 cho người dùng; so sánh 3 vs 4 shard, các loại
-  lộ dữ liệu (giữa shard: không; clean-test trong tập chọn `best.pt`: có, D5
-  sửa; val cùng video train: có, do split gốc, D13 chờ GVHD); so sánh train
-  tập con / shard lần lượt / cộng dồn / full theo epoch.
-- **Chốt (người dùng):** D1-D11 đồng ý, D3 đổi sang **4 shard**; D4/D5 đồng ý
-  với điều kiện minh bạch (ghi rõ val trừ clean-test ở Chương 3); **train full,
-  đánh giá theo epoch**. Ghi ở mục 4 và `docs/notes/training_plan_kaggle.md` mục 5.
-- **Làm (tiếp):** kernel CPU `check-env-asr` chạy xong trên Kaggle (kết quả ở
-  `docs/notes/training_plan_kaggle.md` mục 5); viết kernel GPU benchmark
-  `scripts/kaggle/benchmark/benchmark.py` (AMP giữ front-end log-mel fp32),
-  dry-run CPU nhánh không-AMP qua (265 s/step trên CPU — chỉ để kiểm luồng
-  code). `.gitignore` đổi thành `scripts/kaggle/**/kernel-metadata.json`.
-- **Phiên sau bắt đầu từ:** người dùng đồng ý → chạy benchmark GPU (~30-40
-  phút quota), rồi chọn tăng tốc theo D8 và sửa code dùng chung (bước 3).
-
-### 2026-09-30
-- **Làm:** chạy kernel GPU `benchmark-asr` (người dùng đồng ý; ~16 phút
-  quota, lần đầu lỗi vì đường dẫn wheel `kernel_sources` đổi thành
-  `/kaggle/input/notebooks/<user>/<kernel>/` → sửa tìm đệ quy). Kết quả đủ 8
-  cấu hình: `docs/notes/training_plan_kaggle.md` mục 5. Viết + chạy full
-  `src/data/make_shards.py` → `data/splits/` (4 shard × 15.164 câu + val
-  6.499; mọi kiểm tra đạt, `--check` đọc lại đạt). Thêm hằng số `HF_REVISION`
-  vào `vietsuperspeech_dataset.py` (chưa dùng trong Dataset). Viết kernel CPU
-  `scripts/kaggle/make_dataset/make_dataset.py`, test local 20 file thật.
-- **Chờ người dùng (D8):** cả hai encoder phải cùng cấu hình train.
-  (a) AMP, 1 GPU: Conformer 17,7 h, Mamba 32,1 h (> 30 h/tuần → Mamba sang
-  tuần 2); huấn luyện giống hệt fp32 1 GPU về batch/BN. (b) AMP + DDP 2 GPU:
-  Conformer 24,4 h, Mamba 15,0 h, cả hai vừa quota; nhưng BN của Conformer
-  tính trên 8 câu/GPU (cần SyncBatchNorm để tương đương) và Conformer chậm đi
-  chưa rõ lý do. (c) đo thêm DDP (SyncBN, ít worker/GPU) ~10 phút quota rồi
-  mới chọn. **AI đề xuất (c)** rồi nghiêng về (b) + SyncBN nếu Conformer DDP
-  không chậm hơn 1 GPU; mọi số giờ chưa tính eval + đọc `/kaggle/input`.
-- **Cũng chờ:** `PACK_TAR` cho kernel tạo dataset; commit + push manifest.
-- **Phiên sau bắt đầu từ:** quyết định D8 → sửa code dùng chung (bước 3);
-  push manifest → chạy `make_dataset` 5 lần.
-- **Làm (tiếp):** rà khuyến nghị tác giả Mamba (bài báo + README + mã nguồn
-  mamba-ssm v2.3.1) so với code. Đã đúng: tính lại trạng thái ở backward
-  (kernel tự làm), tham số fp32 + autocast, khởi tạo Δ/A. **Sửa (người dùng
-  duyệt):** miễn weight decay `A_log`/`D` (`build_optimizer`, code dùng chung —
-  Conformer không đổi, kiểm từng bit), `norm_f`, chia `out_proj` cho
-  √n_layers, residual fp32. Tham số Mamba 12.292.864 (+0,73%). Xác nhận không
-  mask padding là đúng với Mamba đơn hướng. Xem xét tài liệu người dùng dán về
-  "khuyến nghị của tác giả": LR riêng cho Δ là thực hành của S4, không phải
-  mamba-ssm; document packing không áp dụng cho ASR theo câu — không đổi code.
-- **Phiên sau (bổ sung):** chạy khối Mamba thật trên Kaggle cùng lần GPU kế tiếp.
-- **Làm (tiếp):** D8 phương án (c) — người dùng chọn. Benchmark lần 2 xong
-  (kernel v4, ~13 phút; v3 hỏng do AI quên nhúng yaml, mất ~9 phút). Bảng ở
-  `training_plan_kaggle.md` mục 5. Khối Mamba thật với các sửa hôm nay chạy
-  được, tham số 12.292.864. Máy GPU: 4 lõi CPU, `/tmp` trống 1,1 TB.
-- **Đề xuất chờ duyệt:** D8 = cả hai encoder DDP 2 GPU + SyncBN + AMP
-  (Conformer 23,2 h, Mamba 16,0 h); `PACK_TAR = True`, giải nén vào `/tmp`.
-- **Phiên sau bắt đầu từ:** người dùng duyệt D8 + `PACK_TAR` + commit/push →
-  sửa code dùng chung (bước 3), chạy `make_dataset` 5 lần.
-- **Chốt (người dùng):** D8 = 2 GPU + SyncBN + AMP; `PACK_TAR = True`; commit
-  + push (mục 4).
-- **Commit + push (người dùng yêu cầu):** `64dc53a` (sửa theo khuyến nghị
-  Mamba), `256396c` (manifest, kernel Kaggle, chốt D8/tar). Lệnh push đã chạy
-  xong trước khi người dùng kịp huỷ để yêu cầu kiểm tra khoá; quét *sau* push
-  toàn bộ 61 file trên GitHub: không có khoá Kaggle/Claude/HF/GitHub, không có
-  username Kaggle (metadata kernel vẫn gitignore). **Từ nay quét nội dung
-  trước mỗi lần push.** Commit cập nhật tiến độ này quét trước rồi mới push.
-- **Phiên sau bắt đầu từ:** chạy `make_dataset` (CPU, sửa `PART`) lần lượt 5
-  phần → tạo Dataset từ output, chia sẻ sang tài khoản B; song song sửa code
-  dùng chung bước 3 (D5, D7, D8, D10) cho cả hai encoder.
-- **Chốt cuối phiên (người dùng):** RQ2 **không chặn train** — cả 4 phương án
-  chỉ đổi phần đo RTF sau train (RTF không phụ thuộc trọng số, đo được song
-  song lúc train). Cứ tạo dataset + train; buổi gặp GVHD tới hỏi thêm "RQ2 chỉ
-  cần RTF hay cần cả WER trên audio dài?" (ghi ở 🔴 `TODO.md`).
-- **Đóng phiên 2026-09-30.** Quota GPU đã dùng hôm nay ~38 phút (benchmark v1
-  lỗi ~1, v2 ~15, v3 lỗi ~9, v4 ~13). GitHub ở `93c8132`; `Plan.md`/`TODO.md`
-  có sửa sau commit đó (mục này + ghi chú RQ2) — chưa commit.
-- **Phiên sau bắt đầu từ:** (1) push kernel `make_dataset` với
-  `PART = "train_shard0"` (CPU, ~40 phút), kiểm output tar → tạo Kaggle
-  Dataset private, lặp cho shard1-3 + val; hỏi cách chia sẻ sang tài khoản B
-  (D6). (2) Song song: sửa code dùng chung bước 3 (val trừ clean-test,
-  `--max_minutes` + checkpoint theo step, DDP + SyncBN + AMP, giải nén tar vào
-  `/tmp/audio_cache`, pin `HF_REVISION`) cho cả hai encoder. (3) Chạy thử
-  `train.py` `main()` trên Kaggle (tốn GPU → hỏi trước).
-
-### 2026-09-30 (tổng kết)
-- **Làm:** rà lại toàn bộ dự án (TODO, Plan, ARCHITECTURE, notes, git log) và
-  viết bản tổng kết tiến độ + dashboard HTML mô phỏng kết quả cuối (RQ1/RQ2/RQ3)
-  vào `docs/tong_ket/2026-09-30/` (ban đầu tạo ngoài repo, người dùng yêu cầu chuyển vào; chưa commit). Số trên
-  dashboard có nhãn "Mô phỏng" là số giả lập để hình dung bố cục Chương 3,
-  **không** dùng trong khóa luận. Không đổi code.
-- **Phiên sau bắt đầu từ:** như mục 2026-09-30 ở trên (kernel `make_dataset`
-  5 lần; sửa code dùng chung bước 3).
-- **Làm (tiếp):** theo yêu cầu người dùng (buổi gặp GVHD đầu tiên sau 6 tuần),
-  hỏi đáp rồi dựng `docs/tong_ket/2026-09-30/trinh_bay_gvhd.html` (trang cuộn:
-  đề tài, sản phẩm cuối, bản phác demo Gradio đầy đủ, luồng, kiến trúc, dữ liệu,
-  huấn luyện, mục lục khóa luận, tiến độ, hạn chế) và `cau_hoi_gvhd.html` (9
-  câu: A1-A4 thiết kế thí nghiệm, B1 lệch đề cương, C1-C4 hình thức; có ô ghi
-  quyết định). `docs/tong_ket/` đưa vào `.gitignore` (người dùng chọn).
-- **Phát hiện:** ~19,4% transcript train và 58/250 câu clean-test là tiếng Anh
-  phiên sai → 🔴 mới trong `TODO.md`, có thể chặn train nếu GVHD chọn lọc.
-- **Phiên sau bắt đầu từ:** ghi câu trả lời của GVHD (nút "Chép tất cả câu trả
-  lời" trên trang câu hỏi) vào `Plan.md` mục 4/5, `TODO.md`, `QA.md`; rồi tiếp
-  kernel `make_dataset` + sửa code dùng chung.
-
-### 2026-10-01
-- **Làm:** phiên hỏi đáp để người dùng hiểu kỹ dự án (chặng 1 bức tranh lớn,
-  chặng 2 CTC, tiền xử lý, kiến trúc; so sánh ASR vs TTS). In cấu trúc Conformer
-  thật từ code (tham số từng khối). Vẽ 2 hình cho báo cáo/khóa luận:
-  `reports/figures/kien_truc_tong_the.{svg,png}`,
-  `reports/figures/khoi_conformer_vs_mamba.{svg,png}` (PNG ×2 để chèn Word).
-  Thêm `mamba_tong_the.{svg,png}` (Mamba-CTC phóng to 3 tầng: mô hình → khối
-  Mamba → quét S6 kèm công thức) và `kien_truc_tung_lop.{svg,png}` (AI hiểu
-  nhầm yêu cầu "từng layer"; người dùng chưa quyết giữ hay xoá).
-- **Ghi nhận mới (chưa quyết):** Mamba không dropout vs Conformer 0,1; không
-  CMVN — `TODO.md` ⚠️.
-- **Phiên sau bắt đầu từ:** tiếp hỏi đáp (chặng 5 khớp tham số → 8 đánh giá)
-  nếu người dùng muốn; các mục của 2026-09-30 vẫn mở.
-- **Đánh giá đề cương** (người dùng yêu cầu, chỉ đọc 2 file `.docx`, không sửa):
-  điểm mạnh là thiết kế ablation; vấn đề chính: số liệu dữ liệu sai và hai bản
-  mâu thuẫn, Mamba một chiều là biến gây nhiễu chưa nêu, TLTK chỉ 3 mục, tuyên
-  bố mới lạ quá mạnh, taxonomy RQ3 chưa vận hành được ("nhiễu nền" là nguyên
-  nhân, thiếu "dấu thanh"), không có kiểm định thống kê (gợi ý bootstrap CI).
-  Chưa ghi thành file — chỉ mục Mamba một chiều được ghi (dưới).
-- **Chốt (người dùng):** ghi nhận nghi vấn Mamba một chiều, **cân nhắc hai
-  chiều** → `docs/notes/mamba_bidirectional.md`, 🔴 `TODO.md`, mục 5. Chưa đổi
-  code.
-
-
-### 2026-10-01 → 2026-10-02 (sau buổi GVHD lần 1)
-- **Ghi ý kiến GVHD** (Tuần 6, buổi sau dự kiến Tuần 9): đổi định hướng sang
-  **khảo sát**, Mamba là trọng tâm, đối chứng không cần giống hệt, Conformer nên
-  pre-train; "đừng ôm đồm"; A1 người dùng tự quyết; **sẽ sửa đề cương** (bản
-  mới). `docs/notes/gvhd_buoi_1.md`.
-- **Tra ứng viên** → `docs/notes/survey_model_candidates.md`. Loại
-  `kyle/vi-asr-fastconformer-114m` (đã train trên VietSuperSpeech) và Zipformer-30M
-  (sinh nhãn, license ND). Đính chính: nhãn hỏng là chuỗi giả tiếng Anh (không
-  phải âm tiết Việt); Parakeet là Việt–Anh CS (không phải chỉ tiếng Việt).
-- **Chốt (người dùng 2026-10-02):** đội hình 5 mô hình; Mamba hai chiều B1;
-  duyệt thay đổi phép đo (mục 4).
-- **A1:** người dùng hỏi căn cứ ngưỡng 20% → **không có căn cứ tài liệu**, AI tự
-  đặt; số liệu: phân bố hai đỉnh, ngưỡng 10-50% chỉ đổi ~1.100 câu; chưa chứng
-  minh audio là tiếng Anh. Kiểm bằng cột ngôn ngữ audio khi hiệu đính
-  clean-test. Chưa chốt lọc.
-- **3 tác nhân song song:**
-  1. Mamba B1 xong (`mamba_encoder.py`, yaml `n_layers: 14`, `bidirectional:
-     true`): 12.285.696 tham số, 6 test CPU khối giả đạt; `out_proj` chia √28
-     (tác nhân tự quyết, AI đồng ý — người dùng chưa xác nhận). Benchmark lần 3
-     (`CHECK_CODE` + đo Mamba B1) sửa sẵn, **chưa chạy**.
-  2. Kernel `scripts/kaggle/zero_shot/` (Parakeet, PhoWhisper-small,
-     wav2vec2-base-vi; greedy không LM; WER 2 mức + RTF + VRAM) chạy thật CPU
-     local 4 câu cả 3 mô hình, **chưa chạy Kaggle** (~0,5 GPU-h). Code dùng
-     chung mới: `src/evaluation/text_normalize.py`, `wer.py` tự chuẩn hóa (WER
-     cũ không đổi). Card Parakeet không liệt kê T4.
-  3. Tạo 5 dataset: 5 kernel CPU riêng `make-dataset-asr-{shard0..3,val}`; lúc
-     đóng phiên 4/5 COMPLETE, shard2 RUNNING; **chưa kiểm log, chưa tạo Dataset**
-     (tác nhân dừng giữa chừng khi đóng phiên).
-- **Chưa commit/push** (người dùng chưa duyệt). Benchmark + zero-shot cần push
-  code lên GitHub trước (kernel clone repo).
-- **Phiên sau bắt đầu từ:** (1) xin duyệt commit + push + chạy 2 kernel GPU;
-  (2) kiểm log 5 kernel `make-dataset-asr-*` (đủ số file, 16 kHz, duration),
-  tạo 5 Kaggle Dataset từ output (có thể phải qua UI); (3) cập nhật mục 1 +
-  lộ trình mục 2 + `CLAUDE.md` theo định hướng khảo sát; (4) khung đề cương mới
-  trước Tuần 9.
-- **Bổ sung sau khi đóng phiên (2026-10-02):** đã commit `df72f11` (chưa
-  push). 5 kernel `make-dataset-asr-*` đều COMPLETE, kiểm đạt (0 lỗi tải dù
-  32-40 lỗi HTTP 429/shard được retry tự xử lý). CLI/API không tạo được Dataset
-  từ output kernel → người dùng tạo trên UI (hướng dẫn ở `TODO.md` bước 5).
-
-### 2026-10-03
-- **Đầu phiên:** rà trạng thái; chỉ ra `TODO.md` lệch thực tế (commit `df72f11`
-  đã có, code Mamba B1 đã xong). Người dùng xóa 8 hình trong `reports/figures/`
-  (chưa từng commit; không dùng được). Còn trỏ tới hình: `docs/tong_ket/2026-09-30/bao_cao_gvhd.html`
-  (báo cáo đã gửi, giữ nguyên), `docs/notes/mamba_bidirectional.md` dòng 51.
-- **A1 — nguyên nhân nhãn sai:** nhãn do Zipformer chỉ-tiếng-Việt sinh; gặp
-  audio nước ngoài thì ghép mảnh từ Latin trong vocab thành chuỗi giả tiếng
-  Anh. Nhãn hỏng dồn theo video (97% trong 150 video, toàn phỏng vấn khách nước
-  ngoài). Người dùng nghe mẫu đầu/giữa/cuối 149 video (`data/raw/en_video_samples/`,
-  gitignore) → đúng tiếng Anh; nghe 30 câu hỏng còn sót → train#15087 là
-  **tiếng Nhật** (nhãn cả video sai, kể cả câu trông như tiếng Việt).
-- **LID trên audio:** kernel `scripts/kaggle/lid/lid.py` (`tieunhi/lid-asr`, gắn
-  output 5 kernel `make-dataset-asr-*` làm `kernel_sources`, đọc tar tuần tự),
-  Whisper-small, 67.405 đoạn, ~65 phút T4 (gấp đôi ước). Khớp mọi nhóm đã nghe.
-  **Chốt C ∩ L** (mục 4) → `src/data/filter_language.py` → `data/splits/excluded.tsv`
-  (13.733 đoạn). `lid.csv` ở `data/processed/` (không track).
-- **RQ2 (vẫn chờ GVHD, AI chỉ phân tích):** đoạn liền số seg không liền thời
-  gian; ghép vẫn hợp lệ cho RTF/VRAM theo độ dài, không đo được WER audio dài
-  vì validation rải từ chính video train (chi tiết `TODO.md` 🔴 RQ2).
-- **Đã push `df72f11`; commit `9d137a7`** (A1, chưa push).
-- **Train lại tokenizer BPE** trên 48.340 nhãn đã lọc (người dùng duyệt):
-  121/1000 piece đổi (bỏ mảnh giả tiếng Anh, thêm âm tiết Việt), vocab và số
-  tham số không đổi; Conformer train thật 2 bước CPU đạt; Mamba chưa test
-  (CUDA). Chưa commit.
-- **Lịch phiên sau (theo thứ tự; ⛔ = cần người dùng duyệt trước):**
-  1. ⛔ **Push** `9d137a7` + commit tokenizer — mọi kernel Kaggle clone repo,
-     không push thì kernel chạy code/tokenizer cũ.
-  2. **Bước 3 — sửa code dùng chung** (việc lớn nhất, cả hai encoder):
-     `VietSuperSpeechDataset` dùng `HF_REVISION` + đọc `data/splits/*.tsv` + bỏ
-     `excluded.tsv`; `eval_clean_test` chỉ 192 câu; DDP `torchrun` + SyncBN +
-     AMP fp16 (front-end fp32); `DistributedSampler.set_epoch`; `--max_minutes`
-     + checkpoint theo step, resume giữa epoch; giải nén tar vào
-     `/tmp/audio_cache`. Kiểm: Conformer vài step thật trên CPU local.
-  3. **Kernel zero_shot:** đổi sang một mức WER trên 192 câu (đọc `excluded.tsv`).
-  4. ⛔ **Kernel GPU benchmark lần 3** (~15 phút): Mamba B1 chạy CUDA thật +
-     code bước 3 + tokenizer mới; đo lại `param_count` Mamba.
-  5. ⛔ **Kernel GPU zero_shot** (~0,5 GPU-h): Parakeet/PhoWhisper/wav2vec2 trên
-     192 câu; xác nhận Parakeet chạy trên T4.
-  6. **Tài khoản B:** thử gắn output kernel của A (`kernel_sources`); không được
-     thì người dùng tạo 5 Dataset trên UI rồi chia sẻ.
-  7. **Viết:** `Plan.md` mục 1-2, `CLAUDE.md` (luật "chỉ encoder khác nhau"),
-     `README.md` theo định hướng khảo sát; khung đề cương mới (trước Tuần 9).
-  - Chờ người dùng/GVHD, không tự làm: RQ2 (phân tích đã có ở `TODO.md`);
-    xác nhận `out_proj` chia √28, greedy không LM, chữ số giữ nguyên, batch 1
-    fp16; dropout Mamba / CMVN (phải quyết trước train).
-
-### 2026-10-04
-- **Đầu phiên:** `master` đi trước origin 2 commit (`9d137a7`, `a4fe49e`) chưa
-  push; tài liệu 10-03 chưa commit. Theo lịch, làm bước 3 (code dùng chung) —
-  push để cuối phiên hỏi duyệt.
-- **Bước 3 xong (code, chưa commit):** dataset đọc manifest + bỏ `excluded.tsv`
-  + `HF_REVISION` + `AUDIO_CACHE_DIR` từ env; `train.py` viết lại (DDP/SyncBN/AMP,
-  sampler resume giữa epoch, `--max_minutes`, checkpoint 20 phút, eval chia GPU);
-  `extract_audio.py`; `eval_clean_test` 192 câu. Chi tiết + kết quả test ở
-  `TODO.md` bước 3.
-- **Người dùng hỏi decoder / log-mel → AI tra tài liệu, người dùng duyệt cả 5
-  đề xuất** (mục 4, `docs/notes/frontend_decoder_survey.md`): giữ CTC, CMVN
-  toàn cục, SpecAugment, dropout Mamba 0,1, giữ B1. Đã code + test CPU.
-- **Phát hiện:** `load_dataset` ~45 s/lần kể cả cache (lần đầu ~2 phút) →
-  làm ấm cache rồi `HF_HUB_OFFLINE=1` (0,2 s). DDP không test được trên Windows
-  (PyTorch không có gloo device/libuv) → kiểm ở Kaggle.
-- **Lịch phiên sau (⛔ = cần người dùng duyệt):**
-  1. ⛔ **Commit + push** (2 commit cũ + tài liệu 10-03 + code hôm nay) — mọi
-     kernel clone repo.
-  2. **`ConExtBiMambaEncoder`** + yaml khớp ~12M + test CPU khối giả.
-  3. AI đề xuất **tiêu chí chọn** BiMamba vs ConExtBiMamba → người dùng duyệt.
-  4. **Kernel train thử** (1 shard, ~5 epoch, 3 mô hình): bước đầu chạy ngắn
-     DDP + cắt `--max_minutes` + resume, `param_count` Mamba thật; ⛔ quota ~2-3 GPU-h.
-     Cần 5 Dataset trên UI (việc tay, bước 5) hoặc gắn output kernel.
-  5. Kernel zero_shot rút về Parakeet + PhoWhisper, một mức WER 192 câu.
-  6. Viết `Plan.md` mục 1-2, `CLAUDE.md`, `README.md`, khung đề cương mới.
-- **Viết lại `Plan.md` mục 1-5** (người dùng yêu cầu): mục tiêu theo định hướng
-  khảo sát + đội hình + hai mức so sánh (có kiểm soát / tham chiếu) + RQ bản
-  làm việc; lộ trình Tuần 6-15 có mốc ngày (suy từ Tuần 6 ≈ 2026-10-01); trạng
-  thái theo hạng mục; bảng quyết định theo thời gian, đánh dấu mục bị thay thế;
-  mục 5 chỉ còn việc đang mở. Còn viết lại `CLAUDE.md`/`README.md`.
-- **Viết lại `CLAUDE.md` + `README.md`** theo hướng khảo sát (người dùng yêu
-  cầu): đề tài + đội hình + hai mức so sánh; luật "chỉ encoder khác nhau" giờ
-  áp cho nhóm train từ đầu, nhóm pre-train giữ pipeline riêng; thêm luật đề
-  xuất phải có nguồn, quota GPU phải xin duyệt; cạm bẫy cập nhật (manifest/
-  excluded, `HF_HUB_OFFLINE`, tar, DDP không test được local, B1 không cần
-  mask); README thêm lệnh chạy Kaggle và số liệu sau A1. Tên đề tài trên
-  README ghi là "tên làm việc" — tên chính thức theo đề cương mới.
-- **Tỷ lệ train/val/test (người dùng hỏi):** kích thước hợp lý (clean-test ≈
-  VIVOS test), nhưng 100% clean-test và 99,98% val thuộc video đã train (do
-  `validation` gốc rải từ video train) → đề xuất 3 phương án, **người dùng chọn
-  B: giữ riêng theo video** (mục 4). `make_heldout.py` → 29 video; train 45.442 /
-  val 4.824 / val_unseen 3.011 / clean-test 203, rời nhau từng đôi (đã kiểm).
-  Tokenizer train lại (4/1000 piece đổi; val_unseen + clean-test giải mã khớp
-  100%, 0 unk), CMVN tính lại (|Δ| ≤ 0,08). `train.py` chấm thêm val_unseen mỗi
-  epoch (`extra_eval_manifests`, chỉ log); dataset nhận `(split, index)` trộn hai
-  split; `eval_clean_test`, kernel zero-shot, notebook 02 đọc manifest bản 2. Test
-  CPU: eval_clean_test 203 câu, train 2 epoch có 2 tập eval, zero-shot chuẩn bị
-  mẫu đạt. Train thử 1 shard: `train_shard0` còn 11.364 câu.
-- **Đóng phiên 2026-10-04 — tóm tắt thay đổi trong ngày** (đã push tới `ffecb6f`;
-  phần giữ riêng video **chưa commit**):
-  - Code dùng chung (bước 3): dataset theo manifest + lọc lúc đọc, `train.py`
-    DDP/AMP/resume giữa epoch, `extract_audio.py`; `HF_HUB_OFFLINE` sau khi làm ấm.
-  - Front-end CMVN toàn cục + SpecAugment, dropout Mamba 0,1, giữ CTC, giữ B1
-    (căn cứ `docs/notes/frontend_decoder_survey.md`).
-  - Viết lại `Plan.md` mục 1-5, `CLAUDE.md`, `README.md` theo hướng khảo sát.
-  - Test độc lập theo video: 29 video giữ riêng; train 45.442 / val 4.824 /
-    val_unseen 3.011 / clean-test 203; tokenizer + CMVN tính lại.
-  - Hướng dẫn người dùng tạo 5 Kaggle Dataset trên UI (slug đề xuất
-    `vss-asr-train-shard{0..3}`, `vss-asr-val`, private, chia sẻ tài khoản B
-    quyền xem) — **lọc lúc đọc nên 5 dataset không phải tạo lại** sau thay đổi
-    giữ riêng video.
-- **Lịch phiên sau (thay lịch đầu ngày; ⛔ = cần người dùng duyệt):**
-  1. ⛔ **Commit + push** phần giữ riêng video (`make_heldout.py`,
-     `heldout_videos.tsv`, `val_unseen.tsv`, clean-test bản 2, tokenizer, CMVN,
-     code + tài liệu) — kernel Kaggle clone repo.
-  2. **Kiểm 5 Kaggle Dataset** nếu người dùng đã tạo: `kaggle datasets files
-     tieunhi/<slug>` (đủ `.tar` + `.tsv`, đúng kích thước); ghi slug + username
-     tài khoản B vào `kernel-metadata.json` (gitignore).
-  3. **`ConExtBiMambaEncoder`** (½FFN → ExtBiMamba → conv → ½FFN → LN, dùng lại
-     `reverse_padded` + cặp khối B1, dropout 0,1), khớp ~12M, `configs/model_conextbimamba.yaml`,
-     đăng ký `build_encoder`; đối chiếu chi tiết khối với 2405.12609 Bảng XIV;
-     test CPU khối giả (shape, padding, tham số); cập nhật `ARCHITECTURE.md`.
-  4. **Đề xuất tiêu chí chọn B1 hay ConExtBiMamba** (có căn cứ tài liệu) →
-     người dùng duyệt **trước** khi chạy train thử.
-  5. **Hàm bootstrap theo khối video** cho WER (khoảng tin cậy; dùng cho
-     train thử, clean-test, zero-shot) — Liu và cs. 1912.09508.
-  6. **Kernel train thử** (`train_shard0` = 11.364 câu, ~5 epoch, 3 mô hình):
-     bước đầu chạy ngắn DDP + cắt `--max_minutes` + resume, `param_count` Mamba
-     thật; ⛔ quota ~2-3 GPU-h. Cần bước 2-4.
-  7. **Kernel zero-shot** rút về Parakeet + PhoWhisper, một mức WER trên 203
-     câu, kiểm Parakeet chạy được trên T4; ⛔ quota ~0,5 GPU-h.
-  8. Khung **đề cương mới** (dựa `Plan.md` mục 1-2) trước buổi GVHD Tuần 9.
-  - **Việc tay của người dùng (song song):** tạo 5 Kaggle Dataset + chia sẻ B;
-    hiệu đính 203 câu clean-test (notebook 02 mục 5).
-  - **Chờ người dùng xác nhận:** `out_proj` chia √28; greedy không LM; chữ số
-    giữ nguyên; đo RTF batch 1 fp16; vị trí dropout trong khối Mamba; 10 time mask.
-
-### 2026-10-04 (tối) — ConExtBiMamba
-- **Push** phần giữ riêng video: `f102ee9` (kèm sửa lỗi notebook 02: `\n`
-  trong f-string bị ghi thành xuống dòng thật → lỗi cú pháp).
-- **`ConExtBiMambaEncoder`** (`src/models/conextbimamba_encoder.py`,
-  `configs/model_conextbimamba.yaml`, `build_encoder` nhận `conextbimamba`):
-  khung Conformer, MHSA → ExtBiMamba; FFN/conv dùng nguyên lớp torchaudio;
-  6 lớp, ffn 928 → **12.241.536 tham số (+0,31%)**. Đối chiếu arXiv:2405.12609
-  v6 (Hình 2c, Bảng XII, XIV). `param_count.py --others` so cả hai encoder Mamba.
-- **Test CPU (khối Mamba giả cùng shape v2.3.1):** tham số; 24 tham số miễn
-  weight decay; bất biến padding 1,7e-6 (có xoá padding trước depthwise conv);
-  nhìn hai phía; dropout tắt khi eval; SyncBN 6 lớp; 5 bước train loss
-  102 → 38; `train.py` 2 epoch với 20 câu thật + eval WER + checkpoint. Chưa
-  chạy CUDA thật.
-- **Chờ người dùng xác nhận (4 lệch bài, `lineup_preparation.md` mục 5):**
-  hạ ffn 1024 → 928 để khớp 12M (bài để tăng tham số); khởi tạo A S4D-Real thay
-  vì nhiễu Gauss; không chia `out_proj`; xoá padding trước conv (Conformer-12M
-  không xoá).
-- **Phiên sau:** (1) commit + push ConExtBiMamba nếu người dùng duyệt;
-  (2) đề xuất tiêu chí chọn #1/#5 → duyệt; (3) bootstrap theo khối video;
-  (4) thêm ConExtBiMamba vào `CHECK_CODE` (padding/tham số với kernel thật) của
-  kernel train thử; (5) kernel zero-shot một mức WER; ⛔ quota cho train thử.
-
-### 2026-10-04 (tối, tiếp) — chuẩn bị train thử 3 mô hình
-- **Người dùng đổi hướng train thử:** không chọn 1 trong B1/ConExtBiMamba nữa;
-  sau train thử chốt giữ 2 hay 3, mong cả 3 đủ tốt. 1 seed + biện pháp ổn định.
-- **`train.py`:** bỏ step loss không hữu hạn (đồng bộ mọi rank), đếm step AMP
-  bị bỏ, grad norm, s/step, VRAM đỉnh, CTC loss + WER mỗi tập eval →
-  `metrics.jsonl`; ref/hyp từng câu kèm video → `eval_<tập>_epoch<k>.jsonl`.
-  `ctc_model.greedy_collapse` tách ra để eval giải mã + tính loss trên một lần forward.
-- **`src/evaluation/bootstrap.py`:** CI95 WER theo khối video, 1 mô hình hoặc so cặp.
-- **Kernel `scripts/kaggle/train_trial/`:** CHECK_CODE CUDA (B1 + ConExt) →
-  chạy ngắn DDP + resume → B1, ConExt, Conformer tuần tự (trần 90 phút/mô hình,
-  lỗi không chặn mô hình sau) → `trial_summary.json`. Dữ liệu: output 5 kernel
-  make-dataset (đủ 5 tar vì val_unseen rải cả 4 shard). Ước 2,5-3,5 GPU-h.
-- **Test CPU với dữ liệu thật:** Conformer 2 epoch có tiêm loss NaN ở step 2 →
-  bỏ đúng 1 step, loss 127 → 50; ConExt (khối giả) 2 epoch loss 111 → 19;
-  `metrics.jsonl`/eval jsonl đúng định dạng; bootstrap ra WER khớp `train.py`;
-  `summarize()` của kernel chạy, xử lý được mô hình thiếu kết quả. **Chưa test:**
-  DDP/NCCL/AMP, CHECK_CODE (cần CUDA) → bước đầu của kernel.
-- **Tiêu chí "đủ tốt để giữ"** AI đề xuất trong `lineup_preparation.md`, chờ duyệt.
-- **Phiên sau:** ⛔ người dùng duyệt tiêu chí + 4 lệch bài ConExt + commit/push
-  + quota ~2,5-3,5 GPU-h → `kaggle kernels push -p scripts/kaggle/train_trial
-  -t 14400`; song song: kernel zero-shot một mức WER.
-- **Người dùng yêu cầu thêm tiêu chí + bảng so sánh sau train thử:**
-  `src/evaluation/trial_report.py` sinh `trial_report.md` 4 bảng (chất lượng
-  kèm CI95 + hiệu so với Conformer trên val và val_unseen; học/ổn định: đường
-  WER, mức giảm epoch cuối, val_unseen − val, loss, step bỏ, grad norm, câu rỗng,
-  S/D/I; tài nguyên: tham số, s/step, VRAM, ước GPU-giờ full, RTF eval proxy,
-  Pareto; cổng G0-G3). Kernel gọi module này ở bước cuối. `metrics.jsonl` thêm
-  số tham số/số câu/số GPU. Tiêu chí mở rộng (G0-G3 loại cứng, K1-K5 cân nhắc,
-  quy tắc C) ở `lineup_preparation.md` — **chờ duyệt**. Test CPU trên output train
-  thật: bảng đủ 4 phần, G1 bắt đúng mô hình sụp blank, G2 bắt đúng step NaN tiêm vào.
-- **Đóng phiên 2026-10-04 (tối)** — đã commit local, **chưa push**:
-  - Push `f102ee9` (giữ riêng video). ConExtBiMamba (6 lớp, ffn 928, +0,31%
-    tham số). `train.py` thêm biện pháp ổn định + `metrics.jsonl` + ref/hyp từng
-    câu; `bootstrap.py`; `trial_report.py` (bảng so sánh + cổng); kernel
-    `scripts/kaggle/train_trial/`. Test CPU với dữ liệu thật; DDP/AMP/CUDA chưa.
-  - Đổi hướng (người dùng): train thử để chốt giữ 2 hay 3 mô hình, mong cả 3 đạt;
-    1 seed + biện pháp ổn định.
-- **Phiên sau bắt đầu từ (⛔ = cần người dùng duyệt):**
-  1. ⛔ Duyệt tiêu chí giữ/bỏ (G0-G3 + ngưỡng, K1-K5, quy tắc C) và chọn tập
-     đánh giá chính (val_unseen hay val) — `lineup_preparation.md` mục Train thử.
-  2. ⛔ Xác nhận 4 lệch bài ConExtBiMamba (`lineup_preparation.md` mục 5).
-  3. ⛔ Push (kernel clone repo) + quota ~2,5-3,5 GPU-h →
-     `kaggle kernels push -p scripts/kaggle/train_trial -t 14400` (tài khoản A).
-  4. Sau kernel: tải output, đọc `trial_report.md`, người dùng chốt giữ 2 hay 3,
-     xếp lại lịch train full (Plan mục 2).
-  5. Song song: kernel zero-shot một mức WER (bỏ `wer_vi_label`); RQ2; khung đề
-     cương mới (trước Tuần 9).
-
-### 2026-10-04 (khuya) — duyệt và chạy train thử
-- **Người dùng duyệt:** tiêu chí giữ/bỏ G0-G3 + K1-K5 + quy tắc C; ngưỡng giao
-  AI → giữ nguyên đề xuất (ngưỡng của dự án, chốt trước khi có số); **tập đánh
-  giá chính = val_unseen**; xác nhận 4 lệch bài ConExtBiMamba; push + quota
-  tài khoản A, timeout kernel 19.800 s (xấu nhất ~5 h: setup + 3 × trần 90 phút
-  — 14.400 s cũ có thể cắt Conformer chạy cuối và bước `trial_report`).
-- **Sửa kernel:** lần chạy ngắn (smoke) ghi TensorBoard vào `/tmp/smoke/runs`,
-  không lẫn với `runs/conextbimamba` của train thử.
-- **Phiên sau bắt đầu từ:** kiểm trạng thái kernel `train-trial-asr`; nếu
-  CHECK_CODE/smoke lỗi → sửa code, không chạy lại khi chưa hỏi; nếu xong → tải
-  output nhỏ, đọc `trial_report.md`, người dùng chốt giữ 2 hay 3 mô hình, xếp
-  lại lịch train full (mục 2). Song song: kernel zero-shot một mức WER; RQ2.
-
-### 2026-10-04 (khuya, tiếp) — kết nối hai tài khoản Kaggle
-- **Tài khoản B = `vuvanduc1`**, khoá ở `~/.kaggle_Duc/kaggle.json`, chọn bằng
-  `KAGGLE_CONFIG_DIR="C:/Users/Dell/.kaggle_Duc"` (đường dẫn Windows). Kernel test CPU
-  `vuvanduc1/connection-test-asr` chạy xong, tải được output.
-- **Dataset:** `vss-asr-train-shard0..3` đã tạo, B đọc được. Kaggle **tự giải nén tar**
-  khi tạo Dataset → `extract_audio` thêm nhánh chép thư mục `<part>/` theo `<part>.tsv`
-  (vẫn chép sang `/tmp`, không symlink). Thiếu `vss-asr-val` + dataset wheel cho B.
-- **Image:** kernel test của B là CPU (Python 3.13) — không phản ánh image GPU. Train thử
-  ở A (image GPU mới nhất, `docker_image` trống) qua bước cài wheel cp312 → wheel hiện có
-  dùng được; B nhận cùng image GPU.
-- **Rò rỉ dữ liệu:** kiểm trên manifest thật — 0 câu chung giữa 4 tập, 0 video giữ riêng
-  trong train/val, tokenizer + CMVN chỉ từ train; val chung video với train (394/395, có chủ đích).
-- Đã push `4e00254` (`extract_audio` hai dạng). Người dùng tạo `vss-asr-val` +
-  `mamba-wheels`, chia sẻ B; B thấy đủ 6 dataset (`ready`).
-- **Phiên sau bắt đầu từ** (hai kernel chạy trên Kaggle, độc lập với phiên local):
-  1. ✅ Kernel CPU `vuvanduc1/data-check-asr` (B) — **DATA CHECK OK** (15:00 UTC):
-     `extract_audio` chép 4×15.164 + 6.499 file trong 317 s (27 GB, đủ theo tsv); train
-     45.442 / val 4.824 / val_unseen 3.011 / clean-test 203 câu, thiếu audio 0; 40 file đọc
-     đúng 16 kHz + duration; thấy 2 wheel. Dataset gắn tại `/kaggle/input/datasets/tieunhi/<slug>/`.
-  2. ❌ Lần chạy 1 `train-trial-asr` **ERROR** (16:43 UTC): CLI báo RUNNING ~4 h nhưng
-     script chỉ bắt đầu 15:45 (chờ cấp máy) và lỗi sau ~16 s — image GPU mặc định đã lên
-     Python 3.13, pip từ chối wheel cp312. **Chưa train mô hình nào.** Kết luận trước đó
-     "đã qua bước cài wheel vì RUNNING lâu" là sai. Sửa: ghim `docker_image` của
-     verify-mamba-asr (kernel CPU thử: Py 3.12.13, torch 2.10.0+cu128, pip cài 2 wheel OK)
-     + chuyển sang `dataset_sources`. Chờ người dùng duyệt chạy lại.
-     **Quota (`kaggle quota`, 17:00 UTC):** A dùng 1,13 h/30 (≈ kernel LID 03/10 — lần lỗi
-     gần như không tốn), B 0/30; làm mới 2026-10-10. ~4 h chờ cấp máy **không** tính quota.
-     **Chống "treo không thấy gì" (người dùng yêu cầu):** `train.py --log_every_steps 50`
-     (giờ, step/tổng, loss tb, s/step, ETA epoch, VRAM, step bỏ) + log tiến độ eval; kernel
-     in giờ + phút từ đầu mỗi lệnh, **watchdog** im lặng 20 phút → kill cả nhóm tiến trình
-     rồi chạy mô hình sau. Test: CPU local (Conformer 2 lớp, 8 câu thật) in đúng; watchdog
-     test trên kernel CPU Linux `watchdog-test-asr` — kill sau 60 s kể cả tiến trình con,
-     lệnh in đều không bị kill, check=True vẫn dừng. Xem trực tiếp: `kaggle kernels logs -f
-     <kernel>` (tiếng Việt bị lỗi mã hoá khi stream, log tải sau khi xong thì đúng).
-     Kernel GPU `tieunhi/train-trial-asr` (A, timeout 5,5 h): khi xong tải output
-     nhỏ (`trial_report.*`, `metrics.jsonl`, eval jsonl — không tải checkpoint), người dùng
-     chốt giữ 2 hay 3 mô hình.
-  3. Viết kernel train full mỗi tài khoản (`dataset_sources`, resume nhiều phiên).
-
-### 2026-10-05 — sự cố train thử lần 2, nguyên nhân và quy trình
-- **Lần 2 (ghim image Py 3.12):** máy được cấp 17:11, quota tạm tính ~50 phút, log 0
-  dòng; người dùng Cancel 18:02, quota quay về 1,13 h. Image cũ không khởi động được
-  script trên máy GPU (chưa rõ vì sao) → bỏ hướng ghim image cũ.
-- **Nguyên nhân + quy trình mới:** `docs/notes/training_plan_kaggle.md` mục 6 (kernel
-  kiểm tra ngắn `-t 1200` trước khi chạy dài, `check_env` đầu kernel, theo dõi bằng
-  `scripts/kaggle/watch_kernel.py`, cùng một môi trường cho mọi mô hình).
-- **Code:** `train_trial.py` thêm `check_env` (`EXPECT_PY/EXPECT_TORCH` — chưa chốt);
-  `scripts/kaggle/watch_kernel.py` (test trên kernel đã xong: in log, nhận COMPLETE;
-  nhánh báo động chưa test). Chưa commit.
-- **Wheel dựng sẵn (GitHub releases):** mamba-ssm v2.3.1 chỉ có torch 2.9; v2.3.2 có
-  cp313 + torch 2.9/2.10; causal-conv1d ≥ 1.6.2 có cp313 + torch 2.10; **không có torch
-  2.11** (torch của image mặc định — mới thấy ở image CPU, GPU chưa kiểm).
-- **⛔ Chờ người dùng chọn:** A (build v2.3.1 trên image mặc định) hay B (cài torch 2.10 +
-  wheel v2.3.2 dựng sẵn); sau đó kernel kiểm tra ngắn → train thử.
-- **Người dùng chọn A** (2026-10-05). Kernel `env-check-asr` ENV CHECK OK (~25 phút GPU):
-  Py 3.13.15 / torch 2.11.0+cu128 / nvcc 12.8; build sm_75 causal-conv1d 1.5.4 (3,1′) +
-  mamba-ssm 2.3.1 (6,1′); CHECK_CODE OK; DDP+AMP 3 mô hình chạy (s/step 0,47 / 0,42 / 0,37,
-  VRAM ≤ 2,6 GiB). Chi tiết `training_plan_kaggle.md` mục 6.
-- `watch_kernel.py`: lúc kernel chạy phải dùng `logs -f` (không -f trả rỗng) → bản đầu báo
-  động sai; sửa: đọc `-f` 20 s, bỏ dòng ptxas, báo động khi quota tính mà chưa có dòng log nào.
-- `train_trial`: bỏ ghim image, wheel từ `kernel_sources` env-check-asr, `EXPECT_* = 3.13/2.11`.
-- **Phiên sau / tiếp theo:** ⛔ duyệt chạy train thử (A, ~2-3 GPU-h); việc tay: thêm version mới
-  `mamba-wheels` từ output `env-check-asr` cho tài khoản B (cần trước train full ở B).
-- **Chuẩn bị lần 3 (người dùng: "chuẩn bị thật chuẩn cho cả 2 tài khoản"):** dataset
-  `tieunhi/mamba-wheels-v2` (A + B đọc được); `train.py --limit_train/--limit_eval`; kernel
-  train thử thêm pipeline tí hon 3 mô hình + `trial_report` trước khi train, resume smoke
-  2+2 phút, `PREFLIGHT_ONLY` cho B; `trial_report` tự tạo thư mục output. Test CPU local.
-  **Chưa test:** pipeline tí hon với DDP 2 GPU — đó là việc của preflight B.
-- **Đóng phiên 2026-10-05 (sáng sớm giờ VN)** — đã push `61c6149`. Preflight B
-  `vuvanduc1/preflight-asr` đẩy 19:08 UTC 04/10 (`-t 2400`, quota B 0/30 trước khi chạy).
-- **Phiên sau bắt đầu từ:**
-  1. Đọc kết quả preflight B: `KAGGLE_CONFIG_DIR=C:/Users/Dell/.kaggle_Duc kaggle kernels
-     output vuvanduc1/preflight-asr -p <scratch> --file-pattern '.*\.log$'` (đọc log JSON). Cần thấy
-     `MÔI TRƯỜNG: python 3.13… torch 2.11…`, `CHECK OK`, 5 part chép đủ, 3 dòng pipeline có
-     `eval val … WER=`, `trial_report` rc 0, `resume từ`, **`PREFLIGHT OK`**. Hỏng bước nào →
-     sửa, không chạy lại khi chưa hỏi. `kaggle quota` của B để biết preflight tốn bao nhiêu.
-  2. Qua preflight → ⛔ xin duyệt train thử A: `kaggle kernels push -p scripts/kaggle/train_trial
-     -t 19800` (metadata đã trỏ `mamba-wheels-v2`), theo dõi `python scripts/kaggle/watch_kernel.py
-     tieunhi/train-trial-asr`. Ước ~15 phút preflight + ~2,3 h train.
-  3. Kernel B dựng lại thế nào: bản sao `scripts/kaggle/train_trial/train_trial.py` với
-     `PREFLIGHT_ONLY = True` + metadata `id: vuvanduc1/preflight-asr`, `dataset_sources` =
-     5 `vss-asr-*` + `mamba-wheels-v2` (mẫu ở `training_plan_kaggle.md` mục 6).
-  4. Quy tắc giữ nguyên: mọi kernel GPU kiểm `check_env` (Py 3.13 / torch 2.11); image Kaggle
-     đổi → chạy lại `scripts/kaggle/env_check/` rồi thêm version `mamba-wheels-v2`.
-
-
-### 2026-10-05 (sáng) — kết quả preflight B, chuẩn bị train thử A
-- **Preflight B `vuvanduc1/preflight-asr`: PREFLIGHT OK** (18 phút, quota B 0,29 h). Py 3.13.15 /
-  torch 2.11.0+cu128 / 2x T4; CHECK OK (B1 12.285.696, ConExt 12.241.536 tham số); 5 part chép đủ
-  (5,4′); pipeline tí hon 3 mô hình DDP đi tới eval + `trial_report` rc 0; resume giữa epoch đúng
-  (step 269 → 502). Ghi nhận: Conformer tí hon bỏ cả 4 step AMP (GradScaler hạ scale ban đầu — bình
-  thường, nhưng nhánh Conformer chưa cập nhật trọng số thật trên GPU); ConExt smoke loss đứng ~6,0 từ
-  step ~150 đến 500 (bình nguyên blank của CTC, LR mới ½ warmup 1000 — G1 sẽ bắt nếu không thoát).
-  s/step ConExt ~0,45 → ~5,5 phút/epoch shard0. Quota A 1,54 h / 30.
-- **Sửa `train_trial.py` (chỉ file kernel, `src/` không đổi → kernel vẫn clone `61c6149` đã qua
-  preflight):** tìm wheel chỉ trong `mamba-wheels*` (rglob cả `/kaggle/input` mất 3 phút GPU chạy
-  không); log text `OUT/logs/train_trial.log` (tee stdout + stderr), `logs/<mô hình>.log`,
-  `logs/gpu_util.csv` (nvidia-smi 30 s); watchdog 20 → 10 phút; tắt nvidia-smi khi kết thúc kể cả lỗi.
-  Test local: tìm wheel 2 kiểu gắn, tee + log riêng + `LỖI` vào file, không có nvidia-smi vẫn chạy.
-- **Phiên sau bắt đầu từ:** ⛔ người dùng duyệt → `kaggle kernels push -p scripts/kaggle/train_trial
-  -t 19800` (A), theo dõi `python scripts/kaggle/watch_kernel.py tieunhi/train-trial-asr`; xong thì
-  tải `logs/`, `trial_report.*`, `trial/*/metrics.jsonl`, eval jsonl (không tải checkpoint). Commit
-  `train_trial.py` khi người dùng yêu cầu.
-- **Đã chạy train thử A** (người dùng duyệt): commit + push `39e0a44`; `kaggle kernels push` version 3
-  lúc ~03:50 UTC 05/10 (`-t 19800`). Phần kiểm tra đầu kernel đạt hết trong 17′ (môi trường, CHECK OK,
-  cài wheel 4 s thay vì 3′, chép audio 7,3′, pipeline tí hon 3 mô hình, resume). 04:10 UTC đang train B1
-  epoch 0: loss tb 119,7 → 28,8 (step 50 → 350), 0,48 s/step (~5,7′/epoch), VRAM 2,1 GiB, bỏ 0+5 step
-  AMP; cảnh báo `scheduler.step()` trước `optimizer.step()` do AMP bỏ step đầu — vô hại. Quota A 1,88 h.
-  Dự kiến xong ~06:00-06:30 UTC (13:00-13:30 VN).
-- **Đóng phiên 2026-10-05 (trưa).** Chưa commit phần nhật ký này.
-- **Phiên sau bắt đầu từ:**
-  1. `PYTHONUTF8=1 kaggle kernels status tieunhi/train-trial-asr` + `kaggle quota`. ERROR/CANCEL →
-     đọc log, sửa, **không chạy lại khi chưa hỏi**. Còn RUNNING → `python scripts/kaggle/watch_kernel.py
-     tieunhi/train-trial-asr`.
-  2. COMPLETE → tải output nhỏ vào scratchpad, **không tải checkpoint** (`trial/*/*.pt`):
-     `PYTHONUTF8=1 kaggle kernels output tieunhi/train-trial-asr -p <scratch> --file-pattern
-     '(logs/.*|trial_report\..*|trial/.*/(metrics\.jsonl|eval_.*\.jsonl))'` (kiểm lại cú pháp regex
-     của CLI; nếu không lọc được thì tải log trước).
-  3. Kiểm: `logs/train_trial.log` có `TRAIN THỬ XONG`, không có `!!!` (lỗi/watchdog); mỗi mô hình đủ 5
-     epoch trong `metrics.jsonl` (hết trần 90′ thì chưa đủ); `logs/gpu_util.csv` — quãng GPU 0% dài
-     (lần đầu dùng file này, xem có ghi được không).
-  4. Đọc `trial_report.md` (chất lượng + CI95, học/ổn định, tài nguyên, cổng G0-G3) → trình người dùng;
-     ⛔ **người dùng chốt giữ 2 hay 3 mô hình** (không tự chọn). Chú ý G1 (sụp blank) với ConExt — preflight
-     thấy loss đứng ~6,0 ở step 150-500.
-  5. Sau chốt: xếp lại lịch train full (mục 2), viết kernel train full mỗi tài khoản (resume nhiều phiên).
-
-### 2026-10-05 (chiều) — kết quả train thử A
-- **Kernel `tieunhi/train-trial-asr` v3 COMPLETE** (88′, `TRAIN THỬ XONG`, không `!!!`; quota A 3,01 h / 30 →
-  lần này ~1,5 GPU-h). Output nhỏ đã tải vào scratchpad (không tải checkpoint). `gpu_util.csv` ghi được (352 mẫu).
-- **`trial_report.md` (5 epoch, 1/4 dữ liệu, 1 seed) — WER val_unseen:** ConExtBiMamba **0,439** [0,415; 0,467] ·
-  Conformer 0,564 [0,543; 0,587] · B1 0,747. ConExt tốt hơn Conformer −0,125 [−0,131; −0,117]. Cổng: Conformer,
-  ConExt qua G0-G3; **B1 trượt G1 (41,6% câu rỗng) và G2 (1318/3555 step loss không hữu hạn, val loss NaN)**.
-- **Chẩn đoán B1 (chưa kiểm chứng trên GPU):** loss không hữu hạn từ cuối epoch 1, lan thành chuỗi (epoch 4 bỏ
-  708/711 step). CTC đã fp32 → NaN/Inf có sẵn trong `log_probs`, tức forward encoder dưới autocast fp16 (T4 không
-  bf16). Câu rỗng ở eval chỉ có từ epoch 3, không phụ thuộc độ dài câu (53 vs 51 từ), không dồn theo batch mà
-  **dồn theo video** (5 video ≈ 436/1252) → phụ thuộc đầu vào. **Trên câu không rỗng B1 WER 0,560 ≈ Conformer
-  0,564** (epoch 2 khi chưa rỗng: B1 0,681 vs Conformer 0,984) → kết quả B1 phản ánh lỗi số học, không phải năng lực.
-  Giả thuyết tràn fp16 trong khối Mamba là suy đoán, chưa có bằng chứng tầng nào.
-- **Lỗi phụ phát hiện:** (1) `trial_report` lấy s/step + GPU-giờ của epoch cuối → B1 ghi 0,114 s/step / 3,2 GPU-h là
-  sai (epoch cuối toàn step bỏ; thật ~0,47 s/step ≈ 13 GPU-h/30 epoch). (2) Nhánh bỏ step trong `train.py` giữ
-  đồ thị forward của step trước (`loss`, `log_probs` còn tham chiếu) → VRAM đỉnh 2,1 → 3,9 GiB đúng lúc bắt đầu bỏ.
-  (3) Conformer kẹt bình nguyên blank 3 epoch (rỗng 100% tới epoch 2), ConExt thoát sau 1 epoch.
-- **⛔ Chờ người dùng:** (a) có chạy kernel chẩn đoán ngắn B1 không (nạp checkpoint B1 cuối, so forward fp16 vs fp32
-  trên các câu rỗng, tìm tầng ra Inf; ước ~15-20′ GPU); (b) quyết định giữ 2 hay 3 mô hình — **nên hoãn tới khi
-  B1 được sửa/chẩn đoán**, vì kết quả hiện tại không công bằng với B1.
-- **Phiên sau bắt đầu từ:** câu trả lời (a)/(b) ở trên. Kernel chẩn đoán cần checkpoint B1 từ output
-  `train-trial-asr` (gắn làm `kernel_sources`, không tải về local).
-
-### 2026-10-05 (tối) — tra tiền xử lý audio, chẩn đoán B1, train thử lại B1
-- **Người dùng yêu cầu:** tra tài liệu tiền xử lý audio → kernel chẩn đoán B1 → train thử lại B1.
-- **Tiền xử lý:** `docs/notes/audio_preprocessing_survey.md` (đề xuất, **chưa áp dụng**). Dữ liệu 100% 16 kHz
-  mono PCM_16; RMS câu train p5 −28,3 / p95 −14,8 dBFS (lệch ≈ 1 std log-mel, chủ yếu giữa video), 5,1% câu chạm
-  trần. CMVN toàn cục không khử gain. Đề xuất: assert định dạng; volume perturbation (Kaldi); speed perturbation
-  (Ko 2015, −4,3% tương đối). **Người dùng chọn: chưa đổi front-end** cho lần train lại B1.
-- **Kernel `tieunhi/diag-b1-asr`** (`scripts/kaggle/diag_b1/`, ~1 phút GPU sau setup): B1 latest.pt, 80 câu batch 1.
-  40/40 câu từng rỗng → không hữu hạn ở fp16, **0/40 ở fp32** (WER fp32 0,539; nhóm lành 0,565 cả hai). Inf đầu
-  tiên luôn ở **tầng 8 nhánh xuôi**; chạy fp32 đầu ra khối max ~7e3 (< 65504) → tràn ở **trung gian trong khối**.
-  Kích hoạt khối tăng theo train: best.pt (epoch 2) p50 1,3e3 → latest 6,1e3 (đỉnh dồn vào vài khối, vd. tầng 7
-  nhảy 18 → 6.889). Trọng số không có gì bất thường. Đổi gain ×0,25…×4: không đơn điệu → **bác giả thuyết "to →
-  NaN"** (đã sửa trong note). ConExt cùng câu: 0 NaN cả fp16/fp32.
-- **Cách sửa:** người dùng chọn "phương án tác giả/cộng đồng khuyến nghị" → khối Mamba fp32 cho mọi encoder có
-  Mamba (`mamba_fp32` trong `mamba_encoder.py`, dùng ở B1 + ConExt). Căn cứ: README mamba-ssm (SSM nhạy, giữ fp32),
-  ConMamba train bf16 (T4 không có), U-Mamba `MambaLayer` `@autocast(enabled=False)` + ép fp32. Test CPU khối
-  giả: khối nhận fp32, autocast tắt, 3 encoder forward/backward OK; lệch riêng/batch trước = sau sửa.
-  **Phát hiện phụ (có từ trước):** test cả front-end thì câu riêng vs trong batch lệch ~0,2 với khối giả — khung
-  cuối của câu ngắn bị STFT nhìn vào padding 0; bất biến 8-e chỉ đúng từ đặc trưng trở đi. Chưa đánh giá ảnh hưởng.
-- **Kernel `tieunhi/retrain-b1-asr`** (`scripts/kaggle/retrain_b1/`, `OVERLAY` = 2 file đã sửa, chưa commit): chỉ B1,
-  shard0, 5 epoch, seed 42; chép metrics/eval của ConExt + Conformer từ output train thử để `trial_report` so cả 3.
-  Đẩy `-t 7200`.
-- **Lưu ý so sánh:** WER của ConExt ở train thử là fp16 (không NaN, giữ được); từ train full ConExt chạy khối
-  Mamba fp32 → s/step phải đo lại.
-- **Kết quả `retrain-b1-asr` (COMPLETE, ~1,1 GPU-h, quota A 4,14 h / 30):** B1 khối Mamba fp32 — **0 step loss không
-  hữu hạn** (5 step AMP đầu, như mọi mô hình), 0% câu rỗng, **qua cả G0-G3**. WER val_unseen theo epoch 1,000 →
-  0,799 → 0,610 → 0,507 → **0,465** [0,438; 0,496], CER 0,316. So Conformer −0,099 [−0,108; −0,089]; so ConExt
-  (bootstrap cặp theo video, local) **+0,026 [+0,019; +0,034]** → ConExt > B1 > Conformer ở mốc 5 epoch / 1/4 dữ liệu.
-  Tài nguyên: B1 0,733 s/step (fp16 cũ 0,47, +55%), VRAM 3,3 GiB, ước 18,1 GPU-h / 30 epoch. **Bảng tốc độ chưa
-  công bằng:** ConExt/Conformer đo ở train thử fp16; ConExt từ nay cũng chạy khối Mamba fp32 → s/step phải đo lại
-  (cờ "bị trội Pareto bởi ConExt" của B1 dựa trên số cũ).
-- **Phiên sau bắt đầu từ:** (1) ⛔ người dùng chốt giữ 2 hay 3 mô hình (giờ đủ dữ liệu: cả 3 qua cổng); (2) ⛔ tiền
-  xử lý audio (note mới); (3) commit `mamba_fp32` + note + kernel diag/retrain khi người dùng yêu cầu — kernel train
-  full phải clone code có `mamba_fp32` (bỏ OVERLAY); (4) đo lại s/step ConExt với khối fp32 (có thể gộp vào epoch đầu
-  train full); (5) lỗi phụ còn mở: `trial_report` s/step epoch cuối, `train.py` giữ đồ thị khi bỏ step.
-- **Ghi nhận kết quả (người dùng yêu cầu):** `docs/notes/trial_results_2026-10-05.md` (bảng điều kiện, chất lượng,
-  ổn định, tài nguyên, cổng, phương án a/b/c) + số liệu gốc `reports/results/trial_2026-10-05/`. Trả lời câu hỏi tiền
-  xử lý: 3 mô hình **cùng front-end** (commit `39e0a44`, OVERLAY chỉ 2 file mô hình); khác duy nhất là số học khối
-  Mamba (ConExt fp16 ở train thử, B1 fp32) — ConExt từ nay tự fp32; WER ConExt fp16 = fp32 (0,435 / 80 câu, diag).
-- **Pilot RQ2 (người dùng duyệt, `tieunhi/rq2-pilot-asr`, ~0,2 GPU-h, quota A 4,35 h):** trọng số ngẫu nhiên, 1 T4,
-  batch 1, 5 → 3.600 s audio ghép (1 video, 274 đoạn), có nhánh subsampling 4× dựng tạm chỉ để đo. Kết quả:
-  `docs/notes/rq2_pilot_2026-10-05.md`, biểu đồ `reports/results/rq2_pilot_2026-10-05/rq2_pilot.png`. Conformer
-  dốc log-log 1,96, Mamba ≈ 1,0; ở 10-15 s Conformer nhanh nhất; điểm giao ConExt 60 s / B1 120 s (1×), 240 / 480 s
-  (4×); 3.600 s: Conformer 157 s vs ConExt 3,3 s / B1 5,0 s. Không OOM tới 3.600 s (attention mem-efficient → VRAM
-  tuyến tính cả ba; Mamba fp32 tốn VRAM hơn ~36%). Subsampling đẩy điểm giao ra ~4× — khớp Speech Slytherin.
-- **Phiên sau bắt đầu từ:** ⛔ (1) giữ 2 hay 3 mô hình; (2) có đổi subsampling không (pilot cho số để quyết);
-  (3) tiền xử lý; (4) tăng tốc train B1 (A/B); (5) commit toàn bộ (`mamba_fp32`, notes, reports, 4 kernel mới,
-  `scripts/plot_rq2_pilot.py`) khi người dùng yêu cầu.
-- **Người dùng CHỐT (2026-10-05 tối):** (1) **không subsampling** (giữ chốt 2026-09-26, pilot RQ2 ủng hộ); (2) **tăng tốc
-  train B1 = chỉ bucketing theo độ dài (phương án B)**, không làm A (in_proj fp16 — không có tài liệu ủng hộ); áp cho
-  cả 3 mô hình; (3) **giữ cả 3 mô hình** cho train full (dự phòng thiếu quota/chậm lịch: bỏ B1 trước — đề xuất, chưa
-  chốt). **Còn mở:** tiền xử lý (speed/volume perturbation) và chính sách khối Mamba fp32 — người dùng yêu cầu tra
-  thêm tài liệu (lần tra đầu hỏng vì lỗi hệ thống kiểm duyệt, chưa tra được). Người dùng yêu cầu commit.
-- **Phiên sau bắt đầu từ:** tra tài liệu 2 mục còn mở (Jamba/FalconMamba chuẩn hoá trong khối Mamba; precision của
-  Vim/ConMamba/ESPnet Mamba; issue fp16 mamba-ssm; speed perturbation + SpecAugment; on-the-fly vs ×3; bằng chứng
-  volume perturbation; CMVN toàn cục vs theo câu) → trình người dùng; code bucketing (`train.py`, giữ resume + chia
-  rank DDP) + test CPU; preflight đo s/step 3 mô hình; push khi người dùng yêu cầu (kernel train full clone từ GitHub).
-
-### 2026-10-05 (khuya) — tra tài liệu: số học khối Mamba, tiền xử lý audio
-- **Khối Mamba fp32:** `docs/notes/mamba_precision_survey.md`. Tiền lệ trực tiếp: U-Mamba (`@autocast(enabled=False)`
-  + ép fp32, đúng cách `mamba_fp32`). ConMamba dùng bf16 (T4 không có). Jamba/FalconMamba thấy kích hoạt trong khối
-  lớn dần → RMSNorm trong khối (LLM 7B, đổi kiến trúc). ESPnet Mamba (2406.16808, 2405.12609) báo bất ổn, xử lý bằng
-  dropout/AdamW/clip, không nói precision. Không có bài ASR so fp16/fp32. **Đề xuất: giữ P1 (`mamba_fp32`) cho B1 +
-  ConExt, cả lúc đo RQ2.**
-- **Tiền xử lý:** `audio_preprocessing_survey.md` mục 5. Ko 2015 là DNN-HMM, ×3 offline, chưa có SpecAugment (−2,0 →
-  −6,7% ở 100-960 h, −0,3% ở 5.500 h). E2E dùng SP + SpecAugment là thực hành phổ biến (ESPnet, icefall, ConMamba)
-  nhưng **không tìm được ablation có kiểm soát**. Volume perturbation: chỉ thực hành Kaldi + 1 báo cáo không có lợi.
-  CMVN toàn cục ≈ theo câu (1 so sánh). **Đề xuất:** assert định dạng; SP on-the-fly 0,9/1,0/1,1 cả 3 mô hình nếu
-  preflight không nghẽn DataLoader; không ×3; không volume; giữ CMVN toàn cục.
-- **Phiên sau bắt đầu từ:** ⛔ người dùng chốt 2 đề xuất trên → code (assert, SP nếu duyệt, bucketing) + test CPU →
-  preflight đo s/step 3 mô hình → commit/push khi người dùng yêu cầu.
-- **Người dùng CHỐT (2026-10-05 khuya): giữ `mamba_fp32`; thêm speed perturbation.** Đã code (chưa commit): kiểm
-  16 kHz mono trong `__getitem__`; SP on-the-fly 0,9/1,0/1,1 chỉ train, hệ số = hàm thuần (seed, epoch, idx);
-  bucketing trong `ResumableSampler` (cụm 50 batch toàn cục, rank r lấy r::world); `data.speed_perturb`,
-  `training.bucket_pool_batches` ở cả 3 yaml. Test dữ liệu thật: sampler phủ đủ/rời rank/tất định/skip đúng; padding
-  17–19% → 0,5%, chênh độ dài 2 GPU 0,92 → 0,01 s; SP khớp `torchaudio.functional.speed`, 2–19 ms/câu; Conformer CPU
-  96 câu × 2 epoch chạy hết train → eval → checkpoint, 0 step bỏ (loss 129 → 129: LR còn trong warmup, đúng kỳ vọng).
-  Chưa test: B1/ConExt (CUDA), DDP, nghẽn DataLoader do SP.
-- **Phiên sau bắt đầu từ:** commit/push khi người dùng yêu cầu → soạn kernel preflight đo s/step 3 mô hình (SP +
-  bucketing + `mamba_fp32`, kiểm DataLoader không nghẽn) → xin duyệt quota.
-
-### 2026-10-05 (đêm) → 2026-10-06 — sửa lỗi phụ, preflight full, kernel train full + thử nối phiên
-- **Chốt (người dùng):** giữ `out_proj` chia √28 (theo `_init_weights` mamba-ssm / GPT-2; N đếm theo số nhánh
-  `out_proj` cộng vào residual — lựa chọn dự án; ConMamba đếm theo khối vì BiMamba của họ chung 1 `out_proj`).
-  Người dùng cho phép dùng quota Kaggle cho khâu chuẩn bị.
-- **Sửa (commit `1727ec7`, `ea108cd`):** `train.py` giải phóng đồ thị khi bỏ step; **`@torch.no_grad()` bị tách
-  khỏi `evaluate` từ `18b5434`** (eval train thử chạy có autograd: WER đúng, thời gian/VRAM eval phồng);
-  `trial_report` s/step từ epoch sạch (B1 fp16: 0,114 → 0,473); `extract_audio` glob giới hạn độ sâu + in tiến độ.
-- **Preflight full** (A, ~1,1 GPU-h): mọi mục kiểm đạt; tốc độ ổn định Conformer 0,262 · ConExt (fp32) 0,432 ·
-  B1 0,688 s/step; SP không gây nghẽn (0,262 vs 0,261); bucketing −6…−9%. Chi tiết + lịch:
-  `training_plan_kaggle.md` mục 7. Lưu ý: s/step trong log `train.py` là trung bình cộng dồn từ đầu epoch.
-- **Kernel train full** `scripts/kaggle/train_full/` (`launch.py` sinh 1 kernel/phiên, nối qua `kernel_sources`,
-  ghim commit). Thử nối phiên trên B đạt (s1 → s2 resume global_step 1000, metrics liền mạch). B khởi động
-  ERROR log rỗng 2/4 lần (không trừ quota) — đẩy lại là chạy.
-- Lỗi Windows khi test local: `python -` + DataLoader `num_workers > 0` treo (worker không import lại được
-  `<stdin>`) — chạy test bằng file hoặc `-m`.
-- **Phiên sau bắt đầu từ:** người dùng duyệt bắt đầu train full theo lịch mục 7 (A: Conformer → ConExt; B: B1
-  3 phiên) và quyết định có chờ GVHD duyệt đề cương mới không.
-- **Ghi nhận cho báo cáo (người dùng yêu cầu):** checkpoint mỗi epoch, `metrics.jsonl` thêm lr/thời gian cộng dồn,
-  `session_summary.json` thêm commit/phiên bản/GPU, `fetch.py` tải output sau mỗi phiên — test CPU local.
-- **Người dùng CHỐT (2026-10-06): không early stopping** (Plan mục 4). Commit + push.
-- **Phiên sau bắt đầu từ:** người dùng duyệt bắt đầu train full (mục 7 `training_plan_kaggle.md`) + câu hỏi chờ
-  GVHD; sau mỗi phiên: `fetch.py` → đưa checkpoint lên Drive → đẩy phiên kế bằng `launch.py`.
-
-### 2026-10-06 — đẩy lần 1 train full
-- Người dùng: push code, đẩy lần 1; **phiên sau phải kiểm kết quả và HỎI người dùng trước khi đẩy lần 2, lần 3**
-  (không để mất trắng hàng giờ GPU). Quy trình kiểm + lệnh: đầu `TODO.md` (🔴 TRAIN FULL ĐANG CHẠY).
-- Đẩy `tieunhi/train-full-conformer-s1` + `vuvanduc1/train-full-mamba-s1` (commit `7660a6b`, 540 phút/phiên).
-  Đóng phiên 00:41 khi cả hai RUNNING, quota bắt đầu tăng (A 5,47 h · B 1,10 h); **chưa thấy epoch00** — kiểm ở phiên sau.
-- Output để trên Kaggle (mỗi phiên một kernel, không ghi đè nhau); tải bằng `fetch.py` khi cần.
-- **Phiên sau bắt đầu từ:** kiểm 2 phiên s1 theo checklist đầu `TODO.md` → báo người dùng → chờ đồng ý mới đẩy lần 2.
-
-### 2026-10-06 (trưa) — kiểm lần 1 train full
-- **Mamba B1 s1 (B):** COMPLETE, 510′ kernel (setup 7′), **15 epoch/phiên** (lịch ước 3 phiên → có thể 2 phiên + 1 phiên
-  ngắn). WER val 0,515 (ep0) → 0,185 (ep14), val_unseen 0,181; loss val 2,68 → 0,78, chưa bão hoà. nonfinite 0,
-  amp skip ≤ 5/epoch, VRAM 3,6 GiB, 16 dòng "lưu epoch". LR hằng 3e-4 sau warmup là đúng thiết kế.
-- **Conformer s1 (A):** ERROR, log 0 dòng, quota A không tăng → lỗi khởi động hạ tầng (như B trước đây), mất ~11 h
-  wall-clock, không mất quota.
-- Người dùng duyệt → đẩy lần 2 (~12:17): Conformer s1 lỗi khởi động thêm 2 lần (v1, v2: ERROR log rỗng, quota không
-  trừ, API `failureMessage` rỗng; metadata giống hệt preflight), v3 chạy; Mamba s2 v1 lỗi y hệt, v2 chạy. → Kiểu lỗi này
-  xảy ra trên **cả hai** tài khoản, đẩy lại là chạy; nên luôn để watcher theo dõi vài phút đầu sau khi đẩy.
-- Conformer s1 v3 ghim `bb8d0eb` (launcher lấy HEAD khi đẩy lại) — chỉ khác `7660a6b` ở Plan/TODO, code y hệt.
-- Lúc đóng phiên: Conformer xong epoch 0 (WER 1,0, loss val 5,68; 0,38 s/step cộng dồn), Mamba resume epoch 15 step 494,
-  WER val epoch 15 = 0,192 (epoch 14: 0,185 — LR hằng, theo dõi).
-- **Phiên sau bắt đầu từ:** kiểm Conformer s1 + Mamba s2 (checklist đầu `TODO.md`) → hỏi người dùng trước khi đẩy lần 3.
-
-### 2026-10-06 (tối) — kiểm Conformer s1
-- **Conformer-12M s1 (A, v3):** COMPLETE, returncode 0, **30/30 epoch trong 1 phiên** (kernel 402′, setup 6′),
-  0,259 s/step, VRAM 2,8 GiB, nonfinite 0, amp skip ≤ 6/epoch, 30 dòng "lưu epoch", không lỗi.
-  WER val 1,0 (ep0) → 0,593 (ep1) → 0,301 (ep14) → **best 0,2519 (ep28)**, val_unseen 0,2481 (ep28). Epoch cuối
-  (29) nhích lên 0,273 — LR hằng 3e-4, không decay → WER dao động ±0,01-0,02 giữa các epoch; best.pt lấy theo WER val.
-- **Mamba B1 s2 (B):** đang chạy, xong epoch 26 lúc 19:12 VN (WER val 0,164; tốt nhất tới giờ 0,159 ep24), ~34′/epoch.
-- Quota lúc 19:15: A dùng 12,15 h (còn 17,85 h), B 16,50 h (còn 13,50 h); reset 2026-10-10.
-- **Phiên sau bắt đầu từ:** người dùng quyết định đẩy `conextbimamba --session 1` (A); kiểm Mamba s2 khi xong (~21:30)
-  → hỏi trước khi đẩy `mamba --session 3` (nếu s2 chưa đủ 30 epoch).
-- Người dùng duyệt → **đẩy `conextbimamba --session 1` (A) lúc ~19:45** (version 1, commit `bb8d0eb`, 540′): khởi động
-  ngay lần đầu, chép audio đủ 4 shard + val, train từ 19:56; step 300 lúc 20:00 (loss tb 131,7 → 32,6, VRAM 3,1 GiB,
-  bỏ 0+5 step AMP đầu). Theo lịch cần 2 phiên (~11,5 GPU-h) → phiên 2 hỏi lại sau khi kiểm s1.
-- **Demo Gradio bản đầu** `src/demo/app.py` (sớm hơn lịch tuần 14, người dùng yêu cầu): tải `best.pt` Conformer (150 MB,
-  gồm optimizer) vào `checkpoints/conformer_ctc_baseline/` (gitignore); chạy CPU local, RTF ~0,06 câu 10-15 s; cài
-  `gradio` 6.29.1. Transcript chuẩn clean-test vẫn là nhãn giả (0/203 hiệu đính) — giao diện ghi rõ.
-  Quan sát từ demo: "âm tiết gãy" thực chất thường là **dính từ** khi mất token đầu từ (`nhiều hoài bão` → `nhiềuàiã`).
-- **Đóng phiên 20:17:** cả hai kernel RUNNING — `conextbimamba-s1` (A, đẩy ~19:45, hết chậm nhất ~04:45 07/10) và
-  `mamba-s2` (B, đẩy ~12:17, hết ~21:30 06/10). Quota: A 12,67 h (còn 17,33) · B 17,49 h (còn 12,51); reset 10/10.
-  Đã báo cáo Conformer cho người dùng (bảng epoch + phân tích lỗi S/D/I); **chưa** chốt: trung bình checkpoint (N?),
-  eval clean-test Conformer.
-- **Phiên sau bắt đầu từ:** kiểm `mamba` s2 (B) và `conextbimamba` s1 (A) theo checklist 🔴 đầu `TODO.md` → báo
-  người dùng → **hỏi** trước khi đẩy `mamba --session 3 --account B` (nếu s2 chưa đủ 30 epoch) và
-  `conextbimamba --session 2` (A). Sau đó hỏi lại 2 câu Conformer còn treo.
-
-### 2026-10-06 (tối, 21:25) — kiểm Mamba s2, theo dõi ConExt s1
-- **Mamba B1 s2 (B):** COMPLETE, returncode 0, **30/30 epoch — Mamba xong train, không cần phiên 3** (kernel 510′; s1 15 ep +
-  s2 15 ep, resume đúng epoch 15 step 494, metrics liền mạch). nonfinite 0, amp skip ≤ 2/epoch, 0,683 s/step, VRAM 3,66 GiB,
-  wall tổng 16,8 h. **Best epoch 28: WER val 0,1562 · val_unseen 0,1547** [CI 0,136-0,178]. So cặp cùng epoch 28 trên
-  val_unseen: Conformer 0,248 vs Mamba 0,155, chênh 9,3 điểm [8,9; 9,8] (bootstrap theo video).
-- **ConExtBiMamba s1 (A):** RUNNING, epoch 4 lúc 21:30; WER val 0,498 → 0,383 → 0,348 → 0,324 (ep0-3); 0,396 s/step,
-  ~21′/epoch → ước ~24 epoch/phiên, phiên 2 ngắn. Hết chậm nhất ~04:45 07/10.
-- Quota 21:25: A 13,81 h (còn 16,19) · B 18,09 h (còn 11,91).
-- **Phiên sau bắt đầu từ:** kiểm ConExt s1 → **hỏi** trước khi đẩy `conextbimamba --session 2`; tải checkpoint Mamba
-  (`fetch.py --model mamba --session 2 --account B --ckpt_dest <thư mục ngoài repo>`) khi người dùng chọn thư mục.
-- **Phân tích Mamba B1 (ep28, val_unseen):** S 10,8% · D 2,5% · I 2,2% · CER 0,097 (Conformer: S 15,7 · D 7,2 · I 1,9);
-  độ dài hyp ≈ ref (−0,2%; Conformer −5,3%); Mamba tốt hơn ở 29/29 video, 2.766/3.011 câu. WER val dao động giữa epoch
-  sd 0,005 (Conformer ~0,009); bước nhảy lúc nối phiên (ep14→15 +0,007) nằm trong nhiễu, ep16 hồi lại. Lỗi chung cả hai
-  mô hình: **âm tiết bị cắt theo ranh giới token BPE** — tokenizer tách 11,4% từ thành ≥ 2 mảnh kiểu phụ âm đầu + vần
-  (`NHÃN`=▁NH+Ã+N), mô hình phát phụ âm đầu rồi mất vần (`nh`, `tr`, `đ`). Chưa đề xuất đổi tokenizer (không có tài liệu
-  đã kiểm; đổi = train lại cả nhóm) — ghi làm loại lỗi RQ3.
-- **Câu hỏi người dùng (22:00):** (1) 30 epoch = 30 lượt qua **toàn bộ** 45.442 câu train (~165 h; 2.841 step × 16) — dữ
-  liệu không "hết", mỗi lượt lặp lại kèm SP + SpecAugment. (2) Dự đoán train thêm (khớp WER val = a + b·(e+1)^−c từ
-  epoch 3/5/10, LR hằng, **ngoại suy, không phải kết quả**): Mamba 45 ep ≈ 0,139-0,140 · 60 ep ≈ 0,128-0,131; Conformer
-  45 ep ≈ 0,224-0,225 · 60 ep ≈ 0,206-0,208 → khoảng cách ~7,5-9 điểm vẫn còn. Chưa thấy overfit (loss val vẫn giảm).
-  Train thêm = đổi chốt 30 epoch → người dùng/GVHD quyết. (3) **Demo thêm Mamba B1**: `src/models/mamba_ref.py` (khối
-  Mamba thuần PyTorch, kiểm khớp eval CUDA) + tải `best.pt` B1 (epoch 28) vào `checkpoints/mamba_ctc/`.
-- **Zero-shot nhóm pre-train (người dùng duyệt, tài khoản B):** sửa `scripts/kaggle/zero_shot/zero_shot.py` — mặc định
-  Parakeet + PhoWhisper (wav2vec2 chỉ khi `ZS_MODELS` nêu), 203 câu, một mức WER (bỏ `wer_vi_label`), `predictions.tsv`
-  thêm cột `split`; bước đối chiếu `transcribe()` chính thức hỏng thì ghi lỗi chứ không bỏ kết quả. Kernel kiểm tra
-  `vuvanduc1/zero-shot-check-asr` (5 câu): PhoWhisper WER 0,077 · RTF 0,10 · 1,05 GiB; Parakeet chạy được trên T4
-  (NeMo 2.6.2 cài được trên Py 3.13, lhotse 1.31.1) WER 0,073 · RTF 0,021 · 608,8M tham số. **Còn mở:** `model.transcribe()`
-  chính thức hỏng (lhotse sampler `TypeError object.__init__`; `use_lhotse` không nhận) → chưa đối chiếu được forward tự viết
-  với đường chính thức. Bản đầy đủ `vuvanduc1/zero-shot-asr` đẩy 22:33.
-- **Môi trường local (lỗi do AI):** `pip install gradio` (20:05) kéo `huggingface_hub` 2.1.1 → hỏng `transformers` 4.56.
-  Sửa: gradio 6.29.1 + transformers 5.18.0 + huggingface_hub 1.33.0 + pillow 12.3.0 (gradio 5 cần pillow < 12, xung đột
-  pdfplumber ≥ 12.2). `pip check` còn 2 xung đột không do phiên này (streamlit pillow < 12 — chọi pdfplumber; pathos).
-  Đã kiểm lại: PhoWhisper local, `datasets` offline, demo.
-- **Kết quả zero-shot 203 câu (`vuvanduc1/zero-shot-asr`, 11′ GPU, `reports/results/zero_shot_2026-10-06/`):** PhoWhisper-small
-  WER 0,155 · CER 0,100 · RTF 0,120 · 1,05 GiB. Parakeet (fp16 autocast) WER 0,201 · RTF 0,024 · 4,62 GiB nhưng **16/203 câu
-  ra đúng một token `⁇`**. Chẩn đoán (`zero-shot-check-asr` v3, 4′): 16 câu đó fp16 lỗi tái lập 16/16, **fp32 hết lỗi** (WER
-  0,176, 0 rỗng); câu bình thường fp16 ≈ fp32 (WER 0,079 cả hai). → tràn số fp16 kiểu B1. Ghép 16 câu fp32 vào: Parakeet
-  ≈ 0,140 (ước, trộn fp16/fp32 — không phải số báo cáo). VRAM fp32 6,95 GiB. Thêm `ZS_ONLY`, mô hình `parakeet_fp32`.
-  GPU B dùng cho zero-shot ≈ 0,4 h (quota B 18,47 h lúc 22:54).
-- **Phiên sau / chờ người dùng:** chạy lại Parakeet fp32 đủ 203 câu (~0,1-0,15 GPU-h B) để có số chính thức? (chính sách
-  precision cho nhóm pre-train — người dùng quyết; tiền lệ `mamba_fp32`).
-- **Mô hình #6 "Conformer cùng GPU-giờ" (người dùng yêu cầu, 23:00):** Conformer chạy tới 76 epoch ≈ 16,78 h GPU (= tổng của
-  Mamba B1 30 epoch; Conformer 792 s/epoch), nối tiếp từ `latest.pt` của Conformer s1 (epoch 29) — cùng commit `bb8d0eb`,
-  LR hằng nên kéo dài không đổi lịch. B không đọc được output kernel của A → tải `latest.pt`/`best.pt`/`metrics.jsonl` về rồi
-  tạo Dataset private `vuvanduc1/conformer-s1-ckpt` (lần 1 Kaggle bỏ thư mục `checkpoints/` khi giải nén → lồng thêm một cấp,
-  version 2 đúng). Kernel `vuvanduc1/train-full-long-conformer-s2` (tag `long`, `--epochs 76`, metadata sửa tay: bỏ
-  `kernel_sources`, thêm dataset) đẩy 23:33. **Lúc 23:49: RUNNING, quota B đã tính ~15′ nhưng 0 dòng log** (kiểu sự cố
-  05/10) — đã báo người dùng kiểm trên UI / huỷ. Không sửa `launch.py`/`train_full.py`. Tải kết quả: `fetch.py --model
-  conformer --session 2 --account B --tag long`.
-- **Lỗi khởi động GPU tài khoản B (2026-10-06 23:33 → 10-07 00:08):** `train-full-long-conformer-s2` v1 RUNNING ~25′ 0 dòng log
-  rồi ERROR (quota tạm tính rồi hoàn lại), v2 + v3 ERROR sau ~1,5′. Kernel thăm dò `vuvanduc1/probe-ckpt-mount`: **CPU chạy
-  bình thường** (mount ở `/kaggle/input/datasets/vuvanduc1/conformer-s1-ckpt/checkpoints/conformer_ctc_baseline/latest.pt`,
-  `find_previous` tìm thấy) nhưng **bản GPU ERROR sau ~30 s** → lỗi cấp máy GPU phía Kaggle, không do kernel/dataset. Không
-  lần nào trừ quota (B 18,47 h). Người dùng không vào được UI tài khoản B.
-- **Phiên sau bắt đầu từ:** (1) kiểm `conextbimamba` s1 (A, hết ~04:45 07/10) theo checklist → hỏi trước khi đẩy s2;
-  (2) đẩy lại `train-full-long-conformer-s2` (B) bằng `kaggle kernels push -p scripts/kaggle/train_full/_build/train-full-long-conformer-s2
-  -t 33600` (metadata đã sửa tay — **đừng chạy lại `launch.py`**, sẽ ghi đè `kernel_sources`), theo dõi bằng watcher; nếu
-  vẫn ERROR thì thử kernel thăm dò GPU trước; (3) câu hỏi còn treo: Parakeet fp32 đủ 203 câu; eval clean-test 3 mô hình
-  train từ đầu + trung bình checkpoint; 30 hay 60 epoch cho cả nhóm.
-
-### 2026-10-07 (03:30 → 04:15) — kiểm ConExt s1 đang chạy, đẩy Conformer dài (B)
-- **ConExtBiMamba s1 (A):** RUNNING, epoch 23 lúc 03:38 (463/540′ phiên), 0,401 s/step, VRAM 3,1 GiB, bỏ 0+0, không lỗi.
-  WER val: ep0 0,498 · ep9 0,247 · ep14 0,230 · ep19 0,205 · **ep22 0,198 (best tới giờ)**, val_unseen 0,194. Ước phiên dừng
-  ~24-25 epoch → cần phiên 2 ngắn (~5-6 epoch, ~2 GPU-h A). Cùng epoch 22: Mamba B1 0,167 · Conformer 0,265 → thứ tự theo
-  epoch Mamba B1 < ConExt < Conformer; theo GPU-giờ (ước thô) ConExt ≈ Mamba B1 (~7,7 h: ConExt 0,198 vs B1 ~ep13 ≈ 0,19).
-- **Thảo luận với người dùng (chưa chốt gì, chỉ trả lời câu hỏi):**
-  - Vì sao LR hằng: chốt 2026-09-28 (dừng epoch bất kỳ vẫn hợp lệ). Kết quả ngược trực giác ("ConExt tốt nhất, Mamba nhanh
-    kém chính xác") — nguyên nhân khả dĩ: Conformer xa cấu hình Gulati 2020 nhất (không subsampling, không PE, LR hằng 3e-4
-    thay Noam/warmup 10k, 165 h); ConExt hạ về 12M (bài 41,6M, có subsampling); Mamba chậm/step vì khối fp32 trên T4. LR
-    hằng có đảo thứ tự hay không: **không có bằng chứng**. Các hướng (giữ + ghi Hạn chế / trung bình checkpoint / thêm pha
-    decay / ablation Conformer cấu hình gốc) — **người dùng/GVHD quyết**, chưa ghi vào `QA.md` (đã đề nghị).
-  - Ngoại suy power-law (LR hằng, không phải kết quả): Conformer 76 ep ≈ 0,183-0,196 vẫn kém Mamba B1 30 ep (0,156);
-    Conformer chạm 0,156 cần > 100 epoch (ngoài vùng tin cậy). Hệ số tiệm cận a không ổn định → không nói được "trần".
-  - GPU: DDP dùng đủ 2 T4 (nvidia-smi: Mamba 98-99% cả 2 card, Conformer ~91%). Kaggle: T4×2 / P100 / TPU (SDK local
-    chỉ liệt kê 3 loại; H100/A100 chỉ thấy ở trang bên thứ ba, chưa kiểm). P100 không có lợi (1 card, không tensor core,
-    torch cu128 có thể bỏ sm_60 — chưa kiểm). H100 ước nhanh hơn nhiều (bf16 + băng thông) nhưng đổi phần cứng phá đồng nhất
-    phép đo tốc độ; chưa đẩy kernel thử.
-- **Người dùng duyệt → đẩy `vuvanduc1/train-full-long-conformer-s2` (B) version 4 lúc 04:06** (`_build/`, metadata sửa tay,
-  `-t 33600`, commit `bb8d0eb`, `--epochs 76`). Lần này khởi động được: quota bắt đầu tính 04:08, cài wheel, chép đủ 4 shard
-  train lúc 04:12. **Chưa thấy dòng resume epoch 30 / step train đầu** lúc đóng phiên.
-- Quota 04:00: A 20,40 h (còn 9,60; ConExt s1 còn chạy tới ~04:45 → còn ~8,7) · B 18,47 h (còn 11,53 → sau phiên 9 h còn
-  ~2,5 → phiên 2 Conformer dài phải đợi reset 2026-10-10).
-- **Phiên sau bắt đầu từ:** (1) kiểm `train-full-long-conformer-s2` (B): có dòng resume từ `latest.pt` epoch 29 → bắt đầu
-  epoch 30 không, metrics liền mạch, s/step ~0,26, WER các epoch mới (hết chậm nhất ~13:06 07/10, ~40 epoch/phiên →
-  dừng quanh epoch ~69-70); (2) kiểm `conextbimamba` s1 (A, xong ~04:45) theo checklist → **hỏi** trước khi đẩy
-  `conextbimamba --session 2`; (3) câu hỏi treo: ghi các hướng LR/ablation vào `QA.md`?; Parakeet fp32 đủ 203 câu;
-  eval clean-test + trung bình checkpoint; 30 hay 60 epoch.
-
-### 2026-10-07 (04:15 → 04:30) — kiểm ConExt s1, đẩy ConExt s2, đề xuất về lịch LR
-- **ConExtBiMamba s1 (A):** COMPLETE (kết thúc 04:16, kernel 511′), **25 epoch (0-24)**, nonfinite 0, amp skip ≤ 5/epoch,
-  0,397 s/step, VRAM 3,13 GiB. **Best WER val 0,1960 (ep23)**; ep24 0,1966 · val_unseen 0,1923. Loss train tb 2,196
-  (ep19) → 2,110 (ep24), loss val 0,820 → 0,790 → chưa overfit; "loss tb quanh 2,1" là loss train có SP/SpecAugment/dropout
-  (luôn > loss val), vẫn giảm ~0,02/epoch. WER cuối có răng cưa (ep20 +0,004) như Mamba B1 ep24-29 và Conformer ep29
-  (+0,021) — dấu hiệu LR hằng không "lắng" được (diễn giải, chưa kiểm chứng).
-- **Tra tài liệu LR cho Mamba** (đã đọc PDF/yaml): không nguồn nào dùng LR hằng. Mamba gốc (LM): warmup + cosine về 1e-5,
-  đỉnh 5× GPT-3. 2405.12609 (ESPnet ASR): Noam, đỉnh 1e-3-2,5e-3, warmup 15k-40k, **chuyển nguyên siêu tham số từ mô hình
-  attention sang Mamba** để so công bằng; xác nhận Mamba "sometimes unstable". Miyazaki 2024: giữ recipe E-Branchformer,
-  sửa bất ổn bằng AdamW + dropout 0,2 (không đổi LR). ConMamba (SpeechBrain yaml): Noam đỉnh 1e-3, warmup 7,5k/25k,
-  bf16, **trung bình 10 checkpoint**. → Không có bằng chứng Mamba cần LR khác Conformer cho ASR.
-- **Người dùng duyệt → đẩy `tieunhi/train-full-conextbimamba-s2` (A) lúc 04:29** — v1 ERROR log rỗng sau ~1,5′ (quota không trừ, lỗi khởi động quen thuộc), **v2 đẩy lại 04:31 khởi động OK** (chép audio 04:33) (`launch.py --model conextbimamba
-  --session 2 --account A`, commit `bb8d0eb` của s1, nguồn output s1, 540′; dự kiến ~5 epoch ≈ 2 h rồi dừng ở 30).
-- **Thứ tự đề xuất của Claude về lịch LR (người dùng yêu cầu ghi lại; CHƯA CHỐT — người dùng/GVHD quyết):**
-  1. ConExt s2 **giữ LR hằng** tới epoch 30 → cả ba mô hình có mốc "30 epoch, LR hằng" so sánh được (đang chạy).
-  2. **Trung bình checkpoint** vài epoch cuối (`epochs/epochNN.pt`, 48 MB/epoch, đã có cho cả ba) cho cả ba mô hình, eval
-     val/val_unseen → đo LR hằng đang "để lại" bao nhiêu WER. Không tốn quota train.
-  3. Xem mức lợi: nhỏ (ngưỡng đề xuất ~0,5 điểm WER, không lấy từ tài liệu) → không cần pha decay, ghi "LR hằng" vào Hạn
-     chế; lớn → **pha decay riêng** sau epoch 30, cùng K epoch cho cả ba (vd. 5, linear/cosine về ~0, resume `latest.pt`
-     ep30; ước ~1,1 h Conformer + ~1,8 h ConExt + ~2,8 h Mamba ≈ 5,7 GPU-h; cần cờ lịch LR trong `train.py`, mặc định giữ
-     hằng). Mốc 30 epoch LR hằng giữ nguyên làm một mốc báo cáo.
-  Không đổi lịch LR giữa chừng cho mô hình nào (trộn yếu tố kiến trúc với lịch LR).
-- Đính chính: `metrics.jsonl` ghi `global_batch` 16 (`world_size` 2 → 8 câu/GPU), không phải 32 như đã nói trong lúc trao đổi.
-- **Phiên sau bắt đầu từ:** (1) kiểm `conextbimamba-s2` (A): resume đúng epoch 25 từ `latest.pt`, đủ 30 epoch, best;
-  (2) kiểm `train-full-long-conformer-s2` (B, hết chậm nhất ~13:06); (3) hỏi người dùng về bước 2 (trung bình checkpoint —
-  N bao nhiêu, chạy CPU local hay kernel GPU ngắn).
-
-### 2026-10-08 — kiểm ConExt s2 + Conformer dài, tổng hợp 30 epoch cả ba mô hình
-- **ConExtBiMamba s2 (A):** COMPLETE, resume đúng epoch 25 step 456 (global_step 71.481), **30/30**, nonfinite 0, kernel 109′.
-  Best **ep28 WER val 0,1875 · val_unseen 0,1846**. → Cả ba mô hình train từ đầu đã đủ 30 epoch.
-- **Conformer dài s2 (B):** COMPLETE (hết giờ, returncode 0), resume đúng epoch 30 step 0, **69/76 epoch** (latest ep69 step
-  2795). Best **ep66 WER val 0,1944 · val_unseen 0,1924** (ở 14,4 h wall). Vẫn giảm chậm, răng cưa ±0,005.
-- **Bảng 30 epoch (LR hằng 3e-4, batch toàn cục 16, best theo WER val):** Mamba B1 0,1562/0,1547 (ep28; 16,8 h wall;
-  0,683 s/step; VRAM train 3,66 GiB; 12,29M) · ConExt 0,1875/0,1846 (ep28; 10,0 h; 0,40 s/step; 3,18 GiB; 12,24M) ·
-  Conformer 0,2519/0,2481 (ep28; 6,6 h; 0,26 s/step; 2,82 GiB; 12,20M). Cả ba: ep29 xấu hơn ep28 (Conformer +0,021).
-- **Cùng thời gian wall (2×T4, đọc từ `wall_seconds_total`):** ~6,6 h: Mamba 0,1996 · ConExt 0,2047 · Conformer 0,2519;
-  ~10 h: Mamba 0,1833 · ConExt 0,1875 · Conformer 0,2187; ~14,4 h: Mamba 0,1591 · Conformer 0,1944. Thứ tự không đổi
-  theo mốc thời gian (chỉ là quan sát trên một seed, LR hằng).
-- Quota 2026-10-08: A còn 7,52 h · B còn 3,00 h (reset 2026-10-10). Checkpoint ConExt/Conformer dài chưa tải (`--ckpt_dest`).
-- **Phiên sau bắt đầu từ:** người dùng chọn bước tiếp (trình bày trong phiên: tải checkpoint → trung bình checkpoint +
-  eval clean-test 3 mô hình → quyết pha decay/Conformer dài s3 → Parakeet fp32 → đề cương mới). Không đẩy kernel nào khi
-  chưa được duyệt.
-- **(tiếp, 2026-10-08) Lưu checkpoint:** `D:\Model\kltn_checkpoints\` (6,6 GB): `mamba`, `conextbimamba`, `conformer` (best + ep00-29)
-  · `long\conformer` (best ep66 + ep30-68; ep00-29 = `conformer\epochs`, cùng một lần chạy). Người dùng tự đưa lên Drive.
-- **Tra tài liệu tốc độ train Mamba:** chỉ 2 nguồn đo train — 2405.12609 Bảng XIII (ASR LS-100, V100: Conformer 21,4 ·
-  ConExtBiMamba 19,8 phút/epoch; Bảng V/VII/IX là tăng cường tiếng nói) và Zevallos 2025 (ConMamba ít hơn 40-45% giờ train,
-  2× Hopper, token 40 ms). Speech Slytherin + 2406.16808 chỉ đo suy luận (Slytherin: Mamba nhanh hơn chỉ khi > 60 s).
-- **Kernel `tieunhi/subsample-speed-asr` (A, người dùng duyệt)** — `scripts/kaggle/subsample_speed/`, độc lập với code train
-  (clone `bb8d0eb`, subsampling/fp16 gắn trong tiến trình con). v1 lỗi thiếu `jiwer` (~1′); v2 (24′): Conformer/ConExt ~1,1 s/step
-  cố định (a ≈ b), Mamba khớp log → nguyên nhân: cuDNN dựng kế hoạch conv cho mỗi shape mới; v3 (12′) đo lượt 2 trên cùng
-  batch → khớp log train (Conformer 0,195 vs 0,26 log; Mamba 0,663 vs 0,683; ConExt 0,385 vs 0,40). Kết quả `reports/results/subsample_speed/v3/`.
-  s/step trung vị (1 T4, batch 8, AMP): **a** Conf 0,195 · Mamba 0,663 (3,4×) · ConExt 0,385 (2,0×); **b subsampling 4×**
-  Conf 0,075 · Mamba 0,165 (2,2×) · ConExt 0,110 (1,5×); **c Mamba fp16** Mamba 0,445 · ConExt 0,282. Subsampling nhanh
-  Conf 2,6× · Mamba 4,0× · ConExt 3,5×; fp16 nhanh Mamba 1,5× · ConExt 1,4×. → Có subsampling Mamba vẫn chậm hơn Conformer
-  trên T4/~13 s; chưa đo b+c kết hợp. Lượt 1 Conformer 1,37 s/step → **đo RTF RQ2 (độ dài thay đổi) phải làm ấm từng shape**.
-- **Phiên sau:** người dùng quyết có đưa kết quả này vào khóa luận (Thảo luận/Hạn chế) + có đo b+c không; các việc treo ở trên.
-- **(tiếp, 2026-10-08) Bảng so sánh cuối — kernel `tieunhi/final-compare-asr` (A, người dùng duyệt, 18′):** `zero_shot.py` thêm
-  nhánh 3 mô hình train từ đầu (clone `bb8d0eb`, trọng số best.pt ep28 từ dataset riêng tư `tieunhi/kltn-best-ckpt`) + làm ấm
-  một lượt trọn 203 câu (mặc định mới `ZS_WARMUP=all`, vì cuDNN dựng kế hoạch conv mỗi shape). Kernel chạy bản sinh
-  `scripts/kaggle/final_compare/final_compare.py` (gitignore). Kết quả `reports/results/final_compare_2026-10-08/`
-  (+ `bootstrap_clean_test.json`). Clean-test 203 câu, ref = **nhãn giả** (0 câu hiệu đính), T4 batch 1:
-  Parakeet fp32 WER 0,140 · RTF 0,0086 · 4,64 GiB | PhoWhisper 0,155 · 0,1155 · 1,05 | Mamba B1 0,171 · 0,0020 · 0,08 |
-  ConExt 0,203 · 0,0015 · 0,08 | Conformer 0,265 · 0,0012 · 0,07. Bootstrap ghép cặp: Mamba − Parakeet +3,1 [1,6; 4,8];
-  Mamba − PhoWhisper +1,6 [−0,1; 3,5] (chưa phân biệt). RTF Parakeet lần 06/10 (0,024, làm ấm 3 câu) bị thổi phồng.
-  ⚠️ Nhãn giả cùng nguồn nhãn train → có lợi cho 3 mô hình tự train; tính lại WER từ `predictions.tsv` sau khi hiệu đính.
-- **Công cụ hiệu đính** `python -m src.data.correct_clean_test` (cổng 7861) + `docs/notes/clean_test_correction_guide.md`;
-  người dùng đang hiệu đính. **Trang báo cáo cho thầy khác:** https://claude.ai/artifact/VFAfKywgz6UjTu3PGNXZF1 (riêng tư,
-  bản sao `docs/tong_ket/2026-10-08/`).
-- **Phiên sau:** sau hiệu đính → tính lại WER clean-test 5 mô hình từ `predictions.tsv` (không GPU) + cập nhật trang; đề cương
-  mới; hẹn GVHD trước ~15/10; commit (chưa commit gì trong phiên này).
-- **(tiếp, 2026-10-08) Trang báo cáo cho thầy khác — bản cuối phiên:** https://claude.ai/artifact/VFAfKywgz6UjTu3PGNXZF1
-  (người dùng đã bật link công khai). Có: bảng so sánh cuối + biểu đồ đánh đổi WER/tốc độ + forest plot, biểu đồ RQ2
-  (không / có subsampling 4×) ở Điểm 3, link GitHub + Drive. Nguồn: `docs/tong_ket/2026-10-08/mamba_asr_report.html`
-  (người dùng sửa câu chữ tay; thư mục `docs/tong_ket/` gitignore → bản HTML/PDF lưu Drive, người dùng tự tải lên).
-  Hiệu đính clean-test: 11/203 câu lúc commit.
-
-### 2026-10-08 (đóng phiên) — tổng kết phiên và điểm bắt đầu phiên sau
-- **Đã làm trong phiên:** kiểm + tải xong train full 3 mô hình (30 ep) + Conformer dài (69 ep); lưu checkpoint
-  `D:\Model\kltn_checkpoints\` (6,6 GB, người dùng đưa Drive); benchmark subsampling/fp16 (`subsample_speed_2026-10-08.md`);
-  bảng so sánh cuối 5 mô hình trên clean-test (`reports/results/final_compare_2026-10-08/`); công cụ hiệu đính clean-test;
-  trang báo cáo công khai https://claude.ai/artifact/VFAfKywgz6UjTu3PGNXZF1 + PDF trên Drive
-  (https://drive.google.com/file/d/1nn2Rfo8nUOhb3hT2f-Pt8XlJ9gh1N3WQ/view); soạn thư gửi thầy Dũng (báo cáo lần 2, xin đổi
-  tên đề tài thành "Khảo sát Mamba làm encoder cho nhận dạng tiếng nói tiếng Việt hội thoại", xin báo cáo sớm) — người
-  dùng tự gửi. Commit `1dbb0f5` đã push.
-- **Chốt trong phiên:** không train thêm cho tới khi GVHD trả lời (subsampling, Conformer chuẩn, fine-tune, seed — QA Q11).
-- **Phiên sau bắt đầu từ:** (1) hỏi người dùng: thầy Dũng đã trả lời thư chưa, lịch gặp (ghi vào bảng mục 6); (2) tiến độ
-  hiệu đính clean-test (11/203 lúc commit; chạy lại `python -m src.data.correct_clean_test`) → khi xong tính lại WER 5 mô
-  hình từ `final_compare_2026-10-08/predictions.tsv` + bootstrap, cập nhật trang báo cáo (nguồn
-  `docs/tong_ket/2026-10-08/mamba_asr_report.html`, đăng lại cùng URL); (3) soạn nháp đề cương mới (chờ người dùng duyệt);
-  (4) việc không GPU: trung bình checkpoint (CPU khó với Mamba — cân nhắc kernel ngắn, hỏi trước), code đo RQ2 cuối (làm ấm
-  từng độ dài). Quota reset 2026-10-10 (A còn ~6,6 h, B 3 h trước reset).
+Mỗi mục: làm gì · chốt gì · phiên sau bắt đầu từ đâu. Các mục từ đầu dự án tới 2026-10-08 chuyển nguyên văn sang
+`docs/notes/plan_nhat_ky_luu_tru_den_2026-10-08.md` (2026-10-15, không sửa chữ nào); trước 2026-09-19 xem `git log`.
 
 ### 2026-10-11 — fine-tune Parakeet: chốt, code, kernel
 - **Người dùng chốt (bỏ treo phần fine-tune; GVHD buổi 1 đã nêu "Conformer pre-train + fine-tune"):** chỉ fine-tune
@@ -1262,7 +205,7 @@ khảo sát dataset, phát hiện sai lệch số liệu, prefetch script, train
 
 ### 2026-10-11 (đóng phiên)
 - **Đã làm:** fine-tune Parakeet — chốt (chỉ Parakeet, ~7 GPU-h, chấm lại sau hiệu đính), code + kernel, commit `9b1dfcb`;
-  ghi nhận xét chuyên môn, commit `50b6da4` (đã push). **Đẩy kernel trial `tieunhi/finetune-parakeet-trial` 21:51**
+  ghi nhận xét chuyên môn, commit `50b6da4` (đã push). **Đẩy kernel trial `<A>/finetune-parakeet-trial` 21:51**
   (A, quota A đã reset — 0,0 h lúc đẩy; trần 150′). Lúc đóng phiên: RUNNING, chưa có dòng log (máy vừa cấp).
 - **Chốt:** "train" = lần fine-tune chính của Parakeet (không phải train lại nhóm train từ đầu — vẫn ⏸ GVHD, Q11).
 - **Phiên sau bắt đầu từ:** kiểm trial (status + output) → trình người dùng số liệu (phủ tokenizer, khớp giải mã, probe
@@ -1270,7 +213,7 @@ khảo sát dataset, phát hiện sai lệch số liệu, prefetch script, train
   `--mode main`. Song song: hỏi thầy Dũng đã trả lời chưa; đề cương mới; hiệu đính (11/203). Ghi chú phiên này chưa commit.
 
 ### 2026-10-12 — trial fine-tune Parakeet lỗi cấp máy; chốt LR 1e-4
-- **Trial `tieunhi/finetune-parakeet-trial` (đẩy 11/10 21:51):** RUNNING ~10,3 h, log 0 dòng (kể cả `print` đầu tiên),
+- **Trial `<A>/finetune-parakeet-trial` (đẩy 11/10 21:51):** RUNNING ~10,3 h, log 0 dòng (kể cả `print` đầu tiên),
   output rỗng; người dùng Cancel 08:12 → **quota A hoàn về 0,00 h**. Chẩn đoán không tốn GPU: cùng script chạy CPU
   (`finetune-parakeet-cpucheck`) → clone/import/log OK, dừng đúng chỗ thiếu CUDA; kernel GPU 16 s (`gpu-check-asr`,
   gắn 5 dataset) → 2× T4, torch 2.11+cu128 OK. Kết luận: lỗi cấp máy phía Kaggle (như 05-06/10), không phải code.
@@ -1290,7 +233,7 @@ khảo sát dataset, phát hiện sai lệch số liệu, prefetch script, train
   câu; batch 8/GPU OOM → 4; probe fp32 1,08 / fp16 0,73 s/step, VRAM 12,6 GB; chạy ngắn LR 1e-4 DDP fp32 2,07 s/step,
   0 step bỏ; WER 400 câu: val 12,1 → 9,6%, val_unseen 11,0 → 7,5% sau 551 step (nhãn giả — một phần có thể là học
   cách viết của Zipformer). Output nhỏ ở scratchpad phiên (không lưu repo).
-- **Lần chính đẩy 09:39** `tieunhi/finetune-parakeet-main` (A, commit `54a3efa`, người dùng duyệt fp32): batch 4×2×2=16,
+- **Lần chính đẩy 09:39** `<A>/finetune-parakeet-main` (A, commit `54a3efa`, người dùng duyệt fp32): batch 4×2×2=16,
   LR 1e-4 → 5e-6 cosine, warmup 800, total 10.000 step (~3,5 epoch, ước từ 2,07 s/step), eval đủ val+val_unseen mỗi
   2.500 step (~6′/lần). Ước xong ~16:40. Giữ `find_unused_parameters=True` (chưa sửa).
 - **Phiên sau / khi xong:** tải output nhỏ (`--file-pattern '.*\.(json|jsonl|log|csv)$'`), best.pt 2,27 GB chỉ tải khi
@@ -1309,9 +252,9 @@ khảo sát dataset, phát hiện sai lệch số liệu, prefetch script, train
   ràng buộc chỉ đổi encoder, "mọi thay đổi có lợi một lần") → G0 code + test CPU, commit `1384e70`; kernel preflight
   `fcb188f`. Ghi nhận AI: hôm nay 2 lần push trước khi quét khoá (quét bù sạch; memory đã cập nhật).
 - **Đang chạy lúc đóng phiên:**
-  - A `tieunhi/finetune-parakeet-main` (đẩy 09:39, commit `54a3efa`; quota A 2,82 h lúc 11:55; ước xong ~16:40,
+  - A `<A>/finetune-parakeet-main` (đẩy 09:39, commit `54a3efa`; quota A 2,82 h lúc 11:55; ước xong ~16:40,
     tổng ~7-7,5 h). Báo động nếu quota A > 8,3 h mà chưa xong.
-  - B `vuvanduc1/preflight-v2-asr` (đẩy 11:53, commit code `1384e70`; quota B 0,04 h lúc 11:55; ước 75-90′,
+  - B `<B>/preflight-v2-asr` (đẩy 11:53, commit code `1384e70`; quota B 0,04 h lúc 11:55; ước 75-90′,
     trần 120′). Báo động nếu quota B > 2,5 h.
 - **Phiên sau bắt đầu từ:**
   1. Kiểm 2 kernel trên (status + quota). Tải output nhỏ:
@@ -1355,8 +298,8 @@ khảo sát dataset, phát hiện sai lệch số liệu, prefetch script, train
 - **Chờ người dùng:** commit + push để đẩy kernel; sửa `normalize_text` thống nhất dấu thanh (hóa/hoá); N trung bình pha
   giảm (AI nghiêng: cả 8 epoch); 4 chỗ đề cương; lý do thật chọn ConExt làm mô hình chính (ghi vào Ch2).
 - **Đẩy kernel (AI, theo quyền người dùng giao):** commit `cf1c3ec` (trung bình checkpoint, RQ2, RQ3, tài liệu) và
-  `edd7dd4` (configs/v2a + rẽ nhánh v1) đã push. Dataset riêng tư `tieunhi/kltn-v1-avg20-29` (3 file trung bình ep20-29).
-  **Đang chạy:** A `tieunhi/avg-eval-v1-asr` (đẩy 19:01, ước 25-35′); B `vuvanduc1/train-full-v2a-mamba-s1` (đẩy 19:10,
+  `edd7dd4` (configs/v2a + rẽ nhánh v1) đã push. Dataset riêng tư `<A>/kltn-v1-avg20-29` (3 file trung bình ep20-29).
+  **Đang chạy:** A `<A>/avg-eval-v1-asr` (đẩy 19:01, ước 25-35′); B `<B>/train-full-v2a-mamba-s1` (đẩy 19:10,
   nhánh pha giảm B1 từ `train-full-mamba-s2` ep29, ước ~4,5 GPU-h). Sau avg_eval: A đẩy nhánh ConExt (~2,7 h) rồi
   Conformer v1 (~1,8 h); relPE 38 epoch và nhánh 40 ms xếp sau.
 - **Chờ người dùng:** quy tắc chọn checkpoint bảng chính (AI đề xuất: trung bình cả 8 epoch pha giảm ep30-37, áp
@@ -1374,17 +317,17 @@ khảo sát dataset, phát hiện sai lệch số liệu, prefetch script, train
   commit — chờ người dùng quyết có đưa lên repo public không), `docs/khoa_luan/` (gitignore): `ch1_kiem_trich_dan.md`
   ([10] ghép số hai cấu hình — phải sửa trong Word), `ch2_nhap.md`, `ch3_dulieu_phuongphap_nhap.md`, **`muc_luc_de_xuat.md`**.
 - **Kernel lúc đóng phiên:**
-  - B `vuvanduc1/train-full-v2a-mamba-s1` RUNNING (đẩy 19:10; xong ~23:45). WER val/val_unseen theo epoch pha giảm:
+  - B `<B>/train-full-v2a-mamba-s1` RUNNING (đẩy 19:10; xong ~23:45). WER val/val_unseen theo epoch pha giảm:
     ep30 0,1445/0,1427 · ep31 0,1421/0,1398 · ep32 0,1378/0,1350 · ep33 0,1343/0,1322 (v1 best 0,1562/0,1547; nhãn giả;
     số chính thức = ep37). Quota B 3,75 h.
-  - A `tieunhi/avg-eval-v1-asr` **version 3 QUEUED** từ 20:57 (chưa cấp máy, quota A 7,33 h không đổi). Version 1 chạy
+  - A `<A>/avg-eval-v1-asr` **version 3 QUEUED** từ 20:57 (chưa cấp máy, quota A 7,33 h không đổi). Version 1 chạy
     81′ không 0 dòng log (sự cố cấp máy Kaggle, người dùng cancel, quota hoàn); version 2 QUEUED rồi cancel.
 - **Phiên sau bắt đầu từ:**
   1. **Nhắc người dùng review `docs/khoa_luan/muc_luc_de_xuat.md`** (2 chỗ chọn: tên Ch2; Bảng 2 10/40 ms ở RQ1 hay RQ4).
   2. Kiểm B1: COMPLETE? tải output nhỏ (`fetch.py --model v2a-mamba --session 1 --account B` hoặc
      `kaggle kernels output ... --file-pattern '.*\.(json|jsonl|log|csv)$'`), lấy WER ep37 val/val_unseen.
   3. Kiểm avg_eval A: nếu đã chạy → trong 10′ đầu phải có log, không thì báo người dùng cancel; nếu vẫn QUEUED → chạy trên
-     B (cần người dùng share `tieunhi/kltn-v1-avg20-29` + `tieunhi/kltn-best-ckpt` cho `vuvanduc1`; sửa `id`/sources).
+     B (cần người dùng share `<A>/kltn-v1-avg20-29` + `<A>/kltn-best-ckpt` cho `<B>`; sửa `id`/sources).
      Đẩy lại avg_eval: điền `COMMIT = "cf1c3ec"` tạm trong `avg_eval.py` rồi `git checkout` lại (không commit hash).
   4. Đẩy tiếp (AI có quyền quyết, báo sau): B → `v2a-conformer-relpos` (đo s/step thật 15′ đầu → báo cáo tốc độ +
      đề xuất quy tắc trục cùng GPU-giờ, người dùng chốt **trước khi xem WER**); A → `v2a-conextbimamba` rồi `v2a-conformer`
@@ -1424,9 +367,9 @@ khảo sát dataset, phát hiện sai lệch số liệu, prefetch script, train
 - **Đã làm:** B1 v2a xong (ep37 0,1271/0,1252); huỷ avg_eval kẹt (quota hoàn); avg_eval v4 xong (bảng ở trên); đẩy relPE
   (B) + nhánh ConExt (A). AI chưa xem WER relPE (giữ đến khi chốt quy tắc cùng GPU-giờ).
 - **Kernel lúc đóng phiên (05:08):**
-  - A `tieunhi/train-full-v2a-conextbimamba-s1` RUNNING (đẩy 04:38), ep30 step 2450, 0 step lỗi, VRAM 3,2 GiB → xong
+  - A `<A>/train-full-v2a-conextbimamba-s1` RUNNING (đẩy 04:38), ep30 step 2450, 0 step lỗi, VRAM 3,2 GiB → xong
     ~07:50-08:20. Quota A 8,06 h.
-  - B `vuvanduc1/train-full-v2a-conformer-relpos-s1` RUNNING (đẩy 04:20), ep1 step 850 → hết trần 540′ ~13:20 (~16-17
+  - B `<B>/train-full-v2a-conformer-relpos-s1` RUNNING (đẩy 04:20), ep1 step 850 → hết trần 540′ ~13:20 (~16-17
     epoch). Quota B 6,49 h.
 - **Phiên sau bắt đầu từ:**
   1. **Nhắc người dùng review `docs/khoa_luan/muc_luc_de_xuat.md`** (tên Ch2; Bảng 2 10/40 ms ở RQ1 hay RQ4) — đã nhắc 13/10, chưa trả lời.
@@ -1445,7 +388,7 @@ khảo sát dataset, phát hiện sai lệch số liệu, prefetch script, train
   0,1525 / val_unseen 0,1506** (v1 best 0,1875/0,1845; nhãn giả). Giảm đều ep30→37; 0 step không hữu hạn (amp bỏ ≤ 2
   step/epoch); 0,40 s/step; VRAM đỉnh 3,2 GiB. Khoảng B1–ConExt sau pha giảm: ~2,5 điểm (val_unseen 0,1252 vs 0,1506).
   Output nhỏ ở scratchpad phiên (`conext_v2a/`).
-- **Đẩy A `train-full-v2a-conformer-s1`** (11:40, `edd7dd4`, rẽ nhánh `tieunhi/train-full-conformer-s1` latest ep29 —
+- **Đẩy A `train-full-v2a-conformer-s1`** (11:40, `edd7dd4`, rẽ nhánh `<A>/train-full-conformer-s1` latest ep29 —
   launcher chọn đúng `latest.pt`, bỏ `best.pt` ep28). Theo dõi 7′: cài wheel OK, đang giải nén audio, không lỗi khởi động.
   Quota A 10,52 h lúc đó. Ước ~8 epoch × 2841 step × ~0,26 s ≈ 1,7 h.
 - B relPE s1 vẫn RUNNING (hết trần ~13:20). Chưa xem WER relPE.
@@ -1489,8 +432,8 @@ khảo sát dataset, phát hiện sai lệch số liệu, prefetch script, train
 - **Chưa commit:** `Plan.md`, `TODO.md`, `scripts/plot_v2a_branch.py`, `reports/results/{train_full/v2a-*, avg_eval_v1_2026-10-13,
   v2a_branch_2026-10-13}`. Vẫn không track: `docs/notes/de_cuong_moi_nhap.md`, `reports/results/error_analysis/` (chưa kiểm).
 - **Kernel lúc đóng phiên (15:05):**
-  - A `tieunhi/train-full-v2a-s4-conextbimamba-s1` (đẩy 13:46): 0,22 s/step → xong ~21:30-22:00 (1 phiên). Quota A ~13 h.
-  - B `vuvanduc1/train-full-v2a-conformer-relpos-s2` (đẩy 12:58, resume ep17 step 833): ~0,6 s/step → hết trần ~22:00 ở
+  - A `<A>/train-full-v2a-s4-conextbimamba-s1` (đẩy 13:46): 0,22 s/step → xong ~21:30-22:00 (1 phiên). Quota A ~13 h.
+  - B `<B>/train-full-v2a-conformer-relpos-s2` (đẩy 12:58, resume ep17 step 833): ~0,6 s/step → hết trần ~22:00 ở
     ~ep34. Quota B ~15,5 h.
   - C `<C>/train-full-v2a-s4-conformer-relpos-s1` (~19:30) + `train-full-v2a-s4-mamba-s1` (~20:30), 1 phiên mỗi run.
 - **Phiên sau bắt đầu từ:**
@@ -1501,7 +444,7 @@ khảo sát dataset, phát hiện sai lệch số liệu, prefetch script, train
   3. Sau khi relPE + 40 ms xong: chấm clean-test checkpoint ep37 cả nhóm (kernel eval) → RQ2 cuối (`rq2_final`).
   4. ⛔ Chờ người dùng: quy tắc trục GPU-giờ (giờ cần ghi kèm sự cố đã thấy số relPE); review `muc_luc_de_xuat.md`;
      xác nhận sửa Ch3 theo quy tắc 9 (ep37, không trung bình pha giảm); commit các file trên; các mục cũ (normalize_text
-     hóa/hoá, 4 chỗ đề cương, lý do chọn ConExt, eval ngoài miền, commit nháp đề cương, `vuvanduc1` trong launch.py public).
+     hóa/hoá, 4 chỗ đề cương, lý do chọn ConExt, eval ngoài miền, commit nháp đề cương, `<B>` trong launch.py public).
   5. Việc tay: hiệu đính clean-test (11/203), gửi đề cương + hẹn GVHD trước ~17/10.
 
 ### 2026-10-13 (tối ~19:25) — ConExt 40 ms xong; đẩy RQ2 cuối (A)
@@ -1523,3 +466,132 @@ khảo sát dataset, phát hiện sai lệch số liệu, prefetch script, train
 - Đã che username tài khoản C trong Plan/TODO trước khi commit (repo public).
 - **Phiên sau bắt đầu từ:** TODO khối "▶▶▶▶" (kiểm B relPE s3 đã đẩy chưa; chờ người dùng số epoch train dài 40 ms).
 
+
+### 2026-10-14 (tối ~18:40) — công cụ hiệu đính: tô chữ theo audio
+- Người dùng thấy công cụ khó dùng, muốn chữ được tô theo audio. Đã thêm vào `src/data/correct_clean_test.py`: forced
+  alignment CTC (Viterbi tự viết, khớp hệt `torchaudio.forced_align` trên 8 câu; hàm torchaudio bị gỡ từ 2.9) cho
+  **bản hiệu đính đang gõ**, dựa trên log-prob Conformer v1 avg20-29 chạy CPU (~0,7 s/câu lần đầu, ~50 ms mỗi lần căn
+  lại); trình phát `<audio>` riêng + JS tô chữ, bấm chữ để nhảy tới. Kiểm trong Chrome: tự phát, tô đúng, cập nhật khi
+  gõ; không bấm Lưu nên manifest không đổi. Hướng dẫn mục 1, 2, 5, 8 đã cập nhật (ghi phương pháp: model chỉ cấp
+  thời gian, không cấp chữ).
+- **Phiên sau bắt đầu từ:** như mục trước; người dùng dùng thử công cụ mới khi hiệu đính tiếp (11/203).
+
+### 2026-10-14 (khuya ~23:30) — kiểm bản hiệu đính, cố vấn Whisper, bảng tên riêng
+- Người dùng hỏi cách kiểm 113/203 câu đã hiệu đính (tiếng Anh, tên công ty, nói vấp). Đã thử chấm bằng Conformer v1
+  (CTC NLL + bỏ từng từ): không phân biệt được ở tiếng Anh/tên riêng (model muốn bỏ cả *singapore*), nhiễu ở tiếng Việt.
+  Thêm nữa, model nằm trong đội hình → **bỏ** cách này. Quét chữ: 80/113 câu giữ y nhãn giả, còn sót garble Zipformer.
+- **Người dùng chốt:** không chờ GVHD cho phần này. Không chép lại mù (tốn thời gian). Muốn đối chiếu với model khác,
+  nhưng tự mình hiệu đính.
+- Kernel `whisper-advisor-asr` (A, 1×T4, 16′): Whisper large-v3 beam 5 cho đủ 203 câu → `data/processed/whisper_advisor.json`
+  (gitignore). Whisper vs nhãn giả WER 0,156. Bản hiệu đính vs nhãn giả **0,015**, vs Whisper 0,099. Whisper **bịa 6 câu**
+  ("subscribe kênh Ghiền Mì Gõ"), viết sai OPEX/Curious/Micah, bỏ lặp từ, ra chữ số.
+- Công cụ: thêm ô Whisper, khung đối chiếu (tô chữ theo việc Zipformer/Whisper có cùng chữ đó không), chặn câu bịa (trùng
+  < 0,3). Hướng dẫn mục 2a. Bảng tên chuẩn có nguồn: `docs/notes/clean_test_entities.md`.
+- Phương pháp khai trong khóa luận: cố vấn chỉ dùng model ngoài đội hình (tiền lệ Faria et al. 2022, arXiv 2206.06192
+  mục 2.1). PhoWhisper (dự bị) fine-tune từ Whisper → có thể hưởng lợi. Bản hiệu đính rất gần Zipformer (0,015) → neo
+  nhãn có lợi cho Zipformer ở câu hỏi L2 ("học trò vượt thầy").
+- Chưa chốt (người dùng): cách chấm từ đệm/lặp từ/cách viết thay thế; tách N-WER/CS-WER (ViMedCSS, PIER).
+- **Phiên sau bắt đầu từ:** người dùng mở lại công cụ (khởi động lại để nạp ô Whisper), sửa các câu ở
+  `clean_test_entities.md` mục 1, 3 và danh sách garble ở TODO, rồi làm tiếp 90 câu.
+- (23:17) **Người dùng chốt, dù đã được báo rủi ro:** hiện output 5 mô hình đang so sánh trong công cụ (khung gập,
+  `predictions.tsv` 08/10). Mỗi lần lưu ghi `corrected_at`; mốc `OURS_VISIBLE_FROM` = 2026-10-14T23:17. Lúc chấm, báo
+  thêm WER trên các câu làm trước mốc (113 câu) để đo ảnh hưởng. Đã khởi động lại công cụ.
+- (~23:50) Bố trí lại công cụ (người dùng thấy phải cuộn nhiều): 2 cột, trái dính màn hình (audio, theo dõi lời, ô
+  hiệu đính, ghi chú + Lưu), phải chia tab (Đối chiếu / Zipformer / Whisper / Mô hình đề tài / Hướng dẫn); Ctrl+Enter =
+  Lưu & tiếp. Đã kiểm khởi động + config; **chưa xem giao diện thật trong trình duyệt** (Chrome mất kết nối).
+- Người dùng thấy mô hình đề tài sai 7–10 từ/câu. Đã giải thích: câu TB 51 từ; ep28 WER(nhãn giả) Parakeet 0,140 ·
+  PhoWhisper 0,155 · B1 0,171 · ConExt 0,203 · Conformer 0,265; bản 40 ms tốt hơn (val_unseen ~0,11) nhưng chưa có
+  output clean-test từng câu.
+
+### 2026-10-14 (đóng phiên ~23:55)
+- Chưa commit: công cụ (`correct_clean_test.py`), kernel `scripts/kaggle/whisper_advisor/`, `clean_test_entities.md`,
+  hướng dẫn hiệu đính, manifest (113/203), TODO/Plan, cùng 2 file nháp có từ trước (`de_cuong_moi_nhap.md`,
+  `phan_bien_2026-10-14.md`).
+- **Phiên sau bắt đầu từ:** (1) hỏi người dùng có commit không; (2) người dùng góp ý giao diện mới; (3) người dùng
+  hiệu đính tiếp, trước hết là các lỗi khách quan + garble ở TODO và `clean_test_entities.md`; (4) quyết định còn mở:
+  cách chấm từ đệm/lặp từ/cách viết thay thế, tách N-WER/CS-WER, có chấm clean-test bản 40 ms để xem output không
+  (tốn GPU, hỏi trước).
+
+
+### 2026-10-15 — quy ước tiếng Anh/ghi chú, từ ghép, lỗi "từ dính", giải mã beam + LM (dừng vì hết token)
+- Trả lời người dùng: cách viết tiếng Anh/tên riêng + từ khóa ô Ghi chú (hướng dẫn mục 2a, 3, 4). Phát hiện *make up* /
+  *makeup*: nhãn train tự mâu thuẫn (MAKE UP 80 / MAKEUP 11…) → ứng viên danh sách cách viết thay thế lúc chấm (TODO).
+- Người dùng phát hiện ConExt ra "từ dính" (*nghỉơi*), muốn kết quả tốt nhất, **sẵn sàng train lại/tiếp nếu đáng**,
+  giao quyền đẩy Kaggle "nếu cần thiết". 3 agent: chẩn đoán, huấn luyện (xong), giải mã (đang chạy khi dừng phiên).
+  Toàn bộ kết quả + số: **`docs/notes/glued_words_2026-10-15.md`**; file agent: `D:/Model/kltn_decoding_2026-10-15/`.
+- Kaggle (A): dataset `<A>/kltn-v2a-s4-ep37` (3 checkpoint ep37 40 ms + `sets.json`), kernel
+  `dump-logprobs-v2a-s4` 4′ GPU → `D:/Model/kltn_checkpoints/logprobs_v2a_s4/`. Kernel `scripts/kaggle/dump_logprobs/`.
+- Phát hiện rò rỉ: `train_transcripts.txt` chứa 179/203 câu clean-test → LM chỉ train từ `train_transcripts_filtered.txt`.
+- Người dùng hỏi "beam + LM có làm mô hình tốt hơn thật không" → đã giải thích (note mục 4).
+- **Phiên sau bắt đầu từ:** (1) đọc `glued_words_2026-10-15.md`; agent giải mã có thể đã dừng theo phiên → kiểm
+  `D:/Model/kltn_decoding_2026-10-15/decoding/` (chép lúc ~17:00; bản mới hơn có thể còn ở scratchpad phiên cũ
+  `C:/Users/Dell/AppData/Local/Temp/claude/d--workspaces-specialized-thesis/7b468c40-7e92-4585-8ab2-e1b492d53849/scratchpad/decoding/`);
+  nếu chưa có bảng 3 mô hình 40 ms trên dev thì chạy `run_exp.py` với log-prob 40 ms (lex + lm3c, lmw 0,8, ws 1,0,
+  beam 10; chỉnh chỉ trên nửa tune); (2) trình bảng greedy / beam+từ điển / +LM cho 3 mô hình → người dùng chọn: chỉ
+  bảng phụ giải mã, hay thêm train BPE3000 (~4,5 GPU-h), hay CR-CTC (~18–36 GPU-h) — GPU đóng băng 01/11, quota reset
+  17/10; (3) bật lại trang hiệu đính; chưa commit gì.
+
+### 2026-10-15 (tối ~19:50) — hoàn tất bảng giải mã 40 ms
+- Phiên trước đã chạy 16/20 dòng (bản mới ở scratchpad cũ) → chép hết về `D:/Model/kltn_decoding_2026-10-15/decoding/`
+  (kể cả log-prob Conformer v1 1,9 GB); chạy nốt 4 dòng beam 30 (CPU). Bootstrap theo video (14 video).
+- Kết quả: note `glued_words_2026-10-15.md` mục 3.1. Thứ hạng relPE < ConExt < B1 giữ nguyên, khoảng cách giãn sau LM;
+  LM lợi 1,4–1,8 điểm, xoá từ dính. Lmw/ws chọn theo trung bình 3 mô hình trên nửa tune.
+- Bật lại trang hiệu đính (cổng 7861). Chưa commit.
+- **Phiên sau bắt đầu từ:** người dùng chọn (a)/(b)/(c) ở TODO khối 19:50; quy tắc trục GPU-giờ (relPE) vẫn mở.
+- Người dùng hỏi chi tiết (c): đã kiểm bảng bài CR-CTC (v3) — nửa batch + nửa epoch = cùng chi phí; Aishell-1 S −22%,
+  GigaSpeech S −3%; ghi note mục 3.2 + TODO. Đếm tiếng Anh clean-test: 3,4% số từ; nhãn giả lệch bản hiệu đính 2,1% WER.
+- Người dùng báo hiệu đính xong 203/203, nhiều câu quên tag `tiếng Anh` → 33 câu thiếu tag (phát hiện tự động).
+- Bảng loại từ clean-test xong 241/241 (`src/data/word_tags.py` → `data/processed/clean_test_word_tags.tsv`; nhãn: tiếng
+  anh 188 · tên riêng 31 · viết tắt 19 · tiếng việt 2 · từ đệm 1). Manifest sửa theo lời người dùng: #11 u penn, #86 mad /
+  visual artist và creative director / suboi, #99 nft. **Phiên sau:** chốt quy tắc chấm (cách viết thay thế, từ đệm) →
+  tính lại WER 5 mô hình trên bản hiệu đính + WER tách nhóm từ; quyết (c) CR-CTC; gitignore bảng từ; commit (hỏi).
+
+### 2026-10-15 (tối ~21:00) — chấm lại clean-test đã hiệu đính
+- Quy tắc chốt trước khi chấm (người dùng: được viết thay thế, WER chia 2 nhóm; từ đệm/lặp từ giao AI theo chuẩn):
+  `configs/scoring/alt_spellings.tsv` (13 dòng, lấy từ nhãn train); từ đệm phi từ vựng bỏ cả hai phía (Hub-5NE 1997
+  + chuẩn hoá Whisper), lặp từ chấm như thường, từ vấp dở tuỳ chọn (#153 *in*). Script `src/evaluation/score_clean_test.py`
+  → `reports/results/clean_test_scored_2026-10-15/`. Giải mã clean-test 40 ms: `D:/Model/kltn_decoding_2026-10-15/decoding/cleantest_decode.py`.
+- WER (203 câu, 29 video): 40 ms greedy relPE 0,1211 · B1 0,1264 · ConExt 0,1309; + beam/LM 0,1024 · 0,1115 · 0,1081;
+  v1 10 ms B1 0,1704 · ConExt 0,2019 · Conformer 0,2648; zero-shot Parakeet 0,1378 · PhoWhisper 0,1490; nhãn giả 0,0177.
+- **Phiên sau:** trang báo cáo; Parakeet fine-tune trên clean-test (cần GPU — hỏi); quyết (c) CR-CTC; gitignore bảng từ; commit (hỏi).
+- 21:30 Ghi nhận xét clean-test vào `docs/notes/clean_test_results_2026-10-15.md`. Người dùng: **có thể thêm tài khoản
+  Kaggle, tối đa 10**; **ý nghĩa khóa luận phải thật**; sẽ nhờ Fable 5.1 rà soát toàn dự án và đề xuất phương án cuối —
+  prompt `docs/notes/prompt_review_fable_2026-10-15.md` (đầu ra dự kiến `docs/notes/review_fable_2026-10-15.md`).
+  **Phiên sau:** đọc bản rà soát của Fable (nếu có) cùng người dùng trước khi làm bất cứ việc GPU nào.
+
+### 2026-10-15 (khuya) — rà soát độc lập toàn dự án (Fable 5.1, chỉ đọc)
+- **Làm:** đọc CLAUDE/TODO/Plan/ARCHITECTURE, 9 note, `reports/results/` (clean-test đã chấm, RQ2 cuối, metrics mọi
+  run), tra 10 nguồn → **`docs/notes/review_fable_2026-10-15.md`**. Không chạy GPU, không sửa code.
+- **Phát hiện cần xử lý trước mọi run mới (0 GPU-h):** (1) run **Conformer relPE 10 ms** (B, s3 đẩy 14/10) **không có
+  trong `reports/`**, chưa chấm → bảng 10 ms đang thiếu baseline chuẩn; (2) nhóm 10 ms chấm clean-test bằng **ep28 v1**
+  trong khi quy tắc 9.4 chốt **ep37** — 3 checkpoint ep37 10 ms chưa chấm; (3) ở 40 ms GPU-h đo được relPE 5,28 h ·
+  ConExt 4,86 h · B1 6,00 h → trục GPU-giờ không đe doạ thứ hạng, chỉ cần báo cột.
+- **Khuyến nghị (chưa chốt):** thí nghiệm GPU duy nhất = 2 seed thêm × 3 mô hình 40 ms (~32 GPU-h, 3 tài khoản đủ,
+  17–20/10, tiêu chí viết trước ở note mục 2.3); không CR-CTC/BPE3000/train dài/dò LR/train bù; đóng băng GPU 25/10;
+  12 quyết định ở note mục 4; lịch tới nộp ở mục 5.
+- **Phiên sau bắt đầu từ:** người dùng đọc note, chốt mục 4 → L1 (tải output B s3 + checkpoint ep37 10 ms) → L2 kernel
+  dump log-prob sau reset 17/10 → đẩy 6 run seed (sau khi duyệt tiêu chí 2.3).
+
+### 2026-10-15 (khuya, tiếp) — chấm điểm, khung kết quả cuối, dọn file hướng dẫn
+- **Làm:** `docs/notes/review_fable_scorecard_2026-10-15.md` (62/100 hôm nay → 84/100 nếu làm đúng phương án; việc 72 giờ
+  tới); `docs/notes/ket_qua_cuoi_khung_2026-10-15.md` (9 bảng, 5 hình, 5 kết luận viết sẵn theo nhánh). **Dọn file hướng
+  dẫn** (người dùng yêu cầu, đã ghi TODO từ 12/10): `CLAUDE.md` viết lại theo hiện trạng (hai cấu hình 10/40 ms, luật
+  clean-test chỉ để báo cáo + ep37, không đề xuất GPU mới, tải output kernel ngay, cạm bẫy `python -I`); `TODO.md` viết
+  lại gọn (bản cũ nguyên văn `docs/notes/todo_luu_tru_2026-10-15.md`); `Plan.md` mục 1–6 viết lại, nhật ký trước
+  2026-10-11 chuyển nguyên văn sang `docs/notes/plan_nhat_ky_luu_tru_den_2026-10-08.md`.
+- **Không chốt gì mới:** 12 quyết định ⛔ vẫn mở (TODO mục ⛔). Không chạy GPU, không sửa code, chưa commit.
+- **Phiên sau bắt đầu từ:** TODO khối ▶ (chốt ⛔ → L1 → L2 → L3; đề cương + khung Ch3 song song).
+
+### 2026-10-16 (sáng ~08:30) — đọc rà soát Fable, chốt 12 quyết định, L1 relPE 10 ms
+- **Đọc cùng người dùng** review + scorecard Fable 15/10. AI nêu: điều 4a (ghép seed i–i) và điều 5 (2 × sd) của tiêu chí
+  2.3 tùy ý/không nguồn; "gõ mù" do chính người hiệu đính gõ không thật sự mù; tóm tắt review ghi "3–9 điểm" (đúng là 6–9).
+- **Chốt (người dùng):** cả 12 mục theo khuyến nghị (`Plan.md` mục 4); tiêu chí 3 seed = **bootstrap hai tầng** (note gap
+  **9.6**); **10 ms 1 seed, không cổng seed** (AI đề xuất cổng "|B1 − relPE| < 2 điểm → thêm seed", người dùng loại). Chốt
+  ~08:20, **trước** khi xem WER relPE 10 ms; lúc kiểm toàn vẹn AI đã thấy `loss_val` 0,5647 (khai ở 9.6 điều 8).
+- **L1:** B `train-full-v2a-conformer-relpos-s3` COMPLETE, 38/38, returncode 0, 0 nonfinite, 19,2 GPU-h, encoder **12,73M**
+  (lớn hơn ~4% so với 12,20–12,29M — khai); file nhỏ → `reports/results/train_full/v2a-conformer-relpos/s3/`.
+- **Số khám phá (nhãn giả, val_unseen, ep37, bootstrap cặp 29 video):** B1 0,1252 · ConExt 0,1506 · relPE 0,1501 ·
+  không PE 0,2068. B1 − relPE −2,49 [−2,73; −2,27] điểm; ConExt − relPE +0,05 [−0,15; +0,25] (chứa 0); relPE − không PE
+  −5,68. Ngược thứ hạng 40 ms (relPE dẫn). Số chính thức chờ clean-test ep37 (L2).
+- **Phiên sau bắt đầu từ:** kiểm 3 nhánh 10 ms còn `epoch37.pt` → L2 (mở rộng `scripts/kaggle/dump_logprobs/` cho 4
+  checkpoint 10 ms + Parakeet FT, đẩy kernel, báo) → L3 6 run seed 40 ms (cần code bootstrap hai tầng trước khi chấm, CPU).

@@ -1,0 +1,336 @@
+{
+  "meta": {
+    "n_sentences": 203,
+    "n_videos": 29,
+    "fillers": [
+      "hm",
+      "hmm",
+      "hừm",
+      "uh",
+      "um",
+      "ơ",
+      "ưm",
+      "ầm",
+      "ờ",
+      "ừm"
+    ],
+    "fragments": [
+      [
+        153,
+        9
+      ]
+    ],
+    "alt_spellings": "configs\\scoring\\alt_spellings.tsv",
+    "ours_visible_from": "2026-10-14T23:17"
+  },
+  "systems": {
+    "pseudo_label": {
+      "name": "Nhãn giả Zipformer (tham khảo)",
+      "group": "nhãn",
+      "wer": 0.01767774343122102,
+      "ci": [
+        0.012447337715384962,
+        0.023422284230396828
+      ],
+      "wer_vi": 0.006478620552177813,
+      "wer_fx": 0.36990595611285265,
+      "wer_pre_mark": 0.013074269112039223,
+      "wer_no_filler_rule": 0.017664092664092666,
+      "words": [
+        10033.0,
+        319.0
+      ],
+      "n_pre_mark": 107
+    },
+    "raw_conformer": {
+      "name": "Conformer v1 10 ms ep28",
+      "group": "train từ đầu v1",
+      "wer": 0.2648053328180852,
+      "ci": [
+        0.23700978639170048,
+        0.29368002908275714
+      ],
+      "wer_vi": 0.23931027608890662,
+      "wer_fx": 1.069182389937107,
+      "wer_pre_mark": 0.2498638096967496,
+      "wer_no_filler_rule": 0.2652765710975963,
+      "words": [
+        10033.0,
+        318.0
+      ],
+      "n_pre_mark": 107
+    },
+    "raw_mamba": {
+      "name": "B1 Mamba v1 10 ms ep28",
+      "group": "train từ đầu v1",
+      "wer": 0.17041831707081442,
+      "ci": [
+        0.14793664393400432,
+        0.19537473193837399
+      ],
+      "wer_vi": 0.14242998106249377,
+      "wer_fx": 1.0534591194968554,
+      "wer_pre_mark": 0.1590702741964772,
+      "wer_no_filler_rule": 0.17096244811275219,
+      "words": [
+        10033.0,
+        318.0
+      ],
+      "n_pre_mark": 107
+    },
+    "raw_conextbimamba": {
+      "name": "ConExtBiMamba v1 10 ms ep28",
+      "group": "train từ đầu v1",
+      "wer": 0.2018933539412674,
+      "ci": [
+        0.17738974765396145,
+        0.22754351442940374
+      ],
+      "wer_vi": 0.17382637296920164,
+      "wer_fx": 1.084639498432602,
+      "wer_pre_mark": 0.18975848919556929,
+      "wer_no_filler_rule": 0.20241312741312742,
+      "words": [
+        10033.0,
+        319.0
+      ],
+      "n_pre_mark": 107
+    },
+    "v2a_conformer_relpos_greedy": {
+      "name": "Conformer relPE 40 ms ep37 · greedy",
+      "group": "train từ đầu 40 ms",
+      "wer": 0.12105110617331659,
+      "ci": [
+        0.10297561576961074,
+        0.14092405090799892
+      ],
+      "wer_vi": 0.09598325525764975,
+      "wer_fx": 0.9119496855345912,
+      "wer_pre_mark": 0.11203922280733612,
+      "wer_no_filler_rule": 0.12144029346462014,
+      "words": [
+        10033.0,
+        318.0
+      ],
+      "n_pre_mark": 107
+    },
+    "v2a_mamba_greedy": {
+      "name": "B1 Mamba 40 ms ep37 · greedy",
+      "group": "train từ đầu 40 ms",
+      "wer": 0.12644899536321483,
+      "ci": [
+        0.1071950774546996,
+        0.14799396204680645
+      ],
+      "wer_vi": 0.10305990232233629,
+      "wer_fx": 0.8620689655172413,
+      "wer_pre_mark": 0.11585255129834755,
+      "wer_no_filler_rule": 0.12693050193050193,
+      "words": [
+        10033.0,
+        319.0
+      ],
+      "n_pre_mark": 107
+    },
+    "v2a_conextbimamba_greedy": {
+      "name": "ConExtBiMamba 40 ms ep37 · greedy",
+      "group": "train từ đầu 40 ms",
+      "wer": 0.13089258114374033,
+      "ci": [
+        0.11102622902017095,
+        0.1529798707757119
+      ],
+      "wer_vi": 0.10515299511611681,
+      "wer_fx": 0.9404388714733543,
+      "wer_pre_mark": 0.11984746686035955,
+      "wer_no_filler_rule": 0.13117760617760618,
+      "words": [
+        10033.0,
+        319.0
+      ],
+      "n_pre_mark": 107
+    },
+    "v2a_conformer_relpos_lm": {
+      "name": "Conformer relPE 40 ms ep37 · beam+LM",
+      "group": "40 ms + giải mã",
+      "wer": 0.10239567233384853,
+      "ci": [
+        0.08692244738486364,
+        0.11970740264042921
+      ],
+      "wer_vi": 0.08133160570118608,
+      "wer_fx": 0.7648902821316614,
+      "wer_pre_mark": 0.09260940621027783,
+      "wer_no_filler_rule": 0.1028957528957529,
+      "words": [
+        10033.0,
+        319.0
+      ],
+      "n_pre_mark": 107
+    },
+    "v2a_mamba_lm": {
+      "name": "B1 Mamba 40 ms ep37 · beam+LM",
+      "group": "40 ms + giải mã",
+      "wer": 0.11147604327666151,
+      "ci": [
+        0.094226219218144,
+        0.13036779910127697
+      ],
+      "wer_vi": 0.0903020033888169,
+      "wer_fx": 0.7774294670846394,
+      "wer_pre_mark": 0.10078082440530234,
+      "wer_no_filler_rule": 0.11196911196911197,
+      "words": [
+        10033.0,
+        319.0
+      ],
+      "n_pre_mark": 107
+    },
+    "v2a_conextbimamba_lm": {
+      "name": "ConExtBiMamba 40 ms ep37 · beam+LM",
+      "group": "40 ms + giải mã",
+      "wer": 0.1080950540958269,
+      "ci": [
+        0.09050934192559823,
+        0.12771468659219737
+      ],
+      "wer_vi": 0.08711252865543706,
+      "wer_fx": 0.768025078369906,
+      "wer_pre_mark": 0.09605956055928817,
+      "wer_no_filler_rule": 0.10849420849420849,
+      "words": [
+        10033.0,
+        319.0
+      ],
+      "n_pre_mark": 107
+    },
+    "raw_parakeet_fp32": {
+      "name": "Parakeet-CTC-0.6B-vi zero-shot",
+      "group": "pre-train",
+      "wer": 0.13784775888717157,
+      "ci": [
+        0.11499590283647709,
+        0.16241748800208744
+      ],
+      "wer_vi": 0.08790989733878202,
+      "wer_fx": 1.70846394984326,
+      "wer_pre_mark": 0.11748683493735246,
+      "wer_no_filler_rule": 0.1388996138996139,
+      "words": [
+        10033.0,
+        319.0
+      ],
+      "n_pre_mark": 107
+    },
+    "raw_phowhisper": {
+      "name": "PhoWhisper-small zero-shot",
+      "group": "pre-train",
+      "wer": 0.1489567233384853,
+      "ci": [
+        0.12352520246676242,
+        0.17664590676040676
+      ],
+      "wer_vi": 0.10136549387022825,
+      "wer_fx": 1.64576802507837,
+      "wer_pre_mark": 0.1374614127474124,
+      "wer_no_filler_rule": 0.15318532818532818,
+      "words": [
+        10033.0,
+        319.0
+      ],
+      "n_pre_mark": 107
+    }
+  },
+  "paired": [
+    {
+      "a": "v2a_mamba_greedy",
+      "b": "v2a_conextbimamba_greedy",
+      "diff": -0.004443585780525505,
+      "ci": [
+        -0.00967099663213065,
+        0.0006663240707111944
+      ]
+    },
+    {
+      "a": "v2a_mamba_greedy",
+      "b": "v2a_conformer_relpos_greedy",
+      "diff": 0.005397889189898239,
+      "ci": [
+        0.0008609454855934728,
+        0.010134248264287347
+      ]
+    },
+    {
+      "a": "v2a_conextbimamba_greedy",
+      "b": "v2a_conformer_relpos_greedy",
+      "diff": 0.009841474970423744,
+      "ci": [
+        0.004765478230114511,
+        0.01515903268241805
+      ]
+    },
+    {
+      "a": "v2a_mamba_lm",
+      "b": "v2a_conextbimamba_lm",
+      "diff": 0.003380989180834612,
+      "ci": [
+        -0.0012342485297924014,
+        0.008001601512956662
+      ]
+    },
+    {
+      "a": "v2a_mamba_lm",
+      "b": "v2a_conformer_relpos_lm",
+      "diff": 0.009080370942812985,
+      "ci": [
+        0.0048251941623105015,
+        0.013251392356443249
+      ]
+    },
+    {
+      "a": "v2a_conextbimamba_lm",
+      "b": "v2a_conformer_relpos_lm",
+      "diff": 0.005699381761978373,
+      "ci": [
+        0.0009443317312348129,
+        0.010642584772668363
+      ]
+    },
+    {
+      "a": "raw_mamba",
+      "b": "raw_conextbimamba",
+      "diff": -0.03147503687045297,
+      "ci": [
+        -0.03786083147814123,
+        -0.025016708044871834
+      ]
+    },
+    {
+      "a": "raw_mamba",
+      "b": "raw_conformer",
+      "diff": -0.09438701574727079,
+      "ci": [
+        -0.10607390508379101,
+        -0.08304737065600044
+      ]
+    },
+    {
+      "a": "raw_conextbimamba",
+      "b": "raw_conformer",
+      "diff": -0.06291197887681782,
+      "ci": [
+        -0.07350200535894758,
+        -0.052415471459870557
+      ]
+    },
+    {
+      "a": "raw_parakeet_fp32",
+      "b": "raw_phowhisper",
+      "diff": -0.011108964451313735,
+      "ci": [
+        -0.02111155078027827,
+        -0.0014234037497300308
+      ]
+    }
+  ]
+}

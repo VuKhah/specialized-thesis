@@ -1,0 +1,17 @@
+# Cách viết thay thế khi chấm WER clean-test (chốt 2026-10-15, TRƯỚC khi tính điểm bản hiệu đính).
+# Mỗi dòng: dạng chuẩn <TAB> các dạng tương đương (cách nhau bằng " | "). Mọi dạng đổi về dạng chuẩn ở cả ref và hyp.
+# Tiêu chí: cùng một từ, phát âm như nhau, và (a) cả hai dạng có trong nhãn train (đếm ở cột chú thích) hoặc
+# (b) cách viết Việt hoá thông dụng / người dùng chốt. Không đưa phiên âm sai (con sumer, may b) vào đây.
+startup	start up	# train 150 / 5
+makeup	make up	# train 10 / 59
+livestream	live stream	# train 45 / 5
+setup	set up	# train 2 / 36
+checkin	check in	# train 9 / 24
+playlist	play list	# train 5 / 14
+vali	va li	# train 14 / 9 (từ mượn, cả hai cách viết)
+ok	ô kê | o kê	# Việt hoá; train chỉ có ok (1916)
+show	sô	# Việt hoá; train 179 / 44
+upenn	u penn	# người dùng chốt "u penn" 15/10; bảng tên riêng cũ ghi upenn
+pg	p g	# P&G: normalize_text đổi & thành khoảng trắng
+email	e mail
+website	web site

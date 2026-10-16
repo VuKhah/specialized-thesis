@@ -14,7 +14,8 @@
       "duration_s": 13.8,
       "pseudo_label": "THÌ LÀ MỌI NGƯỜI SẼ NGHĨ LÀ NÊN LẬP GIA ĐÌNH HAY LÀ NÊN TIẾP TỤC SỐNG CUỘC SỐNG MÀ MÌNH ĐANG CÒN NHIỀU HOÀI BÃO MÀ MÌNH PHẢI ĐI KHÁM PHÁ MÌNH PHẢI ĐI THẾ NÀY THẾ NỌ THÌ EM VẪN ĐANG ĐẤU TRANH VỚI CÁI SUY NGHĨ ĐÓ CỦA EM NHƯNG EM NGHĨ LÀ CÁI KHẢ NĂNG CỦA EM EM KHÔNG ĐỦ",
       "corrected_text": "thì là mọi người sẽ nghĩ là nên lập gia đình hay là nên tiếp tục sống cuộc sống mà mình đang còn nhiều hoài bão mà mình phải đi khám phá mình phải đi thế này thế nọ thì em vẫn đang đấu tranh với cái suy nghĩ đó của em nhưng em nghĩ là cái khả năng của em em không đủ",
-      "notes": ""
+      "notes": "",
+      "corrected_at": "2026-10-15T19:22:37"
     },
     {
       "split": "train",
@@ -24,7 +25,8 @@
       "duration_s": 14.7,
       "pseudo_label": "MÌNH THẤY CHẢ BẰNG AI CẢ MÌNH THẤY KÉM THẤP KÉM RỒI THUA THUA HẾT MỌI NGƯỜI TRONG CÂU CHUYỆN VIẾT NHẠC NẾU EM LÀ CON TRAI HOẶC NẾU EM HAI MƯƠI BẢY TUỔI CHẮC CHẮN EM SẼ CHỌN TỰ DO NHƯNG BỞI VÌ EM LÀ PHỤ NỮ NÓ CÓ NHỮNG CÁI NÓ RẤT LÀ KHÓ BỞI VÌ",
       "corrected_text": "mình thấy chả bằng ai cả mình thấy kém thấp kém rồi thua thua hết mọi người trong câu chuyện viết nhạc nếu em là con trai hoặc nếu em hai mươi bảy tuổi chắc chắn em sẽ chọn tự do nhưng bởi vì em là phụ nữ nó có những cái nó rất là khó bởi vì",
-      "notes": ""
+      "notes": "",
+      "corrected_at": "2026-10-15T19:22:52"
     },
     {
       "split": "train",
@@ -83,7 +85,7 @@
       "source": "Bao_gio_cho_het_chuyen_doi_moi_-_Ruby_Nguyen_CEO_Curieous_VIV_S2_EP25.mp4",
       "duration_s": 13.6,
       "pseudo_label": "MÀ THỰC RA NÓ LÀ MỘT CÁI KỸ THUẬT ĐỂ TÓM TẮT LẠI THÔNG TIN VÀ MỖI HÌNH NÀY THÌ NÓ SẼ ĐẠI DIỆN CHO MỘT CÂU HỎI MÌNH SẼ BẮT ĐẦU VỚI HÌNH VUÔNG TRƯỚC CÂU HỎI CỦA HÌNH VUÔNG LÀ WEST RACE THINKING CÓ NGHĨA LÀ",
-      "corrected_text": "",
+      "corrected_text": "mà thực ra nó là một cái kỹ thuật để tóm tắt lại thông tin và mỗi hình này thì nó sẽ đại diện cho một câu hỏi mình sẽ bắt đầu với hình vuông trước câu hỏi của hình vuông là west race thinking có nghĩa là",
       "notes": ""
     },
     {
@@ -113,8 +115,9 @@
       "source": "Bao_gio_cho_het_chuyen_doi_moi_-_Ruby_Nguyen_CEO_Curieous_VIV_S2_EP25.mp4",
       "duration_s": 10.5,
       "pseudo_label": "TRƯỜNG ĐẠI HỌC HÀNG ĐẦU THẾ GIỚI NHƯ LÀ NEW YORK UNICE U PAN HARVARD TÂM ĐẾN QUY TỤ NHÂN TÀI TRONG HAI LĨNH VỰC NÀY ĐỂ THỰC HIỆN SỨ MỆNH NÀY",
-      "corrected_text": "trường đại học hàng đầu thế giới như là new york university upan harvard tụi mình quy tụ nhân tài trong hai lĩnh vực này để thực hiện sứ mệnh này",
-      "notes": ""
+      "corrected_text": "trường đại học hàng đầu thế giới như là new york university u penn harvard tụi mình quy tụ nhân tài trong hai lĩnh vực này để thực hiện sứ mệnh này",
+      "notes": "",
+      "corrected_at": "2026-10-15T20:23:40"
     },
     {
       "split": "train",
@@ -133,7 +136,7 @@
       "source": "Bao_gio_cho_het_chuyen_doi_moi_-_Ruby_Nguyen_CEO_Curieous_VIV_S2_EP25.mp4",
       "duration_s": 12.8,
       "pseudo_label": "KHI RES MỘT RỦI RO KHÁ LÀ LỚN CHIA SẺ CHẮC LÀ HẬU KHÁ LÀ QUEN THUỘC VỚI KHÁI NIỆM NÀY ĐÓ LÀ RISK VÀ DIRE ĐÚNG KHÔNG THÌ MỘT START CÓ RẤT NHIỀU RES LÀ NHỮNG RỦI RO THÌ MÌNH PHẢI BIẾT LÀ ĐÂU LÀ NHỮNG RỦI RO LỚN NHẤT VÀ MÌNH PHẢI LÊN KẾ HOẠCH ĐỂ MÌNH CÓ THỂ",
-      "corrected_text": "",
+      "corrected_text": "khi res một rủi ro khá là lớn chia sẻ chắc là hậu khá là quen thuộc với khái niệm này đó là risk và dire đúng không thì một start có rất nhiều res là những rủi ro thì mình phải biết là đâu là những rủi ro lớn nhất và mình phải lên kế hoạch để mình có thể",
       "notes": ""
     },
     {
@@ -143,7 +146,7 @@
       "source": "Bao_gio_cho_het_chuyen_doi_moi_-_Ruby_Nguyen_CEO_Curieous_VIV_S2_EP25.mp4",
       "duration_s": 10.9,
       "pseudo_label": "CÁI TẬP PHỎNG VẤN RUBY PHỎNG VẤN ANH ĐỨC PHÙNG LÀ GM CỦA CÂU TRÁCH TẠI VIỆT NAM THÌ MÌNH BIẾT TỪ GÓC NHÌN CỦA MÌNH THÌ MÌNH BIẾT RẰNG CÂU TRÁCH LÀ MỘT MỘT STARTUP MÀ CÓ",
-      "corrected_text": "",
+      "corrected_text": "cái tập phỏng vấn ruby phỏng vấn anh đức phùng là gm của Gojek tại việt nam thì mình biết từ góc nhìn của mình thì mình biết rằng Gojek là một một startup mà có",
       "notes": ""
     },
     {
@@ -153,7 +156,7 @@
       "source": "Bao_hiem_so_huong_den_su_thuan_tien_va_de_tiep_can_-_Dang_Hoang_Tung_CEO_OPES_VI_S3_EP26.mp4",
       "duration_s": 13.1,
       "pseudo_label": "CÁCH THỨC VẬN HÀNH CHO ĐẾN LÀ TRONG VIỆC LÀ XÂY DỰNG CÁC SẢN PHẨM DỊCH VỤ THEO NHỮNG CÁI GÌ MÀ MÌNH NGHĨ LÀ OK LÀ NÓ HỢP LÝ NÓ LÀ ĐÚNG NÓ SẼ TẠO RA NHỮNG BƯỚC CHUYỂN BIẾN MẠNH MẼ",
-      "corrected_text": "",
+      "corrected_text": "cách thức vận hành cho đến là trong việc là xây dựng các sản phẩm dịch vụ theo những cái gì mà mình nghĩ là ok là nó hợp lý nó là đúng nó sẽ tạo ra những bước chuyển biến mạnh mẽ",
       "notes": ""
     },
     {
@@ -163,8 +166,8 @@
       "source": "Bao_hiem_so_huong_den_su_thuan_tien_va_de_tiep_can_-_Dang_Hoang_Tung_CEO_OPES_VI_S3_EP26.mp4",
       "duration_s": 10.2,
       "pseudo_label": "RẤT LÀ MONG LÀ OPE SẼ SỚM TRỞ THÀNH MỘT TRONG NHỮNG CÔNG TY TOP MƯỜI CỦA VIỆT NAM VÀ SẼ CÓ RẤT LÀ NHIỀU CÁI THỨ THÚ VỊ CHÚNG TA CÓ THỂ MONG ĐỢI TỪ OPEC CẢM ƠN RẤT LÀ NHIỀU CẢM ƠN EM CẢM ƠN",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "rất là mong là opes sẽ sớm trở thành một trong những công ty top mười của việt nam và sẽ có rất là nhiều cái thứ thú vị chúng ta có thể mong đợi từ opes cảm ơn rất là nhiều cảm ơn em cảm ơn",
+      "notes": "tên riêng"
     },
     {
       "split": "train",
@@ -173,7 +176,7 @@
       "source": "Bao_hiem_so_huong_den_su_thuan_tien_va_de_tiep_can_-_Dang_Hoang_Tung_CEO_OPES_VI_S3_EP26.mp4",
       "duration_s": 14.6,
       "pseudo_label": "VỚI ĐỐI TƯỢNG KHÁCH HÀNG PHÙ HỢP VỚI CẢ CÁI HÌNH THỨC VẬN HÀNH SỐ CHO ĐẾN CÁI DỊCH VỤ KHÁCH HÀNG Ở ĐẰNG SAU CHO ĐẾN GIẢI QUYẾT QUYỀN LỢI BỒI THƯỜNG THANH TOÁN KỂ CẢ VIỆC THANH TOÁN MUA BẢO HIỂM CŨNG NHƯ VỀ SAU VIỆC TRẢ BỒI THƯỜNG CHO KHÁCH HÀNG LÀM SAO CÓ THỂ TẤT CẢ NHỮNG CÁI ĐÓ",
-      "corrected_text": "",
+      "corrected_text": "với đối tượng khách hàng phù hợp với cả cái hình thức vận hành số cho đến cái dịch vụ khách hàng ở đằng sau cho đến giải quyết quyền lợi bồi thường thanh toán kể cả việc thanh toán mua bảo hiểm cũng như về sau việc trả bồi thường cho khách hàng làm sao có thể tất cả những cái đó",
       "notes": ""
     },
     {
@@ -183,7 +186,7 @@
       "source": "Bao_hiem_so_huong_den_su_thuan_tien_va_de_tiep_can_-_Dang_Hoang_Tung_CEO_OPES_VI_S3_EP26.mp4",
       "duration_s": 14.2,
       "pseudo_label": "TRƯỚC KHI CHÚNG TA ĐI VÀO SÂU HƠN MỘT CHÚT LIÊN QUAN ĐẾN CÁC DỊCH VỤ CÁC SẢN PHẨM THÌ ANH CŨNG LÀ MỘT NGƯỜI ĐÃ CÔNG TÁC RẤT NHIỀU NĂM CHO CÁC CÔNG TY ĐA QUỐC GIA CÔNG TY QUỐC TẾ TỪ AG ĐẾN CHÓP THÌ ĐÂY CŨNG LÀ MỘT CÂU HỎI LIÊN QUAN ĐẾN CÁ NHÂN ANH THÌ",
-      "corrected_text": "",
+      "corrected_text": "trước khi chúng ta đi vào sâu hơn một chút liên quan đến các dịch vụ các sản phẩm thì anh cũng là một người đã công tác rất nhiều năm cho các công ty đa quốc gia công ty quốc tế từ ag đến chóp thì đây cũng là một câu hỏi liên quan đến cá nhân anh thì",
       "notes": ""
     },
     {
@@ -193,7 +196,7 @@
       "source": "Bao_hiem_so_huong_den_su_thuan_tien_va_de_tiep_can_-_Dang_Hoang_Tung_CEO_OPES_VI_S3_EP26.mp4",
       "duration_s": 10.7,
       "pseudo_label": "ANH TĂNG TỐC NHƯ THẾ NÀO ANH ĐANG THAY ĐỔI GỌI LÀ CÁI HƯỚNG ĐI RA LÀM SAO ANH LÁI XE CÓ SAO NHÃNG HAY KHÔNG HAY LÀ ANH ĐANG SỬ DỤNG GỌI LÀ PHANH XE HOẶC THẮNG XE ĐÓ",
-      "corrected_text": "",
+      "corrected_text": "anh tăng tốc như thế nào anh đang thay đổi gọi là cái hướng đi ra làm sao anh lái xe có sao nhãng hay không hay là anh đang sử dụng gọi là phanh xe hoặc thắng xe đó",
       "notes": ""
     },
     {
@@ -203,8 +206,8 @@
       "source": "Bao_hiem_so_huong_den_su_thuan_tien_va_de_tiep_can_-_Dang_Hoang_Tung_CEO_OPES_VI_S3_EP26.mp4",
       "duration_s": 12.3,
       "pseudo_label": "VỪA LÀ ĐẢM BẢO GỌI LÀ BẢO HIỂM CHO HỌ TUY NHIÊN LÀ ANH CŨNG ĐƯA CÁC CÁI CÔNG NGHỆ TELEM MARTI VÀO VÀ CŨNG LÀ CÓ MỘT CÁI GAME ME FICATION ĐỂ KÍCH ĐỘNG CÁC BẠN LÀ NGƯỜI LÁI XE HOẶC LÀ NGƯỜI DÙNG CỦA MÌNH LÀ THAM GIA NHIỀU HƠN VÀ",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "vừa là đảm bảo gọi là bảo hiểm cho họ tuy nhiên là anh cũng đưa các cái công nghệ Telematics vào và cũng là có một cái Gamification để kích động các bạn là người lái xe hoặc là người dùng của mình là tham gia nhiều hơn và",
+      "notes": "Tiếng Anh"
     },
     {
       "split": "train",
@@ -213,7 +216,7 @@
       "source": "Bao_hiem_so_huong_den_su_thuan_tien_va_de_tiep_can_-_Dang_Hoang_Tung_CEO_OPES_VI_S3_EP26.mp4",
       "duration_s": 11.0,
       "pseudo_label": "HAI MƯƠI PHẦN TRĂM HOẶC LÀ CÁI GIÁ RẺ HƠN CHO BẢO HIỂM VỚI CÁI VIỆC LÀ MÌNH CÓ THỂ CÓ MỘT CÁI THÚ VUI LÁI XE CHẠY XE NHANH NHIỀU LÚC CHẠY XE NHANH NHƯNG KHÔNG PHẢI LIÊN KHÔNG PHẢI LÀ NÓ SẼ LIÊN QUAN ĐẾN CÁI ĐIỂM XẤU",
-      "corrected_text": "",
+      "corrected_text": "hai mươi phần trăm hoặc là cái giá rẻ hơn cho bảo hiểm với cái việc là mình có thể có một cái thú vui lái xe chạy xe nhanh nhiều lúc chạy xe nhanh nhưng không phải liên không phải là nó sẽ liên quan đến cái điểm xấu",
       "notes": ""
     },
     {
@@ -223,7 +226,7 @@
       "source": "Biet_on_nhung_tran_tro_25_-_Hoang_Dung_Have_A_Sip_EP61.mp4",
       "duration_s": 13.3,
       "pseudo_label": "À CÁI BÊN TRONG NÀY ĐỦ RỒI CÁI NHÌN BÊN TRONG NÀY ĐỦ RỒI ĐẾN LÚC NHÌN RA NGOÀI MÌNH CÓ MÌNH CÓ BIẾT ĐƯỢC KHÔNG VỚI CHỊ NHÁ THÌ NÓ LÀ LÀ PHỤ NỮ RỒI CÓ NHỮNG CÁI HÀNH TRÌNH MÀ CHỊ PHẢI ĐỢI ĐẾN LÚC CÓ CON EM BÉ ĐẦU TIÊN THÌ LÀ",
-      "corrected_text": "",
+      "corrected_text": "à cái bên trong này đủ rồi cái nhìn bên trong này đủ rồi đến lúc nhìn ra ngoài mình có mình có biết được không với chị nhá thì nó là là phụ nữ rồi có những cái hành trình mà chị phải đợi đến lúc có con em bé đầu tiên thì là",
       "notes": ""
     },
     {
@@ -233,7 +236,7 @@
       "source": "Biet_on_nhung_tran_tro_25_-_Hoang_Dung_Have_A_Sip_EP61.mp4",
       "duration_s": 14.6,
       "pseudo_label": "EM KIỂU NHƯ LÀ EM KIỂU NHẬN RA ẤY NHẬN RA LÀ Á MÌNH ĐANG SỐNG ĐÂY RỒI ĐÂY RỒI NGÀY XƯA MÌNH MÌNH NGHĨ ĐẾN NÓ VÀ NÓ Ở ĐÂY RỒI THẾ CÒN THẬT RA LÀ CÁI LÚC MÀ EM Ở ĐẤY VÀ LÚC MÀ EM SỐNG VÀ EM LÀM VIỆC Ở ĐẤY THÌ EM LẠI KHÔNG NGHĨ ĐẾN CÁI ĐIỀU ĐẤY",
-      "corrected_text": "",
+      "corrected_text": "em kiểu như là em kiểu nhận ra ấy nhận ra là á mình đang sống đây rồi đây rồi ngày xưa mình mình nghĩ đến nó và nó ở đây rồi thế còn thật ra là cái lúc mà em ở đấy và lúc mà em sống và em làm việc ở đấy thì em lại không nghĩ đến cái điều đấy",
       "notes": ""
     },
     {
@@ -243,7 +246,7 @@
       "source": "Biet_on_nhung_tran_tro_25_-_Hoang_Dung_Have_A_Sip_EP61.mp4",
       "duration_s": 10.3,
       "pseudo_label": "NHƯNG MÀ SAU NÀY THÌ MỘT CÁI THỨ MÀ BẢN THÂN THÌ MÌNH HỌC ĐƯỢC LÀ NẾU MÌNH VẤT VẢ VÌ NÓ HƠN THÌ MÌNH SƯỚNG HƠN Ừ ĐÚNG NÊN CHỊ",
-      "corrected_text": "",
+      "corrected_text": "nhưng mà sau này thì một cái thứ mà bản thân thì mình học được là nếu mình vất vả vì nó hơn thì mình sướng hơn ừ đúng nên chị",
       "notes": ""
     },
     {
@@ -253,7 +256,7 @@
       "source": "Biet_on_nhung_tran_tro_25_-_Hoang_Dung_Have_A_Sip_EP61.mp4",
       "duration_s": 14.2,
       "pseudo_label": "MỨC ĐỘ MỘT CÁI CẤP ĐỘ VỀ NỔI TIẾNG HỌ SẼ LUÔN NGHĨ VỀ LỨA TIẾP THEO VÀ VỚI NHỮNG CÁI KINH NGHIỆM MÀ MÌNH CÓ ĐƯỢC THÌ MÌNH RẤT MUỐN LÀ À CÁI ĐẤY CÓ THỂ TRỞ THÀNH CÔNG THỨC ĐỂ MÌNH TIẾP TỤC NHÂN BẢN KHÔNG",
-      "corrected_text": "",
+      "corrected_text": "mức độ một cái cấp độ về nổi tiếng họ sẽ luôn nghĩ về lứa tiếp theo và với những cái kinh nghiệm mà mình có được thì mình rất muốn là à cái đấy có thể trở thành công thức để mình tiếp tục nhân bản không",
       "notes": ""
     },
     {
@@ -263,8 +266,8 @@
       "source": "Biet_on_nhung_tran_tro_25_-_Hoang_Dung_Have_A_Sip_EP61.mp4",
       "duration_s": 13.6,
       "pseudo_label": "CẢM THẤY GẤP GÁP MÀ KỂ CẢ ĐẠO DIỄN BÊN NHẠC TẤT CẢ MỌI NGƯỜI ĐỀU CÓ CHUNG MỘT CÁI SUY NGHĨ RẰNG LÀ PHẢI LÀM THÔI PHẢI PHẢI CHIẾN THÔI BỞI VÌ LÀ KHÔNG BIẾT LÀ ĐẾN NGÀY MAI THÌ NÓ SẼ CÒN CÓ CHUYỆN GÌ XẢY RA NỮA NÊN LÀ TẤT CẢ MỌI NGƯỜI ĐỀU UỐC RẤT LÀ NHANH",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "cảm thấy gấp gáp mà kể cả đạo diễn bên nhạc tất cả mọi người đều có chung một cái suy nghĩ rằng là phải làm thôi phải phải chiến thôi bởi vì là không biết là đến ngày mai thì nó sẽ còn có chuyện gì xảy ra nữa nên là tất cả mọi người đều WORK rất là nhanh",
+      "notes": "Tiếng ạnh"
     },
     {
       "split": "train",
@@ -273,7 +276,7 @@
       "source": "Biet_on_nhung_tran_tro_25_-_Hoang_Dung_Have_A_Sip_EP61.mp4",
       "duration_s": 11.1,
       "pseudo_label": "NÓ ĐEM LẠI CHO MÌNH GIÁ TRỊ THẾ NÊN LÀ MẸ EM CŨNG KHÔNG CẤM CẢN HAY LÀ CŨNG KHÔNG GỌI LÀ ĐƯA CHO EM NHỮNG CÁI LỜI KHUYÊN NÀO ĐÓ NỮA NHƯ NGÀY XƯA THÌ MẸ EM HAY ĐƯA CHO EM LỜI KHUYÊN",
-      "corrected_text": "",
+      "corrected_text": "nó đem lại cho mình giá trị thế nên là mẹ em cũng không cấm cản hay là cũng không gọi là đưa cho em những cái lời khuyên nào đó nữa như ngày xưa thì mẹ em hay đưa cho em lời khuyên",
       "notes": ""
     },
     {
@@ -283,7 +286,7 @@
       "source": "Biet_on_nhung_tran_tro_25_-_Hoang_Dung_Have_A_Sip_EP61.mp4",
       "duration_s": 14.9,
       "pseudo_label": "CÁI SỰ TỰ TIN VỀ NGOẠI HÌNH NÓ CHƯA CÓ NHIỀU NHƯNG MÀ EM KHÔNG HẲN LÀ TUYẾT TỰ TI ĐÚNG KHÔNG THÌ CÓ LIỆU NÓ CÓ MỘT CÁI KHOẢNH KHẮC NÀO Ở MỘT CÁI LÚC NÀO CÓ MỘT CÁI SUY NGHĨ NÀO ĐẤY NÓ LÓE LÊN VÀ EM NGHĨ RẰNG LÀ À TÔI NGHĨ LÀ ĐẾN MỘT LÚC TÔI NÊN THAY ĐỔI MỘT CHÚT VỀ NGOẠI HÌNH CỦA TÔI",
-      "corrected_text": "",
+      "corrected_text": "cái sự tự tin về ngoại hình nó chưa có nhiều nhưng mà em không hẳn là tuyết tự ti đúng không thì có liệu nó có một cái khoảnh khắc nào ở một cái lúc nào có một cái suy nghĩ nào đấy nó lóe lên và em nghĩ rằng là à tôi nghĩ là đến một lúc tôi nên thay đổi một chút về ngoại hình của tôi",
       "notes": ""
     },
     {
@@ -293,7 +296,7 @@
       "source": "Blockchain_tao_co_hoi_de_Viet_Nam_sanh_vai_the_gioi_Huy_Nguyen_Co-Founder_President_KardiaChain.mp4",
       "duration_s": 15.0,
       "pseudo_label": "NƯỚC MỸ LÀ VỀ CƠ BẢN NGƯỜI TA ĐÃ GỌI NƯỚC MỸ LÀ ĐẶC BIỆT RỒI NHƯNG MÀ Ở TRONG ĐÓ THÌ SILICON VALLEY NÓ CÒN KHÁC HOLLYWOOD NÓ CÒN KHÁC WALL STREET NEW YORK Ở CÁI ĐỘ GỌI LÀ CÁI ĐỘ ĐIÊN RỒ CỦA HỌ KHI MÀ MÌNH NGHĨ MỘT CÁI VẤN ĐỀ THÌ CÓ",
-      "corrected_text": "",
+      "corrected_text": "nước mỹ là về cơ bản người ta đã gọi nước mỹ là đặc biệt rồi nhưng mà ở trong đó thì silicon valley nó còn khác hollywood nó còn khác wall street new york ở cái độ gọi là cái độ điên rồ của họ khi mà mình nghĩ một cái vấn đề thì ờ có",
       "notes": ""
     },
     {
@@ -303,8 +306,8 @@
       "source": "Blockchain_tao_co_hoi_de_Viet_Nam_sanh_vai_the_gioi_Huy_Nguyen_Co-Founder_President_KardiaChain.mp4",
       "duration_s": 12.9,
       "pseudo_label": "MỚI NGHĨ LÀ LÀ NÓ CHỈ LÀ CÁI MÌNH MÌNH HAY NGHĨ LÀ VĂN HÓA CỦA MÌNH HAY CON NGƯỜI CỦA MÌNH CHƯA CÓ RADY CHO CÁI CHUYỆN ĐÓ MÌNH NGHĨ NÓ CẦN MỘT SỐ YẾU TỐ THỨ NHẤT Á LÀ MÌNH CẦN MỘT CÁI MÔI TRƯỜNG MÀ MÌNH KHUYẾN KHÍCH",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "mới nghĩ là là nó chỉ là cái mình mình hay nghĩ là văn hóa của mình hay con người của mình chưa có ready cho cái chuyện đó mình nghĩ nó cần một số yếu tố thứ nhất á là mình cần một cái môi trường mà mình khuyến khích",
+      "notes": "tiếng anh"
     },
     {
       "split": "train",
@@ -313,7 +316,7 @@
       "source": "Blockchain_tao_co_hoi_de_Viet_Nam_sanh_vai_the_gioi_Huy_Nguyen_Co-Founder_President_KardiaChain.mp4",
       "duration_s": 14.5,
       "pseudo_label": "THÌ CÓ THỂ BÊN MỸ LÀ NÓ LÀ MỘT CÁI ĐỘ TẬP TRUNG CỦA RẤT LÀ NHIỀU CÁC DÂN TỘC KHÁC NHAU CÁC TỪ CÁC QUỐC GIA KHÁC NHAU TỪ CÁC NỀN VĂN HÓA KHÁC NHAU TỤ LẠI Ở CHỢ CHỖ ĐÓ VÀ CÓ THỂ MÌNH COI LÀ LÀ CHỖ ĐẤY SẼ CÓ RẤT LÀ NHIỀU Ý TƯỞNG ĐIÊN RỒ KHÁC NHAU NHƯNG MÀ NẾU MÀ CHÚNG TA QUAY TRỞ LẠI VIỆT NAM CHẲNG HẠN",
-      "corrected_text": "",
+      "corrected_text": "thì có thể bên mỹ là nó là một cái độ tập trung của rất là nhiều các dân tộc khác nhau các từ các quốc gia khác nhau từ các nền văn hóa khác nhau tụ lại ở chợ chỗ đó và có thể mình coi là là chỗ đấy sẽ có rất là nhiều ý tưởng điên rồ khác nhau nhưng mà nếu mà chúng ta quay trở lại việt nam chẳng hạn",
       "notes": ""
     },
     {
@@ -323,7 +326,7 @@
       "source": "Blockchain_tao_co_hoi_de_Viet_Nam_sanh_vai_the_gioi_Huy_Nguyen_Co-Founder_President_KardiaChain.mp4",
       "duration_s": 13.4,
       "pseudo_label": "TRỜI KHI MÀ KHI MÀ CÁI GAME NÓ ĐƯỢC ĐÓN NHẬN CÓ HÀNG CHỤC TRIỆU HAY HÀNG TRĂM TRIỆU NGƯỜI SỬ DỤNG KIẾM ĐƯỢC HÀNG TỶ ĐÔ LA THÌ CÔNG TY NGAY LẬP TỨC TRỞ THÀNH MỘT KỲ LÂM ĐÓ LÀ MỘT CÁI VÍ DỤ MÀ HUY NGHĨ LÀ NGƯỜI VIỆT HOÀN TOÀN",
-      "corrected_text": "",
+      "corrected_text": "trời khi mà khi mà cái game nó được đón nhận có hàng chục triệu hay hàng trăm triệu người sử dụng kiếm được hàng tỷ đô la thì công ty ngay lập tức trở thành một kỳ lâm đó là một cái ví dụ mà huy nghĩ là người việt hoàn toàn",
       "notes": ""
     },
     {
@@ -333,7 +336,7 @@
       "source": "Blockchain_tao_co_hoi_de_Viet_Nam_sanh_vai_the_gioi_Huy_Nguyen_Co-Founder_President_KardiaChain.mp4",
       "duration_s": 13.0,
       "pseudo_label": "CỦA HUY MÀ NGƯỜI INDONESIA HỌ ĐỀU QUAY VỀ NƯỚC HẾT BỞI VÌ LÚC ĐẤY CHÍNH PHỦ INDONESIA CÓ MỘT CUỘC CẢI CÁCH VỀ CÔNG NGHIỆP VÀ MANG NHỮNG NGƯỜI HỌC TỪ NƯỚC NGOÀI VỀ ĐỂ CÙNG XÂY DỰNG MỘT CÁI VĂN HÓA VỀ CÔNG NGHIỆP CÔNG NGHỆ",
-      "corrected_text": "",
+      "corrected_text": "của huy mà người indonesia họ đều quay về nước hết bởi vì lúc đấy chính phủ indonesia có một cuộc cải cách về công nghiệp và mang những người học từ nước ngoài về để cùng xây dựng một cái văn hóa về công nghiệp công nghệ",
       "notes": ""
     },
     {
@@ -343,7 +346,7 @@
       "source": "Blockchain_tao_co_hoi_de_Viet_Nam_sanh_vai_the_gioi_Huy_Nguyen_Co-Founder_President_KardiaChain.mp4",
       "duration_s": 15.0,
       "pseudo_label": "TỨC NGHĨA LÀ CÁI ĐỘ LAN TỎA CỦA NÓ RỘNG HƠN NHỮNG CÔNG NGHỆ KHÁC RẤT NHIỀU NHƯNG MÀ ĐỒNG THỜI NÓ CŨNG MANG MỘT CÁI TIẾNG XẤU NHẤT ĐỊNH LÀ CÓ THỂ BỊ SCAM CÓ THỂ BỊ MẤT TIỀN TẤT NHIÊN MỌI THỨ GIỐNG NHƯ VẬY THÌ CHẲNG KHÁC GÌ CÁI CHUYỆN NGÀY XƯA KHI MÀ NGƯỜI TA LÊN SÀN THƯƠNG MẠI ĐIỆN TỬ NGƯỜI TA MUA ĐỒ",
-      "corrected_text": "",
+      "corrected_text": "tức nghĩa là cái độ lan tỏa của nó rộng hơn những công nghệ khác rất nhiều nhưng mà đồng thời nó cũng mang một cái tiếng xấu nhất định là có thể bị scam có thể bị mất tiền tất nhiên mọi thứ giống như vậy thì chẳng khác gì cái chuyện ngày xưa khi mà người ta lên sàn thương mại điện tử người ta mua đồ",
       "notes": ""
     },
     {
@@ -353,8 +356,8 @@
       "source": "Blockchain_tao_co_hoi_de_Viet_Nam_sanh_vai_the_gioi_Huy_Nguyen_Co-Founder_President_KardiaChain.mp4",
       "duration_s": 12.3,
       "pseudo_label": "CÁI GÓC NHÌN NHƯ LÀ VỚI MIRO VẬY VÀ ĐÂU ĐÓ THÌ MÌNH NHẬN ĐƯỢC CÁI SỰ ĐỒNG TÌNH VÀ ỦNG HỘ CỦA MỌI NGƯỜI VÀ ĐÂU ĐÓ CHÍNH NHỮNG CÁI UN OFFICIAL NHỮNG CÁI NHỮNG CÁI SAI SIG CHAT",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "cái góc nhìn như là với miro vậy và đâu đó thì mình nhận được cái sự đồng tình và ủng hộ của mọi người và đâu đó chính những cái un official những cái những cái sai side chat",
+      "notes": "tiếng Anh"
     },
     {
       "split": "train",
@@ -363,7 +366,7 @@
       "source": "Buoc_nhay_tiep_theo_cua_Marketing_-_Phi_Khanh_Le_Giam_doc_Marketing_Gojek_Vietnam_VI_S2_EP21.mp4",
       "duration_s": 13.2,
       "pseudo_label": "TRONG VÒNG MƯỜI MẤY NĂM VỪA RỒI LÀ MÌNH RẤT ÍT Ở VIỆT NAM HỌC HẾT BA CHALO Ở BÊN SINGAPORE VÀ HỒI ĐẤY LÀ MÌNH HỌC BẤT ĐỘNG SẢN XONG RỒI MÌNH LÀM BẤT ĐỘNG SẢN Ở BÊN SINGAPORE LÚC MÀ MÌNH MUỐN CHUYỂN SANG LÀM MARKETING ẤY THÌ MÌNH ĐI HỌC VỀ MASTER MARKETING",
-      "corrected_text": "",
+      "corrected_text": "trong vòng mười mấy năm vừa rồi là mình rất ít ở việt nam học hết ba chalo ở bên singapore và hồi đấy là mình học bất động sản xong rồi mình làm bất động sản ở bên singapore lúc mà mình muốn chuyển sang làm marketing ấy thì mình đi học về master marketing",
       "notes": ""
     },
     {
@@ -373,8 +376,8 @@
       "source": "Buoc_nhay_tiep_theo_cua_Marketing_-_Phi_Khanh_Le_Giam_doc_Marketing_Gojek_Vietnam_VI_S2_EP21.mp4",
       "duration_s": 10.2,
       "pseudo_label": "VÀ SAU ĐÓ THÌ MÌNH LÀM CHO YEAR HEALTH TRONG HELL CACH MÌNH HAI NĂM VỪA RỒI MÌNH Ở MỸ LÀM VIỆC CHO MỘT SỐ CÁC CÔNG TY VỀ AI VÀ Ở KÊNH LÀ CON SUMER HEALTHY",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "và sau đó thì mình làm cho year health trong healthcare mình hai năm vừa rồi mình ở mỹ làm việc cho một số các công ty về ai và ở kênh là con sumer healthy",
+      "notes": "tiếng Anh"
     },
     {
       "split": "train",
@@ -383,8 +386,8 @@
       "source": "Buoc_nhay_tiep_theo_cua_Marketing_-_Phi_Khanh_Le_Giam_doc_Marketing_Gojek_Vietnam_VI_S2_EP21.mp4",
       "duration_s": 12.7,
       "pseudo_label": "QUA SỰ CHIA SẺ CỦA LÊ THÌ RUBY THẤY CÁI KINH NGHIỆM CỦA LÊ LÀM VIỆC CHÍNH TRONG LĨNH VỰC CẦN ZOOM M TAKE NHƯNG MÀ CHẮC TRƯỚC ĐẤY THÌ LÊ CŨNG ĐÃ HỌC VÀ CŨNG CÓ LÀM MỘT SỐ CÔNG VIỆC LIÊN QUAN TỚI VỀ BRAND MARKETING TRƯỚC ĐÓ RỒI",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "qua sự chia sẻ của lê thì ruby thấy cái kinh nghiệm của lê làm việc chính trong lĩnh vực consumer tech nhưng mà chắc trước đấy thì lê cũng đã học và cũng có làm một số công việc liên quan tới về brand marketing trước đó rồi",
+      "notes": "tiếng Anh"
     },
     {
       "split": "train",
@@ -393,7 +396,7 @@
       "source": "Buoc_nhay_tiep_theo_cua_Marketing_-_Phi_Khanh_Le_Giam_doc_Marketing_Gojek_Vietnam_VI_S2_EP21.mp4",
       "duration_s": 15.0,
       "pseudo_label": "THẾ THÌ Ở ĐẤY LÀ LÝ THUYẾT NHA ÔI CẢM ƠN CÔ GIÁO MỘT LẦN NỮA ĐÃ CHIA SẺ CHO VY HẲN MỘT LỊCH SỬ CỦA LĨNH VỰC MARKETING LẦN ĐẦU TIÊN ROBIN ĐƯỢC NGHE ĐẦY ĐỦ NHƯ THẾ VỀ LỊCH SỬ ĐỦ DÀI MÀ TRONG THỜI GIAN NGẮN NHƯ VẬY TẠI VÌ LÀ TẠI VÌ LÀ MÌNH VỪA",
-      "corrected_text": "",
+      "corrected_text": "thế thì ở đấy là lý thuyết nha ôi cảm ơn cô giáo một lần nữa đã chia sẻ cho vy hẳn một lịch sử của lĩnh vực marketing lần đầu tiên robin được nghe đầy đủ như thế về lịch sử đủ dài mà trong thời gian ngắn như vậy tại vì là tại vì là mình vừa",
       "notes": ""
     },
     {
@@ -403,7 +406,7 @@
       "source": "Buoc_nhay_tiep_theo_cua_Marketing_-_Phi_Khanh_Le_Giam_doc_Marketing_Gojek_Vietnam_VI_S2_EP21.mp4",
       "duration_s": 13.9,
       "pseudo_label": "LÚC PHỎNG VẤN ANH DỊCH GIẢ CUỐN SÁCH NÀY THÌ CÁI CASE STUDY ĐẤY LÀ NÓI VỀ MỘT CÁI CHIẾN DỊCH CỦA GOJEC GỌI LÀ ĐỂ KHÔNG AI BỊ BỎ LẠI PHÍA SAU THÌ CÁI CHIẾN DỊCH NÀY LÀ CHIẾN DỊCH MÀ GOJEC PHỐI HỢP HỢP TÁC VỚI CẢ ĐÀI HTV",
-      "corrected_text": "",
+      "corrected_text": "lúc phỏng vấn anh dịch giả cuốn sách này thì cái case study đấy là nói về một cái chiến dịch của gojec gọi là để không ai bị bỏ lại phía sau thì cái chiến dịch này là chiến dịch mà gojec phối hợp hợp tác với cả đài htv",
       "notes": ""
     },
     {
@@ -413,7 +416,7 @@
       "source": "Buoc_nhay_tiep_theo_cua_Marketing_-_Phi_Khanh_Le_Giam_doc_Marketing_Gojek_Vietnam_VI_S2_EP21.mp4",
       "duration_s": 14.4,
       "pseudo_label": "THẬT SỰ QUA CÁI QUA BA BỐN THÁNG VỪA RỒI NÓ NÓ XẢY RA NHỮNG CÁI TỐC ĐỘ NÓ XẢY RA NHANH HƠN TRONG BẤT CỨ GIAI ĐOẠN LỊCH SỬ NÀO NHƯ BỌN MÌNH VẪN NGỒI Ở NHÀ VẪN LÀ VIỆC VẪN KIẾM TIỀN NHƯNG MÀ VÍ DỤ NHƯ LÀ CÁC ANH ĐỐI TÁC TÀI XẾ CỦA MÌNH ĐI",
-      "corrected_text": "",
+      "corrected_text": "thật sự qua cái qua ba bốn tháng vừa rồi nó nó xảy ra những cái tốc độ nó xảy ra nhanh hơn trong bất cứ giai đoạn lịch sử nào như bọn mình vẫn ngồi ở nhà vẫn là việc vẫn kiếm tiền nhưng mà ví dụ như là các anh đối tác tài xế của mình đi",
       "notes": ""
     },
     {
@@ -423,8 +426,8 @@
       "source": "Buoc_nhay_tiep_theo_cua_Marketing_-_Phi_Khanh_Le_Giam_doc_Marketing_Gojek_Vietnam_VI_S2_EP21.mp4",
       "duration_s": 14.6,
       "pseudo_label": "NÓ KHÔNG CÓ KHÓ TẠI VÌ THỰC RA LÀ BỌN MÌNH KHÔNG SẼ KHÔNG PHẢI LÀ GỌI LÀ CHẠY THEO HAY LÀ CỐ GẮNG LÀM GÌ CẢ BỞI VÌ NÓ ĐÃ LÀ CÁI GÌ ĐẤY NÓ ĐÃ Ở TRONG BẢN THÂN NÓ LÀ BẠN NÓ LÀ MÌNH RỒI NÓ LÀ TRONG DNA CỦA MÌNH RỒI",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "nó không có khó tại vì thực ra là bọn mình không sẽ không phải là gọi là chạy theo trend hay là cố gắng làm gì cả bởi vì nó đã là cái gì đấy nó đã ở trong bản thân nó là bạn nó là mình rồi nó là trong dna của mình rồi",
+      "notes": "tiếng Anh"
     },
     {
       "split": "train",
@@ -433,7 +436,7 @@
       "source": "Cam_giac_khien_nguoi_ta_nghien_lam_phim_-_Dao_dien_Lam_Dao_Dao_MAD_S3EP7.mp4",
       "duration_s": 10.0,
       "pseudo_label": "ANH PHẢI ĐÍNH CHÍNH NÈ CÁI SUY NGHĨ NÀY ANH CÓ HỒI TRẺ CHỨ KHÔNG PHẢI LÀ Ý LÀ ANH CÓ HỒI MÀ ANH BA MƯƠI KHOẢNG BA MƯƠI MỐT BA MƯƠI HAI CÒN BÂY GIỜ ANH ĐÃ CHẤP NHẬN ĐƯỢC CÁI VIỆC ĐÓ",
-      "corrected_text": "",
+      "corrected_text": "anh phải đính chính nè cái suy nghĩ này anh có hồi trẻ chứ không phải là ý là anh có hồi mà anh ba mươi khoảng ba mươi mốt ba mươi hai còn bây giờ anh đã chấp nhận được cái việc đó",
       "notes": ""
     },
     {
@@ -443,8 +446,9 @@
       "source": "Cam_giac_khien_nguoi_ta_nghien_lam_phim_-_Dao_dien_Lam_Dao_Dao_MAD_S3EP7.mp4",
       "duration_s": 11.4,
       "pseudo_label": "VÀ KIỂU CÙNG KHÁCH HÀNG KHÁCH HÀNG TỚI VỚI MỘT CÁI CLIP VÀ SAU ĐÓ MÌNH LÀM NÓ TỐT HƠN MÌNH TRIP MÌNH NÓ THEO CÁCH CỦA MÌNH VÀ TRICKING NGHĨA LÀ GÌ MÌNH",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "và kiểu cùng khách hàng khách hàng tới với một cái brief và sau đó mình làm nó tốt hơn mình trip mình nó theo cách của mình và tricking nghĩa là gì mình",
+      "notes": "",
+      "corrected_at": "2026-10-15T14:20:32"
     },
     {
       "split": "train",
@@ -453,7 +457,7 @@
       "source": "Cam_giac_khien_nguoi_ta_nghien_lam_phim_-_Dao_dien_Lam_Dao_Dao_MAD_S3EP7.mp4",
       "duration_s": 12.4,
       "pseudo_label": "MÌNH CHỈ LÊN NÓ MÌNH MUỐN LÀM GÌ LÀM NHIỀU KHI KHÔNG CẦN CÁI CLIP GÌ HẾT CHỈ CẦN CẦM MÁY LÊN NÓ QUAY THÔI THÌ CŨNG VỀ THÌ NÓ VẪN RA ĐƯỢC MỘT CÁI GÌ ĐÓ NÓ LẠ HƠN THÌ CÒN VỀ CÁI PHẦN",
-      "corrected_text": "",
+      "corrected_text": "mình chỉ lên nó mình muốn làm gì làm nhiều khi không cần cái clip gì hết chỉ cần cầm máy lên nó quay thôi thì cũng về thì nó vẫn ra được một cái gì đó nó lạ hơn thì còn về cái phần",
       "notes": ""
     },
     {
@@ -463,7 +467,7 @@
       "source": "Cam_giac_khien_nguoi_ta_nghien_lam_phim_-_Dao_dien_Lam_Dao_Dao_MAD_S3EP7.mp4",
       "duration_s": 13.0,
       "pseudo_label": "Ờ ANH THẤY RẤT LÀ NHIỀU ĐẠO DIỄN KHÁC NGƯỜI TA KHI MÀ NGƯỜI TA LÀM TRONG CÁI QUỐC NGƯỜI TA NGƯỜI TA RẤT LÀ CÓ NHỮNG CÁI RIÊNG Á KHI MÀ ANH ANH NHÌN KHÁNH ĐI ANH NHÌN PHƯƠNG VŨ MỌI NGƯỜI ĐỀU LÀM RA NHỮNG CÁI QUỐC CỦA NGƯỜI TA RẤT LÀ",
-      "corrected_text": "",
+      "corrected_text": "ờ anh thấy rất là nhiều đạo diễn khác người ta khi mà người ta làm trong cái quốc người ta người ta rất là có những cái riêng á khi mà anh anh nhìn khánh đi anh nhìn phương vũ mọi người đều làm ra những cái quốc của người ta rất là",
       "notes": ""
     },
     {
@@ -473,7 +477,7 @@
       "source": "Cam_giac_khien_nguoi_ta_nghien_lam_phim_-_Dao_dien_Lam_Dao_Dao_MAD_S3EP7.mp4",
       "duration_s": 12.4,
       "pseudo_label": "VÀ MÌNH ĐẠT ĐƯỢC NÓ THÌ KHI MÀ MÌNH SUY NGHĨ VỀ NÓ THÌ MÌNH SẼ TRUYỀN MỘT CÁI NĂNG LƯỢNG GÌ ĐÓ LÊN VŨ TRỤ VÀ VŨ TRỤ NGHE ĐƯỢC CÁI CHUYỆN ĐÓ VÀ NÓ CŨNG SẼ PHẢN HỒI VỀ TỚI MÌNH",
-      "corrected_text": "",
+      "corrected_text": "và mình đạt được nó thì khi mà mình suy nghĩ về nó thì mình sẽ truyền một cái năng lượng gì đó lên vũ trụ và vũ trụ nghe được cái chuyện đó và nó cũng sẽ phản hồi về tới mình",
       "notes": ""
     },
     {
@@ -483,7 +487,7 @@
       "source": "Cam_giac_khien_nguoi_ta_nghien_lam_phim_-_Dao_dien_Lam_Dao_Dao_MAD_S3EP7.mp4",
       "duration_s": 11.2,
       "pseudo_label": "NGHĨA LÀ NĂM NĂM TRƯỚC MÊ BI ANH SẼ CÓ MỘT CÁI GÔ GÌ ĐÓ ANH GHI XUỐNG NHƯNG MÀ TRONG CÁI QUÁ TRÌNH ANH ĐẾN CÁI GÔ ĐÓ ANH ĐỔI ANH NGHĨ VẪN OK MỌI NGƯỜI ANH NGHĨ MỌI NGƯỜI KHÔNG NÊN NGHĨ ĐÓ LÀ MỘT CÁI SỰ KIỂU",
-      "corrected_text": "",
+      "corrected_text": "nghĩa là năm năm trước mê bi anh sẽ có một cái gô gì đó anh ghi xuống nhưng mà trong cái quá trình anh đến cái gô đó anh đổi anh nghĩ vẫn ok mọi người anh nghĩ mọi người không nên nghĩ đó là một cái sự kiểu",
       "notes": ""
     },
     {
@@ -493,8 +497,8 @@
       "source": "Cam_giac_khien_nguoi_ta_nghien_lam_phim_-_Dao_dien_Lam_Dao_Dao_MAD_S3EP7.mp4",
       "duration_s": 14.9,
       "pseudo_label": "KHÔNG MUỐN LÀM NÓ GIỐNG CÁI QUẦY VỪA MỚI LÀM HOẶC LÀ MỘT VÀI QUẤT TRƯỚC EM VỪA LÀM KIỂU EM RẤT LÀ RESET NHỮNG CÁI NGƯỜI MÀ NGƯỜI TA CÓ THỂ GIỮ ĐƯỢC MỘT CÁI MÚT CỦA NGƯỜI TA MÀ XUYÊN SUỐT BA NĂM MƯỜI NĂM NGƯỜI TA VẪN LÀM RA ĐƯỢC CÁI MÚT CỦA NGƯỜI TA CÁI ĐÓ RẤT LÀ HAY",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "không muốn làm nó giống cái quầy vừa mới làm hoặc là một vài quất trước em vừa làm kiểu em rất là reset những cái người mà người ta có thể giữ được một cái mút của người ta mà xuyên suốt ba năm mười năm người ta vẫn làm ra được cái mút của người ta cái đó rất là hay",
+      "notes": "tiếng Anh"
     },
     {
       "split": "train",
@@ -503,7 +507,7 @@
       "source": "Cang_it_tien_cang_phai_can_kien_truc_-_KTS_Nguyen_Dinh_Hoa_Blueprint_EP07.mp4",
       "duration_s": 14.7,
       "pseudo_label": "THÌ CÁI SẢN PHẨM ĐÓ CƠ BẢN LÀ NÓ PHẢI GÓI ĐƯỢC MỘT CÁI ĐIỀU GÌ ĐÓ CÓ NGHĨA LÀ MÌNH ĐANG MƯỢN VẬT CHẤT ĐỂ MÌNH GÓI MỘT CÁI THỨ PHI VẬT CHẤT THÌ CÁI PHI VẬT CHẤT ĐÓ CHÍNH LÀ CÁI HÀNH VI SỬ DỤNG VÀ CÁI TRẢI NGHIỆM TUY NHIÊN RẰNG LÀ CÁI SỰ THÚ VỊ",
-      "corrected_text": "",
+      "corrected_text": "thì cái sản phẩm đó cơ bản là nó phải gói được một cái điều gì đó có nghĩa là mình đang mượn vật chất để mình gói một cái thứ phi vật chất thì cái phi vật chất đó chính là cái hành vi sử dụng và cái trải nghiệm tuy nhiên rằng là cái sự thú vị",
       "notes": ""
     },
     {
@@ -513,7 +517,7 @@
       "source": "Cang_it_tien_cang_phai_can_kien_truc_-_KTS_Nguyen_Dinh_Hoa_Blueprint_EP07.mp4",
       "duration_s": 15.0,
       "pseudo_label": "THÌ ĐÓ LÀ NHỮNG CÁI TẤT NHIÊN ĐÓ LÀ MỘT SỐ NHỮNG CÁI TRAO ĐỔI BÊN LỀ THÔI NHƯNG MÀ NÓ ĐỌNG LẠI CHO HÒA ĐƯỢC RẤT LÀ NHIỀU NHỮNG CÁI SUY NGHĨ VỀ CÁI HƯỚNG MÀ CHÚNG TA SẼ LÀM KIẾN TRÚC TIẾP THEO NHƯ THẾ NÀO EM MONG LÀ MỘT NGÀY NÀO ĐÓ SAU KHI XEM CHƯƠNG TRÌNH NÀY THÌ CHỦ ĐẦU TƯ SẼ BẮT ĐẦU GỌI LẠI HÒA ƠI CÓ TIỀN RỒI",
-      "corrected_text": "",
+      "corrected_text": "thì đó là những cái tất nhiên đó là một số những cái trao đổi bên lề thôi nhưng mà nó đọng lại cho hòa được rất là nhiều những cái suy nghĩ về cái hướng mà chúng ta sẽ làm kiến trúc tiếp theo như thế nào em mong là một ngày nào đó sau khi xem chương trình này thì chủ đầu tư sẽ bắt đầu gọi lại hòa ơi có tiền rồi",
       "notes": ""
     },
     {
@@ -523,7 +527,7 @@
       "source": "Cang_it_tien_cang_phai_can_kien_truc_-_KTS_Nguyen_Dinh_Hoa_Blueprint_EP07.mp4",
       "duration_s": 14.9,
       "pseudo_label": "ĐẠT ĐƯỢC NHỮNG CÁI HIỆU ỨNG NHẤT ĐỊNH THỰC TẾ THÌ ĐỐI VỚI LẠI MỘT CÁI CÂU CHUYỆN BÊN LỀ CỦA MỘT NHÀ THIẾT KẾ VỚI MỘT BỨC HÌNH SẢN PHẨM THÌ HOÀI NGHĨ ĐÓ LÀ CÂU CHUYỆN BẾP NÚC À OK CHO NÊN LÀ CÓ NHỮNG THỨ NÓ SẼ RẤT HAY",
-      "corrected_text": "",
+      "corrected_text": "đạt được những cái hiệu ứng nhất định thực tế thì đối với lại một cái câu chuyện bên lề của một nhà thiết kế với một bức hình sản phẩm thì hoài nghĩ đó là câu chuyện bếp núc à ok cho nên là có những thứ nó sẽ rất hay",
       "notes": ""
     },
     {
@@ -533,7 +537,7 @@
       "source": "Cang_it_tien_cang_phai_can_kien_truc_-_KTS_Nguyen_Dinh_Hoa_Blueprint_EP07.mp4",
       "duration_s": 13.4,
       "pseudo_label": "DẠ VÂNG KHI CHÚNG TA LÀM VIỆC ĐƯỢC MỘT CÁCH CHỦ ĐỘNG THÌ CƠ BẢN THÌ CHÚNG TA CŨNG SẼ BÌNH TĨNH HƠN TẠI VÌ CHÚNG TA CÓ THỂ CHỦ ĐỘNG SẮP XẾP ĐƯỢC CÔNG VIỆC THỜI GIAN CHỦ ĐỘNG SẮP XẾP ĐƯỢC NHỮNG CÁI THỨ MÀ CHÚNG TA MUỐN LÀM DẠ CHỦ ĐỘNG CHỌN LỰA CÁC CÁI VẤN ĐỀ MÀ CHÚNG TA QUAN TÂM",
-      "corrected_text": "",
+      "corrected_text": "dạ vâng khi chúng ta làm việc được một cách chủ động thì cơ bản thì chúng ta cũng sẽ bình tĩnh hơn tại vì chúng ta có thể chủ động sắp xếp được công việc thời gian chủ động sắp xếp được những cái thứ mà chúng ta muốn làm dạ chủ động chọn lựa các cái vấn đề mà chúng ta quan tâm",
       "notes": ""
     },
     {
@@ -543,7 +547,7 @@
       "source": "Cang_it_tien_cang_phai_can_kien_truc_-_KTS_Nguyen_Dinh_Hoa_Blueprint_EP07.mp4",
       "duration_s": 14.9,
       "pseudo_label": "LÀ CHẮC CHẮN LÀ ĐIỀU RẰNG LÀ CHÚNG TA CÓ THỂ LÀM ĐƯỢC RẤT RẤT LÀ NHIỀU VIỆC TUYỆT VỜI VÀ QUAN TRỌNG RẤT LÀ CỐ GẮNG LÀ LÀM CHUNG VỚI NHAU TẠI VÌ LÀM CHUNG VỚI NHAU NÓ MỚI VUI CHÚNG TA LUÔN LUÔN PHẢI SỐNG CHUNG VỚI ĐỒNG BỌN CHÚNG TA LẺ LOI QUÁ LÀ CHÚNG TA SẼ BỊ TIÊU DIỆT LIỀN THÌ THÌ",
-      "corrected_text": "",
+      "corrected_text": "là chắc chắn là điều rằng là chúng ta có thể làm được rất rất là nhiều việc tuyệt vời và quan trọng rất là cố gắng là làm chung với nhau tại vì làm chung với nhau nó mới vui chúng ta luôn luôn phải sống chung với đồng bọn chúng ta lẻ loi quá là chúng ta sẽ bị tiêu diệt liền thì thì",
       "notes": ""
     },
     {
@@ -553,7 +557,7 @@
       "source": "Cang_it_tien_cang_phai_can_kien_truc_-_KTS_Nguyen_Dinh_Hoa_Blueprint_EP07.mp4",
       "duration_s": 15.0,
       "pseudo_label": "CÁI CƠN VUI NÓ SẼ VUI HƠN VÀ BUỒN NÓ SẼ ĐI QUA VÀ QUAN TRỌNG NHẤT LÀ NHỮNG CÁI ĐÓ LÀ CÁI ĐỘNG LỰC RẤT LÀ LỚN LÀ MỘT CÁI MÔI TRƯỜNG TỐT ĐỂ MÀ CHÚNG TA LÀM ĐƯỢC NHIỀU THỨ CÒN THỰC RA LÀM THỨ GÌ ĐÓ THÌ MỖI MỘT NGƯỜI SẼ TỰ XÁC",
-      "corrected_text": "",
+      "corrected_text": "cái cơn vui nó sẽ vui hơn và buồn nó sẽ đi qua đỡ buồn hơn và quan trọng nhất là những cái đó là cái động lực rất là lớn là một cái môi trường tốt để mà chúng ta làm được nhiều thứ còn thực ra làm thứ gì đó thì mỗi một người sẽ tự xác",
       "notes": ""
     },
     {
@@ -563,7 +567,7 @@
       "source": "Cang_it_tien_cang_phai_can_kien_truc_-_KTS_Nguyen_Dinh_Hoa_Blueprint_EP07.mp4",
       "duration_s": 12.7,
       "pseudo_label": "SAU QUẦN HẾT BA BỐN TIẾNG THÌ CÓ NGHĨA LÀ CHÚNG TA Ý THỨC ĐƯỢC NÓ LÀ CHỈ TRONG VÒNG KHOẢNG BA BỐN TIẾNG THÔI NHƯNG MÀ BÂY GIỜ CHÚNG TA PHẢI Ý THỨC VỚI NÓ TRONG VÒNG HAI BỐN TIẾNG THỰC SỰ LÀ HAI BỐN TIẾNG TRÒN CHỮ ĐÔI KHI ĐÂU PHẢI LÀ ĐÊM NÀO CŨNG NGỦ ĐƯỢC ĐÂU",
-      "corrected_text": "",
+      "corrected_text": "sà quần hết ba bốn tiếng thì có nghĩa là chúng ta ý thức được nó là chỉ trong vòng khoảng ba bốn tiếng thôi nhưng mà bây giờ chúng ta phải ý thức với nó trong vòng hai mươi bốn tiếng thực sự là hai bốn tiếng tròn chữ đôi khi đâu phải là đêm nào cũng ngủ được đâu",
       "notes": ""
     },
     {
@@ -573,8 +577,8 @@
       "source": "Cau_chuyen_binh_dang_gioi_tai_PG_-_Nguyen_Thi_Hoang_Anh_Logistics_Director_PG_Vietnam_S3_EP12.mp4",
       "duration_s": 15.0,
       "pseudo_label": "HƠI TẾ NHỊ MỘT CHÚT NHƯNG MÀ VÍ DỤ NHƯ CHỊ ĐANG NÓI ĐẾN CÁC CỐ VẤN CỦA MÌNH THẾ THÌ CHO EM XIN PHÉP HỎI LÀ NHỮNG CỐ VẤN CỦA CHỊ LÀ NHỮNG AI CÓ THỂ NHỮNG CÁI PROFILE CỦA HỌ NHƯ THẾ NÀO ĐỂ CÓ THỂ LÀ CÁC BẠN SẼ CÓ NHỮNG CÁI GỌI LÀ CÁI MOTIVATION ESPIRATION ĐỂ SAU NÀY MÌNH CŨNG SẼ TÌM MỘT CỐ VẤN KIỂU",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "hơi tế nhị một chút nhưng mà ví dụ như chị đang nói đến các cố vấn của mình thế thì cho em xin phép hỏi là những cố vấn của chị là những ai có thể những cái profile của họ như thế nào để có thể là các bạn sẽ có những cái gọi là cái motivation espiration để sau này mình cũng sẽ tìm một cố vấn kiểu",
+      "notes": "tiếng Anh"
     },
     {
       "split": "train",
@@ -583,8 +587,8 @@
       "source": "Cau_chuyen_binh_dang_gioi_tai_PG_-_Nguyen_Thi_Hoang_Anh_Logistics_Director_PG_Vietnam_S3_EP12.mp4",
       "duration_s": 12.4,
       "pseudo_label": "VẤN ĐỀ ĐÓ VÀ NHỮNG CÁI GÌ MÀ CHỊ ĐANG ĐẠT ĐƯỢC Ở TRONG CÔNG TY HIỆN TẠI VÀ NHỮNG CÁI ĐIỀU KIỆN MÀ CHỊ ĐÃ ĐÃ ĐƯA RA CẢ THỊ TRƯỜNG BÊN NGOÀI ĐỂ CÓ THỂ ĐẠT ĐƯỢC MỘT CÁI BÌNH ĐẲNG GIỚI XIN CHÀO CHỊ HOÀNG ANH XIN CHÀO RENO VÀ CẢM ƠN VỀ LỜI GIỚI THIỆU CỦA RINO",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "vấn đề đó và những cái gì mà chị đang đạt được ở trong công ty hiện tại và những cái điều kiện mà chị đã đã đưa ra cả thị trường bên ngoài để có thể đạt được một cái bình đẳng giới xin chào chị hoàng anh xin chào reno và cảm ơn về lời giới thiệu của rino",
+      "notes": "tiếng Anh, tên riêng"
     },
     {
       "split": "train",
@@ -593,8 +597,8 @@
       "source": "Cau_chuyen_binh_dang_gioi_tai_PG_-_Nguyen_Thi_Hoang_Anh_Logistics_Director_PG_Vietnam_S3_EP12.mp4",
       "duration_s": 13.6,
       "pseudo_label": "VÀ MỘT TỔ CHỨC LUÔN HỖ TRỢ TÔI ĐỂ MÀ PHÁT TRIỂN VÀ THÀNH CÔNG THÌ TẠI BNJ CÁI KẾT QUẢ GỌI LÀ THƯỚC ĐO QUAN TRỌNG NHẤT CHO NÊN TÔI ĐÃ NHẬN ĐƯỢC CÁI SỰ NHỮNG CÁI CHƯƠNG TRÌNH",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "và một tổ chức luôn hỗ trợ tôi để mà phát triển và thành công thì tại P&G cái kết quả gọi là thước đo quan trọng nhất cho nên tôi đã nhận được cái sự những cái chương trình",
+      "notes": "tiếng Anh, tên riêng"
     },
     {
       "split": "train",
@@ -603,8 +607,8 @@
       "source": "Cau_chuyen_binh_dang_gioi_tai_PG_-_Nguyen_Thi_Hoang_Anh_Logistics_Director_PG_Vietnam_S3_EP12.mp4",
       "duration_s": 12.4,
       "pseudo_label": "MÀ THỰC SỰ LÀ MỖI VAI TRÒ ĐỀU TẠO ĐỘNG LỰC CHO MÌNH VÀ TÔI CẢM THẤY RẤT LÀ MAY MẮN KHI CÓ MÌNH CÓ MỘT CÁI HỘI HỆ THỐNG HỖ TRỢ NHƯ VẬY CHO NÊN TÔI CŨNG MONG MUỐN GÓP PHẦN THÚC ĐẨY CÁI SỰ TRAO QUYỀN CHO PHỤ NỮ TẠI P",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "mà thực sự là mỗi vai trò đều tạo động lực cho mình và tôi cảm thấy rất là may mắn khi có mình có một cái hội hệ thống hỗ trợ như vậy cho nên tôi cũng mong muốn góp phần thúc đẩy cái sự trao quyền cho phụ nữ tại b and g",
+      "notes": "tiếng Anh, tên riêng"
     },
     {
       "split": "train",
@@ -613,7 +617,7 @@
       "source": "Cau_chuyen_binh_dang_gioi_tai_PG_-_Nguyen_Thi_Hoang_Anh_Logistics_Director_PG_Vietnam_S3_EP12.mp4",
       "duration_s": 15.0,
       "pseudo_label": "LÂU DÀI KHÔNG THỂ MỘT SỚM MỘT CHIỀU VÀ NÓ ĐÒI HỎI CÁI SỰ NỖ LỰC VÀ CỐ GẮNG CỦA TẤT CẢ CHÚNG TA THÌ TÔI MONG RẰNG LÀ TẤT CẢ MỌI NGƯỜI ĐỀU GÓP PHẦN VÀO VIỆC LÀ PHÁ VỠ ĐỊNH KIẾN VỀ GIỚI",
-      "corrected_text": "",
+      "corrected_text": "lâu dài không thể một sớm một chiều và nó đòi hỏi cái sự nỗ lực và cố gắng của tất cả chúng ta thì tôi mong rằng là tất cả mọi người đều góp phần vào việc là phá vỡ định kiến về giới",
       "notes": ""
     },
     {
@@ -623,7 +627,7 @@
       "source": "Cau_chuyen_binh_dang_gioi_tai_PG_-_Nguyen_Thi_Hoang_Anh_Logistics_Director_PG_Vietnam_S3_EP12.mp4",
       "duration_s": 13.5,
       "pseudo_label": "NHỮNG CÁI KẾT QUẢ MÀ CHỊ ĐÃ ĐẠT ĐƯỢC VÀ CHỊ ĐÃ GHI NHẬN ĐƯỢC ĐẾN THỜI ĐIỂM NGÀY HÔM NAY LÀ NHỮNG LÀ NHƯ THẾ NÀO VÀ CÁI MONG MUỐN CỦA CHỊ CÓ THỂ TIẾP THEO TRONG TƯƠNG LAI NÓ SẼ LÀ NHỮNG KẾT QUẢ GÌ THẦY NHỜ NHỮNG CÁI NỖ LỰC MÀ MÀ NHƯ MÌNH VỪA KỂ",
-      "corrected_text": "",
+      "corrected_text": "những cái kết quả mà chị đã đạt được và chị đã ghi nhận được đến thời điểm ngày hôm nay là những là như thế nào và cái mong muốn của chị có thể tiếp theo trong tương lai nó sẽ là những kết quả gì thầy nhờ những cái nỗ lực mà mà như mình vừa kể",
       "notes": ""
     },
     {
@@ -633,7 +637,7 @@
       "source": "Cau_chuyen_binh_dang_gioi_tai_PG_-_Nguyen_Thi_Hoang_Anh_Logistics_Director_PG_Vietnam_S3_EP12.mp4",
       "duration_s": 15.0,
       "pseudo_label": "KỂ CẢ TRONG CÔNG VIỆC VÀ TRONG GIA ĐÌNH THÌ CÁI VIỆC PHÂN CHIA CÔNG VIỆC ĐÓ CŨNG KHÔNG PHẢI LÀ ANH PHẢI LÀM VIỆC A VÀ TÔI PHẢI LÀM VIỆC B MÀ NÓ ĐẾN TỨC LÀ TỰ NHIÊN VÀ MỌI NGƯỜI ĐỀU LÀM DỰA TRÊN CÁI YÊU THÍCH CỦA MÌNH NỮA VÍ DỤ MỘT BẠN THÌ THÍCH NẤU ĂN CƠM BẠN THÌ THÍCH DỌN DẸP NHÀ CỬA",
-      "corrected_text": "",
+      "corrected_text": "kể cả trong công việc và trong gia đình thì cái cái việc phân chia công việc đó cũng không phải là anh phải làm việc a và tôi phải làm việc b mà nó đến tức là tự nhiên và mọi người đều làm dựa trên cái yêu thích của mình nữa ví dụ một bạn thì thích nấu ăn cơm bạn thì thích dọn dẹp nhà cửa",
       "notes": ""
     },
     {
@@ -643,7 +647,7 @@
       "source": "Hanh_trinh_quay_lai_xo_bo_-_Do_Huu_Chi_Hoa_si_Minh_hoa_But_chi_HaveASip_2.mp4",
       "duration_s": 13.8,
       "pseudo_label": "NÓ LẠI GẦN NHƯ CHỨA TẤT CẢ NHỮNG CÁI GÌ MÀ MÌNH SAY MÊ MÌNH THÍCH THÚ VÀ ĐỐI VỚI MÌNH CÁI QUYỂN SÁCH BÂY GIỜ NÓ CHỈ LÀ LÀ MỘT CÁI NGƯỜI BẠN MÀ MỖI LẦN MỞ MỘT TRANG BẤT KỲ NÀO RA THÌ CHỈ CÓ THỂ",
-      "corrected_text": "",
+      "corrected_text": "nó lại gần như chứa tất cả những cái gì mà mình mình mình mình say mê mình thích thú và đối với mình cái quyển sách bây giờ nó chỉ là là một cái người bạn mà mỗi lần mở một trang bất kỳ nào ra thì chỉ có thể",
       "notes": ""
     },
     {
@@ -653,7 +657,7 @@
       "source": "Hanh_trinh_quay_lai_xo_bo_-_Do_Huu_Chi_Hoa_si_Minh_hoa_But_chi_HaveASip_2.mp4",
       "duration_s": 12.6,
       "pseudo_label": "HỌ PHẢI CÓ TRONG ĐẦU MỘT CÁI THANG ĐÁNH GIÁ VỀ CHUYỆN CÁI THÔNG TIN NÀO LÀ QUAN TRỌNG XONG RỒI HỌ TÓM TẮT LẠI VÀ NGƯỜI ĐỌC TÓM TẮT ĐẤY THÌ COI NHƯ LÀ MÌNH CHỈ GHÉT ĐƯỢC CÁI MÀ NGƯỜI ĐÃ TÓM TẮT HỌ ĐƯA RA THÔI",
-      "corrected_text": "",
+      "corrected_text": "họ phải có trong đầu một cái thang đánh giá về chuyện cái thông tin nào là quan trọng xong rồi họ tóm tắt lại và người đọc tóm tắt đấy thì coi như là mình chỉ ghét được cái mà người đã tóm tắt họ đưa ra thôi",
       "notes": ""
     },
     {
@@ -663,7 +667,7 @@
       "source": "Hanh_trinh_quay_lai_xo_bo_-_Do_Huu_Chi_Hoa_si_Minh_hoa_But_chi_HaveASip_2.mp4",
       "duration_s": 11.1,
       "pseudo_label": "SÁU MƯƠI PHẦN TRĂM DNA GIỐNG HỆT VỚI CON NGƯỜI TỨC LÀ SÁU MƯƠI PHẦN TRĂM DNA CỦA CON NGƯỜI LÀ CHUỐI CHỨ KHÔNG PHẢI LÀ BẢY MƯƠI PHẦN TRĂM LÀ NƯỚC CÁC THỨ NÀY NỌ ĐẤY THÌ MÌNH THẤY LÀ ĐÔI KHI",
-      "corrected_text": "",
+      "corrected_text": "sáu mươi phần trăm dna giống hệt với con người tức là sáu mươi phần trăm dna của con người là chuối chứ không phải là bảy mươi phần trăm là nước các thứ này nọ đấy thì mình thấy là đôi khi",
       "notes": ""
     },
     {
@@ -673,7 +677,7 @@
       "source": "Hanh_trinh_quay_lai_xo_bo_-_Do_Huu_Chi_Hoa_si_Minh_hoa_But_chi_HaveASip_2.mp4",
       "duration_s": 11.4,
       "pseudo_label": "BỞI VÌ CÁI ĐIỀU KIỆN ẤY MỘT NGƯỜI NÓI VỚI MÌNH LÀ HÃY LÀM SÁCH ĐI HAY LÀ MÌNH TỰ NÓI VỚI MÌNH HÃY CÓ MỘT CÁI GÌ TÁC ĐỘNG NÀO BÊN NGOÀI CHÚNG TA KHÔNG BAO GIỜ BIẾT ĐƯỢC",
-      "corrected_text": "",
+      "corrected_text": "bởi vì cái điều kiện ấy một người nói với mình là hãy làm sách đi hay là mình tự nói với mình hãy có một cái gì tác động nào bên ngoài chúng ta không bao giờ biết được",
       "notes": ""
     },
     {
@@ -683,7 +687,7 @@
       "source": "Hanh_trinh_quay_lai_xo_bo_-_Do_Huu_Chi_Hoa_si_Minh_hoa_But_chi_HaveASip_2.mp4",
       "duration_s": 11.4,
       "pseudo_label": "CHÚNG TA KHÔNG THỂ CƯỠNG CẦU ĐƯỢC RẰNG LÀ MỌI THỨ ĐÃ ĐƯỢC SINH RA CÁI NÀO KHỚP VỚI NHAU THÌ KHỚP VỚI NHAU MÀ CÁI NÀO NÓ ĐÃ ĐẨY NHAU THÌ NÓ ĐẨY NHAU NÓ TỰ CÓ QUY LUẬT CỦA NÓ CHÚNG TA",
-      "corrected_text": "",
+      "corrected_text": "chúng ta không thể cưỡng cầu được rằng là mọi thứ đã được sinh ra cái nào khớp với nhau thì khớp với nhau mà cái nào nó đã đẩy nhau thì nó đẩy nhau nó tự có quy luật của nó chúng ta",
       "notes": ""
     },
     {
@@ -693,7 +697,7 @@
       "source": "Hanh_trinh_quay_lai_xo_bo_-_Do_Huu_Chi_Hoa_si_Minh_hoa_But_chi_HaveASip_2.mp4",
       "duration_s": 12.6,
       "pseudo_label": "MỘT TRONG NHỮNG CÁI ƯỚC MƠ TỪ THỜI TRẺ CỦA MÌNH MÀ BÂY GIỜ VẪN CÓ ĐẤY LÀ LÀM THẾ NÀO ĐỂ CHÚNG TA SỐNG Ở MỖI NƠI MỘT CHÚT VÀ CHÚNG TA CÓ THỂ QUAN SÁT CÁI ĐỜI SỐNG Ở ĐẤY NẾM NÓ MỘT CHÚT XONG ĐẤY LẠI ĐI CHỖ KHÁC CHÚNG TA CỨ",
-      "corrected_text": "",
+      "corrected_text": "một trong những cái ước mơ từ thời trẻ của mình mà bây giờ vẫn có đấy là làm thế nào để chúng ta sống ở mỗi nơi một chút và chúng ta có thể quan sát cái đời sống ở đấy nếm nó một chút xong đấy lại đi chỗ khác chúng ta cứ",
       "notes": ""
     },
     {
@@ -703,8 +707,8 @@
       "source": "Hanh_trinh_quay_lai_xo_bo_-_Do_Huu_Chi_Hoa_si_Minh_hoa_But_chi_HaveASip_2.mp4",
       "duration_s": 10.2,
       "pseudo_label": "NÊN LÀ CẢM ƠN CHỊ HÔM NAY ĐÃ ĐẾN VỚI TRÀ CÚC MIÊN MAN CẢM ƠN CHỊ Ờ CẢM ƠN TẤT CẢ MỌI NGƯỜI ĐÃ THEO DÕI CUỘC TRÒ CHUYỆN CỦA CHÚNG TÔI",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "nên là cảm ơn chị hôm nay đã đến với trà cúc miên man cảm ơn chị thục minh ờ cảm ơn tất cả mọi người đã theo dõi cuộc trò chuyện của chúng tôi",
+      "notes": "tên riêng"
     },
     {
       "split": "train",
@@ -713,8 +717,8 @@
       "source": "Hay_cho_nguoi_co_hoi_yeu_thuong_minh_Yeu_Lanh_SS5_EP4.mp4",
       "duration_s": 13.3,
       "pseudo_label": "MÀ MIX CỦA RẤT NHIỀU YẾU TỐ CHỨ NÓ KHÔNG CHỈ ĐƠN THUẦN CHỈ LÀ YẾU TỐ CẢM XÚC HAY YẾU TỐ THU HÚT MÌNH HOÀN TOÀN CÓ THỂ KHỞI PHÁT CÁI TÂM YÊU THƯƠNG ĐÓ VỚI MỌI NGƯỜI NHƯNG ĐỒNG THỜI MÌNH CŨNG TỪNG TƯỚC ĐI CÁI QUYỀN CÁI CƠ HỘI",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "mà mix của rất nhiều yếu tố chứ nó không chỉ đơn thuần chỉ là yếu tố cảm xúc hay yếu tố thu hút mình hoàn toàn có thể khởi phát cái tâm yêu thương đó với mọi người nhưng đồng thời mình cũng từng tước đi cái quyền cái cơ hội",
+      "notes": "tiếng Anh"
     },
     {
       "split": "train",
@@ -723,7 +727,7 @@
       "source": "Hay_cho_nguoi_co_hoi_yeu_thuong_minh_Yeu_Lanh_SS5_EP4.mp4",
       "duration_s": 12.5,
       "pseudo_label": "KẾT HỢP VỚI LẠI NHỮNG CÁI TRẢI NGHIỆM MÀ CƠ THỂ MÌNH ĐƯỢC KHOAN KHOÁI THOẢI MÁI KHI MÀ MÌNH ĐƯỢC ĂN ĐƯỢC CHĂM SÓC ĐƯỢC VỖ VỀ ĐƯỢC ÂU YẾM RỒI CÁC THỨ LÚC NHỎ THÌ NÓ MỚI",
-      "corrected_text": "",
+      "corrected_text": "kết hợp với lại những cái trải nghiệm mà cơ thể mình được khoan khoái thoải mái khi mà mình được ăn được chăm sóc được vỗ về được âu yếm rồi các thứ lúc nhỏ thì nó mới",
       "notes": ""
     },
     {
@@ -733,8 +737,8 @@
       "source": "Hay_cho_nguoi_co_hoi_yeu_thuong_minh_Yeu_Lanh_SS5_EP4.mp4",
       "duration_s": 13.2,
       "pseudo_label": "ÔM ẤP HỌ ĐÚNG KHÔNG NẾU MÌNH TÌNH CẢM VỚI HỌ THÌ NÓ SẼ NHƯ THẾ NÀO NÓ CÓ MỐI LIÊN HỆ KHÔNG CHỊ MINH VỪA MỚI CHẠM TỚI MỘT CÁI CHỦ ĐỀ CỦA MỘT CÁI NHÁNH TÂM LÝ HỌC KHÁC NÓ GỌI LÀ IVLUSINE PYCLOCY TÂM LÝ HỌC TIẾN HÓA",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "ôm ấp họ đúng không nếu mình tình cảm với họ thì nó sẽ như thế nào nó có mối liên hệ không chị minh vừa mới chạm tới một cái chủ đề của một cái nhánh tâm lý học khác nó gọi là evolutionary psychology tâm lý học tiến hóa",
+      "notes": "tiếng anh, tên riêng"
     },
     {
       "split": "train",
@@ -743,7 +747,7 @@
       "source": "Hay_cho_nguoi_co_hoi_yeu_thuong_minh_Yeu_Lanh_SS5_EP4.mp4",
       "duration_s": 14.0,
       "pseudo_label": "Ờ Ở ĐÂY THÌ EM SẼ QUAY VỀ MỘT CÁI QUAN ĐIỂM CỦA TÂM LÝ HỌC NHÂN BẢN VÀ KỂ CẢ TÂM LÝ HỌC TÍCH CỰC ĐÓ LÀ CON NGƯỜI CHÚNG TA SẼ CÓ MỘT CÁI XU HƯỚNG TẠM GỌI LÀ XU HƯỚNG HƯỚNG THỬ",
-      "corrected_text": "",
+      "corrected_text": "ờ ở đây thì em sẽ quay về một cái quan điểm của tâm lý học nhân bản và kể cả tâm lý học tích cực đó là con người chúng ta sẽ có một cái xu hướng tạm gọi là xu hướng hướng thượng",
       "notes": ""
     },
     {
@@ -753,8 +757,8 @@
       "source": "Hay_cho_nguoi_co_hoi_yeu_thuong_minh_Yeu_Lanh_SS5_EP4.mp4",
       "duration_s": 14.2,
       "pseudo_label": "VÍ DỤ NHƯ NÓI VỀ CÁI MỘT CÁI MÔ HÌNH GỌI LÀ SELFORM PASHI CỦA MỘT CÁI NHÀ TÂM LÝ HỌC ĐI ĐẦU TRONG CÁI HƯỚNG NÀY ĐÓ LÀ CHRISTEN NEFE THÌ BÀ ẤY CHO RẰNG LÀ ĐỂ CHÚNG TA CÓ CÁI LÒNG TỰ TRẮC ẨN MÀ HƯỚNG TRẮC ẨN MÀ HƯỚNG VỀ PHÍA MÌNH Á",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "ví dụ như nói về cái một cái mô hình gọi là self compassion của một cái nhà tâm lý học đi đầu trong cái hướng này đó là Kristin Neff thì bà ấy cho rằng là để chúng ta có cái lòng tự trắc ẩn mà hướng trắc ẩn mà hướng về phía mình á",
+      "notes": "Tiếng anh, tên riêng"
     },
     {
       "split": "train",
@@ -763,7 +767,7 @@
       "source": "Hay_cho_nguoi_co_hoi_yeu_thuong_minh_Yeu_Lanh_SS5_EP4.mp4",
       "duration_s": 14.2,
       "pseudo_label": "CHÚ TÂM ĐỂ MÌNH BIẾT ĐƯỢC TOÀN BỘ CÁC CÁI DIỄN BIẾN XUNG QUANH VÍ DỤ EM THẤY CON RÙI NÓ ĐANG BAY BAY HAY TẤT CẢ CÁC THỨ GÌ ĐÓ VÀ ĐÔI KHI LÀ MÌNH CÓ MỘT CÁI PHẢN XẠ TỰ NHIÊN LÀ MÌNH MUỐN QUƠ HAY LÀ MÌNH MUỐN ĐẬP HAY LÀ MÌNH MUỐN ĐUỔI NÓ ĐI GÌ ĐÓ THÌ CÁI ĐÓ LÀ MÌNH THẤY MÌNH THẤY TẤT CẢ CÁC DIỄN BIẾN THÂN TÂM CỦA MÌNH",
-      "corrected_text": "",
+      "corrected_text": "chú tâm để mình biết được toàn bộ các cái diễn biến xung quanh ví dụ em thấy con rùi nó đang bay bay hay tất cả các thứ gì đó và đôi khi là mình có một cái phản xạ tự nhiên là mình muốn quơ hay là mình muốn đập hay là mình muốn đuổi nó đi gì đó thì cái đó là mình thấy mình thấy tất cả các diễn biến thân tâm của mình",
       "notes": ""
     },
     {
@@ -773,8 +777,8 @@
       "source": "Hay_cho_nguoi_co_hoi_yeu_thuong_minh_Yeu_Lanh_SS5_EP4.mp4",
       "duration_s": 13.4,
       "pseudo_label": "VÀ MÌNH ĐÁP ỨNG NÓ MỘT CÁCH THẬT SỰ LÀ TỬ TẾ THÌ EM NGHĨ LÀ VỚI CÁI MÔ HÌNH ĐÓ CHÚNG TA HOÀN TOÀN CÓ THỂ CHO CHÍNH MÌNH CÁI CÁI APPRESSION VÀ MÌNH THÍCH THÌ BÂY GIỜ MÌNH CÓ THỂ LÀM MỘT CÁI BÀI TẬP TRONG CÁI TRƯỜNG PHÁI THAM VẤN",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "và mình đáp ứng nó một cách thật sự là tử tế thì em nghĩ là với cái mô hình đó chúng ta hoàn toàn có thể cho chính mình cái cái appression và mình thích thì bây giờ mình có thể làm một cái bài tập trong cái a trường phái a tham vấn",
+      "notes": "Tiếng anh"
     },
     {
       "split": "train",
@@ -783,7 +787,7 @@
       "source": "Hay_yeu_nghe_nghe_se_yeu_lai_ta_-_Nghe_si_Bo_Bo_Hoang_Tram_Nam_San_Khau_Ep7.mp4",
       "duration_s": 15.0,
       "pseudo_label": "MỘT NHÂN VẬT RẤT LÀ XUẤT SẮC MÀ CÓ THỂ ĐÓNG ĐƯỢC RẤT LÀ NHIỀU LOẠI VAI CÓ THỂ NÓI LÀ ÔNG BA VÂN ĐÃ ẢNH HƯỞNG RẤT LÀ LỚN ĐẾN SỰ NGHIỆP CỦA CÔ BỞI VÌ CON NHỚ LÀ SAU CÁI VỞ ĐÓ CÔ VÀ ÔNG BA VÂN CÓ THU RẤT LÀ NHIỀU NHỮNG CÁI DĨA VÀ MỘT CÁI DĨA",
-      "corrected_text": "",
+      "corrected_text": "một nhân vật rất là xuất sắc mà có thể đóng được rất là nhiều loại vai có thể nói là ông ba vân đã ảnh hưởng rất là lớn đến sự nghiệp của cô bởi vì con nhớ là sau cái vở đó cô và ông ba vân có thu rất là nhiều những cái dĩa và một cái dĩa",
       "notes": ""
     },
     {
@@ -793,7 +797,7 @@
       "source": "Hay_yeu_nghe_nghe_se_yeu_lai_ta_-_Nghe_si_Bo_Bo_Hoang_Tram_Nam_San_Khau_Ep7.mp4",
       "duration_s": 14.7,
       "pseudo_label": "CÓ DUYÊN NHẤT LÀ CÁI CÂU ÔNG SÁNG TẠO TÁC GIẢ THÌ KHÔNG CÓ VIẾT NHA ỔNG SÁNG TẠO KHI ĐƯA BÀI LÊN THÂU ĐĨA NÈ THẰNG NHỎ CHẠY Á BỚ NGƯỜI TA BẮT NÓ LẠI NÓ MÓC TÚI QUÁ HAY CÁI NGƯỜI SỐNG",
-      "corrected_text": "",
+      "corrected_text": "có duyên nhất là cái câu ông sáng tạo tác giả thì không có viết nha ổng sáng tạo khi đưa bài lên thâu đĩa nè thằng nhỏ chạy á bớ người ta bắt nó lại nó móc túi quá hay cái người sống",
       "notes": ""
     },
     {
@@ -803,7 +807,7 @@
       "source": "Hay_yeu_nghe_nghe_se_yeu_lai_ta_-_Nghe_si_Bo_Bo_Hoang_Tram_Nam_San_Khau_Ep7.mp4",
       "duration_s": 14.1,
       "pseudo_label": "CÔ PHẢI HÁT RA MỘT CÁI MỘT CÔ GÁI Ở QUÊ LÊN THỊ THÀNH THÌ BỊ MỘT ANH CHÀNG ĐẾM ĐÀN ANH DỤ DỖ ẢNH TƯỚC MẤT TRINH TIẾT XONG RỒI ẢNH ĐẨY RA ĐƯỜNG SAU NÀY CỔ VINH GIAN LẠI LÀ CỔ BẮT ĐẦU TÌM ANH CHÀNG NÀY CỔ TRẢ THÙ",
-      "corrected_text": "",
+      "corrected_text": "cô phải hát ra một cái một cô gái ở quê lên thị thành thì bị một anh chàng đếm đàn anh dụ dỗ ảnh tước mất trinh tiết xong rồi ảnh đẩy ra đường sau này cổ vinh gian lại là cổ bắt đầu tìm anh chàng này cổ trả thù",
       "notes": ""
     },
     {
@@ -813,7 +817,7 @@
       "source": "Hay_yeu_nghe_nghe_se_yeu_lai_ta_-_Nghe_si_Bo_Bo_Hoang_Tram_Nam_San_Khau_Ep7.mp4",
       "duration_s": 11.2,
       "pseudo_label": "NÓ TỪNG BƯỚC NÓ THAY ĐỔI MÃI NÓ ĐI TỪ BƯỚC NÀY NÓ LĂN QUA TỚI BƯỚC KHÁC VÌ CÁI NGƯỜI MÀ BỊ CÔ CHỈ VÀO MẶT Á LÀ MỘT CÁI ANH MA CÔ",
-      "corrected_text": "",
+      "corrected_text": "nó từng bước nó thay đổi mãi nó đi từ bước này nó lăn qua tới bước khác vì cái người mà bị cô chỉ vào mặt á là một cái anh ma cô",
       "notes": ""
     },
     {
@@ -823,7 +827,7 @@
       "source": "Hay_yeu_nghe_nghe_se_yeu_lai_ta_-_Nghe_si_Bo_Bo_Hoang_Tram_Nam_San_Khau_Ep7.mp4",
       "duration_s": 13.8,
       "pseudo_label": "NÓ LÀ SÂN KHẤU NÓ PHẢI SÂN KHẤU NÓ THÌ NÓ MỚI ĐẶT LÊN LUÔN EM ĐEM NÓ QUAY HÌNH CÔ LẤY VÍ DỤ NHƯ EM NÓI VÍ DỤ NHƯ ANH LÂM SANG CŨNG TẠ TỐN CÒN ĐỒ LONG ĐAO Á",
-      "corrected_text": "",
+      "corrected_text": "nó là sân khấu nó phải sân khấu nó thì nó mới đặt lên luôn em đem nó quay hình cô lấy ví dụ như em nói ví dụ như anh lâm sang cũng tạ tốn còn đồ long đao á",
       "notes": ""
     },
     {
@@ -833,7 +837,7 @@
       "source": "Hay_yeu_nghe_nghe_se_yeu_lai_ta_-_Nghe_si_Bo_Bo_Hoang_Tram_Nam_San_Khau_Ep7.mp4",
       "duration_s": 14.8,
       "pseudo_label": "ĐỒ CỦA POPO THÌ BÂY GIỜ NÓ THẬT RA NHIỀU LẮM NHIỀU NGƯỜI BIẾT LẮM ĐÂY BÀ GIÀ BÂY GIỜ KHÔNG CÒN ĐƯỢC ĐỘI NHỮNG CÁI ĐỒ ĐẸP NÀY NỮA ĐỂ TA LÀM THÌ BÂY GIỜ TA LÀM CHO DIỄN VIÊN TRẺ NÓ XÀI ĐÂY LÀ MỘT CÁI ANH CHÀNG CON TRAI NỮA",
-      "corrected_text": "",
+      "corrected_text": "đồ của popo thì bây giờ nó thật ra nhiều lắm nhiều người biết lắm đây bà già bây giờ không còn được đội những cái đồ đẹp này nữa để ta làm thì bây giờ ta làm cho diễn viên trẻ nó xài đây là một cái anh chàng con trai nữa",
       "notes": ""
     },
     {
@@ -843,7 +847,7 @@
       "source": "Hay_yeu_nghe_nghe_se_yeu_lai_ta_-_Nghe_si_Bo_Bo_Hoang_Tram_Nam_San_Khau_Ep7.mp4",
       "duration_s": 13.3,
       "pseudo_label": "ANH CÁI NGHỀ CỦA ANH ANH KINH DOANH NÀY KIA ANH ĐỐI TÁC NÀY KIA MÀ ANH ĐƯƠNG ĐẦU VỚI HỌ ĐÂU CÓ DỄ ĐÂU CÓ DỄ CÒN BÀ HẢ SƯỚNG TAY LẮM BÀ Ở NHÀ BÀ PHÊ PHÊ BÀ THỨC THÌ BÀ LÀM",
-      "corrected_text": "",
+      "corrected_text": "anh cái nghề của anh anh kinh doanh này kia anh đối tác này kia mà anh đương đầu với họ đâu có dễ đâu có dễ còn bà hả sướng tay lắm bà ở nhà bà phê phê bà thức thì bà làm",
       "notes": ""
     },
     {
@@ -853,8 +857,8 @@
       "source": "Ke_chuyen_bang_hinh_anh_3D_-_Thao_Dan_Visual_Artist_va_Creative_Director_MAD_EP20.mp4",
       "duration_s": 11.9,
       "pseudo_label": "TỨC LÀ CÁI ĐẤY SAU KHI MÀ EM LÀM BA D MỘT THỜI GIAN DÀI Á EM MUỐN CHUYỂN QUA LÀM CLIP REACTOR THÌ EM CÓ THẤY LÀ CÁI CÔNG VIỆC BA D Ở VIỆT NAM NÓ CÓ MỘT CÁI",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "tức là cái đấy sau khi mà em làm ba d một thời gian dài á em muốn chuyển qua làm clip reactor thì em có thấy là cái công việc ba d ở việt nam nó có một cái",
+      "notes": "tiếng anh"
     },
     {
       "split": "train",
@@ -863,8 +867,9 @@
       "source": "Ke_chuyen_bang_hinh_anh_3D_-_Thao_Dan_Visual_Artist_va_Creative_Director_MAD_EP20.mp4",
       "duration_s": 11.8,
       "pseudo_label": "XIN CHÀO MỌI NGƯỜI CHÀO MỪNG MỌI NGƯỜI ĐẾN MỘT TẬP KHÁC CỦA MED HÔM NAY KHÁCH MỜI CỦA CHÚNG TA LÀ THẢO ĐAN THẢO ĐAN LÀ MỘT VIDEO ADIS VÀ CREDIT BREATTER ĐANG Ở VIỆT NAM THỰC RA TUNG BIẾT TỚI THẢO ĐAN GẦN ĐÂY QUA DỰ ÁN MUSIC VIDEO CỦA SUBOY",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "xin chào mọi người chào mừng mọi người đến một tập khác của mad hôm nay khách mời của chúng ta là thảo đan thảo đan là một visual artist và creative director đang ở việt nam thực ra tung biết tới thảo đan gần đây qua dự án music video của suboi",
+      "notes": "Tiếng anh, tên riêng",
+      "corrected_at": "2026-10-15T20:23:40"
     },
     {
       "split": "train",
@@ -873,8 +878,8 @@
       "source": "Ke_chuyen_bang_hinh_anh_3D_-_Thao_Dan_Visual_Artist_va_Creative_Director_MAD_EP20.mp4",
       "duration_s": 15.0,
       "pseudo_label": "THÌ EM MUỐN LÀM NHỮNG THỨ MÀ CÓ Ý NGHĨA VỚI BẢN THÂN MÌNH HƠN THÌ ĐỐI VỚI EM THÌ NHỮNG PAUL JACK MÀ EM SẼ LÀM ĐƯỢC Ở VIỆT NAM THÌ NÓ CÓ Ý NGHĨA CHO EM HƠN LÚC MÀ LÀM Ở CÁC CÔNG TY NHƯ TRƯỚC RỒI Ở MỸ THÌ THỰC RA LÀ LÀM THÌ GIÚP EM TRAPING RẤT HAY NHƯNG MÀ",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "thì em muốn làm những thứ mà có ý nghĩa với bản thân mình hơn thì đối với em thì những projects mà em sẽ làm được ở việt nam thì nó có ý nghĩa cho em hơn lúc mà làm ở các công ty như trước rồi ở mỹ thì thực ra là làm thì giúp em training rất hay nhưng mà",
+      "notes": "Tiếng anh"
     },
     {
       "split": "train",
@@ -883,8 +888,9 @@
       "source": "Ke_chuyen_bang_hinh_anh_3D_-_Thao_Dan_Visual_Artist_va_Creative_Director_MAD_EP20.mp4",
       "duration_s": 14.8,
       "pseudo_label": "BÁC SĨ Ở MỸ THÌ BẢO LÀ NÓ LÀ GON THÔI VÌ THỰC RA NÓ KHÔNG PHẢI LÀ MẮT MÀ NÓ LÀ MỘT CÁI PHẦN CỦA BRAND CỦA EM BỊ DIAMODE NÊN LÀ NÓ LÀM CHO KHÔNG NHÌN TỨC LÀ EM KHÔNG NHÌN THẤY TRONG FESTIVAL MÀ NÓ KHÔNG EXPRESS",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "bác sĩ ở mỹ thì bảo là nó là gone thôi vì thực ra nó không phải là mắt mà nó là một cái phần của brain của em bị damaged nên là nó làm cho không nhìn tức là em không nhìn thấy trong perception của em mà nó không accept",
+      "notes": "tiếng anh",
+      "corrected_at": "2026-10-15T14:20:51"
     },
     {
       "split": "train",
@@ -893,8 +899,8 @@
       "source": "Ke_chuyen_bang_hinh_anh_3D_-_Thao_Dan_Visual_Artist_va_Creative_Director_MAD_EP20.mp4",
       "duration_s": 13.8,
       "pseudo_label": "RẤT LÀ TO VÀ NÓ DỄ HƠN LÀ NẾU MÀ EM ĐI KIỂU EM KHÔNG BIẾT FORBES HOẶC LÀ TỪ CÁI NGÀY EM TỪ NEW YORK VỀ THÌ EM ĐÃ LÀM NHỮNG DỰ ÁN NÀO NGÀY ĐẦU TIÊN EM VỀ VIỆT NAM NGÀY HÔM ĐÓ",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "rất là to và nó dễ hơn là nếu mà em đi kiểu em không biết forbes hoặc là từ cái ngày em từ new york về thì em đã làm những dự án nào ngày đầu tiên em về việt nam ngày hôm đó",
+      "notes": "Tiếng anh"
     },
     {
       "split": "train",
@@ -903,8 +909,9 @@
       "source": "Ke_chuyen_bang_hinh_anh_3D_-_Thao_Dan_Visual_Artist_va_Creative_Director_MAD_EP20.mp4",
       "duration_s": 12.7,
       "pseudo_label": "À LÀ BA TRIỆU À HAI BÀ TRƯNG S LÀ MỘT TRONG ID JUSTIN NHẤT TẠI VÌ THỰC RA LÀ NHỮNG THỨ HỌ NÓI BÀ TRIỆU HAI BÀ TRƯNG EM CỨ NGỒI IP VÀ TẠM THỜI LÀ HAI BÀ TRƯNG",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "à là ba triệu à hai bà trưng s là một trong id justin nhất tại vì thực ra là những thứ họ nói bà triệu hai bà trưng em cứ ngồi ip và tạm thời là hai bà trưng",
+      "notes": "",
+      "corrected_at": "2026-10-15T14:20:54"
     },
     {
       "split": "validation",
@@ -913,8 +920,9 @@
       "source": "Ke_chuyen_bang_hinh_anh_3D_-_Thao_Dan_Visual_Artist_va_Creative_Director_MAD_EP20.mp4",
       "duration_s": 13.0,
       "pseudo_label": "CÁI TỐT Ở TRANG SCA LÀ TẤT CẢ THẦY CÔ GIÁO ĐỀU VẪN ĐANG PART ONG THE FIELD TỨC LÀ HỌ KHÔNG PHẢI LÀ NHỮNG NGƯỜI MÀ NGHỈ HƯU RỒI RỒI ĐI DẠY MÀ LÀ HỌ VẪN ĐANG LÀM TRONG NGHỀ NÊN LÀ THẬT RA CÁI CONNECTION MÀ BIẾT Ở NEW YORK NÓ TỨC",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "cái tốt ở trang sca là tất cả thầy cô giáo đều vẫn đang part ong the field tức là họ không phải là những người mà nghỉ hưu rồi rồi đi dạy mà là họ vẫn đang làm trong nghề nên là thật ra cái connection mà biết ở new york nó tức",
+      "notes": "tiếng Anh",
+      "corrected_at": "2026-10-15T14:22:27"
     },
     {
       "split": "train",
@@ -923,8 +931,8 @@
       "source": "Khui_het_12_tap_trong_12_phut_Have_A_Sip_-_After_Hours_dac_biet.mp4",
       "duration_s": 11.8,
       "pseudo_label": "KHÔNG QUAN TRỌNG LẮM NHƯNG MÀ KỸ THUẬT SỐ THÌ NÓ TIỆN HƠN VIDEO NHIỀU VIEW HƠN HAY LÀ NHIỀU SUBSCRIBE NHƯ SUBSCRIBER LÀM NHÀ PHÊ BÌNH HAY LÀ LÀM PHIM LÀM PHIM CHỦ ĐỘNG HAY LÀ BỊ ĐỘNG",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "không quan trọng lắm nhưng mà kỹ thuật số thì nó tiện hơn video nhiều view hơn hay là nhiều subscribe như subscriber làm nhà phê bình hay là làm phim làm phim chủ động hay là bị động",
+      "notes": "tiếng anh"
     },
     {
       "split": "train",
@@ -933,7 +941,7 @@
       "source": "Khui_het_12_tap_trong_12_phut_Have_A_Sip_-_After_Hours_dac_biet.mp4",
       "duration_s": 14.5,
       "pseudo_label": "ANH CHIA TAY NGƯỜI YÊU SAU ANH TÌM VỚI NGƯỜI MỚI ĐÚNG KHÔNG CHẮC CHẮN KIỂU GÌ ANH CŨNG SẼ PHẢI SỬ DỤNG NHỮNG ÁO VĂN CŨ KIỂU NHƯ LÀ TRONG QUÁ TRÌNH MÌNH QUEN ẤY RỒI CŨNG SẼ PHẢI ĐẾN NHỮNG CÁI GIAI ĐOẠN NHƯ KIỂU LÀ EM ĂN CƠM TRƯA HAY LÀ EM DẠO NÀY EM HÔM NAY THẾ NÀO Á",
-      "corrected_text": "",
+      "corrected_text": "anh chia tay người yêu sau anh tìm với người mới đúng không chắc chắn kiểu gì anh cũng sẽ phải sử dụng những áo văn cũ kiểu như là trong quá trình mình quen ấy rồi cũng sẽ phải đến những cái giai đoạn như kiểu là em ăn cơm trưa hay là em dạo này em hôm nay thế nào á",
       "notes": ""
     },
     {
@@ -943,7 +951,7 @@
       "source": "Khui_het_12_tap_trong_12_phut_Have_A_Sip_-_After_Hours_dac_biet.mp4",
       "duration_s": 13.0,
       "pseudo_label": "BÂY GIỜ NẾU MÀ TRONG EM NÓI LÀ SANG TẬP THỨ HAI LUÔN NÀY CÓ BAO GIỜ NGHĨ VỀ CHUYỆN BẮT ĐẦU BẮT ĐẦU NHƯ MỘT BUỔI NHẬU THẬT SỰ RỒI CHỊ Ạ",
-      "corrected_text": "",
+      "corrected_text": "bây giờ nếu mà trong em nói là sang tập thứ hai luôn này có bao giờ nghĩ về chuyện bắt đầu bắt đầu như một buổi nhậu thật sự rồi chị ạ",
       "notes": ""
     },
     {
@@ -953,7 +961,7 @@
       "source": "Khui_het_12_tap_trong_12_phut_Have_A_Sip_-_After_Hours_dac_biet.mp4",
       "duration_s": 13.3,
       "pseudo_label": "CÓ THẾ NÓ MỚI LẠ EM CŨNG HỎI ĐI ANH CÂN HẾT TẦM NÀY RỒI HAI CHAI RỒI BON LẮM MỒM BẮT ĐẦU BON RỒI",
-      "corrected_text": "",
+      "corrected_text": "có thế nó mới lạ em cũng hỏi đi anh cân hết tầm này rồi hai chai rồi bon lắm mồm bắt đầu bon rồi",
       "notes": ""
     },
     {
@@ -963,7 +971,7 @@
       "source": "Khui_het_12_tap_trong_12_phut_Have_A_Sip_-_After_Hours_dac_biet.mp4",
       "duration_s": 10.9,
       "pseudo_label": "HUY MY ƠI BÂY GIỜ HẢ MUỐN LÊN ĐỈNH HẢ VỀ LẤY CÁI ROI ĐÁNH TEST TEST VÀO MÔNG MỘT CÁI LÀ LÊN ĐỈNH LIỀN NHƯNG MÀ NÓ NHƯNG MÀ NẾU NHƯ MÀ ĐỐI VỚI LẠI HUY MY CHUYỆN ĐÓ NÓ KHÔNG PHẢI",
-      "corrected_text": "",
+      "corrected_text": "huy my ơi bây giờ hả muốn lên đỉnh hả về lấy cái roi đánh tét tét vào mông một cái là lên đỉnh liền nhưng mà nó nhưng mà nếu như mà đối với lại huy my chuyện đó nó không phải",
       "notes": ""
     },
     {
@@ -973,7 +981,7 @@
       "source": "Khui_het_12_tap_trong_12_phut_Have_A_Sip_-_After_Hours_dac_biet.mp4",
       "duration_s": 14.5,
       "pseudo_label": "TỪNG CÓ SUY NGHĨ ĐẤY NHƯNG MÀ THỰC RA KHI MÀ NHÌN MỌI NGƯỜI LÀM ẤY THÌ NHẬN RA LÀ CÓ NHỮNG CÁI MÌNH NÊN XEM THÌ HAY HƠN NHƯNG MÀ BÂY GIỜ THỬ THÌ OK MỌC LĂNG THÔI CŨNG MUỐN THỬ MỘT LẦN NHƯNG MÀ",
-      "corrected_text": "",
+      "corrected_text": "từng có suy nghĩ đấy nhưng mà thực ra khi mà nhìn mọi người làm ấy thì nhận ra là có những cái mình nên xem thì hay hơn nhưng mà bây giờ thử thì ok một lần thôi cũng muốn cũng muốn thử một lần nhưng mà",
       "notes": ""
     },
     {
@@ -983,7 +991,7 @@
       "source": "Khui_het_12_tap_trong_12_phut_Have_A_Sip_-_After_Hours_dac_biet.mp4",
       "duration_s": 13.6,
       "pseudo_label": "CŨNG MUỐN LẮM NHƯNG MÀ CHƯA CÓ DỰ ĐỊNH GÌ ĐỂ CHIA SẺ HUY CÓ CHIA SẺ GÌ VỀ DỰ ĐỊNH CỦA HUY CHO NÓ CÓ HAY AI KHÔNG CHÚC MỪNG NHÀ TÀI TRỢ CHIA",
-      "corrected_text": "",
+      "corrected_text": "cũng muốn lắm nhưng mà chưa có dự định gì để chia sẻ huy có chia sẻ gì về dự định của huy cho nó có hay ai không chúc mừng nhà tài trợ chia",
       "notes": ""
     },
     {
@@ -993,8 +1001,9 @@
       "source": "Lam_sang_tao_tai_sao_phai_hieu_ve_NFT_-_Pham_Toan_Thang_CEOFounder_Cong_Troi_NFT_MAD_S3_EP02.mp4",
       "duration_s": 14.0,
       "pseudo_label": "CHUYỂN ĐỔI CHO TẶNG GIAO DỊCH GIỮA HAI NGƯỜI VỚI NHAU CÓ RẤT NHIỀU NGƯỜI CÓ MỘT CÁI ÁC CẢM NHẤT ĐỊNH VỚI CÁI CỤM TỪ NFT VÀ CÁI NGÀNH NTHY NÓI NÓI CHUNG THÌ EM THẤY GẦN ĐÂY BÊN NƯỚC NGOÀI CÓ VÀI CÁI DỰ ÁN ĐÓ BẮT ĐẦU KHÔNG CÓ DÙNG CHỮ NFT NỮA",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "chuyển đổi cho tặng giao dịch giữa hai người với nhau có rất nhiều người có một cái ác cảm nhất định với cái cụm từ nft và cái ngành nft nói nói chung thì em thấy gần đây bên nước ngoài có vài cái dự án đó bắt đầu không có dùng chữ nft nữa",
+      "notes": "tiếng anh, Tên viết tắt",
+      "corrected_at": "2026-10-15T20:23:40"
     },
     {
       "split": "train",
@@ -1003,8 +1012,8 @@
       "source": "Lam_sang_tao_tai_sao_phai_hieu_ve_NFT_-_Pham_Toan_Thang_CEOFounder_Cong_Troi_NFT_MAD_S3_EP02.mp4",
       "duration_s": 10.6,
       "pseudo_label": "EM NGHĨ MÌNH ĐÃ MẤT MỘT PHẦN NỬA NGƯỜI KHÁN GIẢ KHÔNG THỰC RA NẾU MÀ MÌNH ĐI SÂU THÌ NÓ KIỂU NÓ SIÊU SÂU LUÔN VÀ NÓ ĐÒI HỎI MỘT CÁI THỜI GIAN TÌM TÒI RẤT LÀ RẤT LÀ CLAZI",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "em nghĩ mình đã mất một phần nửa người khán giả không thực ra nếu mà mình đi sâu thì nó kiểu nó siêu sâu luôn và nó đòi hỏi một cái thời gian tìm tòi rất là rất là crazy",
+      "notes": "tiếng anh"
     },
     {
       "split": "train",
@@ -1013,8 +1022,8 @@
       "source": "Lam_sang_tao_tai_sao_phai_hieu_ve_NFT_-_Pham_Toan_Thang_CEOFounder_Cong_Troi_NFT_MAD_S3_EP02.mp4",
       "duration_s": 14.7,
       "pseudo_label": "KHÔNG AI TIN LÀ BẠN ĐÃ UỐNG CHO ĐƯỢC MỘT TRĂM TRIỆU BẠN CÓ THỂ LÀ CHỤP TẤM HÌNH BẠN ĐANG CẦM CÁI LY OK CŨNG CÓ THỂ LÀ LÀM MƯỢN LY ĐƯỢC BẠN NÓI LÀ TÔI CẦM CÁI BILL TÔI ĐÃ TRẢ TIỀN CHO CÁI ĐÓ OK VẪN CÓ THỂ PHÁT ĐƯỢC NHƯNG NẾU MÀ LÀ",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "không ai tin là bạn đã uống cho được một trăm triệu bạn có thể là chụp tấm hình bạn đang cầm cái ly ok cũng có thể là làm mượn ly được bạn nói là tôi cầm cái bill tôi đã trả tiền cho cái đó ok vẫn có thể phát được nhưng nếu mà là",
+      "notes": "tiếng anh"
     },
     {
       "split": "train",
@@ -1023,8 +1032,8 @@
       "source": "Lam_sang_tao_tai_sao_phai_hieu_ve_NFT_-_Pham_Toan_Thang_CEOFounder_Cong_Troi_NFT_MAD_S3_EP02.mp4",
       "duration_s": 15.0,
       "pseudo_label": "CÔNG NGHỆ V A VÀ THỨ HAI LÀ CÁI CÔNG NGHỆ PR NÓ ĐANG ĐƯỢC ĐẶT LÊN TRÊN CHẠY TRÊN CÁI NỀN TẢNG LÀ BLOCKCHAIN VÀ NÂNG CAO MỘT CHÚT NỮA LÀ VÍ DỤ AI CÓ CÁI NFT THÌ MỚI CÓ THỂ ĐI VÀO ĐƯỢC CÁI VAL GARY HOẶC V A CONCERT ĐÓ ĐỂ MÀ",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "công nghệ v a và thứ hai là cái công nghệ pr nó đang được đặt lên trên chạy trên cái nền tảng là blockchain và nâng cao một chút nữa là ví dụ ai có cái nft thì mới có thể đi vào được cái val gary hoặc v a concert đó để mà",
+      "notes": "tiếng anh, viết tắt"
     },
     {
       "split": "train",
@@ -1033,8 +1042,8 @@
       "source": "Lam_sang_tao_tai_sao_phai_hieu_ve_NFT_-_Pham_Toan_Thang_CEOFounder_Cong_Troi_NFT_MAD_S3_EP02.mp4",
       "duration_s": 10.1,
       "pseudo_label": "CÁI ĐIỀU ĐẦU TIÊN HẾT LÀ CÁI CÁI USER CỦA NFT VIỆT NAM THẬT RA KHÔNG NHIỀU NGƯỜI VIỆT NAM CHỈ THÍCH LÀ MUA THẤP BÁN CAO THÔI BÁN THẤP VẬY",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "cái điều đầu tiên hết là cái cái user của nft việt nam thật ra không nhiều người việt nam chỉ thích là mua thấp bán cao thôi đu cao bán thấp vậy ha",
+      "notes": "tiếng anh, tên riêng"
     },
     {
       "split": "train",
@@ -1043,8 +1052,8 @@
       "source": "Lam_sang_tao_tai_sao_phai_hieu_ve_NFT_-_Pham_Toan_Thang_CEOFounder_Cong_Troi_NFT_MAD_S3_EP02.mp4",
       "duration_s": 13.4,
       "pseudo_label": "THỜI GIAN ĐẦU THÌ VÌ THẬT SỰ LÀ DEP RA MỘT CÁI DỰ ÁN VỀ NFP PL VÀ ĐẶC BIỆT LÀ MÌNH TỰ DEP TRONG CÁI GIAI ĐOẠN SAU NÀY THÌ BẮT ĐẦU SỤC CỐT",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "thời gian đầu thì vì thật sự là dep ra một cái dự án về nfp pl và đặc biệt là mình tự dep trong cái giai đoạn sau này thì bắt đầu sục cốt",
+      "notes": "tiếng anh, viết tắt"
     },
     {
       "split": "train",
@@ -1053,8 +1062,8 @@
       "source": "Lam_sang_tao_tai_sao_phai_hieu_ve_NFT_-_Pham_Toan_Thang_CEOFounder_Cong_Troi_NFT_MAD_S3_EP02.mp4",
       "duration_s": 11.8,
       "pseudo_label": "SẴN ANH NHẤN ANH NÓI WEB BA ANH GIẢI THÍCH LUÔN WEB BA CHO NGƯỜI NHA OK MỌI NGƯỜI THÌ VẪN HAY NÓI LÀ Ở WEB BA WEB HAI NÓ KHÁC NHAU NHƯ THẾ NÀO THÌ",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "sẵn anh nhấn anh nói web ba anh giải thích luôn web ba cho người nha ok mọi người thì vẫn hay nói là ở web ba web hai nó khác nhau như thế nào thì",
+      "notes": "tiếng anh"
     },
     {
       "split": "train",
@@ -1063,7 +1072,7 @@
       "source": "Mat_mot_phan_ban_than_ke_tu_khi_co_gia_dinh_Len_Men_SS1_EP1.mp4",
       "duration_s": 12.4,
       "pseudo_label": "THƯỜNG LÀ UMPI HÚT THUỐC ĐIỀU NÀY NHỮNG TẤM HÌNH DƯỚI HAI MƯƠI TUỔI DẠ ĐIỀU ĐÓ LÀ TRÁI TRÂU RỒI CÓ NHỮNG ĐIỀU ĐÓ TỪNG HÚT THUỐC UỐNG BIA RỒI BÂY GIỜ SẼ LÀ MỘT CHƯƠNG TIẾP THEO CUỘC ĐỜI CỦA MỌI NGƯỜI NÀY",
-      "corrected_text": "",
+      "corrected_text": "thường là umpi hút thuốc điều này những tấm hình dưới hai mươi tuổi dạ điều đó là trẻ trâu rồi có những điều đó từng hút thuốc uống bia rồi bây giờ sẽ là một chương tiếp theo cuộc đời của mọi người này",
       "notes": ""
     },
     {
@@ -1073,7 +1082,7 @@
       "source": "Mat_mot_phan_ban_than_ke_tu_khi_co_gia_dinh_Len_Men_SS1_EP1.mp4",
       "duration_s": 11.6,
       "pseudo_label": "ĐIỀU GÌ KHIẾN ANH VĂN TỰ HÀO NHẤT TRONG BỨC ẢNH NÀY VÀ SIÊU NĂNG LỰC CỦA MÌNH SẼ LÀ GÌ THÌ CÁI GIAI ĐOẠN NÀY LÀ CÁI GIAI ĐOẠN KHOẢNG TẦM HAI KHÔNG HAI HAI CÁI GIAI ĐOẠN NÀY CÁI GIAI ĐOẠN MÀ TIM",
-      "corrected_text": "",
+      "corrected_text": "điều gì khiến anh văn tự hào nhất trong bức ảnh này và siêu năng lực của mình sẽ là gì thì cái giai đoạn này là cái giai đoạn khoảng tầm hai không hai hai cái giai đoạn này cái giai đoạn mà tim",
       "notes": ""
     },
     {
@@ -1083,8 +1092,8 @@
       "source": "Mat_mot_phan_ban_than_ke_tu_khi_co_gia_dinh_Len_Men_SS1_EP1.mp4",
       "duration_s": 12.4,
       "pseudo_label": "TEAM TECH CỦA VIỆC XEM LÀ ĐÔNG NHẤT THÌ HỒI ĐÓ GIỜ LÀ ANH CHƯA CÓ KINH NGHIỆM TRONG VAI TRÒ QUẢN LÝ MỘT CÁI TEAM LỚN NHƯ VẬY CHỈ CÓ ĐA SỐ HAI BA BẠN THÔI THÌ ANH NGHĨ ĐÓ CŨNG LÀ MỘT CÁI ĐIỀU ANH TỰ HÀO Ở ĐÂY",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "team tech của việc xem là đông nhất thì hồi đó giờ là anh chưa có kinh nghiệm trong vai trò quản lý một cái team lớn như vậy chỉ có đa số hai ba bạn thôi thì anh nghĩ đó cũng là một cái điều anh tự hào ở đây",
+      "notes": "tiếng anh"
     },
     {
       "split": "train",
@@ -1093,7 +1102,7 @@
       "source": "Mat_mot_phan_ban_than_ke_tu_khi_co_gia_dinh_Len_Men_SS1_EP1.mp4",
       "duration_s": 13.1,
       "pseudo_label": "MÌNH BẬT MẸ MÌNH LUÔN CHƯA BẬT CON MÌNH CHƯA BAO NHIÊU BẬT MẸ MÌNH VÀI LẦN TRONG KHOẢNG HAI MƯƠI NGÀY NAY RỒI NHỮNG NGÀY GẦN ĐÂY THÌ MÌNH BẮT ĐẦU KIỀM LẠI MÌNH THẤY NÓ LÀ",
-      "corrected_text": "",
+      "corrected_text": "mình bật mẹ mình luôn chưa bật con mình chưa bao nhiêu bật mẹ mình vài lần trong khoảng hai mươi ngày nay rồi những ngày gần đây thì mình bắt đầu kiềm lại mình thấy nó là",
       "notes": ""
     },
     {
@@ -1103,7 +1112,7 @@
       "source": "Mat_mot_phan_ban_than_ke_tu_khi_co_gia_dinh_Len_Men_SS1_EP1.mp4",
       "duration_s": 10.9,
       "pseudo_label": "KHÔNG MỘT CÁNH TAY NÀO GIƠ LÊN VỚI ANH THÌ NÓ KHÔNG MẤT ĐI ĐÂU CẢ KHI MÀ CÓ RỒI NÓ CHỈ CẤT ĐI THÔI MÌNH ƯU TIÊN NHỮNG CÁI KHÁC THÔI MÀ KHI CẦN THÌ NÓ VẪN SẼ VẪN SẼ Ở ĐÓ CÓ GIA ĐÌNH LÀ CÓ THÊM CHỨ KHÔNG CÓ MẤT ĐI",
-      "corrected_text": "",
+      "corrected_text": "không một cánh tay nào giơ lên với anh thì nó không mất đi đâu cả khi mà có rồi nó chỉ cất đi thôi mình ưu tiên những cái khác thôi mà khi cần thì nó vẫn sẽ vẫn sẽ ở đó có gia đình là có thêm chứ không có mất đi",
       "notes": ""
     },
     {
@@ -1113,7 +1122,7 @@
       "source": "Mat_mot_phan_ban_than_ke_tu_khi_co_gia_dinh_Len_Men_SS1_EP1.mp4",
       "duration_s": 15.0,
       "pseudo_label": "Ở NHÀ VÀ QUÁN XUYẾN GIA ĐÌNH VÀ GIỮ TIỀN NHÀ MÌNH MÌNH SUY NGHĨ MỘT CHÚT VỀ MẶT GIỚI HẠN KHI MÀ CÓ GIA ĐÌNH LIỆU MÌNH SẼ CÓ MỘT SỐ CÁI HÀNH ĐỘNG MÌNH MUỐN NHƯNG MÀ MÌNH KHÔNG THỂ LÀM ĐƯỢC HUY MUỐN RA NƯỚC NGOÀI HUY LÀM NHƯNG MÀ HUY ĐANG CÓ VỢ ĐANG CÓ CON",
-      "corrected_text": "",
+      "corrected_text": "ở nhà và quán xuyến gia đình và giữ tiền nhà mình mình suy nghĩ một chút về mặt giới hạn á khi mà có gia đình liệu mình sẽ có một số cái hành động mình muốn nhưng mà mình không thể làm được huy muốn ra nước ngoài huy làm nhưng mà huy đang có vợ đang có con",
       "notes": ""
     },
     {
@@ -1123,7 +1132,7 @@
       "source": "Mat_mot_phan_ban_than_ke_tu_khi_co_gia_dinh_Len_Men_SS1_EP1.mp4",
       "duration_s": 14.4,
       "pseudo_label": "VÀ VỢ CON HUY ĐANG MONG MUỐN MỘT CUỘC SỐNG ỔN ĐỊNH THÌ LIỆU ĐÓ CÓ PHẢI LÀ GIỚI HẠN ĐỐI VỚI NHỮNG CÁI VIỆC MÀ MÌNH ĐANG MONG MUỐN ĐỂ PHÁT TRIỂN NĂNG LỰC HAY KHÔNG VỀ BẢN CHẤT NẾU NHƯ MÌNH ĐANG KHÔNG CÓ VỢ CON MÌNH ĐANG CHỈ LÀ MÌNH THÔI THÌ MÌNH HOÀN TOÀN CÓ THỂ CÓ NHỮNG CÁI SỰ LỰA CHỌN",
-      "corrected_text": "",
+      "corrected_text": "và vợ con huy đang mong muốn một cuộc sống ổn định thì liệu đó có phải là giới hạn đối với những cái việc mà mình đang mong muốn để phát triển năng lực hay không về bản chất nếu như mình đang không có vợ con mình đang chỉ là mình thôi thì mình hoàn toàn có thể có những cái sự lựa chọn",
       "notes": ""
     },
     {
@@ -1133,7 +1142,7 @@
       "source": "May_do_theo_nhu_cau_khach_hang_-_Nguyen_Thai_Son_CEO_SmartOSC_VI_SS02_EP04.mp4",
       "duration_s": 14.1,
       "pseudo_label": "LÀ SẼ TẬP TRUNG TỐT HƠN KHI MÀ LÀM NHỮNG CÔNG VIỆC QUAN TRỌNG VÀO BUỔI SÁNG CHO NÊN LÀ ĐẾN BÂY GIỜ THÌ MÌNH CHUYỂN HOÀN TOÀN SANG LÀ CÁC CÔNG VIỆC QUAN TRỌNG THÌ CÓ LẼ LÀ LÀM VÀO BUỔI SÁNG VÀ DẬY SỚM ĐỂ LÀM ĐƯỢC VIỆC ĐẤY THÌ MUỐN DẬY SỚM THÌ CHẮC CHẮN LÀ KHÔNG THỂ NÀO THỨC KHUYA ĐƯỢC RỒI",
-      "corrected_text": "",
+      "corrected_text": "là sẽ tập trung tốt hơn khi mà làm những công việc quan trọng vào buổi sáng cho nên là đến bây giờ thì mình chuyển hoàn toàn sang là các công việc quan trọng thì có lẽ là làm vào buổi sáng và dậy sớm để làm được việc đấy thì muốn dậy sớm thì chắc chắn là không thể nào thức khuya được rồi",
       "notes": ""
     },
     {
@@ -1143,7 +1152,7 @@
       "source": "May_do_theo_nhu_cau_khach_hang_-_Nguyen_Thai_Son_CEO_SmartOSC_VI_SS02_EP04.mp4",
       "duration_s": 15.0,
       "pseudo_label": "THÌ NGƯỜI TA TẠI THỜI ĐIỂM ĐẤY THÌ NÓ CÒN KHÁ LÀ MỚI VÀ GẦN NHƯ LÀ CỨ HỌC LÀ CẢM THẤY ĐAM MÊ CỨ HỌC MẶC DÙ GÌ ĐÓ THÌ ĐỀU CẢM THẤY RẤT LÀ RẤT LÀ THÍCH THÚ VỚI NHỮNG GÌ MÀ MÌNH ĐƯỢC XEM MÌNH ĐƯỢC THẤY THÌ MÌNH LÀ MỘT CÁI NGƯỜI MÀ RẤT LÀ THÍCH LẬP TRÌNH HỒI ĐẤY THÌ CẢM GIÁC LÀ MÌNH",
-      "corrected_text": "",
+      "corrected_text": "thì người ta tại thời điểm đấy thì nó còn khá là mới và gần như là cứ học là cảm thấy đam mê cứ học mặc dù gì đó thì đều cảm thấy rất là rất là thích thú với những gì mà mình được xem mình được thấy thì mình là một cái người mà rất là thích lập trình hồi đấy thì cảm giác là mình",
       "notes": ""
     },
     {
@@ -1153,8 +1162,8 @@
       "source": "May_do_theo_nhu_cau_khach_hang_-_Nguyen_Thai_Son_CEO_SmartOSC_VI_SS02_EP04.mp4",
       "duration_s": 14.8,
       "pseudo_label": "THÌ TIẾP TỤC LÊN VÀ ĐẾN BÂY GIỜ THÌ NÓ LÀ CÂU CHUYỆN CỦA BẢY TRĂM NGƯỜI THÌ CÂU CHUYỆN BẢY TRĂM NGƯỜI BÂY GIỜ NÓ LẠI LÀ LÀM SAO ĐỂ CHÚNG TA CÓ THỂ LÊN ĐƯỢC MỘT NGHÌN NGƯỜI VÀ CÁI BÀI TOÁN TEAMING POINT TẠI THỜI ĐIỂM HIỆN TẠI THÌ MỌI NGƯỜI ĐỀU ĐANG NHÌN THẤY LÀ LÀM SAO CHÚNG TA CÓ THỂ GIẢI QUYẾT ĐƯỢC NHỮNG CÁI THÁCH THỨC",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "thì tiếp tục lên và đến bây giờ thì nó là câu chuyện của bảy trăm người thì câu chuyện bảy trăm người bây giờ nó lại là làm sao để chúng ta có thể lên được một nghìn người và cái bài toán teaming point tại thời điểm hiện tại thì mọi người đều đang nhìn thấy là làm sao chúng ta có thể giải quyết được những cái thách thức",
+      "notes": "tiếng anh"
     },
     {
       "split": "train",
@@ -1163,7 +1172,7 @@
       "source": "May_do_theo_nhu_cau_khach_hang_-_Nguyen_Thai_Son_CEO_SmartOSC_VI_SS02_EP04.mp4",
       "duration_s": 13.5,
       "pseudo_label": "TÁM NGƯỜI THÌ THÔI HỌ VIẾT NHỮNG CÁI NỘI DUNG EMAIL NÓ RẤT LÀ GAY GẮT THÔI ĐỪNG BAO GIỜ LIÊN HỆ VỚI CHÚNG TÔI NỮA CHÚNG TÔI KHÔNG QUAN TÂM ĐẾN DỊCH VỤ NÀY CHỈ CÓ VÀI NGƯỜI LÀ HỌ CÓ LỊCH SỰ",
-      "corrected_text": "",
+      "corrected_text": "tám người thì thôi họ viết những cái nội dung email nó rất là gay gắt thôi đừng bao giờ liên hệ với chúng tôi nữa chúng tôi không quan tâm đến dịch vụ này chỉ có vài người là họ có lịch sự",
       "notes": ""
     },
     {
@@ -1173,8 +1182,9 @@
       "source": "May_do_theo_nhu_cau_khach_hang_-_Nguyen_Thai_Son_CEO_SmartOSC_VI_SS02_EP04.mp4",
       "duration_s": 15.0,
       "pseudo_label": "CHẮC CHẮN LÀ CÓ Ở TRƯỚC MƯỜI LĂM NĂM THÌ KHÔNG THỂ NÀO MÀ KHÔNG SAI LẦM ĐƯỢC MẶC DÙ LÀ MÌNH CŨNG KHÔNG MONG MUỐN THÌ BỐI CẢNH THÌ NÓ CŨNG CÓ KHÁ LÀ KHÁ LÀ KHÁC NHAU VÀ CÓ MỘT VÀI TRƯỜNG HỢP HƠI ĐÁNG TIẾC THÌ MÌNH NGHĨ LÀ CÁI BỐI CẢNH ĐẦU TIÊN ĐẤY LÀ KHI MÀ MÌNH TUYỂN DỤNG",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "chắc chắn là có ở trước mười lăm năm thì không thể nào mà không sai lầm được mặc dù là mình cũng không mong muốn thì bối cảnh thì nó cũng có khá là khá là khác nhau và có một vài trường hợp hơi đáng tiếc thì mình nghĩ là cái bối cảnh đầu tiên đấy là khi mà mình tuyển dụng",
+      "notes": "",
+      "corrected_at": "2026-10-15T14:22:42"
     },
     {
       "split": "train",
@@ -1183,8 +1193,9 @@
       "source": "May_do_theo_nhu_cau_khach_hang_-_Nguyen_Thai_Son_CEO_SmartOSC_VI_SS02_EP04.mp4",
       "duration_s": 11.9,
       "pseudo_label": "CÁI NÀY ĐÚNG LÀ MỘT TRONG NHỮNG THÁCH THỨC CỦA MỘT TỔ CHỨC LỚN ẤY THÌ MÌNH NGHĨ RẰNG LÀ CÁI ĐẦU TIÊN ĐẤY LÀ CÁI QUÁ TRÌNH ON BOARDING ĐÚNG KHÔNG KHI MÀ MÌNH ĐƯA MỘT CÁI NGƯỜI MỚI VÀO TỔ CHỨC THÌ MÌNH LÀM NHỮNG HOẠT ĐỘNG GÌ",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "cái này đúng là một trong những thách thức của một tổ chức lớn ấy thì mình nghĩ rằng là cái đầu tiên đấy là cái quá trình on boarding đúng không khi mà mình đưa một cái người mới vào tổ chức thì mình làm những hoạt động gì",
+      "notes": "tiếng Anh",
+      "corrected_at": "2026-10-15T14:22:55"
     },
     {
       "split": "validation",
@@ -1193,8 +1204,9 @@
       "source": "May_do_theo_nhu_cau_khach_hang_-_Nguyen_Thai_Son_CEO_SmartOSC_VI_SS02_EP04.mp4",
       "duration_s": 15.0,
       "pseudo_label": "ĐẤY CÁI ĐỘI THỨ HAI MÀ CHÚNG TA NÓI ĐẾN ĐẤY LÀ CÁI ĐỘI GỌI LÀ ACCOUMANATOR HAY LÀ MỘT SỐ CHỖ KHÁC THÌ GỌI LÀ CASTROM SẠC SEX VÂN VÂN LÀ ĐỂ MÀ GIÚP KHÁCH HÀNG HỌ CÓ THỂ THÀNH CÔNG KHI MÀ DÙNG NHỮNG CÁI SẢN PHẨM DỊCH VỤ CỦA MÌNH THÌ",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "đấy cái đội thứ hai mà chúng ta nói đến đấy là cái đội gọi là accoumanator hay là một số chỗ khác thì gọi là castrom sạc sex vân vân là để mà giúp khách hàng họ có thể thành công khi mà dùng những cái sản phẩm dịch vụ của mình thì",
+      "notes": "tiếng Anh",
+      "corrected_at": "2026-10-15T14:23:12"
     },
     {
       "split": "train",
@@ -1203,8 +1215,9 @@
       "source": "Minh_cham_con_con_ai_cham_minh_-_Lan_Phuong_Khang_Thuong_SS2_EP3.mp4",
       "duration_s": 13.9,
       "pseudo_label": "CHỌN TẤM NÀY VÀ SAU TIN VUI ĐÓ THÌ ĐÔI KHI CÓ NHỮNG CÁI CUỘC HÀNH TRÌNH KHÔNG CÓ DỄ DÀNG LẮM CHỈ CÓ ỐM NGHẸN GIAI ĐOẠN ĐÓ CÓ PHƯƠNG ỐM NGHÉN BA THÁNG ĐẦU THÌ RẤT LÀ NẶNG SAU ĐÓ THÌ ỐM NGHÉN CŨNG PHẢI ĐẾN SÁU BẢY THÁNG THÌ LÀ PHƯƠNG VẪN NÔN",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "chọn tập này và sau tin vui đó thì đôi khi có những cái cuộc hành trình không có dễ dàng lắm chỉ có ốm nghẹn giai đoạn đó có phương ốm nghén ba tháng đầu thì rất là nặng sau đó thì ốm nghén cũng phải đến sáu bảy tháng thì là phương vẫn nôn",
+      "notes": "",
+      "corrected_at": "2026-10-15T14:24:16"
     },
     {
       "split": "train",
@@ -1213,8 +1226,9 @@
       "source": "Minh_cham_con_con_ai_cham_minh_-_Lan_Phuong_Khang_Thuong_SS2_EP3.mp4",
       "duration_s": 12.6,
       "pseudo_label": "KHÁNG THƯƠNG LÀ MỘT CHƯƠNG TRÌNH NƠI KHÁCH MỜI CHIA SẺ VỀ CÁCH HỌ ĐI QUA NHỮNG TỔN THƯƠNG VÀ HỌA SĨ SẼ LẮNG NGHE ĐỂ VẼ LẠI CÂU CHUYỆN ĐÓ GIÚP KHÁCH MỜI KHÁM PHÁ SỨC MẠNH BÊN TRONG VÀ TỰ TIN HƠN TRƯỚC NHỮNG THỬ THÁCH PHÍA TRƯỚC",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "kháng thương là một chương trình nơi khách mời chia sẻ về cách họ đi qua những tổn thương và họa sĩ sẽ lắng nghe để vẽ lại câu chuyện đó giúp khách mời khám phá sức mạnh bên trong và tự tin hơn trước những thử thách phía trước",
+      "notes": "",
+      "corrected_at": "2026-10-15T14:24:34"
     },
     {
       "split": "train",
@@ -1223,8 +1237,9 @@
       "source": "Minh_cham_con_con_ai_cham_minh_-_Lan_Phuong_Khang_Thuong_SS2_EP3.mp4",
       "duration_s": 10.9,
       "pseudo_label": "BA RƯỠI SAU ĐÓ THÌ MAKEUP LÚC BỐN GIỜ SAU ĐÓ TÔI LÊN MÁY BAY VÀ BAY CHUYẾN BAY BẢY GIỜ VÀ CUỐI CÙNG THÌ CŨNG ĐÃ ĐẾN ĐƯỢC ĐÂY NHƯNG MÀ CÁI CẢM GIÁC MÀ PHƯƠNG NHỚ RÕ NHẤT LÀ KHI MÀ PHƯƠNG",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "ba rưỡi sau đó thì makeup lúc bốn giờ sau đó tôi lên máy bay và bay chuyến bay bảy giờ và cuối cùng thì cũng đã đến được đây nhưng mà cái cảm giác mà phương nhớ rõ nhất là khi mà phương",
+      "notes": "tiếng Anh, tên riêng",
+      "corrected_at": "2026-10-15T14:29:49"
     },
     {
       "split": "train",
@@ -1233,8 +1248,9 @@
       "source": "Minh_cham_con_con_ai_cham_minh_-_Lan_Phuong_Khang_Thuong_SS2_EP3.mp4",
       "duration_s": 14.8,
       "pseudo_label": "LÁI XE RA KHỎI NHÀ TỪ NHÀ ĐI ĐẾN SÂN BAY TỰ NHIÊN HƯƠNG CẢM THẤY MỘT CÁI NIỀM VUI NÓ KHÓ TẢ HƯƠNG KHÔNG BIẾT TẠI SAO CẢM THẤY RẤT LÀ THOẢI MÁI RẤT LÀ TỰ DO VÀ CẢM THẤY RẤT LÀ HỨNG KHỞI CÁI CẢM GIÁC TỰ NHIÊN MÌNH LÁI XE MÌNH",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "lái xe ra khỏi nhà từ nhà đi đến sân bay tự nhiên hương cảm thấy một cái niềm vui nó khó tả hương không biết tại sao cảm thấy rất là thoải mái rất là tự do và cảm thấy rất là hứng khởi cái cảm giác tự nhiên mình lái xe mình",
+      "notes": "tên riêng",
+      "corrected_at": "2026-10-15T14:30:05"
     },
     {
       "split": "train",
@@ -1243,8 +1259,9 @@
       "source": "Minh_cham_con_con_ai_cham_minh_-_Lan_Phuong_Khang_Thuong_SS2_EP3.mp4",
       "duration_s": 14.8,
       "pseudo_label": "TRỞ LẠI LÀ CHÍNH MÌNH NHIỀU HƠN VÌ KHI MÀ MÌNH TRỞ LẠI LÀ CHÍNH MÌNH ĐƯỢC THÌ LÚC ĐÓ MÌNH SẼ CÓ ĐẦY ĐỦ VỀ TRẢI NGHIỆM VỀ SỰ KHÔN NGOAN VỀ SỰ PHÂN TÍCH VỀ SỰ PHÂN ĐỊNH VỀ CÁCH NHÌN NHẬN CỦA CUỘC SỐNG NHÌN NHẬN VỀ CON NGƯỜI NHÌN NHẬN VỀ MỌI THỨ",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "trở lại là chính mình nhiều hơn vì khi mà mình trở lại là chính mình được thì lúc đó mình sẽ có đầy đủ về trải nghiệm về sự khôn ngoan về sự phân tích về sự phân định về cách nhìn nhận của cuộc sống nhìn nhận về con người nhìn nhận về mọi thứ",
+      "notes": "",
+      "corrected_at": "2026-10-15T14:30:45"
     },
     {
       "split": "train",
@@ -1253,8 +1270,9 @@
       "source": "Minh_cham_con_con_ai_cham_minh_-_Lan_Phuong_Khang_Thuong_SS2_EP3.mp4",
       "duration_s": 14.0,
       "pseudo_label": "ÍT NHIỀU MỘT NGƯỜI HỌA SĨ MÀ MỚI CHỈ GẶP MÌNH ĐÚNG MỘT TIẾNG RƯỠI LẠI VẼ RA ĐƯỢC MỘT BỨC TRANH MÀ MIÊU TẢ ĐƯỢC ÍT NHIỀU LÀ CON NGƯỜI CỦA MÌNH THÌ ĐÓ LÀ MỘT SỰ CẢM ĐỘNG RẤT LÀ LỚN LÚC NÀY CHỊ SẼ MUỐN ĐẶT TÊN CHO TÁC PHẨM NÀY LÀ GÌ",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "ít nhiều một người họa sĩ mà mới chỉ gặp mình đúng một tiếng rưỡi lại vẽ ra được một bức tranh mà miêu tả được ít nhiều là con người của mình thì đó là một sự cảm động rất là lớn lúc này chị sẽ muốn đặt tên cho tác phẩm này là gì",
+      "notes": "",
+      "corrected_at": "2026-10-15T14:31:09"
     },
     {
       "split": "validation",
@@ -1263,8 +1281,9 @@
       "source": "Minh_cham_con_con_ai_cham_minh_-_Lan_Phuong_Khang_Thuong_SS2_EP3.mp4",
       "duration_s": 11.2,
       "pseudo_label": "ĐIỂM NÀO SẼ CÓ MỘT CÁI GHẾ ĐỂ CHO MÌNH NGHỈ NGƠI NGHĨA LÀ ĐÔI KHI MÌNH CHỈ CẦN MỘT CÁI GHẾ ĐỂ CHO MÌNH NGHỈ MÌNH CÓ THỂ NGỒI XUỐNG MÌNH NGHỈ MÌNH NGẮM NGHÍA XUNG QUANH NHƯNG MÀ MÌNH CŨNG KHÔNG CÓ Ở BÊN TRONG MÌNH VẪN LÀ MỘT CÁI CẢM GIÁC NÓ KHÁ LÀ",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "điểm nào sẽ có một cái ghế để cho mình nghỉ ngơi nghĩa là đôi khi mình chỉ cần một cái ghế để cho mình nghỉ mình có thể ngồi xuống mình nghỉ mình ngắm nghía xung quanh nhưng mà mình cũng không có ở bên trong mình vẫn là một cái cảm giác nó khá là",
+      "notes": "",
+      "corrected_at": "2026-10-15T14:40:33"
     },
     {
       "split": "train",
@@ -1273,8 +1292,9 @@
       "source": "Minh_luon_xuc_dong_truoc_khi_khan_gia_xuc_dong-_Dao_dienTran_Thanh_Huy_Phan_Manh_Quynh_Have_A_Sip.mp4",
       "duration_s": 10.5,
       "pseudo_label": "KIỂU VẪN NGON NGÒM CHÚT ĐÓ NHƯNG MÌNH PHA ÍT LẮM MÌNH PHA ÍT VỚI CHÚT SỮA VỚI CÁI ĐƯỜNG MÌNH UỐNG RẤT ÍT THÌ TỰ NHIÊN THẤY NÓ RẤT LÀ TRONG VEO VÀ MÌNH THẤY Ở ĐÂY ĐÂY LÀ CÁI THỨC UỐNG HÓA RA LÀ NGƯỜI TA THÍCH VÌ NÓ NHƯ THẾ NÀY",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "kiểu vẫn ngon ngòm chút đó nhưng mình pha ít lắm mình pha ít với chút sữa với cái đường mình uống rất ít thì tự nhiên thấy nó rất là trong veo và mình thấy ở đây đây là cái thức uống hóa ra là người ta thích vì nó như thế này",
+      "notes": "",
+      "corrected_at": "2026-10-15T14:41:08"
     },
     {
       "split": "train",
@@ -1283,8 +1303,9 @@
       "source": "Minh_luon_xuc_dong_truoc_khi_khan_gia_xuc_dong-_Dao_dienTran_Thanh_Huy_Phan_Manh_Quynh_Have_A_Sip.mp4",
       "duration_s": 15.0,
       "pseudo_label": "CÁI ĐIỀU NÀY LÀ CÁI ĐIỀU MÀ MÀ NÓ KHÁC VỚI LẠI MỘT CÁI MỘT CÁI MV SAU KHI MÀ MV SAU LÀ QUỲNH LÚC MÀ QUỲNH RA MỘT CÁI BẢNG MASTER MÌNH KHÔNG CHỈNH SỬA MÌNH LÀM Y CHANG NHƯ VẬY LUÔN MÌNH KHÔNG CẮT BỚT BẤT KỲ MỘT CÁI GÌ TẠI VÌ CÁI ĐÓ LÀ MV NHƯNG MÀ LÀ PHIM THÌ NÓ CẦN CÁI CẢM XÚC",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "cái điều này là cái điều mà mà nó khác với lại một cái một cái mv sau khi mà mv sau là quỳnh lúc mà quỳnh ra một cái bảng master mình không chỉnh sửa mình làm y chang như vậy luôn mình không cắt bớt bất kỳ một cái gì tại vì cái đó là mv nhưng mà là phim thì nó cần cái cảm xúc",
+      "notes": "Tiếng anh, viết tắt, tên riêng",
+      "corrected_at": "2026-10-15T14:41:49"
     },
     {
       "split": "train",
@@ -1293,8 +1314,9 @@
       "source": "Minh_luon_xuc_dong_truoc_khi_khan_gia_xuc_dong-_Dao_dienTran_Thanh_Huy_Phan_Manh_Quynh_Have_A_Sip.mp4",
       "duration_s": 12.3,
       "pseudo_label": "VÀ VỚI CÁI PHIM MÌNH MÌNH NÊN ĐÔI KHI RẰNG BỞI VÌ MÌNH CŨNG RẤT LÀ CẮN RỨT LÀ MỌI NGƯỜI ĐÃ LÀM RẤT LÀ TỐT RỒI NHƯNG MÀ MÌNH PHẢI HY SINH MÌNH PHẢI HY SINH HY SINH CÁI GÌ THÌ MÌNH PHẢI CHỌN",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "và với cái phim mình mình nên đôi khi rằng bởi vì mình cũng rất là cắn rứt là mọi người đã làm rất là tốt rồi nhưng mà mình phải hy sinh mình phải hy sinh hy sinh cái gì thì mình phải chọn",
+      "notes": "",
+      "corrected_at": "2026-10-15T14:42:20"
     },
     {
       "split": "train",
@@ -1303,8 +1325,9 @@
       "source": "Minh_luon_xuc_dong_truoc_khi_khan_gia_xuc_dong-_Dao_dienTran_Thanh_Huy_Phan_Manh_Quynh_Have_A_Sip.mp4",
       "duration_s": 12.2,
       "pseudo_label": "NHỮNG NGƯỜI BẠN CỦA MÌNH ĐI NƯỚC NGOÀI HỌ CŨNG NHƯ THẾ THÔI HỌ CŨNG RẤT LÀ ĐẮN ĐO CÓ VỀ KHÔNG VÀ MÌNH TƯỞNG TƯỢNG ĐƯỢC CHO NÊN HUY NÓI CÁI LÀ MÌNH XÂY DỰNG BAN ĐẦU LÀ VỚI KHÔNG KHÍ TRẦM TƯ",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "những người bạn của mình đi nước ngoài họ cũng như thế thôi họ cũng rất là đắn đo có về không và mình tưởng tượng được cho nên huy nói cái là mình xây dựng ban đầu là với không khí trầm tư",
+      "notes": "Tên riêng",
+      "corrected_at": "2026-10-15T14:42:47"
     },
     {
       "split": "train",
@@ -1313,8 +1336,9 @@
       "source": "Minh_luon_xuc_dong_truoc_khi_khan_gia_xuc_dong-_Dao_dienTran_Thanh_Huy_Phan_Manh_Quynh_Have_A_Sip.mp4",
       "duration_s": 14.2,
       "pseudo_label": "MÌNH SẼ PHẢI CỐ GẮNG DỒN HẾT CÁI SỰ TẬP TRUNG TƯỞNG TƯỢNG RA ĐỂ TỪ ĐÓ SẼ NUÔI TỰ ĐÓ SẼ TẠO RA CẢM HỨNG CHỨ KHÔNG PHẢI LÀ LÚC NÀO MÌNH CŨNG SẴN SÀNG ỬNG QUÁ UỐNG SÁNG NÀY QUÁ PHẢI NGỒI VÀO NHẠC LÀ HỨNG LIỀN KHÔNG CÓ ĐÔI KHI NGỒI VÔ",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "mình sẽ phải cố gắng dồn hết cái sự tập trung tưởng tượng ra để từ đó sẽ nuôi tự đó sẽ tạo ra cảm hứng chứ không phải là lúc nào mình cũng sẵn sàng ừ cũng nên hứng uống quá uống sáng này quá phải ngồi vào nhạc là hứng liền không có đôi khi ngồi vô",
+      "notes": "Khó nghe",
+      "corrected_at": "2026-10-15T14:46:44"
     },
     {
       "split": "train",
@@ -1323,8 +1347,9 @@
       "source": "Minh_luon_xuc_dong_truoc_khi_khan_gia_xuc_dong-_Dao_dienTran_Thanh_Huy_Phan_Manh_Quynh_Have_A_Sip.mp4",
       "duration_s": 12.6,
       "pseudo_label": "MÌNH NGHĨ LÀ CŨNG CÓ THỂ LÀ DỰ ÁN NÓ BẮT ĐẦU CHÀY ĐƯỢC RỒI VÀ QUỲNH THẤY ĐANG KHÁ LÀ VUI RỒI SANG NĂM SẼ CÓ DỰ ĐỊNH VỀ ALBUM RỒI CON SEARCH CÁC THỨ CÁC THỨ",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "mình nghĩ là cũng có thể là dự án nó bắt đầu chảy được rồi và quỳnh thấy đang khá là vui rồi sang năm sẽ có dự định về album rồi con search các thứ các thứ",
+      "notes": "tiếng Anh, tên riêng",
+      "corrected_at": "2026-10-15T14:47:15"
     },
     {
       "split": "validation",
@@ -1333,8 +1358,9 @@
       "source": "Minh_luon_xuc_dong_truoc_khi_khan_gia_xuc_dong-_Dao_dienTran_Thanh_Huy_Phan_Manh_Quynh_Have_A_Sip.mp4",
       "duration_s": 10.7,
       "pseudo_label": "THÌ TỪ CÁI KHOẢNG THỜI GIAN HAI NĂM TRƯỚC LÚC MÀ PHIM RẠP NÓ CHIẾU CHO TỚI BÂY GIỜ NÓ CŨNG KHÔNG CÓ DÁM VỀ THÌ CÓ RẤT NHIỀU VẤN ĐỀ MÀ NÓ KHÔNG THỂ VỀ ĐƯỢC THÌ NÓ NÓ MÌNH CŨNG HIỂU TRONG CÁI TÂM TRẠNG CỦA MỌI NGƯỜI",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "thì từ cái khoảng thời gian hai năm trước lúc mà phim rạp nó chiếu cho tới bây giờ nó cũng không có dám về thì có rất nhiều vấn đề mà nó không thể về được thì nó nó mình cũng hiểu trong cái tâm trạng của mọi người",
+      "notes": "",
+      "corrected_at": "2026-10-15T14:47:51"
     },
     {
       "split": "train",
@@ -1343,8 +1369,9 @@
       "source": "Tran_trong_nhung_thang_tien_nho_-_Guy_Truong_Thuy_Minh_Hao_Tran_Dumbbel_Ep2.mp4",
       "duration_s": 12.9,
       "pseudo_label": "XIN MỜI CÁC BẠN ĐẾN VỚI DUBBE TẠ TRONG TIẾNG ANH GỌI LÀ DUM BEO NHƯNG MÀ CHÚNG TÔI CŨNG RẤT LÀ MONG LÀ QUA VIỆC GẶP TẠ CHÚNG TÔI SẼ TRỞ NÊN THÔNG MINH HƠN VÀ ĐẤY LÀ TẤT CẢ NHỮNG GÌ MÀ CHÚNG TA SẼ TRÒ CHUYỆN TRONG DUM BEO VÀ CHÚNG TA SẼ ĐẾN VỚI CHỦ ĐỀ THỨ HAI",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "xin mừng các bạn đến với dubbe tạ trong tiếng anh gọi là dum beo nhưng mà chúng tôi cũng rất là mong là qua việc gặp tạ chúng tôi sẽ trở nên thông minh hơn và đấy là tất cả những gì mà chúng ta sẽ trò chuyện trong dum beo và chúng ta sẽ đến với chủ đề thứ hai",
+      "notes": "Tiếng anh",
+      "corrected_at": "2026-10-15T14:48:38"
     },
     {
       "split": "train",
@@ -1353,8 +1380,9 @@
       "source": "Tran_trong_nhung_thang_tien_nho_-_Guy_Truong_Thuy_Minh_Hao_Tran_Dumbbel_Ep2.mp4",
       "duration_s": 14.4,
       "pseudo_label": "THÌ NGHĨ LÀ KHÔNG PHẢI LÀ VỀ MATIVATION TIẾNG VIỆT MÌNH NÓI LÀ ĐỘNG ĐỘNG LỰC Á KHÔNG PHẢI ĐỘNG LỰC THEO NGHĨA LÀ CÁI PHẦN MÀ DISCRIN HƠN LÀ PHẢI KỶ LUẬT LÀ PHẢI XÁCH ĐÍT LÔ ĐI TẬP CÓ MẤY LẦN GHI LỚP TỪ",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "thì nghĩ là không phải là về mativation tiếng việt mình nói là động động lực á không phải động lực theo nghĩa là cái phần mà discipline hơn là phải kỷ luật là phải xách đít lô đi tập có mấy lần ghi lớp từ",
+      "notes": "Tiếng anh",
+      "corrected_at": "2026-10-15T14:49:28"
     },
     {
       "split": "train",
@@ -1363,8 +1391,9 @@
       "source": "Tran_trong_nhung_thang_tien_nho_-_Guy_Truong_Thuy_Minh_Hao_Tran_Dumbbel_Ep2.mp4",
       "duration_s": 12.6,
       "pseudo_label": "LÀ MÌNH CŨNG BẢO KIỂU NÂNG TẠ BAO NHIÊU NHÁ TỨC LÀ MÌNH CŨNG MUỐN NHÌN CÁI MỤC TIÊU CỦA NGƯỜI TA ĐỂ TRỞ THÀNH CÁI ĐỘNG LỰC CHO MÌNH LÀM VIỆC Ở CÔNG TY CŨNG THẾ CHỨ MÌNH CŨNG NHÌN THẤY TOP NĂM CÔNG TY MEDIA Ở VIỆT NAM ẤY",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "là mình cũng bảo kiểu nâng tạ bao nhiêu nhá tức là mình cũng muốn nhìn cái mục tiêu của người ta để trở thành cái động lực cho mình làm việc ở công ty cũng thế chứ mình cũng nhìn thấy top năm công ty media ở việt nam ấy",
+      "notes": "tiếng anh",
+      "corrected_at": "2026-10-15T14:50:12"
     },
     {
       "split": "train",
@@ -1373,8 +1402,9 @@
       "source": "Tran_trong_nhung_thang_tien_nho_-_Guy_Truong_Thuy_Minh_Hao_Tran_Dumbbel_Ep2.mp4",
       "duration_s": 13.1,
       "pseudo_label": "XONG RỒI Ồ CÁI GÌ SAI CÁI GÌ SAI NHÍCH LÊN MỘT TÍ CŨNG ĐƯỢC BẰNG CÁI GÌ ĐẤY THÊM BÀI Ư THÊM CÁI GÌ ĐẤY ĐI ĐỂ MÀ NHÌN THÌ NÓ LÊN ĐẤY THÌ THEO DÕI RẤT LÀ KỸ CÁI BIỂN CÁI BIỂU ĐỒ ĐẤY ĐỂ BIẾT LÀ À OK",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "xong rồi ồ cái gì sai cái gì sai nhích lên một tí cũng được bằng cái gì đấy thêm bài ư thêm cái gì đấy đi để mà nhìn thì nó lên đấy thì theo dõi rất là kỹ cái biển cái biểu đồ đấy để biết là à ok",
+      "notes": "",
+      "corrected_at": "2026-10-15T14:50:26"
     },
     {
       "split": "train",
@@ -1383,8 +1413,9 @@
       "source": "Tran_trong_nhung_thang_tien_nho_-_Guy_Truong_Thuy_Minh_Hao_Tran_Dumbbel_Ep2.mp4",
       "duration_s": 11.5,
       "pseudo_label": "MỘT CÁI VIDEO CỨ NHƯ THẾ TỪ TỪ THÌ TỰ DƯNG LÀ MÌNH SẼ PHÁT TRIỂN MODEL MORTICONG OF CANO",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "một cái video cứ như thế từ từ thì tự dưng là mình sẽ phát triển model morticong of cano",
+      "notes": "tiếng anh",
+      "corrected_at": "2026-10-15T14:50:43"
     },
     {
       "split": "train",
@@ -1393,8 +1424,9 @@
       "source": "Tran_trong_nhung_thang_tien_nho_-_Guy_Truong_Thuy_Minh_Hao_Tran_Dumbbel_Ep2.mp4",
       "duration_s": 14.3,
       "pseudo_label": "VÀ MÌNH PHẢI BIẾT LÀ CÁI CÁI STEP NHỎ MÌNH SẼ LÀM MÀ MÌNH CŨNG SẼ ĐẠT TỚI NÓ MÀ TỚI NÓ KHÔNG THÌ MÌNH CŨNG PHẢI YÊU THƯƠNG CÁI GÌ ĐÓ TRONG CÁI THỜI GIAN MÌNH LÀM CHẬM KHÔNG PHẢI LÀM CHẬM MÀ LÀM HOÀI THÌ NÓ HAY ĐÂU THÌ LÀM CHẬM MÀ PHẢI YÊU THƯƠNG NÓ HOÀI",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "và mình phải biết là cái cái step nhỏ mình sẽ làm mà mình cũng sẽ đạt tới nó mà tới nó không thì mình cũng phải yêu thương cái gì đó trong cái thời gian mình làm chậm không phải làm chậm mà làm hoài thì nó hay đâu thì làm chậm mà phải yêu thương nó hoài",
+      "notes": "tiếng anh",
+      "corrected_at": "2026-10-15T14:50:59"
     },
     {
       "split": "validation",
@@ -1403,8 +1435,9 @@
       "source": "Tran_trong_nhung_thang_tien_nho_-_Guy_Truong_Thuy_Minh_Hao_Tran_Dumbbel_Ep2.mp4",
       "duration_s": 11.5,
       "pseudo_label": "KIỂU MAX EXCILL ĐỂ KHÔNG ĐI ẤY NHƯNG MÀ BÂY GIỜ MÌNH BIẾT CÁI PHẦN THƯỞNG CỦA MÌNH KHI MÀ MÌNH TẬP XONG TỨC LÀ TRONG NÃO MÌNH NÓ TỰ TIẾT RA NHỮNG CÁI HORMONES VÀ MÌNH CẢM THẤY LÀ KIỂU SAU ĐẤY MÌNH RẤT LÀ",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "kiểu max excill để không đi ấy nhưng mà bây giờ mình biết cái phần thưởng của mình khi mà mình tập xong tức là trong não mình nó tự tiết ra những cái hormones và mình cảm thấy là kiểu sau đấy mình rất là",
+      "notes": "tiếng anh",
+      "corrected_at": "2026-10-15T14:51:14"
     },
     {
       "split": "train",
@@ -1413,8 +1446,9 @@
       "source": "Tren_cang_thang_duoi_sao_cang_cung_-_Nha_tri_lieu_tam_ly_Bui_Thanh_Thuy_Coi_Mo_S4_Ep2.mp4",
       "duration_s": 13.6,
       "pseudo_label": "NẾU MÌNH NÓI VỀ MỘT CÁI CẤP ĐỘ KHOA HỌC Á THÌ SẼ CẦN CÓ NHỮNG CÁI NGHIÊN CỨU KÉO DÀI THỜI GIAN VÀ ĐÚNG CHUẨN ĐỂ RA MỘT CÁI KẾT LUẬN LÀ CÓ STRESS HAY NHIỀU HƠN HAY KHÔNG VÌ VÌ NẾU MÌNH CHỈ TUYÊN BỐ KHÔNG THÌ NÓ CHỈ LÀ MỘT CÁI LỜI TUYÊN BỐ THÔI",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "nếu mình nói về một cái cấp độ khoa học á thì sẽ cần có những cái nghiên cứu kéo dài thời gian và đúng chuẩn để ra một cái kết luận là có stress hay nhiều hơn hay không vì vì nếu mình chỉ tuyên bố không thì nó chỉ là một cái lời tuyên bố thôi",
+      "notes": "tiếng anh",
+      "corrected_at": "2026-10-15T14:51:57"
     },
     {
       "split": "train",
@@ -1423,8 +1457,9 @@
       "source": "Tren_cang_thang_duoi_sao_cang_cung_-_Nha_tri_lieu_tam_ly_Bui_Thanh_Thuy_Coi_Mo_S4_Ep2.mp4",
       "duration_s": 15.0,
       "pseudo_label": "BẠN NỮ BẠN SẼ SẼ STRESS VÀ KHI STRESS THÌ ĐÂU CÓ HAM MUỐN CÓ HAM MUỐN THÌ LÀM SAO MÀ CẢM THẤY THỎA MÃN HAY LÀ SOI TRÀO GÌ ĐƯỢC NÓ TRỞ THÀNH MỘT CÁI CHUYỆN PHẢI LÀM Á KHI MÀ BẠN NỮ ĐAU HOẶC LÀ KHÔNG CÓ CẢM THẤY THOẢI MÁI THÌ BẠN NAM BẠN",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "bạn nữ bạn sẽ sẽ stress và khi stress thì đâu có ham muốn có ham muốn thì làm sao mà cảm thấy thỏa mãn hay là soi trào gì được nó trở thành một cái chuyện phải làm á khi mà bạn nữ đau hoặc là không có cảm thấy thoải mái thì bạn nam bạn",
+      "notes": "tiếng anh",
+      "corrected_at": "2026-10-15T14:52:14"
     },
     {
       "split": "train",
@@ -1433,8 +1468,9 @@
       "source": "Tren_cang_thang_duoi_sao_cang_cung_-_Nha_tri_lieu_tam_ly_Bui_Thanh_Thuy_Coi_Mo_S4_Ep2.mp4",
       "duration_s": 10.8,
       "pseudo_label": "CÁI CÂU CÁI CÂU CHUYỆN MÀ GIẢ SỬ CÁC BẠN NỮ CẢM THẤY KHÔ TRONG CÁI MỐI QUAN HỆ RẰNG CHẮC LÀ BẠN NÀY KHÔNG THÍCH MÌNH MẶC MÌNH KHÔNG ĐỦ HẤP DẪN RỒI RỒI VỚI TẤT CẢ NHỮNG CÁI SUY NGHĨ",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "cái câu cái câu chuyện mà giả sử các bạn nữ cảm thấy khô trong cái mối quan hệ rằng chắc là bạn này không thích mình mặc mình không đủ hấp dẫn rồi rồi với tất cả những cái suy nghĩ",
+      "notes": "",
+      "corrected_at": "2026-10-15T14:52:34"
     },
     {
       "split": "train",
@@ -1443,8 +1479,9 @@
       "source": "Tren_cang_thang_duoi_sao_cang_cung_-_Nha_tri_lieu_tam_ly_Bui_Thanh_Thuy_Coi_Mo_S4_Ep2.mp4",
       "duration_s": 14.3,
       "pseudo_label": "VỚI LOÀI NGƯỜI NÓI CHUNG Á SÁCH CÒN CÓ MỘT CÁI MÀ NHỮNG CÁI LOÀI KHÁC KHÔNG CÓ ĐÓ LÀ CÁI TÍNH GIẢI TRÍ CHỈ CÓ LOÀI NGƯỜI MỚI SỬ DỤNG SÁCH ĐỂ GIẢI TRÍ Ừ HA CHỨ NHỮNG PHẦN LỚN NHỮNG CÁI SINH VẬT KHÁC THÌ HỌ",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "với loài người nói chung á sex còn có một cái mà những cái loài khác không có đó là cái tính giải trí chỉ có loài người mới sử dụng sex để giải trí ừ ha chứ những phần lớn những cái cái sinh vật khác thì họ",
+      "notes": "",
+      "corrected_at": "2026-10-15T14:54:11"
     },
     {
       "split": "train",
@@ -1453,8 +1490,9 @@
       "source": "Tren_cang_thang_duoi_sao_cang_cung_-_Nha_tri_lieu_tam_ly_Bui_Thanh_Thuy_Coi_Mo_S4_Ep2.mp4",
       "duration_s": 13.0,
       "pseudo_label": "NHỮNG CÁI SỰ ĐỤNG CHẠM KHÁC NHỮNG CÁI TƯƠNG TÁC NHỮNG CÁI XÚC CHẠM KHÁC HOẶC LÀ THẬM CHÍ LÀ CÓ THỂ HAY KHÔNG CÓ THỂ VIỆC SỬ DỤNG NHỮNG CÁI CÔNG CỤ HỖ TRỢ SỬ DỤNG ĐỒ CHƠI",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "những cái sự đụng chạm khác những cái tương tác những cái xúc chạm khác hoặc là thậm chí là có thể hay không có thể việc sử dụng những cái công cụ hỗ trợ sử dụng đồ chơi",
+      "notes": "",
+      "corrected_at": "2026-10-15T14:54:29"
     },
     {
       "split": "train",
@@ -1463,8 +1501,9 @@
       "source": "Tren_cang_thang_duoi_sao_cang_cung_-_Nha_tri_lieu_tam_ly_Bui_Thanh_Thuy_Coi_Mo_S4_Ep2.mp4",
       "duration_s": 14.0,
       "pseudo_label": "HIỂN NHIÊN TRONG CÁI ĐỜI SỐNG CỦA MỖI NGƯỜI CÁI CHUYỆN MÌNH CÓ THỂ LÀM ĐÓ LÀ MÌNH GIA TĂNG CÁI SỰ BAO DUNG HƠN VỚI CHÍNH MÌNH VÀ MÌNH CÓ TRÁCH NHIỆM TRONG CÁI CHUYỆN SỬ DỤNG NHỮNG CÁI CÁCH THỨC ĐỂ MÌNH ỨNG PHÓ VỚI STRESS",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "hiển nhiên trong cái đời sống của mỗi người cái chuyện mình có thể làm đó là mình gia tăng cái sự bao dung hơn với chính mình và mình có trách nhiệm trong cái chuyện sử dụng những cái cách thức để mình ứng phó với stress",
+      "notes": "tiếng anh",
+      "corrected_at": "2026-10-15T14:54:50"
     },
     {
       "split": "validation",
@@ -1473,8 +1512,9 @@
       "source": "Tren_cang_thang_duoi_sao_cang_cung_-_Nha_tri_lieu_tam_ly_Bui_Thanh_Thuy_Coi_Mo_S4_Ep2.mp4",
       "duration_s": 15.0,
       "pseudo_label": "GIỚI TÍNH Ở VIỆT NAM ĐI ĐÂU PHẢI LÀ CÁI CÂU CHUYỆN MỚI MẺ GÌ ĐÂU ĐÚNG KHÔNG NHƯNG MÀ ĐẾN BÂY GIỜ CHÚNG TA VẪN CHƯA CÓ NHỮNG CÁI CHÍNH SÁCH NÀO QUÁ RÕ RÀNG TRONG VIỆC NÀY CẢ CHO NÊN LÀ CẦU MONG ĐI MỌI NGƯỜI KIỂU BÙNG LÊN ĐI MỌI NGƯỜI THAM GIA VÀO CÁC CUỘC LIVESTREAM KHI MÀ HẢ CHÍNH PHỦ NÈ QUỐC HỘI NÈ",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "giới tính ở việt nam đi đâu phải là cái câu chuyện mới mẻ gì đâu đúng không nhưng mà đến bây giờ chúng ta vẫn chưa có những cái chính sách nào quá rõ ràng trong việc này cả cho nên là cầu mong đi mọi người kiểu bùng lên đi mọi người tham gia vào các cuộc livestream khi mà hả chính phủ nè quốc hội nè",
+      "notes": "tiếng anh",
+      "corrected_at": "2026-10-15T14:55:12"
     },
     {
       "split": "train",
@@ -1483,8 +1523,9 @@
       "source": "Tren_tinh_ban_duoi_tinh_yeu_o_giua_co_don_-_Thay_Minh_Niem_Thuy_Minh_Yeu_Lanh_EP5.mp4",
       "duration_s": 13.1,
       "pseudo_label": "VÀO PHAN RUN THÌ LÀM THẾ NÀO THOÁT KHỎI PHAN JOHN CÓ THỂ LÀ MÌNH CÓ NHỮNG CÁI KHÁT KHAO MONG MUỐN ĐI XA TRONG TÌNH YÊU MÀ KHÔNG ĐƯỢC THỎA ĐÁNG THÌ MÌNH BỨC XÚC HAY LÀ MÌNH CẢM THẤY THIỆT THÒI NHƯNG MÀ TỚI MỘT LÚC NÀO ĐÓ MÌNH CŨNG SẼ THẤY RẰNG LÀ",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "vào friendzone thì làm thế nào thoát khỏi friendzone có thể là mình có những cái khát khao mong muốn đi xa trong tình yêu mà không được thỏa đáng thì mình bức xúc hay là mình cảm thấy thiệt thòi nhưng mà tới một lúc nào đó mình cũng sẽ thấy rằng là",
+      "notes": "tiếng anh",
+      "corrected_at": "2026-10-15T14:57:34"
     },
     {
       "split": "train",
@@ -1493,8 +1534,9 @@
       "source": "Tren_tinh_ban_duoi_tinh_yeu_o_giua_co_don_-_Thay_Minh_Niem_Thuy_Minh_Yeu_Lanh_EP5.mp4",
       "duration_s": 14.0,
       "pseudo_label": "BỊ NÉM VÀO TÌNH BẠN CHO MỘT CÁI JOHN CHỈ CÓ DÁN NHÃN LÀ TÌNH BẠN THÔI KHÔNG TIẾN XA THÊM ĐƯỢC NỮA MÀ RẤT LÀ NHIỀU NGƯỜI Ở RƠI CÁI TRẠNG THÁI NÀY NÓ CÓ THỂ VÀO MỘT CÁI TÌNH CẢNH BI ĐÁT THÌ NÓ CŨNG LÀ YÊU ĐƠN PHƯƠNG ĐẤY CHỨ NHƯNG MÀ",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "bị ném vào tình bạn cho một cái zone chỉ có dán nhãn là tình bạn thôi không tiến xa thêm được nữa mà rất là nhiều người ở rơi cái trạng thái này nó có thể vào một cái tình cảnh bi đát thì nó cũng là yêu đơn phương đấy chứ nhưng mà",
+      "notes": "tiếng anh",
+      "corrected_at": "2026-10-15T14:58:34"
     },
     {
       "split": "train",
@@ -1503,8 +1545,9 @@
       "source": "Tren_tinh_ban_duoi_tinh_yeu_o_giua_co_don_-_Thay_Minh_Niem_Thuy_Minh_Yeu_Lanh_EP5.mp4",
       "duration_s": 14.5,
       "pseudo_label": "CÁI NGƯỜI MÀ ĐÃ YÊU RỒI CHO BỊ CHO VÀO FANZON ẤY THẦY DÙ MÌNH CÓ NÓI RẰNG LÀ HÃY TRÂN QUÝ TÌNH BẠN NÀY ĐI THÌ NGƯỜI TA VẪN THẤY KHÔNG ĐỦ VẪN THẤY MUỐN PHẢI THOÁT RA KHỎI CÁI FENG JOHN THẾ NHƯNG MÀ KHI MÌNH NHÌN VÀO CÁI THẾ NGƯỢC LẠI ĐÚNG LÀ CHUYỆN TÌNH YÊU HAY KỂ CẢ CHUYỆN",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "cái người mà đã yêu rồi cho bị cho vào friendzone ấy thầy dù mình có nói rằng là hãy trân quý tình bạn này đi thì người ta vẫn thấy không đủ vẫn thấy muốn phải thoát ra khỏi cái friendzone thế nhưng mà khi mình nhìn vào cái thế ngược lại đúng là chuyện tình yêu hay kể cả chuyện",
+      "notes": "tiếng anh",
+      "corrected_at": "2026-10-15T14:59:18"
     },
     {
       "split": "train",
@@ -1513,8 +1556,9 @@
       "source": "Tren_tinh_ban_duoi_tinh_yeu_o_giua_co_don_-_Thay_Minh_Niem_Thuy_Minh_Yeu_Lanh_EP5.mp4",
       "duration_s": 14.2,
       "pseudo_label": "KHI MÀ NHẠC SĨ TRỊNH CÔNG SƠN PHÁT HIỆN RA LÀ MÌNH SỐNG CHƯA CÓ ĐỦ SÂU SỐNG VỘI SỐNG LƯỚT Ơ HỜ VỚI MỘT SỐ ĐỐI TƯỢNG THƯƠNG YÊU CỦA MÌNH LÀ ANH ĐÃ MUỐN ĐI LÀM MỚI CON NGƯỜI MÌNH LẠI TẠI SAO MÀ MÌNH LẠI ĐỂ CHO MÌNH RƠI VÀO CÁI TRẠNG THÁI ĐÓ",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "khi mà nhạc sĩ trịnh công sơn phát hiện ra là mình sống chưa có đủ sâu sống vội sống lướt ơ hờ với một số đối tượng thương yêu của mình là anh đã muốn đi làm mới con người mình lại tại sao mà mình lại để cho mình rơi vào cái trạng thái đó",
+      "notes": "tên riêng",
+      "corrected_at": "2026-10-15T14:59:38"
     },
     {
       "split": "train",
@@ -1523,8 +1567,9 @@
       "source": "Tren_tinh_ban_duoi_tinh_yeu_o_giua_co_don_-_Thay_Minh_Niem_Thuy_Minh_Yeu_Lanh_EP5.mp4",
       "duration_s": 11.4,
       "pseudo_label": "THÌ TỪ ĐÓ THẦY MỚI BẮT ĐẦU LÀ QUAN SÁT CHĂM SÓC CHỮA LÀNH NÓ VÀ VƯỢT QUA ĐƯỢC THẾ RỒI BÂY GIỜ THẦY CÓ RẤT RẤT NHIỀU NHỮNG NGƯỜI THÂN LÀ MỘT PHẦN CÓ THỂ NÓI LÀ KHÔNG THỂ THIẾU TRONG CUỘC ĐỜI CỦA MÌNH",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "thì từ đó thầy mới bắt đầu là quan sát chăm sóc chữa lành nó và vượt qua được thế rồi bây giờ thầy có rất rất nhiều những người thân là một phần có thể nói là không thể thiếu trong cuộc đời của mình",
+      "notes": "",
+      "corrected_at": "2026-10-15T14:59:51"
     },
     {
       "split": "train",
@@ -1533,8 +1578,9 @@
       "source": "Tren_tinh_ban_duoi_tinh_yeu_o_giua_co_don_-_Thay_Minh_Niem_Thuy_Minh_Yeu_Lanh_EP5.mp4",
       "duration_s": 12.4,
       "pseudo_label": "DỰA TRÊN MỘT CÁI TỪ CÓ SẴN ĐÓ LÀ IN DIPENCE THÌ BÂY GIỜ LÀ INTER DEPENCE TỨC LÀ CHÚNG TA LIÊN LẬP VỚI NHAU ĐỂ TỒN TẠI VẬY THÌ CÓ NHỮNG LÚC CHÚNG TA CẦN TÁCH RA ĐỂ LÀM MỚI CHÍNH MÌNH",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "dựa trên một cái từ có sẵn đó là in independence thì bây giờ là interdependence tức là chúng ta liên lập với nhau để tồn tại vậy thì có những lúc chúng ta cần tách ra để làm mới chính mình",
+      "notes": "tiếng anh",
+      "corrected_at": "2026-10-15T15:01:13"
     },
     {
       "split": "train",
@@ -1543,8 +1589,9 @@
       "source": "Tren_tinh_ban_duoi_tinh_yeu_o_giua_co_don_-_Thay_Minh_Niem_Thuy_Minh_Yeu_Lanh_EP5.mp4",
       "duration_s": 13.1,
       "pseudo_label": "MÌNH LÀM MỚI CHÍNH MÌNH MÌNH NẠP NĂNG LƯỢNG ĐỦ ĐẦY MÌNH CẢM THẤY BÌNH AN CẢM THẤY VUI VẺ CẢM THẤY NHIỀU NĂNG LƯỢNG CẢM THẤY YÊU ĐỜI RỒI THÌ MÌNH HÃY BƯỚC TRỞ RA ĐỂ KẾT NỐI CỘNG ĐỒNG VÀ XÃ HỘI BƯỚC RA NGOÀI KIA",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "mình làm mới chính mình mình nạp năng lượng đủ đầy mình cảm thấy bình an cảm thấy vui vẻ cảm thấy nhiều năng lượng cảm thấy yêu đời rồi thì mình hãy bước trở ra để kết nối cộng đồng và xã hội bước ra ngoài kia",
+      "notes": "",
+      "corrected_at": "2026-10-15T15:01:31"
     },
     {
       "split": "train",
@@ -1553,8 +1600,9 @@
       "source": "Trinh_tiet_co_phai_tieu_tiet_VJ_Thuy_Minh_Coi_Mo_S2EP05.mp4",
       "duration_s": 14.7,
       "pseudo_label": "TẠI VÌ NÓ LÀ MỘT CÁI NÓ CỨ NHƯ MỘT CÁI RÀO CẢN CON NGƯỜI TA KHI MÀ TIẾN ĐẾN QUAN HỆ TÌNH DỤC LẦN ĐẦU TIÊN VÀ NÓ LUÔN KÈM VỚI ĐAU ĐỚN MẮT TRINH LÀ CỨ VỀ CHẢY MÁU ĐÚNG KHÔNG XONG RỒI VÍ DỤ NHƯ KHÔNG CHẢY MÁU THÌ LÀ BẮT ĐẦU LÀ",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "tại vì nó là một cái nó cứ như một cái rào cản con người ta khi mà tiến đến quan hệ tình dục lần đầu tiên và nó luôn kèm với đau đớn mắt trinh là cứ về chảy máu đúng không xong rồi ví dụ như không chảy máu thì là bắt đầu là",
+      "notes": "",
+      "corrected_at": "2026-10-15T15:01:55"
     },
     {
       "split": "train",
@@ -1563,8 +1611,9 @@
       "source": "Trinh_tiet_co_phai_tieu_tiet_VJ_Thuy_Minh_Coi_Mo_S2EP05.mp4",
       "duration_s": 14.8,
       "pseudo_label": "TRĂNG TRĂNG THÀNH GIỎ MAN CẢM GIÁC LÚC ĐẤY LÀ LÀ THẬM CHÍ THÙY VINH CÓ VIẾT MỘT CÁI CUỐN SÁCH THÌ CÁI CHƯƠNG ĐẦU TIÊN CỦA NÓ TÊN LÀ LÀM TÌNH NHƯ THỎ CÁI THỜI THỎ LÀ CÁI LOÀI ĐỘNG VẬT MÀ KIỂU NHƯ LÀ NÓ KIỂU SINH SẢN NHANH NHẤT Ý",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "trăng trăng thanh gió mát cảm giác lúc đấy là là thậm chí thùy minh có viết một cái cuốn sách thì cái chương đầu tiên của nó tên là làm tình như thỏ cái thời thỏ là cái loài động vật mà kiểu như là nó kiểu sinh sản nhanh nhất ý",
+      "notes": "tên riêng",
+      "corrected_at": "2026-10-15T15:03:12"
     },
     {
       "split": "train",
@@ -1573,8 +1622,9 @@
       "source": "Trinh_tiet_co_phai_tieu_tiet_VJ_Thuy_Minh_Coi_Mo_S2EP05.mp4",
       "duration_s": 15.0,
       "pseudo_label": "PHẢI HIỂU LẠI VỀ CÁI CHỮ CHINH TIẾT Ở ĐÂY ĐÓ CÁI LẦN ĐẦU TIÊN THÌ CÁI LẦN ĐẦU TIÊN NÓ LUÔN LUÔN ĐI KÈM VỚI RẤT LÀ NHIỀU NHỮNG CÁI KHÓ KHĂN VÀ NHỮNG CÁI CẦN PHẢI HIỂU VỚI CHỊ CŨNG MUỐN ĐƯA CHỊ CẢM GIÁC NÓ CÓ MỘT CÁI BẤT BÌNH ĐẲNG GIỚI TRONG CÁI VẤN ĐỀ CHINH TIẾT NÊN CHỊ MỚI HAY NÓI ĐÙA LÀ TẠI SAO PHỤ NỮ ĐÀN ÔNG THÌ",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "phải hiểu lại về cái chữ chinh tiết ở đây đó cái lần đầu tiên thì cái lần đầu tiên nó luôn luôn đi kèm với rất là nhiều những cái khó khăn và những cái cần phải hiểu với chị cũng muốn đưa chị cảm giác nó có một cái bất bình đẳng giới trong cái vấn đề chinh tiết nên chị mới hay nói đùa là tại sao phụ nữ đàn ông thì",
+      "notes": "",
+      "corrected_at": "2026-10-15T15:03:30"
     },
     {
       "split": "train",
@@ -1583,8 +1633,9 @@
       "source": "Trinh_tiet_co_phai_tieu_tiet_VJ_Thuy_Minh_Coi_Mo_S2EP05.mp4",
       "duration_s": 10.9,
       "pseudo_label": "NÓ SẼ XẢY RA Y NHƯ LẦN ĐẦU TIÊN ẤY THÌ CÁI VIỆC MÀ CÀNG CHUẨN BỊ KỸ MÌNH KHÔNG CÓ THỂ DÙNG CÂU NÀY CŨNG LÀ CÂU CỦA NAM NÀY ĐÔI KHI LỜI KHUYÊN CỦA NGƯỜI NÀY THÌ LÀ VOUCHER HẾT HẠN CỦA NGƯỜI KHÁC",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "nó sẽ xảy ra y như lần đầu tiên ấy thì cái việc mà càng chuẩn bị kỹ mình không có thể dùng câu này cũng là câu của nam này đôi khi lời khuyên của người này thì là voucher hết hạn của người khác",
+      "notes": "tiếng anh",
+      "corrected_at": "2026-10-15T15:03:59"
     },
     {
       "split": "validation",
@@ -1593,8 +1644,9 @@
       "source": "Trinh_tiet_co_phai_tieu_tiet_VJ_Thuy_Minh_Coi_Mo_S2EP05.mp4",
       "duration_s": 15.0,
       "pseudo_label": "LÀ BỌN MÌNH CŨNG VỪA TRẢI QUA MỘT CÁI HÀNH TRÌNH RẤT LÀ DÀI CÙNG VỚI CỞI MỞ ĐI UNITUR CŨNG VỪA ĐẶT CHÂN ĐẾN QUAY LẠI THÀNH PHỐ HỒ CHÍ MINH VÀ CŨNG ĐƯỢC THAM GIA NGAY VÀO SEASON HAI VỚI TƯ CÁCH LÀ KHÁCH MỜI",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "là bọn mình cũng vừa trải qua một cái hành trình rất là dài cùng với cởi mở đi unitour cũng vừa đặt chân đến quay lại thành phố hồ chí minh và cũng được tham gia ngay vào season hai với tư cách là khách mời",
+      "notes": "Tiếng anh, tên riêng",
+      "corrected_at": "2026-10-15T15:04:57"
     },
     {
       "split": "validation",
@@ -1603,8 +1655,9 @@
       "source": "Trinh_tiet_co_phai_tieu_tiet_VJ_Thuy_Minh_Coi_Mo_S2EP05.mp4",
       "duration_s": 14.0,
       "pseudo_label": "NÀY CHO TRÁI CHUỐI NÀY CLORI HO CỦA EM HÌNH CÓ CÁI DẠNG LÀ GIẤU NÓ ĐI NÓI THÌ NÓI THUỐC KIA ĐƯỢC HẾT RỒI CHỊ NHỚ KHÁC",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "này cho trái chuối này calorie hole của em hình có cái dạng là giấu nó đi nói thì nói thuốc kia được hết rồi chị nhét vào lỗ khác",
+      "notes": "khó nghe, tiếng anh",
+      "corrected_at": "2026-10-15T15:12:21"
     },
     {
       "split": "validation",
@@ -1613,8 +1666,9 @@
       "source": "Trinh_tiet_co_phai_tieu_tiet_VJ_Thuy_Minh_Coi_Mo_S2EP05.mp4",
       "duration_s": 12.6,
       "pseudo_label": "MÌNH MUỐN NÍU GIỮ CÁI NGƯỜI ĐÓ BẰNG TÌNH DỤC GIỐNG NHƯ ANH HAY HAY NÓI LUÔN Á NÈ TỨC LÀ MÌNH NÍU GIỮ HỌ BẰNG TÌNH DỤC VÀ KIỂU MÌNH LOS LUÔN KIỂU MÌNH ĐÁNH MẤT CHÍNH MÌNH LUÔN COI NHƯ LÀ EM ĐÃ CÓ BA NĂM RƯỠI ĐÁNH MẤT EM LUÔN Á MỌI NGƯỜI",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "mình muốn níu giữ cái người đó bằng tình dục giống như anh hay hay nói luôn á nè tức là mình níu giữ họ bằng tình dục và kiểu mình lose luôn kiểu mình đánh mất chính mình luôn coi như là em đã có ba năm rưỡi đánh mất em luôn á mọi người",
+      "notes": "tiếng anh",
+      "corrected_at": "2026-10-15T15:12:48"
     },
     {
       "split": "train",
@@ -1623,8 +1677,9 @@
       "source": "Truoc_khi_dung_duong_nen_doi_lan_lac_loi_-_Nhiep_anh_gia_Maika_Elan_HaveASip_110.mp4",
       "duration_s": 15.0,
       "pseudo_label": "CÁI CƠ HỘI LÀ MỘT NHIẾP ẢNH GIA ĐƯỢC GIẢI MỘT CÁI GIẢI THƯỞNG QUỐC TẾ NHƯ THẾ NÀY TRONG LỊCH SỬ TRỪ CHÚ NI ÚT LÀ ĐÚNG LÀ CÁI KHOẢNH KHẮC CHIẾN TRANH QUÁ ĐẶC BIỆT MAI CA LÀ MINH MUỐN NHẮC LẠI LÀ CÁI THỜI ĐIỂM CÁCH ĐÂY CŨNG HƠN MƯỜI NĂM RỒI LÀ VỚI DỰ ÁN THE PIN CHOI ĐÚNG KHÔNG",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "cái cơ hội là một nhiếp ảnh gia được giải một cái giải thưởng quốc tế như thế này trong lịch sử trừ chú ni út là đúng là cái khoảnh khắc chiến tranh quá đặc biệt mai ca là minh muốn nhắc lại là cái thời điểm cách đây cũng hơn mười năm rồi là với dự án the pin choi đúng không",
+      "notes": "tên riêng",
+      "corrected_at": "2026-10-15T15:13:14"
     },
     {
       "split": "train",
@@ -1633,8 +1688,9 @@
       "source": "Truoc_khi_dung_duong_nen_doi_lan_lac_loi_-_Nhiep_anh_gia_Maika_Elan_HaveASip_110.mp4",
       "duration_s": 13.0,
       "pseudo_label": "RẤT LÀ GIỎI MÌNH PHẢI THEO CHẲNG HẠN THÌ EM THỨ NHẤT LÀ EM KHÔNG BỊ NHỮNG CÁI ĐÓ THỨ HAI NỮA LÀ THÌ MÌNH CỨ VÔ TƯ LÀM CÁI VIỆC CỦA MÌNH NHƯNG MÀ CÁI LẦN ĐẦU TIÊN LẦN ĐẦU TIÊN MÀ EM RA NƯỚC NGOÀI TRONG MỘT CÁI SỰ KIỆN NHIẾP ẢNH LÀ HAI KHÔNG LẺ TÁM",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "rất là giỏi mình phải theo chẳng hạn thì em thứ nhất là em không bị những cái đó thứ hai nữa là thì mình cứ vô tư làm cái việc của mình nhưng mà cái lần đầu tiên lần đầu tiên mà em ra nước ngoài trong một cái sự kiện nhiếp ảnh là hai không lẻ tám",
+      "notes": "",
+      "corrected_at": "2026-10-15T15:13:30"
     },
     {
       "split": "train",
@@ -1643,8 +1699,9 @@
       "source": "Truoc_khi_dung_duong_nen_doi_lan_lac_loi_-_Nhiep_anh_gia_Maika_Elan_HaveASip_110.mp4",
       "duration_s": 15.0,
       "pseudo_label": "MÀ CÓ THỂ KỂ ĐƯỢC BẰNG NGHỆ THUẬT ĐỂ NÓI VỀ CÁI VIỆC LÀ HỌ ĐÃ VƯỢT QUA CÁI KHỦNG HOẢNG KINH TẾ ĐẤY NHƯ LÀ ĐẠI LOẠI NHƯ THẾ NÓI CHUNG LÀ TRONG CÁI BA MƯƠI NGƯỜI ĐẤY THÌ HAI MƯƠI CHÍN NGƯỜI CÒN LẠI EM KHÔNG BIẾT TẠI SAO HỌ CHỌN EM NHƯNG MÀ ĐỀU LÀ NHỮNG NGƯỜI MÀ Ở THỜI ĐIỂM ĐẤY LÀ ĐÃ LÀM CHO CÁC ARC NÀY RỒI ĐÃ RẤT LÀ NỔI TIẾNG ĐÃ ĐƯỢC PUBLIC",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "mà có thể kể được bằng nghệ thuật để nói về cái việc là họ đã vượt qua cái khủng hoảng kinh tế đấy như là đại loại như thế nói chung là trong cái ba mươi người đấy thì hai mươi chín người còn lại em không biết tại sao họ chọn em nhưng mà đều là những người mà ở thời điểm đấy là đã làm cho các arc này rồi đã rất là nổi tiếng đã được public",
+      "notes": "tên riêng, tiếng anh",
+      "corrected_at": "2026-10-15T15:13:58"
     },
     {
       "split": "train",
@@ -1653,8 +1710,9 @@
       "source": "Truoc_khi_dung_duong_nen_doi_lan_lac_loi_-_Nhiep_anh_gia_Maika_Elan_HaveASip_110.mp4",
       "duration_s": 11.0,
       "pseudo_label": "CŨNG MỘT Ý CỦA BẠN ẤY NÓI LÀ BẠN ẤY BẠN ẤY LẬT CHÀO BẠN TÍNH CỘNG ĐỒNG Ừ TỨC LÀ NHÌN THẤY RÕ CÁI CÁC CÁI GÓC NHÌN VÀ TÍNH CỘNG ĐỒNG Ở TRONG ĐÓ THÌ",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "cũng một ý của bạn ấy nói là bạn ấy bạn ấy lật chào bạn tính cộng đồng ừ tức là nhìn thấy rõ cái các cái góc nhìn và tính cộng đồng ở trong đó thì",
+      "notes": "",
+      "corrected_at": "2026-10-15T15:14:13"
     },
     {
       "split": "train",
@@ -1663,8 +1721,9 @@
       "source": "Truoc_khi_dung_duong_nen_doi_lan_lac_loi_-_Nhiep_anh_gia_Maika_Elan_HaveASip_110.mp4",
       "duration_s": 10.5,
       "pseudo_label": "NHƯNG MÀ THỰC RA SAU NÀY TẤT CẢ NHỮNG DỰ ÁN EM LÀM ĐỀU LIÊN QUAN ĐẾN SÕI HỌC THÌ EM CŨNG KHÔNG NHẬN RA ĐÂU NHƯNG MÀ KIỂU CÁC ANH CHỊ KHÓA TRÊN CỦA EM BẢO Ơ MÀY TOÀN LÀ XÃ HỌC THÌ MÌNH THẤY LÀ CÓ THỂ MÌNH KHÔNG TẬP TRUNG MỘT TRĂM PHẦN TRĂM",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "nhưng mà thực ra sau này tất cả những dự án em làm đều liên quan đến sõi học thì em cũng không nhận ra đâu nhưng mà kiểu các anh chị khóa trên của em bảo ơ mày toàn là xã học thì mình thấy là có thể mình không tập trung một trăm phần trăm",
+      "notes": "",
+      "corrected_at": "2026-10-15T15:14:56"
     },
     {
       "split": "validation",
@@ -1673,8 +1732,9 @@
       "source": "Truoc_khi_dung_duong_nen_doi_lan_lac_loi_-_Nhiep_anh_gia_Maika_Elan_HaveASip_110.mp4",
       "duration_s": 13.2,
       "pseudo_label": "THÌ LÚC ĐẤY KHI MÀ EM GIỚI THIỆU VỀ CÁI HIKI COMOY THÌ CÁC EM NÓI NHIỀU ĐẤY LÀ CÂU CHUYỆN CỦA CÁC NHÂN VẬT CHỨ KHÔNG PHẢI LÀ HÌNH ẢNH VÀ CÁI HÌNH ẢNH CỦA EM CŨNG KHÔNG QUAN TRỌNG LÀ CẦN CHỤP ĐẸP BỞI VÌ LÚC ĐẤY CÂU CHUYỆN NÓ MỚI LÀ THỨ QUAN TRỌNG THÌ TÙY VÀO THỜI GIAN MÌNH CÓ",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "thì lúc đấy khi mà em giới thiệu về cái hikikomori thì các em nói nhiều đấy là câu chuyện của các nhân vật chứ không phải là hình ảnh và cái hình ảnh của em cũng không quan trọng là cần chụp đẹp bởi vì lúc đấy câu chuyện nó mới là thứ quan trọng thì tùy vào thời gian mình có",
+      "notes": "Tiếng anh, tên riêng",
+      "corrected_at": "2026-10-15T15:15:32"
     },
     {
       "split": "validation",
@@ -1683,8 +1743,9 @@
       "source": "Truoc_khi_dung_duong_nen_doi_lan_lac_loi_-_Nhiep_anh_gia_Maika_Elan_HaveASip_110.mp4",
       "duration_s": 10.1,
       "pseudo_label": "CÁI NÀY THÚ VỊ NHÁ NGOÀI CHUYỆN EM NGHE HEP NHƯNG MÀ EM CŨNG TỪNG Ở TRÊN SQUA RẤT LÀ NHIỀU LẦN Á THÌ THỰC RA KHI MÀ CHỊ HỎI AI THÌ EM CŨNG SẼ CÓ MỘT CÂU TRẢ LỜI TRONG ĐẦU MÌNH ĐÚNG KHÔNG",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "cái này thú vị nhá ngoài chuyện em nghe Have A Sip nhưng mà em cũng từng ở trên set quay rất là nhiều lần á thì thực ra khi mà chị hỏi ai thì em cũng sẽ có một câu trả lời trong đầu mình đúng không",
+      "notes": "tên riêng, tiếng anh",
+      "corrected_at": "2026-10-15T15:20:50"
     },
     {
       "split": "train",
@@ -1693,8 +1754,9 @@
       "source": "Truong_thanh_la_vuot_qua_nhung_thu_thach_tu_ben_trong_EduStation_-_Tap_dac_biet.mp4",
       "duration_s": 13.8,
       "pseudo_label": "CÁI Ý THỨ HAI NỮA LÀ SỰ TỔN THƯƠNG NÓ GIỐNG NHƯ MỘT CÁI VACCINE ĐỂ NÂNG CAO CÁI HỆ MIỄN DỊCH CỦA MÌNH NHƯNG Ở ĐÂY RẤT CÓ Ý NGHĨA LÀ ĐÔI KHI MÌNH THẤY TỔN THƯƠNG CẦN THIẾT ĐỂ TĂNG CƯỜNG MỘT CÁI SỰ MIỄN DỊCH TINH THẦN ĐỂ ĐỐI MẶT VỚI NHỮNG THỬ THÁCH LỚN HƠN",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "cái ý thứ hai nữa là sự tổn thương nó giống như một cái vaccine để nâng cao cái hệ miễn dịch của mình nhưng ở đây rất có ý nghĩa là đôi khi mình thấy tổn thương cần thiết để tăng cường một cái sự miễn dịch tinh thần để đối mặt với những thử thách lớn hơn",
+      "notes": "tiếng anh",
+      "corrected_at": "2026-10-15T15:21:06"
     },
     {
       "split": "train",
@@ -1703,8 +1765,9 @@
       "source": "Truong_thanh_la_vuot_qua_nhung_thu_thach_tu_ben_trong_EduStation_-_Tap_dac_biet.mp4",
       "duration_s": 10.6,
       "pseudo_label": "Ờ CHÚNG TA ĐÃ NÓI VỚI NHAU NGAY TỪ ĐẦU ĐÚNG KHÔNG LÀ BẢN THÂN NHỮNG CÁI CẢM GIÁC TIÊU CỰC HOẶC LÀ NHỮNG CẢM XÚC TIÊU CỰC ĐẤY NÓ CHƯA PHẢI LÀ TỔN THƯƠNG NÓ CHƯA GÂY RA NHỮNG TỔN THƯƠNG ĐÂU",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "ờ chúng ta đã nói với nhau ngay từ đầu đúng không là bản thân những cái cảm giác tiêu cực hoặc là những cảm xúc tiêu cực đấy nó chưa phải là tổn thương nó chưa gây ra những tổn thương đâu",
+      "notes": "",
+      "corrected_at": "2026-10-15T15:21:22"
     },
     {
       "split": "train",
@@ -1713,8 +1776,9 @@
       "source": "Truong_thanh_la_vuot_qua_nhung_thu_thach_tu_ben_trong_EduStation_-_Tap_dac_biet.mp4",
       "duration_s": 10.0,
       "pseudo_label": "THÌ TRONG TRƯỜNG HỢP ĐÓ THÌ LÝ DO TẠI SAO VÀ LỜI KHUYÊN CỦA CHỊ NHẬP NẾU GẶP CÁI TRƯỜNG HỢP NGƯỜI ĐẾN THĂM NGƯỜI ĐẾN XIN TƯ VẤN",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "thì trong trường hợp đó thì lý do tại sao và lời khuyên của chị nhập nếu gặp cái trường hợp người đến thăm người đến xin tư vấn",
+      "notes": "",
+      "corrected_at": "2026-10-15T15:21:36"
     },
     {
       "split": "train",
@@ -1723,8 +1787,9 @@
       "source": "Truong_thanh_la_vuot_qua_nhung_thu_thach_tu_ben_trong_EduStation_-_Tap_dac_biet.mp4",
       "duration_s": 10.3,
       "pseudo_label": "THÌ CÁI TỐC ĐỘ LÀM VIỆC CỦA CÁC BẠN RỒI CÁI CÁI THỜI GIAN ĐỂ CHO MỌI NGƯỜI THẬT SỰ LÀ ĐƯỢC NGHỈ NGƠI ĐƯỢC TRỞ VỀ VỚI CHÍNH MÌNH THẬT RA NÓ RẤT LÀ GIỚI HẠN",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "thì cái tốc độ làm việc của các bạn rồi cái cái thời gian để cho mọi người thật sự là được nghỉ ngơi được trở về với chính mình thật ra nó rất là giới hạn",
+      "notes": "",
+      "corrected_at": "2026-10-15T16:29:01"
     },
     {
       "split": "train",
@@ -1733,8 +1798,9 @@
       "source": "Truong_thanh_la_vuot_qua_nhung_thu_thach_tu_ben_trong_EduStation_-_Tap_dac_biet.mp4",
       "duration_s": 12.2,
       "pseudo_label": "ĐỐI VỚI NHIỀU NGƯỜI HAY KHÔNG THÌ TIÊN NGHĨ LÀ CÓ THỂ ĐỐI VỚI MỘT SỐ NGƯỜI THÌ NÓ Ở CÁI MỨC ĐỘ NÓ GỌI LÀ RẤT LÀ CẦN LUÔN THAY VÌ BÌNH THƯỜNG MÌNH SẼ VẪN SẼ CÓ NHỮNG CÁI HOẠT ĐỘNG NHƯ VẬY MỘT CÁCH TỰ NHIÊN TRONG NĂM",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "đối với nhiều người hay không thì tiên nghĩ là có thể đối với một số người thì nó ở cái mức độ nó gọi là rất là cần luôn thay vì bình thường mình sẽ vẫn sẽ có những cái hoạt động như vậy một cách tự nhiên trong năm",
+      "notes": "",
+      "corrected_at": "2026-10-15T16:29:18"
     },
     {
       "split": "train",
@@ -1743,8 +1809,9 @@
       "source": "Truong_thanh_la_vuot_qua_nhung_thu_thach_tu_ben_trong_EduStation_-_Tap_dac_biet.mp4",
       "duration_s": 10.5,
       "pseudo_label": "BẠN BÈ XUỐNG CÁI MÌNH MANG THỨC ĂN ĐỒ UỐNG TỚI CÁI TỰ NHIÊN CHỖ ĐÓ NÓ ỒN Y CHA NHƯ THÀNH PHỐ ĐÓ THÌ CÓ NHỮNG CÁI CHUYỆN MÀ MÌNH CŨNG VÌ LÀ MÌNH THEO THÓI QUEN",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "bạn bè xuống cái mình mang thức ăn đồ uống tới cái tự nhiên chỗ đó nó ồn y cha như thành phố đó thì có những cái chuyện mà mình cũng vì là mình theo thói quen",
+      "notes": "",
+      "corrected_at": "2026-10-15T16:29:47"
     },
     {
       "split": "validation",
@@ -1753,8 +1820,9 @@
       "source": "Truong_thanh_la_vuot_qua_nhung_thu_thach_tu_ben_trong_EduStation_-_Tap_dac_biet.mp4",
       "duration_s": 11.6,
       "pseudo_label": "VÀ CHÚNG TA DIỄN DỊCH NÊN CON VOI NÓ VẪN LÀ CON VOI CON VOI LÀ SỰ THẬT NHƯNG MÀ THÔNG QUA CẶP MẮT CỦA ÔNG DŨNG VÌ ÔNG DŨNG ÔNG BỊ GIỚI HẠN THÌ ÔNG CHỈ THẤY ĐƯỢC CÁI TAI CON VOI THÔI ÔNG HÙNG THÌ THẤY ĐƯỢC CÁI CHÂN CON VOI",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "và chúng ta diễn dịch nên con voi nó vẫn là con voi con voi là sự thật nhưng mà thông qua cặp mắt của ông dũng vì ông dũng ông bị giới hạn thì ông chỉ thấy được cái tai con voi thôi ông hùng thì thấy được cái chân con voi",
+      "notes": "tên riêng",
+      "corrected_at": "2026-10-15T16:30:08"
     },
     {
       "split": "train",
@@ -1763,8 +1831,9 @@
       "source": "Tu_VJ_MC_den_nguoi_tao_noi_dung_doc_lap_-_Dustin_Phuc_Nguyen_HaveASip_6.mp4",
       "duration_s": 14.4,
       "pseudo_label": "THẾ SÁNG UỐNG GÌ THÌ MÌNH SẼ MỜI THẾ LAST XIN BẢO UYÊN GÌ CŨNG ĐƯỢC Ừ THÌ CÓ PHẢI LÀ BẠN LÀ NGƯỜI RẤT LÀ DỄ TÍNH KHÔNG TỨC LÀ BẠN KHÔNG CÓ KỲ DỄ DẠI LUÔN THÔI NHƯNG MÀ NẾU MÀ BẠN ĐƯỢC CHỌN BUỔI SÁNG THÌ BẠN SẼ UỐNG THƯỜNG UỐNG GÌ CÀ PHÊ SỮA ĐÁ",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "thế sáng uống gì thì mình sẽ mời thế last xin bảo uyên gì cũng được ừ thì có phải là bạn là người rất là dễ tính không tức là bạn không có kỳ dễ dại luôn thôi nhưng mà nếu mà bạn được chọn buổi sáng thì bạn sẽ uống thường uống gì cà phê sữa đá",
+      "notes": "tên riêng",
+      "corrected_at": "2026-10-15T16:30:33"
     },
     {
       "split": "train",
@@ -1773,8 +1842,9 @@
       "source": "Tu_VJ_MC_den_nguoi_tao_noi_dung_doc_lap_-_Dustin_Phuc_Nguyen_HaveASip_6.mp4",
       "duration_s": 13.3,
       "pseudo_label": "MẤY CÁI CAPCON THE SHARE MỌI NGƯỜI ÔNG ẤY HAY TÁCH HÀNG NHÂN VẬT ĐẤY RA VÀ ĐÚNG NẾU MÀ ĐƯỢC EM CŨNG CÓ THỂ LÀ CHỌN MỘT CÁI CUỐN CỦA MURAKAMI NỮA NÓ CÓ MỘT CÁI SỰ PHỨC TẠP NÀO ĐÓ TRONG CÁCH",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "mấy cái cap con the sho mọi người kiểu ông ấy hay tách hàng nhân vật đấy ra và đúng nếu mà được em cũng có thể là chọn một cái cuốn của murakami nữa nó có một cái sự phức tạp nào đó trong cách",
+      "notes": "tiếng anh, tên riêng",
+      "corrected_at": "2026-10-15T16:32:01"
     },
     {
       "split": "train",
@@ -1783,8 +1853,9 @@
       "source": "Tu_VJ_MC_den_nguoi_tao_noi_dung_doc_lap_-_Dustin_Phuc_Nguyen_HaveASip_6.mp4",
       "duration_s": 13.1,
       "pseudo_label": "TRONG VIỆC VÀ ĐÃ GẶP RẤT LÀ NHIỀU THỰC RA MỘT CÁI LỢI THẾ CỦA NGƯỜI TRƯỚC MẮT LÀ NGƯỜI DẪN CHƯƠNG TRÌNH ĐÃ CÁI VIỆC LÀ ANH TA CÓ QUYẾT ĐỊNH TRỞ THÀNH NGƯỜI KỂ CHUYỆN HAY KHÔNG THÌ LÀ QUYẾT ĐỊNH SAO ĐẾN SAU ĐÓ",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "trong việc và đã gặp rất là nhiều thực ra một cái lợi thế của người trước mắt là người dẫn chương trình đã cái việc là anh ta có quyết định trở thành người kể chuyện hay không thì là quyết định sao đến sau đó",
+      "notes": "",
+      "corrected_at": "2026-10-15T16:32:16"
     },
     {
       "split": "train",
@@ -1793,8 +1864,9 @@
       "source": "Tu_VJ_MC_den_nguoi_tao_noi_dung_doc_lap_-_Dustin_Phuc_Nguyen_HaveASip_6.mp4",
       "duration_s": 12.7,
       "pseudo_label": "TRÊN YOUT COMMY CỦA EM LUÔN MÀ MÌNH NHẬN RẤT LÀ NHIỀU TRANH CÃI MÀ CÓ MỘT CÁI TRANH CÃI KIỂU RAPPER NỮ GRAB THÌ CŨNG VẬY THÔI WOW OK",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "trên youtube community của em luôn mà mình nhận rất là nhiều tranh cãi oh my god mà có một cái tranh cãi kiểu rapper nữ rap thì cũng vậy thôi wow ok",
+      "notes": "tiếng anh",
+      "corrected_at": "2026-10-15T16:33:15"
     },
     {
       "split": "train",
@@ -1803,8 +1875,9 @@
       "source": "Tu_VJ_MC_den_nguoi_tao_noi_dung_doc_lap_-_Dustin_Phuc_Nguyen_HaveASip_6.mp4",
       "duration_s": 14.8,
       "pseudo_label": "BASTORIS LÀ NÓ CÓ MỘT CÁI TIÊU CHUẨN QUÁ KHẮT KHE CHO KHÁCH MỜI CHO NÊN LÀ ĐÔI KHI EM CÒN CẢM THẤY MỆT NỮA EM BỊ CẢM THẤY MỆT VÀ EM EM ĐẶT MÌNH VÀO NHỮNG NGHỆ SĨ MỚI VÀ TRẺ VÀ KIỂU CŨNG KHÔNG CÓ TIỀN GIỐNG NHƯ EM NGÀY XƯA VÀ",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "bastoris là nó có một cái tiêu chuẩn quá khắt khe cho khách mời cho nên là đôi khi em còn cảm thấy mệt nữa em bị cảm thấy mệt và em em đặt mình vào những nghệ sĩ mới và trẻ và kiểu cũng không có tiền giống như em ngày xưa và",
+      "notes": "tiếng anh",
+      "corrected_at": "2026-10-15T16:33:42"
     },
     {
       "split": "validation",
@@ -1813,8 +1886,9 @@
       "source": "Tu_VJ_MC_den_nguoi_tao_noi_dung_doc_lap_-_Dustin_Phuc_Nguyen_HaveASip_6.mp4",
       "duration_s": 11.7,
       "pseudo_label": "KHI EM NGỒI VỚI NAM VÀ ĐẶC BIỆT LÀ NAM MÀ CÀNG CỨNG Á THÌ EM SẼ LÔI CÁI PHẦN NỮ HAY VẬY CỤ THỂ LÀ MÌNH CỤ THỂ LÀ NHƯ THẾ NÀO TỨC LÀ MÌNH ÁNH MẮT À HẢ",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "khi em ngồi với nam và đặc biệt là nam mà càng cứng á thì em sẽ lôi cái phần nữ hay vậy cụ thể là mình cụ thể là như thế nào tức là mình ánh mắt à hả",
+      "notes": "",
+      "corrected_at": "2026-10-15T16:33:56"
     },
     {
       "split": "validation",
@@ -1823,8 +1897,9 @@
       "source": "Tu_VJ_MC_den_nguoi_tao_noi_dung_doc_lap_-_Dustin_Phuc_Nguyen_HaveASip_6.mp4",
       "duration_s": 14.2,
       "pseudo_label": "JOHN R THỂ LOẠI SẼ ĐƯỢC XÓA MỜ KHÔNG NÓ SẼ BỊ LỖI THỜI VÌ THẾ EM NGHĨ LÀ MỘT LOẠI NHẠC MÀ CHỈ NGHE MÃI HOẶC LÀ LÀM SẢN XUẤT ĐÚNG MỘT LOẠI THỂ LOẠI NHẠC TRONG MỘT BÀI HÁT Á",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "john r thể loại sẽ được xóa mờ không nó sẽ bị lỗi thời vì thế em nghĩ là một loại nhạc mà chỉ nghe mãi hoặc là làm sản xuất đúng một loại thể loại nhạc trong một bài hát á",
+      "notes": "tiếng anh, tên riêng",
+      "corrected_at": "2026-10-15T16:34:22"
     },
     {
       "split": "train",
@@ -1833,8 +1908,9 @@
       "source": "Vao_bar_dung_de_cai_net_di_choi_xa_Coi_Mo_Happy_Hour_EP09_coimohappyhour.mp4",
       "duration_s": 14.9,
       "pseudo_label": "THẬT SỰ THÌ THÌ NGAY CẢ BARTENDER HAY LÀ CHỦ QUÁN BAR THÌ CÁC BẠN GỌI CÁI ĐỒ ĐẮT NHẤT NGƯỜI TA SẼ RẤT LÀ VUI TUY NHIÊN NẾU NHƯ MÀ ANH MỘT NGƯỜI MÀ GỌI LÀ BÁN HÀNG CÓ TÂM Á",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "thật sự thì thì ngay cả bartender hay là chủ quán bar thì các bạn gọi cái đồ đắt nhất người ta sẽ rất là vui tuy nhiên nếu như mà anh một người mà gọi là bán hàng có tâm á",
+      "notes": "tiếng anh",
+      "corrected_at": "2026-10-15T16:34:40"
     },
     {
       "split": "train",
@@ -1843,8 +1919,9 @@
       "source": "Vao_bar_dung_de_cai_net_di_choi_xa_Coi_Mo_Happy_Hour_EP09_coimohappyhour.mp4",
       "duration_s": 12.6,
       "pseudo_label": "TÙY VÀO TRƯỜNG HỢP VÀ TÙY VÔ CÁI BẢNG BASIAN ĐƠN VÀ ANH CŨNG NGAY CẢ BẢN THÂN ANH KHI MÀ ĐI NHỮNG QUÁN KHÁC ĐI ĐÔI KHI CŨNG GẶP NHƯ VẬY THẬT VÀ THƯỜNG ĐỂ MÌNH SẼ TIẾP TRƯỚC LUÔN ĐỂ",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "tùy vào trường hợp và tùy vô cái bạn bartender và anh cũng ngay cả bản thân anh khi mà đi những quán khác đi đôi khi cũng gặp như vậy thật và thường để mình sẽ tiếp trước luôn để",
+      "notes": "Tiếng anh",
+      "corrected_at": "2026-10-15T16:36:07"
     },
     {
       "split": "train",
@@ -1853,8 +1930,9 @@
       "source": "Vao_bar_dung_de_cai_net_di_choi_xa_Coi_Mo_Happy_Hour_EP09_coimohappyhour.mp4",
       "duration_s": 10.8,
       "pseudo_label": "CẦM LẤY ĐI TỤI BAY CẦM LẤY ĐI THÌ MÌNH KHÔNG MUỐN LẤY CÁI ĐỒNG TIỀN ĐÓ THÌ ĐÓ LÀ HAI CÁI VÍ DỤ MÀ ANH KỂ RA ĐỂ CHO CÁC BẠN BIẾT LÀ CHIẾC BAO NHIÊU KHÔNG ĂN CHẬM",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "cầm lấy đi tụi bay cầm lấy đi thì mình không muốn lấy cái đồng tiền đó thì đó là hai cái ví dụ mà anh kể ra để cho các bạn biết là chiếc bao nhiêu không ăn chậm",
+      "notes": "",
+      "corrected_at": "2026-10-15T16:36:28"
     },
     {
       "split": "train",
@@ -1863,8 +1941,9 @@
       "source": "Vao_bar_dung_de_cai_net_di_choi_xa_Coi_Mo_Happy_Hour_EP09_coimohappyhour.mp4",
       "duration_s": 12.6,
       "pseudo_label": "HAY LÀ NHỮNG QUÁN BAR CŨNG ĐƯỢC MÌNH SẼ UỐNG CÁI ĐÓ TRƯỚC VÀ MÌNH SẼ CẢM NHẬN VÀ MÌNH NÓI CHUYỆN THEO VỚI BATEND TRƯỚC KHI MÌNH QUYẾT ĐỊNH ORDER CÁI TRÊN THỨ HAI LÀ CÁI GÌ À NGHĨA LÀ CHỌN NHỮNG MÓN ĐƠN GIẢN TRƯỚC RẤT ĐƠN GIẢN TRÊN SÁNG OA CÁI ĐIỀU NÀY NÓ CŨNG ĐÚNG KHI MÀ TRƯỜNG HỢP",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "hay là những quán bar cũng được mình sẽ uống cái đó trước và mình sẽ cảm nhận và mình nói chuyện theo với bartender trước khi mình quyết định order cái trên thứ hai là cái gì à nghĩa là chọn những món đơn giản trước rất đơn giản trên sáng oa cái điều này nó cũng đúng khi mà trường hợp",
+      "notes": "tiếng anh",
+      "corrected_at": "2026-10-15T16:37:22"
     },
     {
       "split": "validation",
@@ -1873,8 +1952,9 @@
       "source": "Vao_bar_dung_de_cai_net_di_choi_xa_Coi_Mo_Happy_Hour_EP09_coimohappyhour.mp4",
       "duration_s": 11.6,
       "pseudo_label": "NẤM BÀ HOA NGHE TÊN NHƯ THẾ NÀO THÌ CÁC BẠN SẼ UỐNG RA NHƯ VẬY NẤM Ở ĐÂY SẼ LÀ NẤM TROPFO VÀ HOA Ở ĐÂY LÀ HOA CƠM CHÁY ĐEO ĐỒ CÓ MÙI NẤM NÈ VÌ ĐÂY LÀ MỘT CÁI MÓN COTE",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "nấm và hoa nghe tên như thế nào thì các bạn sẽ uống ra như vậy nấm ở đây sẽ là nấm truffle và hoa ở đây là hoa cơm cháy đeo đồ có mùi nấm nè vì đây là một cái món cocktail",
+      "notes": "Tiếng anh, tên riêng",
+      "corrected_at": "2026-10-15T16:40:17"
     },
     {
       "split": "validation",
@@ -1883,8 +1963,9 @@
       "source": "Vao_bar_dung_de_cai_net_di_choi_xa_Coi_Mo_Happy_Hour_EP09_coimohappyhour.mp4",
       "duration_s": 12.9,
       "pseudo_label": "ANH ĐÃ PHÁT TRIỂN ID ID THÌ ANH CÓ TỪ HAI NĂM TRƯỚC NHƯNG MÀ ANH ĐÃ PHÁT TRIỂN NÓ TRONG HAI NĂM TẠI VÌ CÁI TỶ LỆ JOHN LÀ CÁI VIỆC RẤT LÀ MẠNH ĐÚNG NÊN CÁI TỶ LỆ LÀM SAO PHẦN TRĂM GIỮA CHOPLE VÀ CÁI RƯỢU NÓ PHẢI",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "anh đã phát triển id id thì anh có từ hai năm trước nhưng mà anh đã phát triển nó trong hai năm tại vì cái tỷ lệ truffle là cái việc rất là mạnh đúng nên cái tỷ lệ làm sao phần trăm giữa truffle và cái rượu nó phải",
+      "notes": "Tiếng anh, tên riêng",
+      "corrected_at": "2026-10-15T16:41:44"
     },
     {
       "split": "validation",
@@ -1893,8 +1974,9 @@
       "source": "Vao_bar_dung_de_cai_net_di_choi_xa_Coi_Mo_Happy_Hour_EP09_coimohappyhour.mp4",
       "duration_s": 13.1,
       "pseudo_label": "VỚI LẠI PHẢI CÓ MÃ PASSWORD ĐỂ THANH TOÁN THẬT RA CLIP CŨNG AN TOÀN TẠI VÌ CREDIT KHÔNG PHẢI LÀ TIỀN CỦA MÌNH CÓ MÀ LÀ TIỀN MÌNH MƯỢN THÌ KHI MÀ CÁI NGÂN HÀNG MÀ CHO MÌNH MƯỢN TIỀN ĐÓ HỌ ĐIỀU TRA ĐƯỢC LÀ CÓ MỘT CÁI GIAO DỊCH",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "với lại phải có mã password để thanh toán thật ra credit cũng an toàn tại vì credit không phải là tiền của mình có mà là tiền mình mượn thì khi mà cái ngân hàng mà cho mình mượn tiền đó họ điều tra được là có một cái giao dịch",
+      "notes": "tiếng anh",
+      "corrected_at": "2026-10-15T16:42:04"
     },
     {
       "split": "train",
@@ -1903,8 +1985,9 @@
       "source": "Ve_dep_cua_nguoi_di_bar_mot_minh_Coi_Mo_Happy_Hour_EP04_coimohappyhour.mp4",
       "duration_s": 14.8,
       "pseudo_label": "GÁI NGÀNH U WOW CÁI ĐÓ THÌ ÁC THIỆT KIỂU GIỐNG NHƯ LÀ EM THẤY ĐÓ NHA CÓ MỘT SỐ BẠN HỌ CHIA SẺ VỚI EM LÀ VÍ DỤ NHƯ KHI HỌ ĐI BƠ HỌ ĐI CLUB HỌ SẼ RẤT LÀ HAY TỚI NGAY KHU VỰC QUẦY BAR VÀ THẤY CÁI CÔ GÁI NÀO MÀ NGỒI MỘT MÌNH Á",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "gái ngành u wow cái đó thì ác thiệt kiểu giống như là em thấy đó nha có một số bạn họ chia sẻ với em là ví dụ như khi họ đi bar họ đi club họ sẽ rất là hay tới ngay khu vực quầy bar và thấy cái cô gái nào mà ngồi một mình á",
+      "notes": "tiếng anh",
+      "corrected_at": "2026-10-15T16:42:36"
     },
     {
       "split": "train",
@@ -1913,8 +1996,9 @@
       "source": "Ve_dep_cua_nguoi_di_bar_mot_minh_Coi_Mo_Happy_Hour_EP04_coimohappyhour.mp4",
       "duration_s": 15.0,
       "pseudo_label": "TRƯỚC KHI MÀ DÌ LÀM BASTORI CÙNG VỚI LẠI TEAM CỦA MÌNH Á THÌ MÌNH THẤY CÁI VĂN HÓA ĐI BAR CÒN BỊ MỌI NGƯỜI KỲ THỊ CHỨ ĐỪNG NÓI LÀ CON GÁI HAY CON TRAI ĐI QUA MỘT MÌNH SAU KHOẢNG NĂM BA BỐN NĂM THÌ CÁI VĂN HÓA ĐI BAR BẮT ĐẦU MỚI NỞ RỘ RA NHIỀU HƠN",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "trước khi mà dustin làm bastori cùng với lại team của mình á thì mình thấy cái văn hóa đi bar còn bị mọi người kỳ thị chứ đừng nói là con gái hay con trai đi qua một mình sau khoảng năm bốn ba bốn năm thì cái văn hóa đi bar bắt đầu mới nở rộ ra nhiều hơn",
+      "notes": "tiếng anh, tên riêng",
+      "corrected_at": "2026-10-15T16:43:50"
     },
     {
       "split": "train",
@@ -1923,8 +2007,9 @@
       "source": "Ve_dep_cua_nguoi_di_bar_mot_minh_Coi_Mo_Happy_Hour_EP04_coimohappyhour.mp4",
       "duration_s": 12.6,
       "pseudo_label": "KHI BẠN ĐẾN MỘT CÁI SỐ TUỔI NÀO ĐÓ BẠN SẼ NHẬN RA ĐỐI VỚI ĐÓ SINH LÀ KHOẢNG BA MƯƠI TUỔI BẮT ĐẦU MÌNH CHẤP NHẬN CÁI CHUYỆN LÀ AI ĐÁNH GIÁ GÌ CŨNG ĐƯỢC HOẶC LÀ TRONG MÌNH TẢ TỰ MỘT TÍ XÍU NGOÀI ĐƯỜNG CŨNG ĐƯỢC",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "khi bạn đến một cái số tuổi nào đó bạn sẽ nhận ra đối với đó sinh là khoảng ba mươi tuổi bắt đầu mình chấp nhận cái chuyện là ai đánh giá gì cũng được hoặc là trong mình tả tự một tí xíu ngoài đường cũng được",
+      "notes": "",
+      "corrected_at": "2026-10-15T16:44:15"
     },
     {
       "split": "train",
@@ -1933,8 +2018,9 @@
       "source": "Ve_dep_cua_nguoi_di_bar_mot_minh_Coi_Mo_Happy_Hour_EP04_coimohappyhour.mp4",
       "duration_s": 10.7,
       "pseudo_label": "MUỐN ĐI MỘT MÌNH OK VÀ TỪ CÁI PERPOST TỪ CÁI LÝ DO NHƯ VẬY NÓ KHIẾN CHO CÁI MỤC ĐÍCH ĐI BO MỘT MÌNH CỦA EM NÓ TRỞ NÊN DỄ DÀNG HƠN VÀ LÚC ĐÓ THẬT SỰ LÀ EM KHÔNG CẦN MỘT AI TỚI XUNG QUANH EM HẾT",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "muốn đi một mình ok và từ cái perpost từ cái lý do như vậy nó khiến cho cái mục đích đi bo một mình của em nó trở nên dễ dàng hơn và lúc đó thật sự là em không cần một ai tới xung quanh em hết",
+      "notes": "Tiếng anh",
+      "corrected_at": "2026-10-15T16:44:31"
     },
     {
       "split": "train",
@@ -1943,8 +2029,9 @@
       "source": "Ve_dep_cua_nguoi_di_bar_mot_minh_Coi_Mo_Happy_Hour_EP04_coimohappyhour.mp4",
       "duration_s": 14.2,
       "pseudo_label": "ĐỂ CHO OK BẠN NÓI LÀ NGÀY HÔM NAY MÌNH MUỐN ĐI MỘT MÌNH THÔI NHƯNG MÀ ĐÂY ĐÂY LÀ CÁI PROCATION NÈ CÓ GÌ MÀ NẾU NHƯ MÀ CÓ THẤY CÓ GÌ BẤT TRẮC THÌ NHỚ GỌI NHA DỤC NHỚ GỌI TAO NHA HOẶC LÀ KIỂU RA CỨU TAO GIỚI KIỂU NHƯ THẾ",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "để cho ok bạn nói là ngày hôm nay mình muốn đi một mình thôi nhưng mà đây đây là cái procation nè có gì mà nếu như mà có thấy có gì bất trắc thì nhớ gọi nha dục nhớ gọi tao nha hoặc là kiểu ra cứu tao giới kiểu như thế",
+      "notes": "tiếng anh",
+      "corrected_at": "2026-10-15T16:44:50"
     },
     {
       "split": "train",
@@ -1953,8 +2040,9 @@
       "source": "Ve_dep_cua_nguoi_di_bar_mot_minh_Coi_Mo_Happy_Hour_EP04_coimohappyhour.mp4",
       "duration_s": 10.1,
       "pseudo_label": "QUA BA LAN CHƠI NHA ĐÂY LÀ ĐỊA CHỈ NHÀ CỦA EM SỐ ĐIỆN THOẠI Ở ĐÂY ĐÓ CÓ GÌ EM MÀ CÓ KIỂU MUỐN UỐNG NHIỀU HƠN THÌ ĐÂY ĐƯA EM VỀ DÙM",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "qua ba lan chơi nha đây là địa chỉ nhà của em số điện thoại ở đây đó có gì em mà có kiểu muốn uống nhiều hơn thì đây đưa em về dùm",
+      "notes": "tên riêng",
+      "corrected_at": "2026-10-15T16:45:38"
     },
     {
       "split": "validation",
@@ -1963,8 +2051,9 @@
       "source": "Ve_dep_cua_nguoi_di_bar_mot_minh_Coi_Mo_Happy_Hour_EP04_coimohappyhour.mp4",
       "duration_s": 11.4,
       "pseudo_label": "NGỦ LÂU HƠN LÂU HƠN WHY CŨNG VẬY ĐÚNG KHÔNG MÀ EM HỨA VỚI MỌI NGƯỜI LUÔN LÀ ĂN THỊT BÒ DRIA AGE ROBLO Y BA MỘT MÌNH CŨNG RẤT VUI Y",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "ngủ lâu hơn lâu hơn whisky cũng vậy đúng không mà em hứa với mọi người luôn là ăn thịt bò dry aged rất ngon yes đi bar một mình cũng rất vui yes",
+      "notes": "tiếng anh",
+      "corrected_at": "2026-10-15T16:48:10"
     },
     {
       "split": "train",
@@ -1973,8 +2062,9 @@
       "source": "Viet_creative_brief_Dai_ma_ro_y_la_tot_hay_ngan_nhung_truyen_cam_hung_moi_goi_la_hay_YMP_EP10.mp4",
       "duration_s": 14.0,
       "pseudo_label": "HENRY ZERO LÀ MỘT TRONG NHỮNG CÁI BRIP MÀ CHỊ RẤT LÀ THÍCH VÌ CÁI SỰ RÕ RÀNG CỦA NÓ VỀ CÁI SỰ RẤT LÀ RÕ RÀNG RA BỐN CÁI ĐIỂM NÀY LÀ GÌ THÌ NÓ SẠC TỪ CÁI CHALLENGE CỦA HỌ LÀ UBA IT BRAND A WEINUS",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "head and shoulder là một trong những cái brief mà chị rất là thích vì cái sự rõ ràng của nó về cái sự rất là rõ ràng ra bốn cái điểm này là gì thì nó start từ cái challenge của họ là uba unaided brand awareness",
+      "notes": "tiếng anh, tên riêng",
+      "corrected_at": "2026-10-15T17:16:40"
     },
     {
       "split": "train",
@@ -1983,8 +2073,9 @@
       "source": "Viet_creative_brief_Dai_ma_ro_y_la_tot_hay_ngan_nhung_truyen_cam_hung_moi_goi_la_hay_YMP_EP10.mp4",
       "duration_s": 13.9,
       "pseudo_label": "LÀ NÓ CÓ MỘT CÁI TWIST TỪ TỪ CÁI CHALLEN TỚI CÁI INSIDE THE NORMALY KHI MÀ MỘT CÁI THƯƠNG HIỆU HỌ GIẢI QUYẾT CÁI CHUYỆN UBA THẤP THÌ HỌ SẼ ĐI DẠY CON SUO ĐỌC TÊN THÌ MÌNH CÓ RẤT LÀ NHIỀU COMMENT DẠY CON SUMER ĐỌC TÊN NHƯ LÀ QUARIER NHƯ LÀ",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "là nó có một cái twist từ từ cái challen tới cái inside the normaly khi mà một cái thương hiệu họ giải quyết cái chuyện uba thấp thì họ sẽ đi dạy consumer đọc tên thì mình có rất là nhiều campaign dạy consumer đọc tên như là warrior như là",
+      "notes": "tiếng anh",
+      "corrected_at": "2026-10-15T17:18:55"
     },
     {
       "split": "train",
@@ -1993,8 +2084,9 @@
       "source": "Viet_creative_brief_Dai_ma_ro_y_la_tot_hay_ngan_nhung_truyen_cam_hung_moi_goi_la_hay_YMP_EP10.mp4",
       "duration_s": 15.0,
       "pseudo_label": "VÀ MÌNH SẼ CRACK SỰ TIN ĐÓ ĐỂ HỌ RA NGOÀI HỌ GỌI BẰNG CÁI TÊN GÌ CŨNG ĐƯỢC VÀ TỪ ĐÓ THÌ QUAY TIẾP SẼ GIẢI RA NHỮNG BÀI TOÁN SẼ SẼ AD THÊM NHỮNG CÁI ELEMENT VỀ CÂU CHUYỆN LOCKEY LÀ NHỮNG CÂU CHUYỆN LOKI BẠN CỨ TỰ TIN GỌI THEO VÙNG MIỀN CỦA BẠN VÀ ĐƯA THÀNH NHỮNG CÁI TRANSLATE THÀNH NHỮNG CÁI ĐIỆU NHẢY KHÁC NHAU",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "và mình sẽ crack sự tin đó để họ ra ngoài họ gọi bằng cái tên gì cũng được và từ đó thì quay tiếp sẽ giải ra những bài toán sẽ sẽ ad thêm những cái element về câu chuyện lockey là những câu chuyện loki bạn cứ tự tin gọi theo vùng miền của bạn và đưa thành những cái translate thành những cái điệu nhảy khác nhau",
+      "notes": "tiếng anh",
+      "corrected_at": "2026-10-15T16:50:29"
     },
     {
       "split": "train",
@@ -2003,8 +2095,9 @@
       "source": "Viet_creative_brief_Dai_ma_ro_y_la_tot_hay_ngan_nhung_truyen_cam_hung_moi_goi_la_hay_YMP_EP10.mp4",
       "duration_s": 14.8,
       "pseudo_label": "CITIST SẼ TÌM KIẾM NHỮNG TIỀM TRONG CÁI BRIP ĐÓ LÀ CÂU CHUYỆN LÀ CÁI CHANN NÓ CÓ CLICK KHÔNG VÍ DỤ MÌNH TẠO RA KHI MÀ TRẢ LỜI NÓ CƯA ẤY NÓ SẼ DỄ Ở MỘT CHUYỆN LÀ NÓ CHO MÌNH MỘT CÁI ĐIỂM ĐẾN RẤT RÕ RÀNG MỘT CÁI ĐÍCH ĐẾN RẤT RÕ RÀNG ĐỂ MÀ TỪ ĐÓ QUAY TIẾP CÓ THỂ JUSTIFY ĐỂ CÓ THỂ LÀ",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "citist sẽ tìm kiếm những tiềm trong cái brip đó là câu chuyện là cái chann nó có click không ví dụ mình tạo ra khi mà trả lời nó cưa ấy nó sẽ dễ ở một chuyện là nó cho mình một cái điểm đến rất rõ ràng một cái đích đến rất rõ ràng để mà từ đó quay tiếp có thể justify để có thể là",
+      "notes": "tiếng anh, tên riêng",
+      "corrected_at": "2026-10-15T16:50:49"
     },
     {
       "split": "train",
@@ -2013,8 +2106,9 @@
       "source": "Viet_creative_brief_Dai_ma_ro_y_la_tot_hay_ngan_nhung_truyen_cam_hung_moi_goi_la_hay_YMP_EP10.mp4",
       "duration_s": 12.5,
       "pseudo_label": "CỦA CÁI SẢN PHẨM VÀ CÁI COLLECTION THÌ KHI MÀ ANH DE LIVER RA CÁI OCOP CỦA HÌNH THÌ ANH CŨNG MONG MUỐN DEALER MỘT CÁI CHẤT KHÁ LÀ TƯƠNG LAI CHO CÁI BỘ HÌNH",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "của cái sản phẩm và cái collection thì khi mà anh de liver ra cái ocop của hình thì anh cũng mong muốn dealer một cái chất khá là tương lai cho cái bộ hình",
+      "notes": "tiếng anh",
+      "corrected_at": "2026-10-15T16:51:19"
     },
     {
       "split": "train",
@@ -2023,8 +2117,9 @@
       "source": "Viet_creative_brief_Dai_ma_ro_y_la_tot_hay_ngan_nhung_truyen_cam_hung_moi_goi_la_hay_YMP_EP10.mp4",
       "duration_s": 10.9,
       "pseudo_label": "THÌ TỚI LÚC ĐÓ SẼ RẤT LÀ TRAN RIÊNG VỚI LẠI CREDITIC BUNNER LÀ MÌNH LÀM CÁI GÌ TRONG CÁI CLIP NÀY ĐỂ MÀ CÒN THỂ HIỆN ĐƯỢC CÁI GIÁ TRỊ CỦA MÌNH TẠI VÌ NGƯỜI TA ĐÃ TỚI LUÔN CÁI PHẦN STORY TELLING LUÔN RỒI",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "thì tới lúc đó sẽ rất là tran riêng với lại creditic bunner là mình làm cái gì trong cái clip này để mà còn thể hiện được cái giá trị của mình tại vì người ta đã tới luôn cái phần story telling luôn rồi",
+      "notes": "tiếng anh",
+      "corrected_at": "2026-10-15T16:51:42"
     },
     {
       "split": "train",
@@ -2033,8 +2128,9 @@
       "source": "Viet_creative_brief_Dai_ma_ro_y_la_tot_hay_ngan_nhung_truyen_cam_hung_moi_goi_la_hay_YMP_EP10.mp4",
       "duration_s": 14.4,
       "pseudo_label": "THÌ CÁI EXTREAM NÓ LÀ CÁI ADDIT VALI DUY NHẤT MÀ TỤI TIÊN CÓ THỂ ADD THÊM VÀO CÁI PAGE WORD NÀY THÌ CẢ CÁI COMMENT NÓ TRỞ THÀNH LÀ MÌNH IN VAI NHỮNG CÁI NGƯỜI HÀ NỘI MÀ ĐANG RẤT LÀ GÀN DỞ VỀ CÁI GÓC NHÌN CỦA MÌNH",
-      "corrected_text": "",
-      "notes": ""
+      "corrected_text": "thì cái extream nó là cái added value duy nhất mà tụi tiên có thể add thêm vào cái page word này thì cả cái comment nó trở thành là mình ìn vai những cái người hà nội mà đang rất là gàn dở về cái góc nhìn của mình",
+      "notes": "tiếng anh",
+      "corrected_at": "2026-10-15T16:53:04"
     }
   ]
 }

@@ -234,3 +234,30 @@ và lý do, và khóa luận phải báo cả cách đọc cũ.
 - Không có bằng chứng công bố nào về thay đổi riêng cho ConExt thu hẹp đáng kể khoảng cách với B1 (lớn nhất 0,2 điểm, 1 lần chạy).
 - Công thức công bố đều có LR đỉnh 1e-3 – 2,5e-3 với batch lớn hơn nhiều (dự án: 3e-4, batch toàn cục 16) → không suy ra
   LR tối ưu cho dự án; dò LR chỉ khi qua cổng, cho cả ba (~45-50 GPU-h mỗi giá trị LR thêm ở 10 ms).
+
+### 9.6 Tiêu chí đọc kết quả 3 seed ở 40 ms và quy tắc 10 ms (người dùng chốt 2026-10-16 ~08:20, TRƯỚC khi xem WER relPE 10 ms)
+Thay mục 9.4 điều 4 và 6 cho nhóm 40 ms; mục 9.4 giữ nguyên để truy vết. Gốc đề xuất: `review_fable_2026-10-15.md`
+mục 2.3; điều 4a (ghép seed i–i) và điều 5 (ngưỡng 2 × sd) của bản đó **bỏ**, thay bằng bootstrap hai tầng (điều 4 dưới).
+Mục 9.4 điều 10 (trục GPU-giờ) đóng cùng ngày: bảng chính cùng 38 epoch, báo cột GPU-h + đường WER theo GPU-h từ eval
+mỗi epoch, **không train bù**.
+
+1. Seed 42 (đã có), 43, 44 cho cả ba mô hình 40 ms, config `configs/v2a/*_sub4.yaml` y nguyên, chỉ đổi `--seed`. Không
+   thay seed khi một run "xấu"; run lỗi kỹ thuật (loss không hữu hạn, không đủ 38 epoch) chạy lại **cùng seed**, khai.
+2. Checkpoint ep37 cho mọi run (9.4 điều 9). Không chọn gì trên clean-test.
+3. Báo **trung bình ± độ lệch chuẩn 3 seed** trên clean-test, val, val_unseen; số từng seed ở phụ lục.
+4. **"A tốt hơn B" khi CI 95% bootstrap hai tầng của hiệu WER không chứa 0.** Mỗi lần lặp: (a) lấy lại 29 video
+   clean-test có hoàn lại (như `src/evaluation/bootstrap.py`); (b) chọn ngẫu nhiên đều 1 trong 3 seed cho A và độc lập 1
+   trong 3 seed cho B; tính hiệu WER (tổng lỗi / tổng từ) trên tập video đã lấy. CI chứa 0 → "không phân biệt được ở 3
+   seed". Không dùng "tương đương" / "nhỉnh hơn". Mục đích: CI gộp cả dao động do mẫu test lẫn do huấn luyện.
+   Hạn chế phải khai: 3 seed nên phần dao động seed ước thô, nhiều khả năng thấp hơn thực tế. Nguồn: Bouthillier và cs.
+   arXiv:2103.03098 (khuyên ngẫu nhiên hoá nhiều nguồn dao động) — **chưa kiểm** bài có đề xuất đúng thủ tục hai tầng
+   này không (suy luận; kiểm trước khi viết Ch2).
+5. Kèm theo, **chỉ mô tả, không làm điều kiện**: bảng 9 hiệu WER mọi cặp seed (3 × 3) và số cặp cùng dấu.
+6. **Nhóm 10 ms giữ 1 seed — không có cổng seed** (người dùng 16/10: "cổng 10 không áp dụng"; đề xuất cổng
+   "|B1 − relPE 10 ms| < 2 điểm → thêm seed" của AI bị loại). Phát biểu "A khác B" ở 10 ms chỉ khi |hiệu| > 2 điểm **và**
+   CI bootstrap cặp theo video không chứa 0; ngược lại "không phân biệt được ở 10 ms (1 seed)". Luôn ghi hạn chế "1 seed;
+   CI chỉ phản ánh biến thiên do mẫu test". Ngưỡng 2 điểm là quy ước tự đặt (không nguồn), chốt trước khi có số.
+7. Bảng phụ beam + LM: lmw 0,8 / ws 1,0 giữ nguyên cho mọi seed/mô hình; áp cùng điều 4.
+8. **Minh bạch thứ tự:** khi kiểm tính toàn vẹn run relPE 10 ms (16/10 ~08:15, trước khi chốt mục này) AI đã thấy
+   `loss_val` = 0,5647 ở ep37 (CTC loss, không phải WER; chưa so với run khác). WER val/val_unseen relPE 10 ms chưa ai xem
+   trước khi chốt. (Sự cố 13/10 12:58: AI đã thấy 1 số WER val relPE 10 ms tới ep16 — đã khai ở `Plan.md`.)
