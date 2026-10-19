@@ -49,7 +49,7 @@ def has_digit(text: str) -> bool:
 def diacritic_word_ratio(text: str) -> float:
     """Tỉ lệ từ mang dấu tiếng Việt (NFD rồi tìm ký tự combining; `đ` tính là có dấu).
 
-    Heuristic CHƯA KIỂM CHỨNG (docs/notes/survey_model_candidates.md mục 4): đo
+    Heuristic CHƯA KIỂM CHỨNG (docs/notes/khao_sat/survey_model_candidates.md mục 4): đo
     ngôn ngữ của *nhãn*, không phải của audio."""
     words = normalize_text(text).split()
     if not words:

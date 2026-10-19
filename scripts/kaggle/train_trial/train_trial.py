@@ -13,7 +13,7 @@ dùng chốt giữ 2 hay 3 mô hình. Đồng thời là lần đầu chạy `tr
 Ước ~2,5-3,5 GPU-giờ (số đo benchmark lần 2 + eval). Dữ liệu: đủ 5 dataset `vss-asr-*` vì
 val_unseen nằm rải cả 4 shard.
 
-**Môi trường (sau sự cố 2026-10-04/05, `docs/notes/training_plan_kaggle.md` mục 6):** image
+**Môi trường (sau sự cố 2026-10-04/05, `docs/notes/ky_thuat/training_plan_kaggle.md` mục 6):** image
 mặc định, **không** ghim `docker_image` (ghim image cũ thì máy GPU không chạy được script).
 `kernel-metadata.json` (gitignore): `dataset_sources` = 5 `vss-asr-*` + `mamba-wheels-v2`
 (wheel cp313). `check_env` dừng ngay nếu image lệch EXPECT_*.

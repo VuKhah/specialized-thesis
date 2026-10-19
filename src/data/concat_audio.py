@@ -1,4 +1,4 @@
-"""Audio ghép nhân tạo cho RQ2 (chốt 2026-10-03, `docs/notes/dataset_discrepancy.md`): nối các đoạn liên tiếp
+"""Audio ghép nhân tạo cho RQ2 (chốt 2026-10-03, `docs/notes/du_lieu/dataset_discrepancy.md`): nối các đoạn liên tiếp
 cùng video thành một waveform dài, **chỉ để đo** chi phí suy luận theo độ dài (không train, không đo WER).
 
 Lấy từ train + val qua `manifest_rows` của 4 shard + val → đã bỏ `excluded.tsv` (A1) và video giữ riêng (để

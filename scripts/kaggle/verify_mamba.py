@@ -7,7 +7,7 @@ vì thiếu CUDA. Được đẩy lên bằng Kaggle CLI, không chạy trên m�
 
 Các bước: clone repo từ GitHub (nên phải push code trước) → build wheel
 `causal-conv1d` + `mamba-ssm` v2.3.1 (`--no-build-isolation`, lý do ở
-docs/notes/mamba_ssm_install_log.md) và lưu vào /kaggle/working/wheels để lần
+docs/notes/ky_thuat/mamba_ssm_install_log.md) và lưu vào /kaggle/working/wheels để lần
 sau cài lại không phải build → `param_count` → chạy thử vài step train + 1 lần
 eval cho cả hai encoder, đo thời gian/step và VRAM đỉnh.
 

@@ -80,7 +80,7 @@ Repo HF có 118.259 file trong `audio/` nhưng train+validation chỉ dùng 67.4
 | Tầng | Vào | Ra | Ghi chú |
 |---|---|---|---|
 | Dataset | file wav | `waveform [S]` float | 10–15 s → S = 160.000–240.000 |
-| `LogMelFeatureExtractor` | `[B, S]`, `[B]` | `feats [B, T, 80]`, `feat_lengths [B]` | `T = S//160 + 1` (hop 10 ms → **100 khung/giây**): 10 s → 1001, 13,4 s → 1341, 15 s → 1501. `log(clamp(mel, 1e-5))` → CMVN toàn cục `(x − mean)/std` (buffer, lưu trong checkpoint) → SpecAugment **chỉ khi `training`**: 2 mask tần số F=27 + 10 mask thời gian ≤ 5% độ dài thật, điền 0, không time warp. Luôn fp32 kể cả dưới AMP. Cấu hình ở mục `features` của yaml (từ 2026-10-04, căn cứ `docs/notes/frontend_decoder_survey.md`) |
+| `LogMelFeatureExtractor` | `[B, S]`, `[B]` | `feats [B, T, 80]`, `feat_lengths [B]` | `T = S//160 + 1` (hop 10 ms → **100 khung/giây**): 10 s → 1001, 13,4 s → 1341, 15 s → 1501. `log(clamp(mel, 1e-5))` → CMVN toàn cục `(x − mean)/std` (buffer, lưu trong checkpoint) → SpecAugment **chỉ khi `training`**: 2 mask tần số F=27 + 10 mask thời gian ≤ 5% độ dài thật, điền 0, không time warp. Luôn fp32 kể cả dưới AMP. Cấu hình ở mục `features` của yaml (từ 2026-10-04, căn cứ `docs/notes/khao_sat/frontend_decoder_survey.md`) |
 | `Conv2dSubsampling4` (chỉ config `subsampling`, nhánh 40 ms v2) | `feats [B, T, 80]` | `[B, T', 256]` | `T' = ((T-1)//2 - 1)//2` (15 s: 1501 → 374). Không có ở v1 và bảng chính v2 (10 ms) |
 | `ASREncoder.forward` | `feats`, `feat_lengths`, `layer_hook=None` | `hidden [B, T', 256]`, `out_lengths [B]` | **v1 và bảng chính v2 không subsampling: `T' = T`.** `layer_hook(i, x)` gọi sau lớp i (InterCTC v2) |
 | InterCTC + self-conditioning (chỉ config `interctc`, v2) | luồng residual ở lớp ⌊L/2⌋ | `inter log_probs [B, T', V]`; x += Linear(softmax) | chung `ctc_head`; B1 chuẩn hóa bằng `norm_f` trước head. Loss = 0,7·CTC + 0,3·InterCTC (`CTCASRModel.total_ctc_loss`); conditioning chạy cả lúc suy luận |
@@ -216,7 +216,7 @@ Ký hiệu: ✅ đã chạy thật · 🟡 chạy được một phần · ⬜ c
 | `scripts/kaggle/finetune_parakeet/` | Kernel GPU fine-tune Parakeet: `trial` (phủ tokenizer, khớp giải mã NeMo, probe fp32/fp16, 2 LR × 20′) / `main` (trần 420′). Sinh + push qua `launch.py` (`_build/` gitignore) | ⬜ chưa chạy |
 | `scripts/kaggle/zero_shot/zero_shot.py` | Kernel GPU: zero-shot Parakeet-CTC-0.6B-vi + PhoWhisper-small (wav2vec2 tuỳ chọn) trên 203 câu clean-test, greedy không LM, một mức WER + RTF + VRAM → `results.json`, `predictions.tsv` (có `split`) | 🟡 2026-10-06 kernel kiểm tra 5 câu trên T4 (tài khoản B) đạt cả hai; bản 203 câu đang chạy · đối chiếu `transcribe()` chính thức của NeMo chưa làm được (lhotse) |
 | `scripts/kaggle/train_trial/train_trial.py` | Kernel GPU train thử 3 mô hình (1 shard × 5 epoch): CHECK_CODE CUDA → chạy ngắn DDP + resume → 3 mô hình tuần tự → `trial_report.md` | ⬜ viết 2026-10-04, chưa chạy (chờ duyệt quota) |
-| `scripts/kaggle/benchmark/benchmark.py` | Kernel GPU (D9): s/step theo `num_workers` / AMP / 2 GPU × 2 encoder; tự viết vòng step, không gọi `train.py` | ✅ 2026-09-30 chạy đủ 8 cấu hình trên Kaggle (kết quả: `docs/notes/training_plan_kaggle.md` mục 5) · lần 3 (Mamba B1 + `CHECK_CODE` kiểm padding/tham số bằng kernel thật) sửa sẵn 2026-10-02, **chưa chạy** |
+| `scripts/kaggle/benchmark/benchmark.py` | Kernel GPU (D9): s/step theo `num_workers` / AMP / 2 GPU × 2 encoder; tự viết vòng step, không gọi `train.py` | ✅ 2026-09-30 chạy đủ 8 cấu hình trên Kaggle (kết quả: `docs/notes/ky_thuat/training_plan_kaggle.md` mục 5) · lần 3 (Mamba B1 + `CHECK_CODE` kiểm padding/tham số bằng kernel thật) sửa sẵn 2026-10-02, **chưa chạy** |
 | `scripts/kaggle/make_dataset/make_dataset.py` | Kernel CPU (D6): tạo 1 trong 5 dataset (sửa `PART`), kiểm WAV sau tải | 🟡 test local 20 file thật · chưa chạy trên Kaggle (cần push manifest) |
 | `scripts/kaggle/**/kernel-metadata.json` | Cấu hình kernel (chứa username) — **gitignore**, giữ local | — |
 
@@ -233,7 +233,7 @@ Ký hiệu: ✅ đã chạy thật · 🟡 chạy được một phần · ⬜ c
 - **d. Không subsampling.** `T' = T` ≈ 1000–1500 khung cho mỗi mẫu. Ảnh hưởng
   VRAM/`batch_size`, chi phí attention của Conformer, và cách đọc kết quả RQ2.
 - **e. Mamba hai chiều B1, padding xử lý bằng đảo theo độ dài (2026-10-02).**
-  Lý do chuyển và phương án: `docs/notes/mamba_bidirectional.md`. Nhánh ngược
+  Lý do chuyển và phương án: `docs/notes/khao_sat/mamba_bidirectional.md`. Nhánh ngược
   dùng `reverse_padded` (gather theo `feat_lengths`), **không** `torch.flip` cả
   tensor — flip đưa padding lên đầu chuỗi, lọt vào trạng thái scan (test đối
   chứng: lệch ~1e-1). Nhờ vậy với mọi khối padding luôn nằm *sau* khung thật
@@ -292,14 +292,14 @@ Ký hiệu: ✅ đã chạy thật · 🟡 chạy được một phần · ⬜ c
 - **i. Bucket độ dài theo đề cương, không theo dữ liệu.** `rtf.py`
   (`3–30 s`) và `survey.py` chia bucket theo giả định của đề cương, trong khi
   dữ liệu thật chỉ 10–15 s. **Không sửa** khi quyết định 🔴 về RQ2 chưa có
-  (`docs/notes/dataset_discrepancy.md`).
+  (`docs/notes/du_lieu/dataset_discrepancy.md`).
 - **k. Bản chép `text_normalize.py` trong kernel `zero_shot`.** Kernel chỉ
   upload 1 file nên nhúng nguyên văn module dạng chuỗi; sửa module thì phải chép
   lại (kernel tự so khớp với repo local/GitHub và báo nếu lệch).
 - **j. Docstring lỗi thời — đã sửa 2026-09-21** (`vietsuperspeech_dataset.py`,
   `wer.py`).
 
-### 8-v2. Công thức v2 (2026-10-12, `configs/v2/`, `docs/notes/conextbimamba_gap_2026-10-12.md` mục 7-8)
+### 8-v2. Công thức v2 (2026-10-12, `configs/v2/`, `docs/notes/ket_qua/conextbimamba_gap_2026-10-12.md` mục 7-8)
 
 - Encoder thứ tư `conformer_relpos` (`src/models/conformer_relpos_encoder.py`): PE tương đối kiểu ESPnet qua
   bias của `F.scaled_dot_product_attention` (bản tính tay tràn RAM), xoá padding trước depthwise conv (v1

@@ -6,7 +6,7 @@
   "seed": 42,
   "results_checked": "reports/results/clean_test_scored_2026-10-16_chung/results.json",
   "max_abs_diff_vs_results": 0.0,
-  "rules": "docs/notes/rq3_phan_ra_loi_2026-10-16.md mục 1",
+  "rules": "docs/notes/ket_qua/rq3_phan_ra_loi_2026-10-16.md mục 1",
   "ci_note": "bootstrap khối video; hàng nhiều seed: CI của trung bình seed (cùng chỉ số lấy mẫu), không gồm dao động seed"
  },
  "rows": {

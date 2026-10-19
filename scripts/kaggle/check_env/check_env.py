@@ -1,5 +1,5 @@
 """Kernel Kaggle **CPU** (không tốn quota GPU) — bước 1 của D9 trong
-docs/notes/training_plan_kaggle.md mục 5: đo môi trường trước khi viết
+docs/notes/ky_thuat/training_plan_kaggle.md mục 5: đo môi trường trước khi viết
 notebook tạo 5 dataset (4 shard train + 1 val). Mọi con số trước đó chỉ là
 ước lượng.
 

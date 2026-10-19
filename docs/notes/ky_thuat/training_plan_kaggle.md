@@ -3,7 +3,7 @@
 Tổng hợp thảo luận phiên 2026-09-26: vấn đề đã nêu, quyết định người dùng
 đã chốt, và **đề xuất của AI** cho các quyết định còn bỏ dở. Phần đề xuất
 **chưa được duyệt** — chưa sửa code, chưa tạo dataset. Số liệu gốc và nguồn
-web ở [`prefetch_storage_review.md`](prefetch_storage_review.md).
+web ở [`prefetch_storage_review.md`](../du_lieu/prefetch_storage_review.md).
 
 > **2026-09-28: người dùng đã duyệt D1-D11** (D3 đổi sang **4 shard**) và
 > chọn cách train "full, đánh giá theo epoch" — xem [mục 5](#5-duyệt-2026-09-28).

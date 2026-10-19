@@ -4,7 +4,7 @@ Luật cho Claude Code khi làm việc trong repo này. Ngắn có chủ đích:
 trạng thái ở `Plan.md`, việc cần làm ở `TODO.md`, kiến trúc ở
 `ARCHITECTURE.md`, quy ước chi tiết ở `docs/CONVENTIONS.md`. **Không lặp lại
 nội dung các file đó ở đây** — chỉ ghi thứ cần biết *trước khi chạm vào code*.
-Dọn lại 2026-10-15 sau bản rà soát độc lập `docs/notes/review_fable_2026-10-15.md`.
+Dọn lại 2026-10-15 sau bản rà soát độc lập `docs/notes/review/review_fable_2026-10-15.md`.
 
 ## Đề tài (3 dòng)
 
@@ -15,7 +15,7 @@ B1, ConExtBiMamba, Conformer PE tương đối (bản không PE là ablation), �
 hình 10 ms và 40 ms**. Nhóm pre-train (Parakeet-CTC-0.6B-vi, PhoWhisper-small)
 chỉ là mốc tham chiếu. Ba RQ: độ chính xác · hiệu quả theo độ dài audio và
 GPU-giờ · đặc điểm lỗi + chất lượng nhãn. Chi tiết, số liệu, kết luận viết sẵn
-theo nhánh: `Plan.md` mục 1 và `docs/notes/ket_qua_cuoi_khung_2026-10-15.md`.
+theo nhánh: `Plan.md` mục 1 và `docs/notes/ket_qua/ket_qua_cuoi_khung_2026-10-15.md`.
 Đề cương mới chưa duyệt; thực tế lệch đề cương cũ (Kaggle thay Colab, số liệu
 dataset, RQ2 audio ghép) là có chủ đích, đã ghi.
 
@@ -26,11 +26,11 @@ dataset, RQ2 audio ghép) là có chủ đích, đã ghi.
    (mục 7)**. Mục 6 là khóa luận + lịch gặp GVHD (≤ 2 tuần/lần).
 3. `git log --oneline -10` + `git status` — đừng giả định trạng thái phiên trước.
 4. Bàn về phạm vi, thí nghiệm, cách kết luận → đọc **bản phản biện chốt**
-   `docs/notes/review_fable_2026-10-15.md` (mục 2 phương án, mục 3 những gì đã
+   `docs/notes/review/review_fable_2026-10-15.md` (mục 2 phương án, mục 3 những gì đã
    loại, mục 4 quyết định mở) trước khi đề xuất bất cứ gì.
 5. Đụng code → `ARCHITECTURE.md` (mục 8 cạm bẫy, 8-v2a công thức chung).
-   Quy tắc phân tích chốt trước: `docs/notes/conextbimamba_gap_2026-10-12.md`
-   mục 9.4. Quy tắc chấm clean-test: `docs/notes/clean_test_results_2026-10-15.md`
+   Quy tắc phân tích chốt trước: `docs/notes/ket_qua/conextbimamba_gap_2026-10-12.md`
+   mục 9.4. Quy tắc chấm clean-test: `docs/notes/ket_qua/clean_test_results_2026-10-15.md`
    mục 1.
 
 ## Cuối mỗi phiên
@@ -91,7 +91,7 @@ Không tự commit khi người dùng chưa yêu cầu.
   mang `split`.
 - `load_dataset` ~45 s/lần kể cả đã cache → làm ấm rồi `HF_HUB_OFFLINE=1`.
 - `mamba-ssm` pin tag `v2.3.1`, build `--no-build-isolation`; wheel cp313 có trong
-  dataset `mamba-wheels`. Log: `docs/notes/mamba_ssm_install_log.md`.
+  dataset `mamba-wheels`. Log: `docs/notes/ky_thuat/mamba_ssm_install_log.md`.
 - Kaggle: audio là 5 Dataset tar → `python -m src.data.extract_audio` vào
   `/tmp/audio_cache`, đặt `AUDIO_CACHE_DIR`. Kernel kẹt cấp máy (RUNNING, 0 log
   > 15′, quota tăng) đã xảy ra 3 lần → huỷ, quota hoàn, đẩy lại. API log stream

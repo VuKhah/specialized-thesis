@@ -1,5 +1,5 @@
 """Kernel Kaggle **CPU** (B, C, D — người dùng 19/10: việc CPU chia cho các tài khoản trừ A) — tối ưu giải mã beam + LM
-cho nhánh 40 ms trên GigaSpeech 2 (`docs/notes/so_sanh_hien_hanh_2026-10-19.md` B.2 mục 4: chỉ chỉnh trên **dev**, test
+cho nhánh 40 ms trên GigaSpeech 2 (`docs/notes/ket_qua/so_sanh_hien_hanh_2026-10-19.md` B.2 mục 4: chỉ chỉnh trên **dev**, test
 chỉ để báo). Mỗi tài khoản một encoder (`ENCODER`); cấu hình chung cho cả 3 encoder chọn ở local từ `tune.json` của 3 kernel.
 
 Môi trường: Python 3.12 riêng qua uv + torch/torchaudio 2.8 CPU + flashlight-text 0.0.7 (bản Linux kèm KenLM; image

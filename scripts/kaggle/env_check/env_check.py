@@ -1,6 +1,6 @@
 """Kernel Kaggle **GPU** (2x T4) — kiểm môi trường + build wheel mamba trước train thử.
 
-Sau sự cố 2026-10-04/05 (`docs/notes/training_plan_kaggle.md` mục 6): image GPU mặc định
+Sau sự cố 2026-10-04/05 (`docs/notes/ky_thuat/training_plan_kaggle.md` mục 6): image GPU mặc định
 đã lên Python 3.13, wheel cp312 cũ không cài được; ghim image cũ thì máy GPU không chạy
 được script. Phương án A (người dùng chọn 2026-10-05): **giữ mamba-ssm v2.3.1 +
 causal-conv1d v1.5.4**, build lại từ mã nguồn trên image mặc định.

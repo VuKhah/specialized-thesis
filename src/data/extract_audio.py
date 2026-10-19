@@ -1,6 +1,6 @@
 """Giải nén tar audio của các Kaggle Dataset vào cache local trước khi train.
 
-Chốt 2026-09-30 (`PACK_TAR = True`, docs/notes/training_plan_kaggle.md mục 5):
+Chốt 2026-09-30 (`PACK_TAR = True`, docs/notes/ky_thuat/training_plan_kaggle.md mục 5):
 5 dataset là tar do `scripts/kaggle/make_dataset/make_dataset.py` tạo, mỗi tar
 chứa `audio/...` kèm `<part>.tsv` cùng thư mục. Giải nén vào `/tmp` (máy GPU
 trống ~1,1 TB), **không** `/kaggle/working` (giới hạn 20 GB output); số đo tốc

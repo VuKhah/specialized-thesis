@@ -71,7 +71,7 @@ checkpoints/, data/, runs/           KHÔNG commit (mục 6)
   `conformer_ctc_baseline`. Dùng đặt tên checkpoint/log; **không đổi giữa
   chừng** (gãy resume/so sánh).
 - Split dataset: đúng tên thật trên HF Hub — `train`, `validation` (không dùng
-  `dev-test`, đề cương ghi nhầm — xem `docs/notes/dataset_discrepancy.md`).
+  `dev-test`, đề cương ghi nhầm — xem `docs/notes/du_lieu/dataset_discrepancy.md`).
 
 ## 4. Quy ước code
 
@@ -173,8 +173,8 @@ ghi chú `.md`, số liệu tổng hợp nhỏ.
   mới thì thêm vào kèm 1 dòng comment lý do nếu không hiển nhiên.
 - Cài `mamba-ssm`: luôn pin tag `v2.3.1`, không dùng `main` (kéo theo
   Mamba-3/tilelang/tvm, lỗi Python 3.12 — xem
-  `docs/notes/mamba_ssm_install_log.md`). Mamba-3 đang tạm gác
-  (`docs/notes/mamba_versions.md`).
+  `docs/notes/ky_thuat/mamba_ssm_install_log.md`). Mamba-3 đang tạm gác
+  (`docs/notes/khao_sat/mamba_versions.md`).
 - Training có checkpoint/resume (đã xong, commit `139f018`) vì Kaggle giới
   hạn session liên tục.
 

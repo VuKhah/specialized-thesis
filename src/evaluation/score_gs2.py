@@ -1,4 +1,4 @@
-"""Chấm test GigaSpeech 2 tiếng Việt (phương án B, 2026-10-19) — quy tắc `docs/notes/so_sanh_hien_hanh_2026-10-19.md`
+"""Chấm test GigaSpeech 2 tiếng Việt (phương án B, 2026-10-19) — quy tắc `docs/notes/ket_qua/so_sanh_hien_hanh_2026-10-19.md`
 mục B.2, khoá khi người dùng xem kết quả lần đầu (19/10).
 
 Dùng lại nguyên hàm chấm của `score_clean_test.py` (normalize_text + canon_tone + alt_spellings + bỏ từ đệm, đếm lỗi

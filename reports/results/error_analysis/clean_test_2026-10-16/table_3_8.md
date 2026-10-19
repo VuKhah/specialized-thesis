@@ -1,6 +1,6 @@
 # Bảng 3.8 — Phân rã lỗi clean-test (203 câu, 29 video)
 
-Số là % trên số từ ref (cùng mẫu số với WER, nên S + D + I = WER và thanh + dấu phụ + khác = S), trừ cột ghi khác. 40 ms: trung bình ± sd 3 seed. Quy tắc: `docs/notes/rq3_phan_ra_loi_2026-10-16.md` mục 1.
+Số là % trên số từ ref (cùng mẫu số với WER, nên S + D + I = WER và thanh + dấu phụ + khác = S), trừ cột ghi khác. 40 ms: trung bình ± sd 3 seed. Quy tắc: `docs/notes/ket_qua/rq3_phan_ra_loi_2026-10-16.md` mục 1.
 
 ### 3.8a — Train từ đầu, cấu hình 10 ms, ep37, 1 seed, greedy
 

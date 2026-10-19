@@ -3,7 +3,7 @@
 Thiết kế "chỉ hoán đổi encoder" (đề cương, Chương 2): mọi phần ngoài encoder ở đây dùng chung cho cả
 ba encoder, không được thêm logic riêng theo encoder.
 
-Thêm 2026-10-12 (công thức v2 — `docs/notes/conextbimamba_gap_2026-10-12.md` mục 7-8), đều tắt mặc định
+Thêm 2026-10-12 (công thức v2 — `docs/notes/ket_qua/conextbimamba_gap_2026-10-12.md` mục 7-8), đều tắt mặc định
 để checkpoint v1 nạp và chạy y như cũ:
 - `subsampling`: Conv2d 4× (nhánh 40 ms).
 - `interctc`: CTC phụ ở lớp giữa (Lee & Watanabe, arXiv:2102.03216: w = 0,3, lớp ⌊L/2⌋) + self-conditioning

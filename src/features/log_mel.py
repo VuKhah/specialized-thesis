@@ -6,7 +6,7 @@ mất công bằng.
 
 log-mel 80 kênh, cửa sổ 25 ms, bước 10 ms — giống Conformer (Gulati 2020),
 Whisper, FastConformer/NeMo, ConMamba. Thêm 2026-10-04 (người dùng duyệt,
-căn cứ: docs/notes/frontend_decoder_survey.md):
+căn cứ: docs/notes/khao_sat/frontend_decoder_survey.md):
 - CMVN **toàn cục** (như ConMamba `InputNormalization(global)`, recipe
   Conformer torchaudio): mean/std cố định tính trên train → không phụ thuộc độ
   dài câu, nên audio ghép dài của RQ2 nhận đúng phép biến đổi như lúc train

@@ -5,7 +5,7 @@ và XIV: giữ macaron FFN + conv module (Swish) của Conformer, chỗ MHSA đ�
 Mamba xuôi/ngược kiểu "ngoài" (chung LayerNorm, cộng — giống hệt một lớp B1),
 không positional encoding (Bảng XIV: thêm PE không đổi WER).
 
-Lệch bài có chủ đích (ghi ở docs/notes/lineup_preparation.md mục 5):
+Lệch bài có chủ đích (ghi ở docs/notes/ky_thuat/lineup_preparation.md mục 5):
 - Bài giữ nguyên kích thước Conformer nên ConExtBiMamba nhiều tham số hơn
   (34,23M → 41,59M, Bảng XII). Ở đây khớp ~12M với Conformer-12M bằng cách
   giảm số lớp + ffn_dim (yaml), giữ khối Mamba mặc định như B1.

@@ -129,7 +129,7 @@ HEAD_JS = """
 """
 
 GUIDE = """
-**Cách hiệu đính** (chi tiết: `docs/notes/clean_test_correction_guide.md`)
+**Cách hiệu đính** (chi tiết: `docs/notes/du_lieu/clean_test_correction_guide.md`)
 1. Nghe hết câu, sửa ô *Bản hiệu đính* cho **đúng từng từ được nói** — kể cả từ đệm (thì, là, á, à, ừ) nếu nói rõ.
 2. Không cần dấu câu, hoa/thường tuỳ ý. **Số viết bằng chữ** (*hai mươi bảy*, không *27*).
 3. Tiếng Anh viết đúng chính tả (*marketing, team*); viết tắt liền (*nft*).

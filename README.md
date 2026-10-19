@@ -53,7 +53,7 @@ audio 16 kHz → log-mel 80 (25/10 ms) → CMVN toàn cục → SpecAugment (ch�
 
 Không subsampling (giữ 100 khung/giây để RQ2 phản ánh đúng chi phí theo độ
 dài); giải mã CTC greedy, không LM. Lý do chọn CTC, CMVN, SpecAugment, dropout
-(có trích nguồn): [`docs/notes/frontend_decoder_survey.md`](docs/notes/frontend_decoder_survey.md).
+(có trích nguồn): [`docs/notes/khao_sat/frontend_decoder_survey.md`](docs/notes/khao_sat/frontend_decoder_survey.md).
 Sơ đồ chi tiết, shape tensor, luồng dữ liệu: [`ARCHITECTURE.md`](ARCHITECTURE.md).
 
 ## Tiến độ
@@ -124,9 +124,9 @@ pip install --no-build-isolation git+https://github.com/state-spaces/mamba@v2.3.
 
 Bắt buộc pin tag `v2.3.1` (Mamba-1/S6 cổ điển); nhánh `main` kéo
 Mamba-3/tilelang/tvm, lỗi với Python 3.12. Log các lần thử:
-[`docs/notes/mamba_ssm_install_log.md`](docs/notes/mamba_ssm_install_log.md);
+[`docs/notes/ky_thuat/mamba_ssm_install_log.md`](docs/notes/ky_thuat/mamba_ssm_install_log.md);
 khác biệt Mamba/S6 vs Mamba-2 vs Mamba-3:
-[`docs/notes/mamba_versions.md`](docs/notes/mamba_versions.md). Thực nghiệm
+[`docs/notes/khao_sat/mamba_versions.md`](docs/notes/khao_sat/mamba_versions.md). Thực nghiệm
 chạy trên **Kaggle** (2x T4), không phải Google Colab như đề cương cũ ghi.
 
 ## Dataset
@@ -135,7 +135,7 @@ chạy trên **Kaggle** (2x T4), không phải Google Colab như đề cương c
 (pin revision `cbf624ae9b`) — tiếng Việt hội thoại tự nhiên từ YouTube,
 `train` 60.656 mẫu (220,84 h) + `validation` 6.749 mẫu (24,57 h); audio gần như
 đồng nhất 10-15 s (khác số liệu trong đề cương cũ — xem
-[`docs/notes/dataset_discrepancy.md`](docs/notes/dataset_discrepancy.md)).
+[`docs/notes/du_lieu/dataset_discrepancy.md`](docs/notes/du_lieu/dataset_discrepancy.md)).
 Transcript là pseudo-label (Zipformer-30M-RNNT-6000h), chưa qua kiểm định người.
 
 **Lọc dữ liệu (A1):** một phần audio không phải tiếng Việt (phỏng vấn khách

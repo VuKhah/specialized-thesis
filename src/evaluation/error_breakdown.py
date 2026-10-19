@@ -4,7 +4,7 @@ Module mới thay vì sửa `error_analysis.py`: module đó chấm bằng `norm
 (08/10), nên tổng lỗi không khớp bảng chính hiện hành. Ở đây mọi token hoá, từ đệm, alt_spellings, `canon_tone`, từ vấp
 dở, nhóm Việt/ngoại và nguồn giả thuyết đều lấy từ `score_clean_test` → S + D + I cộng đúng về WER của
 `clean_test_scored_2026-10-16_chung/results.json` (kiểm trong `main`, sai thì dừng). Quy tắc phân loại chốt trước khi
-tính: `docs/notes/rq3_phan_ra_loi_2026-10-16.md` mục 1.
+tính: `docs/notes/ket_qua/rq3_phan_ra_loi_2026-10-16.md` mục 1.
 
     python -m src.evaluation.error_breakdown [--out_dir DIR] [--n_boot 10000] [--seed 42]
 """
@@ -279,7 +279,7 @@ def main() -> None:
     out.mkdir(parents=True, exist_ok=True)
     meta = {"n_sentences": len(samples), "n_videos": len(videos), "n_boot": args.n_boot, "seed": args.seed,
             "results_checked": RESULTS.as_posix(), "max_abs_diff_vs_results": max(check.values()),
-            "rules": "docs/notes/rq3_phan_ra_loi_2026-10-16.md mục 1",
+            "rules": "docs/notes/ket_qua/rq3_phan_ra_loi_2026-10-16.md mục 1",
             "ci_note": "bootstrap khối video; hàng nhiều seed: CI của trung bình seed (cùng chỉ số lấy mẫu), "
                        "không gồm dao động seed"}
     (out / "summary.json").write_text(json.dumps(
@@ -321,7 +321,7 @@ def _cell(e: dict, m: str, nd: int = 2, scale: float = 100) -> str:
 def render_markdown(rows: dict, totals: dict, confusions: list, meta: dict) -> str:
     L = ["# Bảng 3.8 — Phân rã lỗi clean-test (203 câu, 29 video)", "",
          "Số là % trên số từ ref (cùng mẫu số với WER, nên S + D + I = WER và thanh + dấu phụ + khác = S), trừ cột ghi "
-         "khác. 40 ms: trung bình ± sd 3 seed. Quy tắc: `docs/notes/rq3_phan_ra_loi_2026-10-16.md` mục 1.", ""]
+         "khác. 40 ms: trung bình ± sd 3 seed. Quy tắc: `docs/notes/ket_qua/rq3_phan_ra_loi_2026-10-16.md` mục 1.", ""]
     for sec, title in SECTIONS.items():
         rs = [e for e in rows.values() if e["section"] == sec]
         L += [f"### 3.8a — {title}", "",

@@ -1,6 +1,6 @@
 """Danh sách đoạn loại khỏi train/val/clean-test vì audio không phải tiếng Việt
 hoặc nhãn hỏng — quyết định A1 (người dùng chốt 2026-10-03, phương án C ∩ L,
-docs/notes/survey_model_candidates.md mục 6).
+docs/notes/khao_sat/survey_model_candidates.md mục 6).
 
 Vì sao hai tín hiệu: nhãn do Zipformer chỉ-tiếng-Việt sinh tự động. Lọc theo
 nhãn bắt được tiếng Anh bị phiên thành chuỗi giả tiếng Anh, nhưng để lọt tiếng

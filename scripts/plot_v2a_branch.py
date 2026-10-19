@@ -5,7 +5,7 @@
 Đọc `reports/results/train_full/{<model>,v2a-<model>}/s*/checkpoints/*/metrics.jsonl` và
 `reports/results/avg_eval_v1_2026-10-13/results.json`; ra `wer_curves.png` + `summary.md` trong thư mục đích.
 
-Checkpoint bảng chính là ep37 (quy tắc 9.4 mục 9 `docs/notes/conextbimamba_gap_2026-10-12.md`, chốt trước khi có
+Checkpoint bảng chính là ep37 (quy tắc 9.4 mục 9 `docs/notes/ket_qua/conextbimamba_gap_2026-10-12.md`, chốt trước khi có
 số) — best/avg v1 chỉ là số tham chiếu. Không vẽ trục GPU-giờ: quy tắc trục cùng GPU-giờ chưa chốt (10. cùng note),
 bảng chỉ ghi thời gian train đo được như một dữ kiện.
 """

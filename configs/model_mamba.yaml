@@ -1,5 +1,5 @@
 # Mamba-CTC. 2026-10-02 chuyển sang hai chiều phương án B1
-# (docs/notes/mamba_bidirectional.md): 14 lớp × 2 khối Mamba (xuôi + ngược,
+# (docs/notes/khao_sat/mamba_bidirectional.md): 14 lớp × 2 khối Mamba (xuôi + ngược,
 # chung LayerNorm) = vẫn 28 khối như bản một chiều n_layers=28 chọn
 # 2026-09-24 để khớp tham số với model_conformer.yaml. Tính theo shape
 # mamba_ssm.Mamba v2.3.1: 12.285.696 vs 12.204.288 (+0,67%, mục tiêu < 5%) —
@@ -57,5 +57,5 @@ data:
   extra_eval_manifests: [val_unseen] # video giữ riêng (make_heldout.py), chỉ ghi log
   sample_rate: 16000
   # Speed perturbation on-the-fly lúc train (Ko 2015; chốt 2026-10-05,
-  # docs/notes/audio_preprocessing_survey.md mục 5). PHẢI giống nhau ở mọi config train từ đầu.
+  # docs/notes/khao_sat/audio_preprocessing_survey.md mục 5). PHẢI giống nhau ở mọi config train từ đầu.
   speed_perturb: [0.9, 1.0, 1.1]

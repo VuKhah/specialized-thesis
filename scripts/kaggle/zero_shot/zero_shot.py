@@ -1,6 +1,6 @@
 """Kernel Kaggle **GPU** (T4) — đo zero-shot (không fine-tune) nhóm pre-train trên 203 câu clean-test
 (manifest bản 2, video giữ riêng): Parakeet-CTC-0.6B-vi (#4) + PhoWhisper-small (dự bị) — đội hình chốt
-2026-10-03 (`docs/notes/lineup_preparation.md`). wav2vec2-base-vi còn trong MODEL_SPECS, chỉ chạy khi
+2026-10-03 (`docs/notes/ky_thuat/lineup_preparation.md`). wav2vec2-base-vi còn trong MODEL_SPECS, chỉ chạy khi
 `ZS_MODELS` nêu tên. Một mức WER trên cả 203 câu (A1 đã lọc nhãn hỏng khi tạo manifest).
 
     kaggle kernels push -p scripts/kaggle/zero_shot -t 7200
@@ -62,7 +62,7 @@ OUT_DIR = Path(os.environ.get("ZS_OUT", "/kaggle/working" if ON_KAGGLE else _LOC
 AUDIO_DIR = Path(os.environ.get("ZS_AUDIO", "/tmp/clean_test_audio" if ON_KAGGLE else _LOCAL_TMP / "audio"))
 # "all" (mặc định từ 2026-10-08): làm ấm bằng một lượt trọn mọi câu rồi mới đo. Lý do: mỗi câu một độ dài
 # → lần đầu gặp mỗi shape, cuDNN dựng kế hoạch conv (~0,35 s/batch với Conformer/ConExt, đo ở
-# docs/notes/subsample_speed_2026-10-08.md mục 4) — làm ấm 3 câu như bản 2026-10-06 thì RTF của mô hình có
+# docs/notes/ket_qua/subsample_speed_2026-10-08.md mục 4) — làm ấm 3 câu như bản 2026-10-06 thì RTF của mô hình có
 # conv cuDNN bị thổi phồng. Số nguyên N = làm ấm N câu đầu (cách cũ).
 _WARMUP_ENV = os.environ.get("ZS_WARMUP", "all")
 N_WARMUP = None if _WARMUP_ENV == "all" else int(_WARMUP_ENV)
@@ -153,7 +153,7 @@ def has_digit(text: str) -> bool:
 def diacritic_word_ratio(text: str) -> float:
     """Tỉ lệ từ mang dấu tiếng Việt (NFD rồi tìm ký tự combining; `đ` tính là có dấu).
 
-    Heuristic CHƯA KIỂM CHỨNG (docs/notes/survey_model_candidates.md mục 4): đo
+    Heuristic CHƯA KIỂM CHỨNG (docs/notes/khao_sat/survey_model_candidates.md mục 4): đo
     ngôn ngữ của *nhãn*, không phải của audio."""
     words = normalize_text(text).split()
     if not words:

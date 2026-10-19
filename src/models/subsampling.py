@@ -1,7 +1,7 @@
 """Conv2d subsampling 4× (khung 10 ms → 40 ms) cho nhánh 40 ms (kế hoạch 2026-10-12).
 
 Kiểu `Conv2dSubsampling` của ESPnet — cùng dạng với phép đo tốc độ 2026-10-08
-(`docs/notes/subsample_speed_2026-10-08.md`, biến thể b): 2 conv 3×3 stride 2 không padding, ReLU,
+(`docs/notes/ket_qua/subsample_speed_2026-10-08.md`, biến thể b): 2 conv 3×3 stride 2 không padding, ReLU,
 rồi Linear về d_model. ConMamba dùng CNN 2 lớp stride 2 tương tự (4×). Đặt giữa front-end và encoder,
 dùng chung cho cả ba encoder → mọi encoder cùng nhận chuỗi T' = ((T - 1) // 2 - 1) // 2.
 """

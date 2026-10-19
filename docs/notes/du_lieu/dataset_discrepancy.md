@@ -63,7 +63,7 @@ kỹ thuật có thể tự sửa bằng code — cần quyết định về ph�
    cùng lúc với việc số liệu tổng thể cũng sai khác (mẫu 3, dòng "Dữ liệu
    sử dụng").
 
-Xem thêm: [`docs/notes/mamba_ssm_install_log.md`](mamba_ssm_install_log.md)
+Xem thêm: [`docs/notes/ky_thuat/mamba_ssm_install_log.md`](../ky_thuat/mamba_ssm_install_log.md)
 cho tiền lệ tương tự (đề cương vs Kaggle) — lần đó người dùng chọn "chỉ sửa
 tài liệu nội bộ, giữ nguyên đề cương đã nộp". Trường hợp này nghiêm trọng
 hơn vì ảnh hưởng trực tiếp đến thiết kế RQ2, không chỉ là chi tiết hạ tầng.

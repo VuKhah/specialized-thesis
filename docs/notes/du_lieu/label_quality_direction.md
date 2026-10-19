@@ -7,7 +7,7 @@ Ràng buộc người dùng đặt: **không thêm run train**. Độ sâu đế
 ## 1. Điểm xuất phát
 
 Transcript VietSuperSpeech là **nhãn giả**, sinh tự động bằng Zipformer-30M-RNNT-6000h qua Sherpa-ONNX,
-**không người kiểm tay** (`docs/notes/de-tai-phowhisper-vietsuperspeech.md`; *cần kiểm lại thẻ dữ liệu trên HF để
+**không người kiểm tay** (`docs/notes/de_cuong_gvhd/de-tai-phowhisper-vietsuperspeech.md`; *cần kiểm lại thẻ dữ liệu trên HF để
 trích nguồn chính xác*). Hệ quả:
 - Mọi mô hình train từ đầu của dự án học từ nhãn của một mô hình khác.
 - WER trên val / val_unseen đo so với chính nhãn máy đó.

@@ -2,10 +2,10 @@
 điển (mamba_ssm.Mamba, pin tag v2.3.1), đúng như trích dẫn trong đề cương
 (Gu & Dao, arXiv:2312.00752). KHÔNG dùng Mamba-2/Mamba-3 (khác kiến trúc,
 khác mục tiêu thiết kế, ngoài phạm vi đề cương đã đăng ký — xem
-docs/notes/mamba_versions.md).
+docs/notes/khao_sat/mamba_versions.md).
 
 Mặc định hai chiều kiểu "ngoài" (phương án B1, chốt 2026-10-02 — lý do và
-cách tính tham số ở docs/notes/mamba_bidirectional.md): Conformer nhìn cả câu,
+cách tính tham số ở docs/notes/khao_sat/mamba_bidirectional.md): Conformer nhìn cả câu,
 Mamba một chiều chỉ nhìn quá khứ → RQ1 lẫn biến "ngữ cảnh một phía". Cờ
 `bidirectional=False` giữ lại đường một chiều cũ (28 lớp) cho phần thảo luận.
 

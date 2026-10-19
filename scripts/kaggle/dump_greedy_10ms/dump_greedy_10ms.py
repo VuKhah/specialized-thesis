@@ -1,5 +1,5 @@
 """Kernel Kaggle **GPU** (2x T4) — chấm greedy clean-test cho 4 checkpoint ep37 nhánh 10 ms (v2a) + Parakeet fine-tune
-`best.pt` (2026-10-16, việc L2 của `docs/notes/review_fable_2026-10-15.md`, người dùng chốt quyết định #3, #7).
+`best.pt` (2026-10-16, việc L2 của `docs/notes/review/review_fable_2026-10-15.md`, người dùng chốt quyết định #3, #7).
 
 Vì sao: bảng 10 ms đang chấm bằng ep28 v1 trong khi quy tắc 9.4 điều 9 chốt ep37; Conformer relPE 10 ms chưa chấm;
 Parakeet fine-tune chưa có số clean-test. Mamba/ConExt cần CUDA nên không chạy local.

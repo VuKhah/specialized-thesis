@@ -1,13 +1,13 @@
 """Đo RQ2 cuối: độ trễ, RTF, VRAM đỉnh, số tham số theo độ dài audio ghép nhân tạo (batch 1, 1 GPU).
 
 Thay bản cũ (bucket 3-30 s theo đề cương — dữ liệu thật chỉ 10-15 s; RQ2 đổi cách hỏi 2026-10-03,
-`docs/notes/dataset_discrepancy.md`) và gom phần đo của pilot (`scripts/kaggle/rq2_pilot/`, ghi chú
-`docs/notes/rq2_pilot_2026-10-05.md`) thành module. Khác pilot:
+`docs/notes/du_lieu/dataset_discrepancy.md`) và gom phần đo của pilot (`scripts/kaggle/rq2_pilot/`, ghi chú
+`docs/notes/ket_qua/rq2_pilot_2026-10-05.md`) thành module. Khác pilot:
 - Dựng mô hình đúng code train (`build_model` + yaml, kể cả subsampling 4× thật của nhánh 40 ms) thay khối
   subsampling dựng tạm; nạp được checkpoint thật (`--checkpoints`), mặc định trọng số ngẫu nhiên seed 0 —
   chi phí không phụ thuộc giá trị trọng số (không có rẽ nhánh theo dữ liệu trong encoder).
 - Làm ấm **đúng từng shape** trước khi đo (cuDNN dựng kế hoạch conv cho mỗi shape mới — lượt đầu Conformer/ConExt
-  tốn ~1,1 s cố định, `docs/notes/subsample_speed_2026-10-08.md` mục 4).
+  tốn ~1,1 s cố định, `docs/notes/ket_qua/subsample_speed_2026-10-08.md` mục 4).
 - Số lần đo thích ứng (≥ `min_runs`), ghi trung vị + IQR + min/max; OOM là một kết quả (ghi dòng `oom`, chia đôi
   khoảng để tìm độ dài tối đa, các mức dài hơn ghi `skipped`).
 - InterCTC tắt mặc định (`--interctc off`): phạm vi "A + 40 ms" (2026-10-12) train không InterCTC. Lưu ý: trong

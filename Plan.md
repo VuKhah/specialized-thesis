@@ -1,8 +1,8 @@
 # Plan.md — Kế hoạch, trạng thái & quyết định
 
 Cập nhật lần cuối: **2026-10-15** (dọn lại mục 1–6 sau bản rà soát độc lập
-`docs/notes/review_fable_2026-10-15.md`; nhật ký trước 2026-10-11 chuyển nguyên
-văn sang `docs/notes/plan_nhat_ky_luu_tru_den_2026-10-08.md`). Đây là nơi **nối
+`docs/notes/review/review_fable_2026-10-15.md`; nhật ký trước 2026-10-11 chuyển nguyên
+văn sang `docs/notes/luu_tru/plan_nhat_ky_luu_tru_den_2026-10-08.md`). Đây là nơi **nối
 tiếp giữa các phiên**: kế hoạch theo tuần, trạng thái, quyết định đã chốt/đang
 mở, nhật ký phiên. Việc chi tiết ở [`TODO.md`](TODO.md); kiến trúc ở
 [`ARCHITECTURE.md`](ARCHITECTURE.md); luật cho AI ở [`CLAUDE.md`](CLAUDE.md).
@@ -16,7 +16,7 @@ mở, nhật ký phiên. Việc chi tiết ở [`TODO.md`](TODO.md); kiến trú
 (sau lọc A1 + giữ riêng 29 video: train 45.442 câu / 165,18 h; val 4.824; val_unseen
 3.011; clean-test 203 câu đã hiệu đính tay), nhận xét theo đánh đổi **độ chính xác
 – tốc độ – tài nguyên** (GVHD lần 1, 2026-10-01). Đề cương đã nộp sẽ được thay
-bằng **đề cương mới** (nháp `docs/notes/de_cuong_moi_nhap.md`, chưa duyệt);
+bằng **đề cương mới** (nháp `docs/notes/de_cuong_gvhd/de_cuong_moi_nhap.md`, chưa duyệt);
 `docs/de_cuong/*.docx` cũ giữ nguyên.
 
 **Đội hình:**
@@ -53,8 +53,8 @@ train từ đầu, seed 42 (⛔ #4: thêm seed 43, 44).
   CTC, tiếng Anh/tên riêng, xoá/chèn, thanh điệu); nhãn giả sai bao nhiêu, mô
   hình có vượt "thầy", xếp hạng trên nhãn giả có giữ khi đo trên nhãn thật?
 
-Bảng, hình, kết luận viết sẵn theo nhánh: `docs/notes/ket_qua_cuoi_khung_2026-10-15.md`.
-Quy tắc phân tích chốt trước khi có số: `docs/notes/conextbimamba_gap_2026-10-12.md` mục 9.4.
+Bảng, hình, kết luận viết sẵn theo nhánh: `docs/notes/ket_qua/ket_qua_cuoi_khung_2026-10-15.md`.
+Quy tắc phân tích chốt trước khi có số: `docs/notes/ket_qua/conextbimamba_gap_2026-10-12.md` mục 9.4.
 
 ## 2. Lộ trình còn lại (đề xuất review 15/10 mục 5.1 — ⛔ #10 mốc đóng băng GPU)
 
@@ -98,8 +98,8 @@ Theo thứ tự thời gian. Quyết định bị thay thế giữ lại để t
 
 | Ngày | Quyết định | Lý do / nơi ghi |
 |---|---|---|
-| 2026-09-14 | Hạ tầng thật là **Kaggle** (2x T4), không phải Colab; giữ nguyên `.docx` đã nộp | Lệch có chủ đích. `docs/notes/mamba_ssm_install_log.md` |
-| 2026-09-14 | **Mamba-1/S6**, pin `mamba-ssm` `v2.3.1`; Mamba-3 chỉ nhắc như hướng phát triển | `docs/notes/mamba_versions.md` |
+| 2026-09-14 | Hạ tầng thật là **Kaggle** (2x T4), không phải Colab; giữ nguyên `.docx` đã nộp | Lệch có chủ đích. `docs/notes/ky_thuat/mamba_ssm_install_log.md` |
+| 2026-09-14 | **Mamba-1/S6**, pin `mamba-ssm` `v2.3.1`; Mamba-3 chỉ nhắc như hướng phát triển | `docs/notes/khao_sat/mamba_versions.md` |
 | 2026-09-14 | Tokenizer BPE `vocab_size=1000`; clean-test seed 42 | Sau A1 train lại tokenizer; clean-test đổi theo video giữ riêng (10-04) |
 | 2026-09-16 | Prefetch chỉ 67.405 file cần dùng | Repo HF có 118.259 file |
 | 2026-09-19 | Tài liệu nhị phân lưu Drive, không lên GitHub; khóa luận Word Mẫu 5 ở `docs/khoa_luan/` (gitignore), viết song song | `docs/CONVENTIONS.md` mục 7; mục 6 |
@@ -121,7 +121,7 @@ Theo thứ tự thời gian. Quyết định bị thay thế giữ lại để t
 | 2026-10-16 | **Không gõ mù 20 câu** (thay #8 vừa chốt): mức neo nhãn không đo; khai hạn chế bằng số đã có (ô hiệu đính điền sẵn nhãn giả; 80/113 câu đầu giữ y nhãn giả; bản hiệu đính cách nhãn giả 1,5–1,8% WER; một người hiệu đính) | Người dùng ~08:45 |
 | 2026-10-16 | **#11: thống nhất vị trí dấu thanh ở vần mở oa/oe/uy** (hóa→hoá, thủy→thuỷ; bỏ qua sau `q`) — quy tắc chung trong `score_clean_test.py` (`canon_tone`), **không** đổi `normalize_text`; chốt trước kết quả seed 43/44, áp ở lần chấm chung khi đủ run. Đo trên output hiện có: PhoWhisper −4 lỗi (0,1490 → 0,1486), ConExt v1 −1, còn lại 0 | Người dùng ~09:05; khai ở Ch2 (quy tắc thêm sau lần chấm 15/10) |
 | 2026-10-17 | **8 mục treo sau chấm chung, chốt theo đề xuất AI:** (1) quy tắc tách âm tiết giữ nguyên như note rq3 mục 1, khai 3 chỉnh sửa lúc chạy kiểm; (2) từ dính dùng `sticky_words` cho mọi hệ thống, số note 15/10 chỉ ghi phụ lục; (3) commit `reports/results/error_analysis/`; (4) nhận câu sửa note RQ2 ("≤ 21%" theo tb 3 seed); (5) **viết lại khuyến nghị Ch4**: câu ngắn chọn theo triển khai (WER 40 ms không phân biệt được), audio dài → ConExt 40 ms; (6) "không phân biệt được" luôn kèm CI 95% của hiệu, không viết "chênh ≤ X"; (7) Hình 3.5 vẽ lại với 40 ms trung bình 3 seed; (8) gitignore `data/Test_micro/`. Thêm việc 0 GPU (giới hạn ~2 ngày): kiểm định dấu theo video (mô tả, không đổi tiêu chí 9.4/9.6); hình WER theo GPU-giờ; L3 "nhại" bản tối giản (≤ 1 ngày); hạ câu "lần đầu" thành "theo phạm vi tra cứu" hoặc quét VLSP/ACL. **Không đổi mốc đóng băng GPU: giữ 25/10** (người dùng bác đề xuất đóng 17/10) | Người dùng 17/10; đề xuất trong phiên 17/10 |
-| 2026-10-19 | **So với mô hình hiện hành: A + B** (mở lại mục "eval ngoài miền" review 15/10 mục 3 vì GVHD 17/10 hỏi "so với mấy model hiện thời"). A: bảng cùng clean-test có CI hai tầng + số công bố (khác tập test); B: chỉ eval mọi checkpoint bảng chính + pre-train trên test GigaSpeech 2 vi, ước 1–3 GPU-h, trước 25/10; quy tắc chấm chốt trước khi giải mã. `docs/notes/so_sanh_hien_hanh_2026-10-19.md` | Người dùng 19/10 |
+| 2026-10-19 | **So với mô hình hiện hành: A + B** (mở lại mục "eval ngoài miền" review 15/10 mục 3 vì GVHD 17/10 hỏi "so với mấy model hiện thời"). A: bảng cùng clean-test có CI hai tầng + số công bố (khác tập test); B: chỉ eval mọi checkpoint bảng chính + pre-train trên test GigaSpeech 2 vi, ước 1–3 GPU-h, trước 25/10; quy tắc chấm chốt trước khi giải mã. `docs/notes/ket_qua/so_sanh_hien_hanh_2026-10-19.md` | Người dùng 19/10 |
 | 2026-10-19 | **Bỏ ràng buộc "tham số giải mã cố định / chấm một lần" cho GigaSpeech 2** (người dùng: nguyên tắc để giữ tiến độ, không để chặn tối ưu). Được tối ưu giải mã + LM rộng (văn bản GigaSpeech 2 train); giữ một điều: chỉ chỉnh trên **dev** GigaSpeech 2, test chỉ để báo; báo cả cấu hình cố định lẫn tối ưu. `so_sanh_hien_hanh` B.2 mục 4–5 | Người dùng 19/10 |
 | 2026-10-19 | **11/203 câu clean-test trùng nội dung với train (tập tổng hợp/đăng lại): bỏ qua** — giữ 203 câu, không sửa, không khai báo; ảnh hưởng 0,1–0,4 điểm, thứ hạng không đổi. `data_audit_2026-10-19.md` mục 3 | Người dùng 19/10 |
 
@@ -179,7 +179,7 @@ nghiên cứu; hình thức nộp hiện hành; tên đề tài/bìa. Trình kè
 ## 7. Nhật ký phiên (chỉ thêm vào cuối, không sửa mục cũ)
 
 Mỗi mục: làm gì · chốt gì · phiên sau bắt đầu từ đâu. Các mục từ đầu dự án tới 2026-10-08 chuyển nguyên văn sang
-`docs/notes/plan_nhat_ky_luu_tru_den_2026-10-08.md` (2026-10-15, không sửa chữ nào); trước 2026-09-19 xem `git log`.
+`docs/notes/luu_tru/plan_nhat_ky_luu_tru_den_2026-10-08.md` (2026-10-15, không sửa chữ nào); trước 2026-09-19 xem `git log`.
 
 ### 2026-10-11 — fine-tune Parakeet: chốt, code, kernel
 - **Người dùng chốt (bỏ treo phần fine-tune; GVHD buổi 1 đã nêu "Conformer pre-train + fine-tune"):** chỉ fine-tune
@@ -229,7 +229,7 @@ Mỗi mục: làm gì · chốt gì · phiên sau bắt đầu từ đâu. Các 
   Lần chính phải tính `--total_steps` từ s/step trial (cosine của `lr_factor` theo step, không theo thời gian).
 - Người dùng nêu trọng tâm là ConExtBiMamba, mục tiêu để các mô hình Mamba đuổi sát mô hình khác.
 - **Trial v2 đẩy 08:37** (commit `54a3efa`, A). Commit + push được người dùng duyệt.
-- **Phân tích ConExtBiMamba** (người dùng yêu cầu): `docs/notes/conextbimamba_gap_2026-10-12.md` — kém B1 3,2 điểm
+- **Phân tích ConExtBiMamba** (người dùng yêu cầu): `docs/notes/ket_qua/conextbimamba_gap_2026-10-12.md` — kém B1 3,2 điểm
   clean-test là underfit + chưa hội tụ (LR hằng), không phải overfit; nhanh hơn B1 1,7×/step nên 30 ep chỉ 10,0 GPU-h
   so với B1 16,8. Đề xuất (chưa chốt): P0 trung bình checkpoint cả ba; P1 train tiếp ConExt tới ~51 ep = cùng GPU-giờ
   B1 (Conformer dài 69 ep 14,8 h đã có) — mức so sánh thứ hai song song; P2 giảm LR cả ba; P3 subsampling ⏸ GVHD.
@@ -283,7 +283,7 @@ Mỗi mục: làm gì · chốt gì · phiên sau bắt đầu từ đâu. Các 
 - **Chốt (người dùng): phạm vi "A + 40 ms"** — Plan mục 4, note gap mục 9. Người dùng yêu cầu chia việc cho agent; sau khi
   phương án chạy sẽ dọn lại các file hướng dẫn (CLAUDE/Plan/TODO/notes).
 - **Đang làm (agent, chưa commit):** config công thức chung + rẽ nhánh từ checkpoint v1 + launcher; trung bình checkpoint +
-  kernel eval; công cụ + kernel RQ2 cuối; nháp đề cương mới `docs/notes/de_cuong_moi_nhap.md`.
+  kernel eval; công cụ + kernel RQ2 cuối; nháp đề cương mới `docs/notes/de_cuong_gvhd/de_cuong_moi_nhap.md`.
 - **Phiên sau:** đọc báo cáo agent → test lại → xin duyệt đẩy kernel (bước 1 trước, rẻ); Parakeet main xong ~16:40 → tải
   output nhỏ; hiệu đính clean-test (mục tiêu ≥ 80/203 trước 18/10); gửi đề cương + hẹn GVHD trước ~17/10.
 - **Người dùng chốt: mô hình chính = ConExtBiMamba** (Plan mục 1, 4; nháp đề cương đã sửa).
@@ -317,7 +317,7 @@ Mỗi mục: làm gì · chốt gì · phiên sau bắt đầu từ đâu. Các 
   tắc phân tích chốt trước (note gap 9.4); checkpoint bảng chính = **cuối pha giảm (ep37)**; Conformer dài để phụ lục.
   Code (commit `cf1c3ec`, `edd7dd4`, đã push): `configs/v2a/`, rẽ nhánh từ v1 (`--branch_from`), trung bình checkpoint +
   kernel `avg_eval`, `rtf.py` + `concat_audio.py` + kernel `rq2_final`, `error_analysis.py`. Tra cứu cải tiến ConExt (9.5):
-  code tác giả dùng subsampling 4×; 4 lệch bài không phải lỗi. Nháp: đề cương (`docs/notes/de_cuong_moi_nhap.md`, chưa
+  code tác giả dùng subsampling 4×; 4 lệch bài không phải lỗi. Nháp: đề cương (`docs/notes/de_cuong_gvhd/de_cuong_moi_nhap.md`, chưa
   commit — chờ người dùng quyết có đưa lên repo public không), `docs/khoa_luan/` (gitignore): `ch1_kiem_trich_dan.md`
   ([10] ghép số hai cấu hình — phải sửa trong Word), `ch2_nhap.md`, `ch3_dulieu_phuongphap_nhap.md`, **`muc_luc_de_xuat.md`**.
 - **Kernel lúc đóng phiên:**
@@ -434,7 +434,7 @@ Mỗi mục: làm gì · chốt gì · phiên sau bắt đầu từ đâu. Các 
   (A), s4-mamba + s4-relPE (C, song song); gom output vào `reports/results/`; script + hình nhóm rẽ nhánh; sửa nháp Ch3.
 - **Sự cố minh bạch:** AI đã thấy 1 số WER relPE (val best tới ep16) lúc 12:58, trước khi chốt quy tắc GPU-giờ.
 - **Chưa commit:** `Plan.md`, `TODO.md`, `scripts/plot_v2a_branch.py`, `reports/results/{train_full/v2a-*, avg_eval_v1_2026-10-13,
-  v2a_branch_2026-10-13}`. Vẫn không track: `docs/notes/de_cuong_moi_nhap.md`, `reports/results/error_analysis/` (chưa kiểm).
+  v2a_branch_2026-10-13}`. Vẫn không track: `docs/notes/de_cuong_gvhd/de_cuong_moi_nhap.md`, `reports/results/error_analysis/` (chưa kiểm).
 - **Kernel lúc đóng phiên (15:05):**
   - A `<A>/train-full-v2a-s4-conextbimamba-s1` (đẩy 13:46): 0,22 s/step → xong ~21:30-22:00 (1 phiên). Quota A ~13 h.
   - B `<B>/train-full-v2a-conformer-relpos-s2` (đẩy 12:58, resume ep17 step 833): ~0,6 s/step → hết trần ~22:00 ở
@@ -466,7 +466,7 @@ Mỗi mục: làm gì · chốt gì · phiên sau bắt đầu từ đâu. Các 
   → người dùng bác (thêm run + bảng). Người dùng nhắc: AI đổi đề xuất liên tục, tốn thời gian → từ nay không đề xuất thêm
   thí nghiệm GPU; độ sâu đến từ nhận xét.
 - **Chốt (người dùng):** thêm hướng **chất lượng nhãn VietSuperSpeech** (nhãn Zipformer, không kiểm tay) — L1-L4 ở
-  `docs/notes/label_quality_direction.md`; 0 GPU-h, dựa trên bộ hiệu đính clean-test.
+  `docs/notes/du_lieu/label_quality_direction.md`; 0 GPU-h, dựa trên bộ hiệu đính clean-test.
 - Đã che username tài khoản C trong Plan/TODO trước khi commit (repo public).
 - **Phiên sau bắt đầu từ:** TODO khối "▶▶▶▶" (kiểm B relPE s3 đã đẩy chưa; chờ người dùng số epoch train dài 40 ms).
 
@@ -490,7 +490,7 @@ Mỗi mục: làm gì · chốt gì · phiên sau bắt đầu từ đâu. Các 
   (gitignore). Whisper vs nhãn giả WER 0,156. Bản hiệu đính vs nhãn giả **0,015**, vs Whisper 0,099. Whisper **bịa 6 câu**
   ("subscribe kênh Ghiền Mì Gõ"), viết sai OPEX/Curious/Micah, bỏ lặp từ, ra chữ số.
 - Công cụ: thêm ô Whisper, khung đối chiếu (tô chữ theo việc Zipformer/Whisper có cùng chữ đó không), chặn câu bịa (trùng
-  < 0,3). Hướng dẫn mục 2a. Bảng tên chuẩn có nguồn: `docs/notes/clean_test_entities.md`.
+  < 0,3). Hướng dẫn mục 2a. Bảng tên chuẩn có nguồn: `docs/notes/du_lieu/clean_test_entities.md`.
 - Phương pháp khai trong khóa luận: cố vấn chỉ dùng model ngoài đội hình (tiền lệ Faria et al. 2022, arXiv 2206.06192
   mục 2.1). PhoWhisper (dự bị) fine-tune từ Whisper → có thể hưởng lợi. Bản hiệu đính rất gần Zipformer (0,015) → neo
   nhãn có lợi cho Zipformer ở câu hỏi L2 ("học trò vượt thầy").
@@ -522,7 +522,7 @@ Mỗi mục: làm gì · chốt gì · phiên sau bắt đầu từ đâu. Các 
   *makeup*: nhãn train tự mâu thuẫn (MAKE UP 80 / MAKEUP 11…) → ứng viên danh sách cách viết thay thế lúc chấm (TODO).
 - Người dùng phát hiện ConExt ra "từ dính" (*nghỉơi*), muốn kết quả tốt nhất, **sẵn sàng train lại/tiếp nếu đáng**,
   giao quyền đẩy Kaggle "nếu cần thiết". 3 agent: chẩn đoán, huấn luyện (xong), giải mã (đang chạy khi dừng phiên).
-  Toàn bộ kết quả + số: **`docs/notes/glued_words_2026-10-15.md`**; file agent: `D:/Model/kltn_decoding_2026-10-15/`.
+  Toàn bộ kết quả + số: **`docs/notes/ket_qua/glued_words_2026-10-15.md`**; file agent: `D:/Model/kltn_decoding_2026-10-15/`.
 - Kaggle (A): dataset `<A>/kltn-v2a-s4-ep37` (3 checkpoint ep37 40 ms + `sets.json`), kernel
   `dump-logprobs-v2a-s4` 4′ GPU → `D:/Model/kltn_checkpoints/logprobs_v2a_s4/`. Kernel `scripts/kaggle/dump_logprobs/`.
 - Phát hiện rò rỉ: `train_transcripts.txt` chứa 179/203 câu clean-test → LM chỉ train từ `train_transcripts_filtered.txt`.
@@ -558,14 +558,14 @@ Mỗi mục: làm gì · chốt gì · phiên sau bắt đầu từ đâu. Các 
 - WER (203 câu, 29 video): 40 ms greedy relPE 0,1211 · B1 0,1264 · ConExt 0,1309; + beam/LM 0,1024 · 0,1115 · 0,1081;
   v1 10 ms B1 0,1704 · ConExt 0,2019 · Conformer 0,2648; zero-shot Parakeet 0,1378 · PhoWhisper 0,1490; nhãn giả 0,0177.
 - **Phiên sau:** trang báo cáo; Parakeet fine-tune trên clean-test (cần GPU — hỏi); quyết (c) CR-CTC; gitignore bảng từ; commit (hỏi).
-- 21:30 Ghi nhận xét clean-test vào `docs/notes/clean_test_results_2026-10-15.md`. Người dùng: **có thể thêm tài khoản
+- 21:30 Ghi nhận xét clean-test vào `docs/notes/ket_qua/clean_test_results_2026-10-15.md`. Người dùng: **có thể thêm tài khoản
   Kaggle, tối đa 10**; **ý nghĩa khóa luận phải thật**; sẽ nhờ Fable 5.1 rà soát toàn dự án và đề xuất phương án cuối —
-  prompt `docs/notes/prompt_review_fable_2026-10-15.md` (đầu ra dự kiến `docs/notes/review_fable_2026-10-15.md`).
+  prompt `docs/notes/review/prompt_review_fable_2026-10-15.md` (đầu ra dự kiến `docs/notes/review/review_fable_2026-10-15.md`).
   **Phiên sau:** đọc bản rà soát của Fable (nếu có) cùng người dùng trước khi làm bất cứ việc GPU nào.
 
 ### 2026-10-15 (khuya) — rà soát độc lập toàn dự án (Fable 5.1, chỉ đọc)
 - **Làm:** đọc CLAUDE/TODO/Plan/ARCHITECTURE, 9 note, `reports/results/` (clean-test đã chấm, RQ2 cuối, metrics mọi
-  run), tra 10 nguồn → **`docs/notes/review_fable_2026-10-15.md`**. Không chạy GPU, không sửa code.
+  run), tra 10 nguồn → **`docs/notes/review/review_fable_2026-10-15.md`**. Không chạy GPU, không sửa code.
 - **Phát hiện cần xử lý trước mọi run mới (0 GPU-h):** (1) run **Conformer relPE 10 ms** (B, s3 đẩy 14/10) **không có
   trong `reports/`**, chưa chấm → bảng 10 ms đang thiếu baseline chuẩn; (2) nhóm 10 ms chấm clean-test bằng **ep28 v1**
   trong khi quy tắc 9.4 chốt **ep37** — 3 checkpoint ep37 10 ms chưa chấm; (3) ở 40 ms GPU-h đo được relPE 5,28 h ·
@@ -577,12 +577,12 @@ Mỗi mục: làm gì · chốt gì · phiên sau bắt đầu từ đâu. Các 
   dump log-prob sau reset 17/10 → đẩy 6 run seed (sau khi duyệt tiêu chí 2.3).
 
 ### 2026-10-15 (khuya, tiếp) — chấm điểm, khung kết quả cuối, dọn file hướng dẫn
-- **Làm:** `docs/notes/review_fable_scorecard_2026-10-15.md` (62/100 hôm nay → 84/100 nếu làm đúng phương án; việc 72 giờ
-  tới); `docs/notes/ket_qua_cuoi_khung_2026-10-15.md` (9 bảng, 5 hình, 5 kết luận viết sẵn theo nhánh). **Dọn file hướng
+- **Làm:** `docs/notes/review/review_fable_scorecard_2026-10-15.md` (62/100 hôm nay → 84/100 nếu làm đúng phương án; việc 72 giờ
+  tới); `docs/notes/ket_qua/ket_qua_cuoi_khung_2026-10-15.md` (9 bảng, 5 hình, 5 kết luận viết sẵn theo nhánh). **Dọn file hướng
   dẫn** (người dùng yêu cầu, đã ghi TODO từ 12/10): `CLAUDE.md` viết lại theo hiện trạng (hai cấu hình 10/40 ms, luật
   clean-test chỉ để báo cáo + ep37, không đề xuất GPU mới, tải output kernel ngay, cạm bẫy `python -I`); `TODO.md` viết
-  lại gọn (bản cũ nguyên văn `docs/notes/todo_luu_tru_2026-10-15.md`); `Plan.md` mục 1–6 viết lại, nhật ký trước
-  2026-10-11 chuyển nguyên văn sang `docs/notes/plan_nhat_ky_luu_tru_den_2026-10-08.md`.
+  lại gọn (bản cũ nguyên văn `docs/notes/luu_tru/todo_luu_tru_2026-10-15.md`); `Plan.md` mục 1–6 viết lại, nhật ký trước
+  2026-10-11 chuyển nguyên văn sang `docs/notes/luu_tru/plan_nhat_ky_luu_tru_den_2026-10-08.md`.
 - **Không chốt gì mới:** 12 quyết định ⛔ vẫn mở (TODO mục ⛔). Không chạy GPU, không sửa code, chưa commit.
 - **Phiên sau bắt đầu từ:** TODO khối ▶ (chốt ⛔ → L1 → L2 → L3; đề cương + khung Ch3 song song).
 
@@ -707,7 +707,7 @@ Mỗi mục: làm gì · chốt gì · phiên sau bắt đầu từ đâu. Các 
 - **Phiên sau bắt đầu từ:** TODO khối ▶ (17/10) — còn lại chủ yếu là viết (khung Ch3) + việc tay đề cương/GVHD.
 
 ### 2026-10-19
-- **Đã làm:** rà code + hướng đi, kiểm tính đúng của xử lý dữ liệu bằng dữ liệu thật → `docs/notes/data_audit_2026-10-19.md`.
+- **Đã làm:** rà code + hướng đi, kiểm tính đúng của xử lý dữ liệu bằng dữ liệu thật → `docs/notes/du_lieu/data_audit_2026-10-19.md`.
   Sạch: split không giao nhau, video giữ riêng không lọt train/val, manifest khớp HF, tokenizer 0 unk/khứ hồi đúng,
   CTC khả thi mọi câu ở 10/40 ms × speed, duration khớp file. **Mới:** vài video giữ riêng là tập tổng hợp/đặc biệt dùng
   lại audio tập thường trong train → 11/203 câu clean-test trùng nội dung (8-gram ≥ 50%); bỏ 11 câu đổi WER +0,1–0,4

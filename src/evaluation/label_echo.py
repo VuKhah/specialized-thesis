@@ -1,6 +1,6 @@
 """L3 RQ3 — mô hình có "nhại" lỗi của nhãn giả Zipformer không (2026-10-17).
 
-Quy tắc chốt trước khi tính: `docs/notes/rq3_phan_ra_loi_2026-10-16.md` mục 6. Tóm tắt: vị trí lỗi nhãn = từ ref bị
+Quy tắc chốt trước khi tính: `docs/notes/ket_qua/rq3_phan_ra_loi_2026-10-16.md` mục 6. Tóm tắt: vị trí lỗi nhãn = từ ref bị
 nhãn giả thay hoặc xoá (căn chỉnh jiwer ref → nhãn giả); tại mỗi vị trí, giả thuyết của hệ thống là *nhại* (cùng từ
 thay / cùng xoá như nhãn giả), *đúng*, hoặc *sai khác*. Mốc: tỉ lệ lỗi của hệ thống trên vị trí nhãn giả đúng.
 Token hoá dùng đúng hàm của bảng chính (`score_clean_test`).

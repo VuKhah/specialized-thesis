@@ -23,7 +23,7 @@ from src.evaluation.text_normalize import normalize_text
 from src.evaluation.vi_syllable import is_valid_syllable
 
 MANIFEST = Path("data/processed/clean_test_manifest.json")
-ENTITIES = Path("docs/notes/clean_test_entities.md")
+ENTITIES = Path("docs/notes/du_lieu/clean_test_entities.md")
 OUT = Path("data/processed/clean_test_word_tags.tsv")
 LABELS = ("tiếng anh", "tên riêng", "viết tắt", "tiếng việt", "từ đệm", "lỗi gõ")
 # Từ tiếng Anh hay gặp mà đồng dạng âm tiết Việt không dấu — chỉ xét trong câu đã có từ ngoại.

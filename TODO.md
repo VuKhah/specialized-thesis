@@ -1,7 +1,7 @@
 # TODO — Mamba vs Conformer ASR tiếng Việt
 
-Viết lại gọn **2026-10-15** sau bản rà soát `docs/notes/review_fable_2026-10-15.md`. Bản cũ (lịch sử train full,
-checklist kiểm kernel, lệnh đẩy từng phiên) lưu nguyên văn ở `docs/notes/todo_luu_tru_2026-10-15.md`. **Nguồn sự thật
+Viết lại gọn **2026-10-15** sau bản rà soát `docs/notes/review/review_fable_2026-10-15.md`. Bản cũ (lịch sử train full,
+checklist kiểm kernel, lệnh đẩy từng phiên) lưu nguyên văn ở `docs/notes/luu_tru/todo_luu_tru_2026-10-15.md`. **Nguồn sự thật
 duy nhất cho việc cần làm / đang chặn / đã xong.** Kế hoạch và quyết định ở `Plan.md`; kiến trúc ở `ARCHITECTURE.md`.
 
 ## ▶ PHIÊN SAU BẮT ĐẦU Ở ĐÂY (ghi 2026-10-17)
@@ -11,7 +11,7 @@ duy nhất cho việc cần làm / đang chặn / đã xong.** Kế hoạch và 
 quy tắc âm tiết + `sticky_words` vào note rq3. Dashboard GVHD đã có hình cho Bảng 3.1–3.3 (forest plot cặp), 3.4a/b,
 3.6, 3.8 — số khớp chấm chung; **chưa cập nhật Hình 3.5 mới lên dashboard**.
 
-- [x] **A — so với pre-train trên clean-test (19/10)**: `python -m src.evaluation.compare_pretrained`; bảng ở `docs/notes/so_sanh_hien_hanh_2026-10-19.md` mục A.
+- [x] **A — so với pre-train trên clean-test (19/10)**: `python -m src.evaluation.compare_pretrained`; bảng ở `docs/notes/ket_qua/so_sanh_hien_hanh_2026-10-19.md` mục A.
 - [ ] **B — eval GigaSpeech 2 vi test (chốt 19/10, trước 25/10):** đã có greedy 10/40 ms + Parakeet FT + beam+LM cố định (`so_sanh_hien_hanh` B.3/B.3b). Còn: tải output A `eval-gs2-40ms-dev`, D `eval-gs2-parakeet-zs`, D `eval-gs2-phowhisper` (đang chạy/xếp hàng 19/10 18:45) → dò LM trên dev bằng CPU B/C/D (`scripts/kaggle/decode_gs2_cpu/launch_cpu.py`) → final test → `score_gs2` (cột `_lmtuned`) → cập nhật note. ⛔ người dùng: thêm 1–2 mô hình fine-tune?
 - [x] **Trùng nội dung clean-test ↔ train (19/10)**: 11/203 câu — người dùng chốt bỏ qua, giữ 203 câu, không khai báo.
 - [ ] Việc tay: gửi đề cương mới + xin lịch GVHD 19–25/10 (gấp nhất).
@@ -101,7 +101,7 @@ Mục mở cũ còn giữ: ngày gặp GVHD gần nhất/kế tiếp (ghi `Plan.
       2 kernel song song mỗi tài khoản. Theo dõi 10′ đầu; kẹt cấp máy → huỷ, đẩy lại cùng seed. Tải output nhỏ vào
       `reports/results/train_full/v2a-s4-*/seed43|44/` ngay khi xong.
 - [x] **RQ2 hoàn chỉnh (16/10):** Bảng 3.6, 3.7, điểm giao, điều kiện số học, Hình 3.4, 3.5 — `scripts/rq2_final_tables.py`,
-      note `docs/notes/rq2_ket_qua_cuoi_2026-10-16.md`. Chạy lại khi seed về (GPU-h, WER 40 ms trung bình 3 seed).
+      note `docs/notes/ket_qua/rq2_ket_qua_cuoi_2026-10-16.md`. Chạy lại khi seed về (GPU-h, WER 40 ms trung bình 3 seed).
 - [x] **Quy trình chấm seed** ✅ 16/10 chạy đủ 5 bước (OUT → `clean_test_scored_2026-10-16_chung/`). Bản gốc (viết sẵn 16/10):
       1. `python scripts/kaggle/train_full/collect_seeds.py` — trạng thái, tải file nhỏ, kiểm toàn vẹn (không in WER).
       2. `... collect_seeds.py --ckpt --push` — tải 6 `epoch37.pt` vào `checkpoints/v2a_s4_seeds/`, tạo dataset
@@ -131,7 +131,7 @@ lỗi **sau khi đã train** → đẩy phiên kế (resume), không đẩy lạ
 
 ## 📘 Khóa luận (bản viết) — mốc ở `Plan.md` mục 2, quy cách mục 6
 
-- [ ] **Đề cương mới** (`docs/notes/de_cuong_moi_nhap.md` → sửa RQ theo review 2.1 sau khi chốt #1 → Word Mẫu 4) →
+- [ ] **Đề cương mới** (`docs/notes/de_cuong_gvhd/de_cuong_moi_nhap.md` → sửa RQ theo review 2.1 sau khi chốt #1 → Word Mẫu 4) →
       gửi GVHD + xin lịch gặp tuần 19–25/10. Không chờ số seed.
 - [ ] **Khung Ch3 trong Word ngay** theo `ket_qua_cuoi_khung_2026-10-15.md`: 9 bảng, 5 hình để trống có tên/cột/chú
       thích; mục Hạn chế chép danh sách sẵn.

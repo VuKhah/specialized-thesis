@@ -1,5 +1,5 @@
 """Kernel Kaggle **GPU** (2x T4) — giải mã test GigaSpeech 2 tiếng Việt (4.422 câu, 11,02 h, người gán nhãn) cho mọi
-hệ thống bảng chính — phương án B, người dùng chốt 2026-10-19 (`docs/notes/so_sanh_hien_hanh_2026-10-19.md`).
+hệ thống bảng chính — phương án B, người dùng chốt 2026-10-19 (`docs/notes/ket_qua/so_sanh_hien_hanh_2026-10-19.md`).
 Chỉ eval, không train, không chọn gì trên tập này.
 
 Một file cho 3 chế độ (kernel script chỉ upload 1 file; `launch_gs2.py` thay `MODE` và sinh metadata từng tài khoản):

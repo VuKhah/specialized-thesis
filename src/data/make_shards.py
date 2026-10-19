@@ -1,5 +1,5 @@
 """Chia manifest 4 shard train + 1 val (D3, D5 đã duyệt 2026-09-28 —
-docs/notes/training_plan_kaggle.md mục 5).
+docs/notes/ky_thuat/training_plan_kaggle.md mục 5).
 
 Shard chỉ là cách *lưu* thành Kaggle Dataset (D4: train gắn cả 4, xáo chung),
 nên yêu cầu là mỗi shard đại diện đủ (độ dài, video, ký tự, token) — không

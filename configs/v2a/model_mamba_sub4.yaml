@@ -1,11 +1,11 @@
 # Công thức chung v2a — người dùng duyệt 2026-10-12 phương án "A + 40 ms" (thay bộ v2 ở configs/v2/,
-# docs/notes/conextbimamba_gap_2026-10-12.md mục 7-8): công thức v1 GIỮ NGUYÊN (LR 3e-4, warmup 1000,
+# docs/notes/ket_qua/conextbimamba_gap_2026-10-12.md mục 7-8): công thức v1 GIỮ NGUYÊN (LR 3e-4, warmup 1000,
 # batch 16, wd 0,01, SpecAugment, speed perturb, bucketing, seed 42) + pha giảm LR 1-sqrt ở 8 epoch cuối
 # (WSD; Hägele và cs., arXiv:2405.18392) → 38 epoch = 30 hằng + 8 giảm. Không InterCTC/self-conditioning.
 # Mọi trường ngoài experiment_name / epochs / decay_epochs / encoder / subsampling PHẢI giống v1.
 # Lần chạy (3): nhánh 40 ms (subsampling 4×), train TỪ ĐẦU 38 epoch, 1 seed.
 # v1: Mamba-CTC. 2026-10-02 chuyển sang hai chiều phương án B1
-# v1: (docs/notes/mamba_bidirectional.md): 14 lớp × 2 khối Mamba (xuôi + ngược,
+# v1: (docs/notes/khao_sat/mamba_bidirectional.md): 14 lớp × 2 khối Mamba (xuôi + ngược,
 # v1: chung LayerNorm) = vẫn 28 khối như bản một chiều n_layers=28 chọn
 # v1: 2026-09-24 để khớp tham số với model_conformer.yaml. Tính theo shape
 # v1: mamba_ssm.Mamba v2.3.1: 12.285.696 vs 12.204.288 (+0,67%, mục tiêu < 5%) —
@@ -69,5 +69,5 @@ data:
   extra_eval_manifests: [val_unseen] # video giữ riêng (make_heldout.py), chỉ ghi log
   sample_rate: 16000
   # Speed perturbation on-the-fly lúc train (Ko 2015; chốt 2026-10-05,
-  # docs/notes/audio_preprocessing_survey.md mục 5). PHẢI giống nhau ở mọi config train từ đầu.
+  # docs/notes/khao_sat/audio_preprocessing_survey.md mục 5). PHẢI giống nhau ở mọi config train từ đầu.
   speed_perturb: [0.9, 1.0, 1.1]

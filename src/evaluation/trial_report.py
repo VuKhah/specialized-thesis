@@ -12,7 +12,7 @@
 4. Cổng loại cứng G0-G3 tự đánh giá theo ngưỡng ở `GATES`; tiêu chí cân nhắc
    (chất lượng, Pareto) chỉ báo số — người dùng/GVHD quyết.
 
-Ngưỡng trong `GATES` là đề xuất của dự án (docs/notes/lineup_preparation.md mục
+Ngưỡng trong `GATES` là đề xuất của dự án (docs/notes/ky_thuat/lineup_preparation.md mục
 Train thử), không lấy từ tài liệu; đổi ngưỡng thì sửa ở đó và ở đây.
 
     python -m src.evaluation.trial_report <thư mục chứa các experiment> [--reference conformer_ctc_baseline]

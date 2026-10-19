@@ -39,7 +39,7 @@ from huggingface_hub import hf_hub_download
 from torch.utils.data import Dataset
 
 HF_DATASET_ID = "thanhnew2001/VietSuperSpeech"
-# Pin revision (D10, docs/notes/training_plan_kaggle.md): manifest shard
+# Pin revision (D10, docs/notes/ky_thuat/training_plan_kaggle.md): manifest shard
 # (data/splits/) và excluded.tsv lưu theo index split — tác giả đẩy commit mới
 # là index lệch.
 HF_REVISION = "cbf624ae9b30e1c2793a27e95b262115c69601f3"
@@ -118,7 +118,7 @@ class VietSuperSpeechDataset(Dataset):
                  seed: int = 0):
         """split: "train" hoặc "validation" — tên split thật trên HF Hub
         (KHÔNG phải "dev-test" như ghi trong đề cương, xác nhận qua
-        src/data/survey.py, Tuần 3 — xem docs/notes/dataset_discrepancy.md
+        src/data/survey.py, Tuần 3 — xem docs/notes/du_lieu/dataset_discrepancy.md
         cho chênh lệch số liệu đầy đủ so với đề cương).
 
         items: [(split, index)] — trộn được hai split (val_unseen, clean-test lấy
@@ -126,7 +126,7 @@ class VietSuperSpeechDataset(Dataset):
         `indices` (None = cả split, **chưa** lọc excluded/heldout).
 
         speed_factors: chỉ cho tập train (on-the-fly, chốt 2026-10-05,
-        docs/notes/audio_preprocessing_survey.md mục 5); hệ số theo `speed_factor(..., self.epoch, idx)`
+        docs/notes/khao_sat/audio_preprocessing_survey.md mục 5); hệ số theo `speed_factor(..., self.epoch, idx)`
         — train.py đặt `epoch` trước khi dựng DataLoader của epoch đó."""
         if items is None:
             ds = load_dataset(HF_DATASET_ID, split=split, revision=HF_REVISION)

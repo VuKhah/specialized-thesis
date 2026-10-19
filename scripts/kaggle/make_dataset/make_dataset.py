@@ -1,5 +1,5 @@
 """Kernel Kaggle **CPU** tạo 1 trong 5 dataset (4 shard train + 1 val) — bước 5
-TODO.md, D6 trong docs/notes/training_plan_kaggle.md mục 5.
+TODO.md, D6 trong docs/notes/ky_thuat/training_plan_kaggle.md mục 5.
 
 Mỗi lần chạy 1 phần (sửa PART rồi push): output 20 GB không chứa nổi cả 5
 (~28 GB). Tải từ HF ẩn danh ~36 phút/shard (đo ở check-env-asr).

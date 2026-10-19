@@ -104,3 +104,8 @@ reports/results/gs2_eval_*/**/*hyps*.tsv
 docs/notes/Thao_Luan_*.txt
 # Ánh xạ tài khoản Kaggle → thư mục khoá (tên người thứ ba) — chỉ local
 scripts/kaggle/accounts.local.json
+# Ghi chú quá trình làm (review, nhật ký cũ, đề cương nháp/GVHD, phản hồi AI) — chỉ giữ local từ 2026-10-19
+docs/notes/review/
+docs/notes/luu_tru/
+docs/notes/de_cuong_gvhd/
+docs/notes/du_lieu/Argon_feedback.md

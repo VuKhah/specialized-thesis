@@ -1,4 +1,4 @@
-# Công thức v2 (2026-10-12) — docs/notes/conextbimamba_gap_2026-10-12.md mục 7-8.
+# Công thức v2 (2026-10-12) — docs/notes/ket_qua/conextbimamba_gap_2026-10-12.md mục 7-8.
 # Khác v1: lịch WSD (warmup → hằng → giảm 1-sqrt 8 epoch cuối, Hägele 2024), 40 epoch, warmup 1 epoch,
 # InterCTC + self-conditioning lớp giữa (Lee & Watanabe 2021; Nozaki & Komatsu 2021; cách ESPnet),
 # chọn LR bằng lưới chung {3e-4, 6e-4, 1e-3} (P2) rồi ghi đè `--lr`; 3 seed (`--seed`).
@@ -58,5 +58,5 @@ data:
   extra_eval_manifests: [val_unseen] # video giữ riêng (make_heldout.py), chỉ ghi log
   sample_rate: 16000
   # Speed perturbation on-the-fly lúc train (Ko 2015; chốt 2026-10-05,
-  # docs/notes/audio_preprocessing_survey.md mục 5). PHẢI giống nhau ở mọi config train từ đầu.
+  # docs/notes/khao_sat/audio_preprocessing_survey.md mục 5). PHẢI giống nhau ở mọi config train từ đầu.
   speed_perturb: [0.9, 1.0, 1.1]

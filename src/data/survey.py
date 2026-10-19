@@ -108,7 +108,7 @@ def sample_clean_test(split: str = "validation", n: int = 250, seed: int = 42, o
     """Lấy mẫu ngẫu nhiên (seed cố định) từ split validation để hiệu đính thủ công.
 
     Split thật trên HF Hub tên là "validation" (KHÔNG phải "dev-test" như
-    ghi trong đề cương — xem docs/notes/dataset_discrepancy.md). Load không
+    ghi trong đề cương — xem docs/notes/du_lieu/dataset_discrepancy.md). Load không
     streaming (split nhỏ) để lấy theo index trực tiếp, đảm bảo tái lập seed.
     """
     ds = load_dataset(HF_DATASET_ID, split=split, streaming=False)

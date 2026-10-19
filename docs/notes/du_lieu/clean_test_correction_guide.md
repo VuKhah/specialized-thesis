@@ -6,9 +6,9 @@ Cập nhật 2026-10-14 (bản đầu 2026-10-08). Công cụ: `src/data/correct
 
 Nhãn của VietSuperSpeech do mô hình Zipformer-30M sinh tự động, không người kiểm. Clean-test 203 câu
 (29 video giữ riêng, 44,3 phút audio) là **tập duy nhất có nhãn người** của khóa luận. Mọi kết luận độ chính
-xác (RQ1), phân tích lỗi (RQ3) và hướng chất lượng nhãn (L1–L4, `docs/notes/label_quality_direction.md`) đều
+xác (RQ1), phân tích lỗi (RQ3) và hướng chất lượng nhãn (L1–L4, `docs/notes/du_lieu/label_quality_direction.md`) đều
 chấm trên bộ này, **một lần**, sau khi xong đủ 203 câu. Biên bản phản biện 14/10
-(`docs/notes/phan_bien_2026-10-14.md`) xếp đây là đường găng số 1.
+(`docs/notes/review/phan_bien_2026-10-14.md`) xếp đây là đường găng số 1.
 
 Tiến độ 14/10: **11/203** (cả 11 câu thuộc 2 video). Ước công sức: 3–5 phút làm cho mỗi phút audio →
 **khoảng 2,5–4 giờ**, chia nhiều buổi được.
@@ -88,7 +88,7 @@ gia tham khảo bản chép độc lập nhưng không cho xem hệ ASR đang đ
 
 **Tên riêng/tên công ty không biết viết thế nào:** tên file là tiêu đề tập Vietcetera, và trang của tập ghi khách
 mời, công ty, host (vd. tập OPES: host Miro Nguyễn → chữ *miro* là tên host). Cách viết chuẩn đã xác minh nằm ở
-`docs/notes/clean_test_entities.md` (có link nguồn). Tên không xác minh được: ghi theo âm nghe được, ghi chú
+`docs/notes/du_lieu/clean_test_entities.md` (có link nguồn). Tên không xác minh được: ghi theo âm nghe được, ghi chú
 `tên chưa xác minh`.
 
 ### Output các mô hình của đề tài (từ 14/10, 23:17)

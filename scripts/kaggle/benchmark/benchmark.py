@@ -1,5 +1,5 @@
 """Kernel Kaggle **GPU** (2x T4) — bước 2 của D9 trong
-docs/notes/training_plan_kaggle.md mục 5: đo tốc độ train trước khi sửa code
+docs/notes/ky_thuat/training_plan_kaggle.md mục 5: đo tốc độ train trước khi sửa code
 dùng chung, để chọn tăng tốc theo thứ tự D8 (num_workers → AMP → 2 GPU).
 
     kaggle kernels push -p scripts/kaggle/benchmark -t 7200
@@ -29,7 +29,7 @@ REPO_DIR = Path("/tmp/specialized-thesis")
 HF_REVISION = "cbf624ae9b30e1c2793a27e95b262115c69601f3"
 WARMUP, STEPS = 3, 40
 # Lần 3 (2026-10-02): chỉ đo lại Mamba sau khi chuyển hai chiều B1
-# (docs/notes/mamba_bidirectional.md) — Conformer không đổi, mốc ở lần 2.
+# (docs/notes/khao_sat/mamba_bidirectional.md) — Conformer không đổi, mốc ở lần 2.
 CONFIGS = ["configs/model_mamba.yaml"]
 # (workers mỗi tiến trình, amp, ddp, sync_bn). Lần 1 (2026-09-30, 20 step):
 # workers 0/4 × fp32/AMP × 1/2 GPU — kết quả ở training_plan_kaggle.md mục 5.
