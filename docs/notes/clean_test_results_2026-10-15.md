@@ -106,3 +106,71 @@ Cả ba encoder đều tốt hơn ở 40 ms. Thứ hạng trên clean-test khớ
 sau (hóa → hoá, khỏe → khoẻ, thủy → thuỷ), cả ref và hyp; bỏ qua sau `q`. Thêm **sau** lần chấm 15/10 và sau khi đã đo
 ảnh hưởng (chỉ 3 cặp xuất hiện: hoá/hóa, thoả/thỏa, khoá/khóa): PhoWhisper −4 lỗi, ConExt v1 −1, mọi hệ thống khác 0.
 Bảng `clean_test_scored_2026-10-16/` hiện **chưa** áp quy tắc này; áp ở lần chấm chung khi đủ 9 run 40 ms.
+
+## Lần chấm chung 2026-10-16 (~18:10) — 40 ms đủ 3 seed (L3), áp `canon_tone`
+
+Đầu vào: 6 run seed 43/44 (A ConExt · B relPE · C B1; commit `0090bd75`, config `*_sub4.yaml` y nguyên, chỉ `--seed`).
+Kiểm toàn vẹn (`collect_seeds.py`): cả 6 returncode 0, 38/38 epoch, `finished`, 0 step không hữu hạn, log không có
+`!!!`/`LỖI`/Traceback. Kernel `dump-seeds-v2a-s4` (A, 2,6′ GPU, không lỗi) → log-prob clean-test; greedy 100 câu
+val_unseen trùng eval ep37 lúc train 593/600 câu, mỗi câu lệch đúng 1 từ (≤ 7/5.342 từ — sai số fp16/padding batch);
+greedy giải lại từ npz bằng `lm_decode` trùng kernel 203/203 × 6. Beam+LM: `lm_decode decode`, lmw 0,8 / ws 1,0 như cũ
+(`reports/results/decode_v2a_s4_seeds/cleantest_hyps.tsv`). Chấm: `python -m src.evaluation.score_clean_test` →
+`reports/results/clean_test_scored_2026-10-16_chung/`. `canon_tone` chỉ đổi 2 hệ thống so với bản sáng 16/10
+(ConExt v1 0,2019 → 0,2018; PhoWhisper 0,1490 → 0,1486); mọi số khác giữ nguyên.
+
+**Bảng 3.2 — 40 ms, ep37, 3 seed (42 / 43 / 44).** WER clean-test greedy; val, val_unseen là nhãn giả (eval lúc train).
+
+| Encoder 40 ms | clean-test (tb ± sd) | seed 42 · 43 · 44 | beam+LM (tb ± sd) | val | val_unseen | GPU-h |
+|---|---|---|---|---|---|---|
+| Conformer relPE | 0,1264 ± 0,0046 | 0,1211 · 0,1287 · 0,1295 | 0,1059 ± 0,0034 | 0,1110 ± 0,0040 | 0,1101 ± 0,0034 | 5,16 ± 0,20 |
+| B1 Mamba | 0,1266 ± 0,0014 | 0,1264 · 0,1253 · 0,1281 | 0,1117 ± 0,0007 | 0,1114 ± 0,0014 | 0,1123 ± 0,0012 | 5,93 ± 0,11 |
+| ConExtBiMamba | 0,1291 ± 0,0018 | 0,1309 · 0,1272 · 0,1293 | 0,1095 ± 0,0013 | 0,1117 ± 0,0010 | 0,1114 ± 0,0007 | 4,89 ± 0,04 |
+
+**So cặp — bootstrap hai tầng video × seed (note gap 9.6 điều 4).** Điều 5 (chỉ mô tả): số cặp seed cùng dấu / 9.
+
+| Cặp (A − B) | greedy: hiệu [CI 95%] | cùng dấu | beam+LM: hiệu [CI 95%] | cùng dấu | Kết luận |
+|---|---|---|---|---|---|
+| B1 − ConExt | −0,0025 [−0,0086; +0,0039] | 8/9 | +0,0022 [−0,0026; +0,0074] | 9/9 | không phân biệt được ở 3 seed |
+| B1 − relPE | +0,0002 [−0,0082; +0,0098] | 6/9 | +0,0058 [−0,0015; +0,0131] | 9/9 | không phân biệt được ở 3 seed |
+| ConExt − relPE | +0,0027 [−0,0060; +0,0126] | 6/9 | +0,0036 [−0,0035; +0,0112] | 8/9 | không phân biệt được ở 3 seed |
+
+Nhận xét (từ số trên, không thêm phép thử):
+- **Kết quả seed 42 không đứng vững.** Seed 42 cho relPE "tốt hơn" B1 và ConExt với CI cặp không chứa 0 (bảng 15/10);
+  relPE seed 42 hoá ra là run tốt nhất trong 9 run (0,1211, các seed khác 0,1287/0,1295). Đây đúng là đe doạ #2 của
+  review 15/10: một seed + CI chỉ theo mẫu test đánh giá thấp dao động. Ở 3 seed, cả ba encoder 40 ms **không phân
+  biệt được**; sd seed của relPE (0,46 điểm) lớn gấp ~3 lần hai encoder Mamba (0,14–0,18 điểm). Val/val_unseen (nhãn
+  giả, tập lớn hơn) cho cùng bức tranh: ba trung bình cách nhau ≤ 0,2 điểm.
+- **Beam+LM:** B1 − relPE dương ở cả 9 cặp seed nhưng CI hai tầng chứa 0 → theo luật chốt trước vẫn là "không phân biệt
+  được"; số cặp cùng dấu chỉ được nêu như mô tả (điều 5), không làm căn cứ kết luận.
+- **Nhận xét "thứ hạng đảo giữa hai cấu hình" ở bổ sung 16/10 phía trên dựa trên seed 42 — thay bằng:** 10 ms (1 seed):
+  B1 tốt hơn relPE và ConExt (> 2 điểm, CI không chứa 0), relPE và ConExt không phân biệt được; 40 ms (3 seed): ba encoder
+  không phân biệt được. Lợi thế của B1 thấy ở 10 ms không còn thấy ở 40 ms — "phù hợp với giả thuyết độ phân giải",
+  không "chứng minh" (cấu hình 40 ms gộp 4 khác biệt; 10 ms chỉ 1 seed, độ lệch seed ở 10 ms chưa đo).
+- Hạn chế phải khai: 3 seed nên phần dao động seed ước thô; 29 video.
+
+## Bổ sung 2026-10-17 — kiểm định dấu theo video (mô tả, không đổi tiêu chí kết luận)
+
+`python -m src.evaluation.video_sign_test` → `reports/results/video_sign_2026-10-17/` (đọc `per_sentence.tsv` của lần
+chấm chung; tổng lỗi/từ khớp `results.json`). Số video A có WER thấp hơn B / B thấp hơn A / hoà, trên 29 video; p hai
+phía phép thử dấu chính xác. 40 ms: WER mỗi video là trung bình 3 seed (bỏ qua dao động seed — chỉ mô tả).
+
+| Cấu hình | Cặp (A − B) | A thấp hơn | B thấp hơn | Hoà | p | Kết luận chính thức (CI) |
+|---|---|---|---|---|---|---|
+| 10 ms | B1 − relPE | 26 | 3 | 0 | < 0,001 | B1 tốt hơn |
+| 10 ms | ConExt − relPE | 13 | 14 | 2 | 1,00 | không phân biệt được |
+| 10 ms | B1 − ConExt | 28 | 0 | 1 | < 0,001 | B1 tốt hơn |
+| 10 ms | relPE / B1 / ConExt − không PE | 29 | 0 | 0 | < 0,001 | A tốt hơn |
+| 40 ms greedy | B1 − ConExt | 20 | 9 | 0 | 0,061 | không phân biệt được |
+| 40 ms greedy | B1 − relPE | 15 | 13 | 1 | 0,85 | không phân biệt được |
+| 40 ms greedy | ConExt − relPE | 12 | 16 | 1 | 0,57 | không phân biệt được |
+| 40 ms beam+LM | B1 − ConExt | 13 | 16 | 0 | 0,71 | không phân biệt được |
+| 40 ms beam+LM | B1 − relPE | 8 | 19 | 2 | 0,052 | không phân biệt được |
+| 40 ms beam+LM | ConExt − relPE | 9 | 19 | 1 | 0,087 | không phân biệt được |
+
+Nhận xét: phép thử dấu đồng thuận với bootstrap ở mọi cặp. Ở 10 ms, lợi thế của B1 không do vài video kéo — 26/29 video
+so với relPE. Ở 40 ms không cặp nào có p < 0,05; beam + LM nghiêng về relPE (19/29 video) nhưng chưa qua ngưỡng nào —
+vẫn viết "không phân biệt được".
+
+**Dao động seed (mô tả):** sd 3 seed của relPE 40 ms lớn gấp ~3 lần hai encoder Mamba trên cả clean-test (0,46 so với
+0,14–0,18 điểm), val (0,40 so với 0,10–0,14) và val_unseen (0,34 so với 0,07–0,12). Theo từng video, khoảng chênh giữa 3
+seed có trung vị 1,9 điểm (relPE) · 1,4 (B1) · 1,7 (ConExt). Chỉ 3 seed → ước thô; không suy ra "Mamba ổn định hơn".

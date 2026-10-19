@@ -1,18 +1,28 @@
 """RQ2 hoàn chỉnh (2026-10-16): Bảng 3.6 chi phí huấn luyện, Bảng 3.7 chi phí suy luận theo độ dài + điểm giao,
-bảng điều kiện số học, Hình 3.4 (độ trễ / VRAM theo độ dài, log-log) và Hình 3.5 (đánh đổi WER – RTF trên câu 15 s).
+bảng điều kiện số học, Hình 3.4 (độ trễ / VRAM theo độ dài, lưới 1×2, log-log) và Hình 3.5 (đánh đổi WER – RTF trên
+câu 15 s).
 
 Nguồn (chỉ đọc, không đo lại): `reports/results/rq2_final_2026-10-13/` (T4, batch 1, trọng số ngẫu nhiên — chi phí
-không phụ thuộc trọng số; làm ấm từng độ dài; chia đôi tìm OOM), `reports/results/train_full/*/metrics.jsonl`, WER
-clean-test ở `RESULTS_WER`. Chạy lại khi có thêm seed (cột GPU-h, WER 40 ms đổi theo).
+không phụ thuộc trọng số; làm ấm từng độ dài; chia đôi tìm OOM), `reports/results/train_full/*/checkpoints/*/metrics.jsonl`
+(40 ms: 3 seed `s1` = 42, `seed43`, `seed44`; 10 ms: 1 seed). Hình 3.5 lấy WER từ lần chấm chung 16/10:
+`WER_SUMMARY` (trung bình 3 seed + CI 95% bootstrap theo video, cùng nguồn Bảng 3.8) và `RESULTS_WER` (từng seed).
 
-    python scripts/rq2_final_tables.py
+    python scripts/rq2_final_tables.py            # bảng + Hình 3.4
+    python scripts/rq2_final_tables.py --fig35    # thêm vẽ lại Hình 3.5
 
-Output: `reports/results/rq2_tables_2026-10-16/*.csv|md`, `reports/figures/rq2/fig_3_4_*.png`, `fig_3_5_*.png`.
+Hình 3.5 chỉ vẽ khi có `--fig35` để chạy mặc định không ghi đè PNG. Bản 17/10 (người dùng duyệt): 40 ms đổi từ seed 42
+sang trung bình 3 seed — seed 42 của relPE là run tốt nhất trong 9 run, giữ nó sẽ làm lệch hình.
+
+Output: `reports/results/rq2_tables_2026-10-16/` (`table_3_6_train_cost.csv` — 40 ms trung bình ± SD mẫu 3 seed,
+`table_3_6_train_cost_per_seed.csv` — số từng seed 40 ms, `table_3_7_inference.csv`, `crossover.csv`, `numerics.md`),
+`reports/figures/rq2/fig_3_4_latency_vram.png`, (`--fig35`) `fig_3_5_wer_rtf.png`.
 """
 
+import argparse
 import csv
 import json
 import math
+import statistics
 import sys
 from pathlib import Path
 
@@ -20,12 +30,14 @@ import matplotlib
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
+import matplotlib.lines  # noqa: E402
 import matplotlib.ticker  # noqa: E402
 
 sys.stdout.reconfigure(encoding="utf-8")
 RQ2 = Path("reports/results/rq2_final_2026-10-13")
 TRAIN = Path("reports/results/train_full")
-RESULTS_WER = Path("reports/results/clean_test_scored_2026-10-16/results.json")
+RESULTS_WER = Path("reports/results/clean_test_scored_2026-10-16_chung/results.json")
+WER_SUMMARY = Path("reports/results/error_analysis/clean_test_2026-10-16/summary.csv")
 OUT = Path("reports/results/rq2_tables_2026-10-16")
 FIG = Path("reports/figures/rq2")
 SENTENCE_S = 15.0  # câu VietSuperSpeech 10–15 s → điểm đại diện cho Hình 3.5
@@ -34,10 +46,11 @@ TABLE_S = (15.0, 60.0, 240.0, 3600.0)
 # Màu theo encoder (3 slot đầu palette tham chiếu — kiểm all-pairs đạt); nét theo cấu hình; Parakeet xám = mốc.
 BLUE, ORANGE, AQUA, GRAY = "#2a78d6", "#eb6834", "#1baf7a", "#8a8984"
 INK, INK2, GRID = "#0b0b0b", "#52514e", "#e6e5e0"
-CONFIGS = [  # (khoá RQ2, nhãn, màu, nét, marker, thư mục train, cột WER)
-    ("mamba_sub4", "B1 40 ms", BLUE, "-", "o", "v2a-s4-mamba/s1", "v2a_mamba_greedy"),
-    ("conextbimamba_sub4", "ConExt 40 ms", ORANGE, "-", "s", "v2a-s4-conextbimamba/s1", "v2a_conextbimamba_greedy"),
-    ("conformer_relpos_sub4", "Conformer PE 40 ms", AQUA, "-", "^", "v2a-s4-conformer-relpos/s1",
+SEEDS_40 = (("s1", 42), ("seed43", 43), ("seed44", 44))  # thư mục run → seed; chỉ nhóm 40 ms có đủ 3 seed
+CONFIGS = [  # (khoá RQ2, nhãn, màu, nét, marker, thư mục train — 40 ms là thư mục cha của các seed, cột WER)
+    ("mamba_sub4", "B1 40 ms", BLUE, "-", "o", "v2a-s4-mamba", "v2a_mamba_greedy"),
+    ("conextbimamba_sub4", "ConExt 40 ms", ORANGE, "-", "s", "v2a-s4-conextbimamba", "v2a_conextbimamba_greedy"),
+    ("conformer_relpos_sub4", "Conformer PE 40 ms", AQUA, "-", "^", "v2a-s4-conformer-relpos",
      "v2a_conformer_relpos_greedy"),
     ("mamba", "B1 10 ms", BLUE, "--", "o", "v2a-mamba/s1", "v2a10_mamba"),
     ("conextbimamba", "ConExt 10 ms", ORANGE, "--", "s", "v2a-conextbimamba/s1", "v2a10_conextbimamba"),
@@ -109,24 +122,55 @@ def clear_gain(m, c, curves, factor=1.5):
     return grid[k]
 
 
+def run_cost(run_dir):
+    R = [json.loads(x) for x in open(next(run_dir.glob("checkpoints/*/metrics.jsonl")), encoding="utf-8")]
+    assert R[-1]["epoch"] == 37, run_dir
+    return {"s/step": sorted(r["s_per_step"] for r in R)[len(R) // 2],
+            "GPU-h": R[-1]["wall_seconds_total"] / 3600,
+            "VRAM": max(r["peak_vram_gib"] for r in R),
+            "nonfinite": sum(r["nonfinite_loss_steps"] for r in R),
+            "encoder_params": {r["encoder_params"] for r in R},
+            "branched": R[0]["epoch"] > 0}
+
+
+def mean_sd(xs, nd):
+    return f"{statistics.mean(xs):.{nd}f} ± {statistics.stdev(xs):.{nd}f}"
+
+
 def train_table(params):
-    out = []
+    """40 ms: trung bình ± SD mẫu (ddof=1) qua 3 seed; 10 ms chỉ có 1 seed nên báo số đơn, ghi rõ trong ghi chú."""
+    out, per_seed = [], []
     for key, label, *_, tdir, _ in CONFIGS:
         if tdir is None:
             continue
-        R = [json.loads(x) for x in open(next((TRAIN / tdir).glob("checkpoints/*/metrics.jsonl")), encoding="utf-8")]
-        last = R[-1]
         p = params[key]
-        branched = R[0]["epoch"] > 0
-        out.append({"cấu hình": label, "tham số encoder (M)": round(p["params_encoder"] / 1e6, 2),
-                    "subsampling (M)": round((p["params_subsampling"] or 0) / 1e6, 2),
-                    "tổng (M)": round(p["params_total"] / 1e6, 2),
-                    "s/step": round(sorted(r["s_per_step"] for r in R)[len(R) // 2], 3),
-                    "GPU-h tới ep37 (2×T4)": round(last["wall_seconds_total"] / 3600, 2),
-                    "VRAM đỉnh train (GiB/GPU)": round(max(r["peak_vram_gib"] for r in R), 2),
-                    "step không hữu hạn": sum(r["nonfinite_loss_steps"] for r in R),
-                    "ghi chú": "rẽ nhánh v1 ep29: GPU-h gồm 30 epoch v1; s/step, VRAM chỉ pha giảm" if branched else "từ đầu"})
-    return out
+        multi = key.endswith("_sub4")
+        runs = [(seed, run_cost(TRAIN / tdir / d)) for d, seed in SEEDS_40] if multi else [(None, run_cost(TRAIN / tdir))]
+        enc = set().union(*(c["encoder_params"] for _, c in runs))
+        # tham số lấy từ lần đo RQ2 (trọng số ngẫu nhiên) → phải khớp số encoder các run train thật
+        assert enc == {p["params_encoder"]}, (key, enc, p["params_encoder"])
+        row = {"cấu hình": label, "số seed": "3 (42/43/44)" if multi else "1",
+               "tham số encoder (M)": round(p["params_encoder"] / 1e6, 2),
+               "subsampling (M)": round((p["params_subsampling"] or 0) / 1e6, 2),
+               "tổng (M)": round(p["params_total"] / 1e6, 2)}
+        if multi:
+            col = lambda k: [c[k] for _, c in runs]  # noqa: E731
+            row |= {"s/step": mean_sd(col("s/step"), 3), "GPU-h tới ep37 (2×T4)": mean_sd(col("GPU-h"), 2),
+                    "VRAM đỉnh train (GiB/GPU)": mean_sd(col("VRAM"), 2),
+                    "step không hữu hạn": mean_sd(col("nonfinite"), 0),
+                    "ghi chú": "từ đầu; trung bình ± SD mẫu (ddof=1) 3 seed"}
+            per_seed += [{"cấu hình": label, "seed": seed, "s/step": round(c["s/step"], 3),
+                          "GPU-h tới ep37 (2×T4)": round(c["GPU-h"], 2), "VRAM đỉnh train (GiB/GPU)": round(c["VRAM"], 2),
+                          "step không hữu hạn": c["nonfinite"], "tham số encoder": next(iter(c["encoder_params"]))}
+                         for seed, c in runs]
+        else:
+            c = runs[0][1]
+            row |= {"s/step": round(c["s/step"], 3), "GPU-h tới ep37 (2×T4)": round(c["GPU-h"], 2),
+                    "VRAM đỉnh train (GiB/GPU)": round(c["VRAM"], 2), "step không hữu hạn": c["nonfinite"],
+                    "ghi chú": ("rẽ nhánh v1 ep29: GPU-h gồm 30 epoch v1; s/step, VRAM chỉ pha giảm" if c["branched"]
+                                else "từ đầu") + "; 1 seed"}
+        out.append(row)
+    return out, per_seed
 
 
 def write_csv(path, rows):
@@ -159,84 +203,97 @@ XTICKS = [(15, "15 s"), (60, "1 ph"), (240, "4 ph"), (900, "15 ph"), (3600, "1 g
 
 
 def fig_latency(curves, oom):
-    fig, axes = plt.subplots(2, 2, figsize=(6.3, 4.9), sharex=True, sharey="row")
-    panels = [("40 ms (subsampling 4×)", "_sub4", ["mamba", "conextbimamba", "conformer_relpos"]),
-              ("10 ms (không subsampling)", "", ["mamba", "conextbimamba", "conformer_relpos", "conformer"])]
-    for col, (title, suf, encs) in enumerate(panels):
-        for row, idx in ((0, 1), (1, 3)):
-            ax = axes[row][col]
-            ends = []
-            for e in encs:
-                lab, color, ls, mk = ENC[e]
-                c = curves[e + suf]
-                xs, ys = [x[0] for x in c], [x[idx] for x in c]
-                ax.plot(xs, ys, ls=ls, color=color, lw=1.5, marker=mk, ms=3.5, markevery=3,
-                        mfc="white" if e == "conformer" else color, mec=color, mew=0.8)
-                if oom[e + suf]:
-                    ax.plot(xs[-1], ys[-1], marker="x", color=INK, ms=6, mew=1.4, zorder=5)
-                    if row == 0:
-                        ax.annotate(f"OOM ~{oom[e + suf][1]:.0f} s", (xs[-1], ys[-1]), xytext=(-4, 4),
-                                    textcoords="offset points", fontsize=6.5, color=INK, ha="right", va="bottom")
-                else:
-                    ends.append((ys[-1], lab, color))
-            # nhãn trực tiếp ở đầu đường (đẩy dọc khi quá sát nhau, trên thang log)
-            ends.sort()
-            merged = []  # hai đường trùng nhau (B1 và ConExt 40 ms ở VRAM: cùng đỉnh do subsampling) → một nhãn
-            for y, lab, color in ends:
-                if merged and abs(math.log10(y) - math.log10(merged[-1][0])) < 0.01:
-                    merged[-1] = (merged[-1][0], f"{merged[-1][1]} = {lab}", color)
-                else:
-                    merged.append((y, lab, color))
-            placed = []
-            for y, lab, color in merged:
-                ly = y
-                for py in placed:
-                    if abs(math.log10(ly) - math.log10(py)) < 0.17:
-                        ly = py * 10 ** 0.17
-                placed.append(ly)
-                ax.annotate(lab, (3600, y), xytext=(3900, ly), textcoords="data", fontsize=6.5, color=INK,
-                            va="center", ha="left", annotation_clip=False)
-            if row == 0:
-                ax.axvspan(10, 15, color=GRID, alpha=0.9, lw=0)
-                ax.set_title(f"({'ab'[col]}) Độ trễ trung vị — {title}", fontsize=8.5, color=INK, loc="left")
-            else:
-                ax.axhline(T4_GIB, color=GRAY, lw=0.8, ls="-")
-                ax.text(6, T4_GIB * 0.82, "giới hạn bộ nhớ T4", fontsize=6.5, color=INK2, va="top")
-                ax.set_title(f"({'cd'[col]}) VRAM đỉnh — {title}", fontsize=8.5, color=INK, loc="left")
-                ax.set_xlabel("độ dài audio", fontsize=8, color=INK2)
-            ax.set_xscale("log")
-            ax.set_yscale("log")
-            ax.set_xlim(4, 3600)
-            ax.set_xticks([t for t, _ in XTICKS], [l for _, l in XTICKS])
-            ax.xaxis.set_minor_formatter(matplotlib.ticker.NullFormatter())
-            style(ax)
-    axes[0][0].set_ylabel("giây", fontsize=8, color=INK2)
-    axes[1][0].set_ylabel("GiB", fontsize=8, color=INK2)
-    fig.tight_layout(w_pad=4.5, h_pad=1.2)
+    """Hình 3.4 lưới 1×2 (người dùng bác bản 2×2 16/10): (a) độ trễ, (b) VRAM, mỗi panel đủ 7 cấu hình ~12M để thấy
+    ngay cùng một encoder đổi thế nào giữa 40 ms và 10 ms. Màu + hình marker = encoder; nét liền + marker đặc = 40 ms,
+    nét đứt + marker rỗng = 10 ms (cùng quy ước đặc/rỗng với Hình 3.5). Bảy đường quá nhiều cho nhãn trực tiếp ở đầu
+    đường → một legend chung (hàng = cấu hình, cột = encoder). Parakeet không vẽ (khác bốn điều kiện cùng lúc)."""
+    fig, axes = plt.subplots(1, 2, figsize=(6.3, 3.55))
+    series = [(e, suf, cfg) for suf, cfg, encs in (("_sub4", "40 ms", ["mamba", "conextbimamba", "conformer_relpos"]),
+                                                   ("", "10 ms", ["mamba", "conextbimamba", "conformer_relpos",
+                                                                  "conformer"]))
+              for e in encs]
+    # marker lệch pha giữa encoder: B1 và ConExt 40 ms trùng hẳn nhau ở VRAM → vẫn thấy cả tròn lẫn vuông
+    phase = {"mamba": 0, "conextbimamba": 2, "conformer_relpos": 1, "conformer": 3}
+    handles = {}
+    for ax, idx in ((axes[0], 1), (axes[1], 3)):
+        for e, suf, cfg in series:
+            lab, color, _, mk = ENC[e]
+            c = curves[e + suf]
+            xs, ys = [x[0] for x in c], [x[idx] for x in c]
+            solid = suf == "_sub4"
+            (h,) = ax.plot(xs, ys, ls="-" if solid else (0, (4, 2)), color=color, lw=1.4, marker=mk, ms=4.2,
+                           markevery=slice(phase[e], None, 4), mfc=color if solid else "white", mec=color, mew=0.9,
+                           zorder=3 if solid else 2)
+            handles[(e, cfg)] = (h, f"{lab} {cfg}")
+            if oom[e + suf]:
+                fail = oom[e + suf][1]
+                if idx == 3:
+                    # nối tới trần bộ nhớ T4 ở độ dài bắt đầu OOM: điểm × nằm đúng nơi mô hình vượt trần
+                    ax.plot([xs[-1], fail], [ys[-1], T4_GIB], ls=(0, (1, 1.5)), color=color, lw=1.0, zorder=2)
+                    ax.plot(fail, T4_GIB, marker="x", color=INK, ms=7, mew=1.5, zorder=5)
+                    left = fail < 300  # hai điểm OOM cùng độ cao → nhãn tách sang hai phía
+                    ax.annotate(f"OOM {fail:.0f} s", (fail, T4_GIB), xytext=(-6 if left else 6, 4),
+                                textcoords="offset points", fontsize=8, color=INK, ha="right" if left else "left",
+                                va="bottom")
+                else:  # nhãn độ dài OOM chỉ ghi ở (b) — ở (a) vùng đó dày đường, chữ đè lên dữ liệu
+                    ax.plot(xs[-1], ys[-1], marker="x", color=INK, ms=7, mew=1.5, zorder=5)
+        ax.axvspan(10, 15, color=GRID, alpha=0.9, lw=0, zorder=0)
+        ax.set_xscale("log")
+        ax.set_yscale("log")
+        ax.set_xlim(4, 4500)
+        ax.set_xticks([t for t, _ in XTICKS], [l for _, l in XTICKS])
+        ax.xaxis.set_minor_formatter(matplotlib.ticker.NullFormatter())
+        ax.yaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(
+            lambda v, _: (f"{v:g}" if v >= 1 else f"{v:.2g}").replace(".", ",")))
+        ax.set_xlabel("độ dài audio (thang log)", fontsize=8, color=INK2)
+        style(ax)
+    axes[0].set_title("(a) Độ trễ suy luận trung vị", fontsize=9, color=INK, loc="left")
+    axes[0].set_ylabel("giây (thang log)", fontsize=8, color=INK2)
+    axes[1].set_title("(b) VRAM đỉnh khi suy luận", fontsize=9, color=INK, loc="left")
+    axes[1].set_ylabel("GiB (thang log)", fontsize=8, color=INK2)
+    axes[1].set_ylim(0.05, 40)
+    axes[1].axhline(T4_GIB, color=GRAY, lw=0.9, zorder=1)
+    axes[1].text(5, T4_GIB / 1.12, "giới hạn bộ nhớ T4", fontsize=8, color=INK2, va="top")
+    oom_h = matplotlib.lines.Line2D([], [], ls="none", marker="x", color=INK, ms=7, mew=1.5)
+    # legend điền theo cột (ncol=4): xếp cặp (40 ms, 10 ms) theo encoder → hàng 1 là 40 ms, hàng 2 là 10 ms
+    order = [handles[("mamba", "40 ms")], handles[("mamba", "10 ms")],
+             handles[("conextbimamba", "40 ms")], handles[("conextbimamba", "10 ms")],
+             handles[("conformer_relpos", "40 ms")], handles[("conformer_relpos", "10 ms")],
+             (oom_h, "hết bộ nhớ (OOM)"), handles[("conformer", "10 ms")]]
+    fig.legend([h for h, _ in order], [l for _, l in order], loc="lower center", ncol=4, fontsize=8, frameon=False,
+               handlelength=2.6, columnspacing=1.2, bbox_to_anchor=(0.5, 0.0))
+    fig.tight_layout(rect=(0, 0.13, 1, 1), w_pad=2.0)
     fig.savefig(FIG / "fig_3_4_latency_vram.png", dpi=300)
     plt.close(fig)
 
 
-def fig_tradeoff(curves, wer):
+def fig_tradeoff(curves, wer, summary):
     fig, ax = plt.subplots(figsize=(6.3, 3.5))
-    cols40 = {"mamba": "v2a_mamba_greedy", "conextbimamba": "v2a_conextbimamba_greedy",
-              "conformer_relpos": "v2a_conformer_relpos_greedy"}
-    cols10 = {e: f"v2a10_{e}" for e in ENC}
+    # khoá encoder → (hàng summary.csv, cột results.json từng seed); 10 ms chỉ có 1 seed nên không vẽ chấm seed
+    rows40 = {"mamba": ("40ms_b1", "v2a_mamba"), "conextbimamba": ("40ms_conext", "v2a_conextbimamba"),
+              "conformer_relpos": ("40ms_relpe", "v2a_conformer_relpos")}
+    rows10 = {"mamba": ("10ms_b1", None), "conextbimamba": ("10ms_conext", None),
+              "conformer_relpos": ("10ms_relpe", None), "conformer": ("10ms_nope", None)}
     pts = []
-    for suf, cols, filled, cfg in (("_sub4", cols40, True, "40 ms"), ("", cols10, False, "10 ms")):
-        for e, col in cols.items():
+    for suf, rows, filled, cfg in (("_sub4", rows40, True, "40 ms"), ("", rows10, False, "10 ms")):
+        for e, (row, seed_col) in rows.items():
             lab, color, _, mk = ENC[e]
             x = 1000 * at(curves[e + suf], SENTENCE_S)[1]
-            w = wer[col]
-            ax.errorbar(x, 100 * w["wer"], yerr=[[100 * (w["wer"] - w["ci"][0])], [100 * (w["ci"][1] - w["wer"])]],
-                        fmt=mk, color=color, ms=7, mfc=color if filled else "white", mec=color, mew=1.4,
+            r = summary[row]
+            m, lo, hi = (100 * float(r[k]) for k in ("wer_mean", "wer_ci_low", "wer_ci_high"))
+            ax.errorbar(x, m, yerr=[[m - lo], [hi - m]], fmt=mk, color=color, ms=7,
+                        mfc=color if filled else "white", mec=color, mew=1.4,
                         ecolor=color, elinewidth=1.0, capsize=2.5, zorder=3)
-            pts.append((x, 100 * w["wer"], f"{lab} {cfg}"))
+            if seed_col:
+                cols = [f"{seed_col}_greedy", f"{seed_col}_seed43_greedy", f"{seed_col}_seed44_greedy"]
+                ax.scatter([x + d for d in (-0.9, 0.0, 0.9)], [100 * wer[c]["wer"] for c in cols], s=7,
+                           color=color, alpha=0.55, linewidths=0, zorder=2)
+            pts.append((x, m, f"{lab} {cfg}"))
     for key, lab in (("raw_parakeet_fp32", "Parakeet 0,6B zero-shot"), ("v2a10_parakeet_ft", "Parakeet 0,6B fine-tune")):
         y = 100 * wer[key]["wer"]
         ax.axhline(y, color=GRAY, lw=0.8, ls="--", zorder=1)
         ax.text(0.5, y + 0.2, f"{lab} — tham chiếu, khác điều kiện", fontsize=6.5, color=INK2, ha="left", va="bottom")
-    offsets = {"B1 40 ms": (7, -2), "ConExt 40 ms": (-8, 6), "Conformer PE 40 ms": (8, -9), "B1 10 ms": (-8, 0),
+    offsets = {"B1 40 ms": (14, -7), "ConExt 40 ms": (-8, 6), "Conformer PE 40 ms": (8, -9), "B1 10 ms": (-8, 0),
                "ConExt 10 ms": (-8, 6), "Conformer PE 10 ms": (7, 0), "Conformer không PE 10 ms": (7, 0)}
     for x, y, lab in pts:
         dx, dy = offsets.get(lab, (7, 0))
@@ -246,8 +303,8 @@ def fig_tradeoff(curves, wer):
     ax.yaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(lambda v, _: f"{v:.1f}".replace(".", ",")))
     ax.set_xlabel(f"độ trễ suy luận trung vị ở câu {SENTENCE_S:.0f} s (ms; T4, batch 1)", fontsize=8, color=INK2)
     ax.set_ylabel("WER clean-test (%), greedy, CI 95%", fontsize=8, color=INK2)
-    ax.text(0.99, 0.97, "marker đặc: 40 ms · rỗng: 10 ms", transform=ax.transAxes, fontsize=6.5, color=INK2,
-            ha="right", va="top")
+    ax.text(0.99, 0.97, "marker đặc: 40 ms, trung bình 3 seed (chấm nhỏ: từng seed) · rỗng: 10 ms, 1 seed",
+            transform=ax.transAxes, fontsize=6.5, color=INK2, ha="right", va="top")
     style(ax)
     fig.tight_layout()
     fig.savefig(FIG / "fig_3_5_wer_rtf.png", dpi=300)
@@ -255,14 +312,17 @@ def fig_tradeoff(curves, wer):
 
 
 def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--fig35", action="store_true", help="vẽ lại Hình 3.5 (mặc định giữ nguyên PNG hiện có)")
+    args = ap.parse_args()
     plt.rcParams["font.family"] = "Times New Roman"
     OUT.mkdir(parents=True, exist_ok=True)
     FIG.mkdir(parents=True, exist_ok=True)
     curves, oom, params = load_rq2()
-    wer = json.loads(RESULTS_WER.read_text(encoding="utf-8"))["systems"]
 
-    t36 = train_table(params)
+    t36, t36_seeds = train_table(params)
     write_csv(OUT / "table_3_6_train_cost.csv", t36)
+    write_csv(OUT / "table_3_6_train_cost_per_seed.csv", t36_seeds)
 
     t37 = []
     for key, label, *_ in CONFIGS:
@@ -304,7 +364,10 @@ tường minh**, không phải của Conformer nói chung — bản không PE (S
 """, encoding="utf-8")
 
     fig_latency(curves, oom)
-    fig_tradeoff(curves, wer)
+    if args.fig35:
+        with WER_SUMMARY.open(encoding="utf-8") as f:
+            summary = {r["row"]: r for r in csv.DictReader(f)}
+        fig_tradeoff(curves, json.loads(RESULTS_WER.read_text(encoding="utf-8"))["systems"], summary)
 
     for name, rows in (("Bảng 3.6", t36), ("Bảng 3.7", t37), ("Điểm giao", cross)):
         print(f"== {name}")

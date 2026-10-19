@@ -1,0 +1,11 @@
+group,system,wer_vs_pseudo,wer_vs_corrected,rank_pseudo,rank_corrected,spearman_all
+10 ms,Conformer relPE,0.168812,0.169356,8,8,0.9879
+10 ms,B1 Mamba,0.142193,0.143175,6,6,0.9879
+10 ms,ConExtBiMamba,0.170264,0.170515,9,9,0.9879
+10 ms,Conformer không PE,0.223696,0.223532,10,10,0.9879
+40 ms greedy,Conformer relPE,0.126448,0.126397,3,2,0.9879
+40 ms greedy,B1 Mamba,0.125932,0.126614,2,3,0.9879
+40 ms greedy,ConExtBiMamba,0.128448,0.129126,4,4,0.9879
+"pre-train, học nhãn giả",Parakeet fine-tune,0.094667,0.09429,1,1,0.9879
+"đối chứng, chưa thấy nhãn giả",Parakeet zero-shot,0.138031,0.137848,5,5,0.9879
+"đối chứng, chưa thấy nhãn giả",PhoWhisper zero-shot,0.149647,0.14857,7,7,0.9879

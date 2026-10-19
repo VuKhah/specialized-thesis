@@ -13,7 +13,7 @@ Bản kiểm kê để dựng khung Chương 3 ngay, trước khi có đủ số
 |---|---|---|
 | **3.1** Cấu hình 10 ms, ep37, 1 seed | Conformer relPE (baseline chuẩn) · B1 · ConExt · dòng ablation Conformer không PE. Cột: WER chung / từ Việt / từ ngoại, val_unseen (nhãn giả), GPU-h tới ep37, tham số encoder + tổng | relPE và ep37 **chưa có**; hiện chỉ có ep28 v1 (B1 0,1704 · ConExt 0,2019 · Conformer không PE 0,2648) |
 | **3.2** Cấu hình 40 ms, ep37, 3 seed | trung bình ± độ lệch chuẩn; số từng seed ở phụ lục; cùng các cột như 3.1 | seed 42 có (relPE 0,1211 · B1 0,1264 · ConExt 0,1309); seed 43/44 chưa chạy |
-| **3.3** So cặp | hiệu WER từng cặp ở mỗi cấu hình, CI 95% cặp theo video, kết luận "tốt hơn" / "không phân biệt được" theo tiêu chí chốt trước | 40 ms seed 42: B1−ConExt −0,0044 [−0,0097; +0,0007]; B1−relPE +0,0054 [+0,0009; +0,0101]; ConExt−relPE +0,0098 [+0,0048; +0,0152]. 10 ms ep28: B1−ConExt −0,0315; B1−Conformer −0,0944; ConExt−Conformer −0,0629 (CI đều không chứa 0) |
+| **3.3** So cặp | hiệu WER từng cặp ở mỗi cấu hình, CI 95% cặp theo video, kết luận "tốt hơn" / "không phân biệt được" theo tiêu chí chốt trước | **Số cuối (chấm chung 16/10, `clean_test_scored_2026-10-16_chung/results.json`), điểm WER:** 10 ms ep37 (CI cặp theo video): B1−relPE −2,62 [−3,25; −1,99] · ConExt−relPE +0,12 [−0,63; +0,87] · B1−ConExt −2,73 [−3,36; −2,11] · relPE−không PE −5,42 [−6,39; −4,45]. 40 ms 3 seed (CI hai tầng), greedy: B1−ConExt −0,25 [−0,86; +0,39] · B1−relPE +0,02 [−0,82; +0,98] · ConExt−relPE +0,27 [−0,60; +1,26]; beam+LM: +0,22 [−0,26; +0,74] · +0,58 [−0,15; +1,31] · +0,36 [−0,35; +1,12]. *Số cũ 15/10 (40 ms chỉ seed 42, 10 ms ep28) đã thay — không dùng.* |
 | **3.4** Bảng phụ giải mã | beam 10 + từ điển âm tiết + LM 3-gram (lmw 0,8 / ws 1,0 chốt trên nửa tune) cho nhóm 40 ms, mọi seed; ghi rõ là cải thiện của hệ giải mã, LM học nhãn giả | seed 42: relPE 0,1024 · ConExt 0,1081 · B1 0,1115 |
 | **3.5** Tham chiếu pre-train | Parakeet zero-shot · Parakeet fine-tune (7 GPU-h, nhãn giả) · PhoWhisper zero-shot; WER chung và từ Việt; **không xếp hạng chung** | zero-shot có (Parakeet 0,1378, từ Việt **0,0879**; PhoWhisper 0,1490); fine-tune chưa chấm clean-test |
 
@@ -47,10 +47,18 @@ Phụ lục: v1 ep28 + avg ep20–29 + Conformer dài 69 epoch; số từng seed
 - 40 ms, seed 42: Conformer relPE dẫn 0,5–1,0 điểm, CI cặp không chứa 0. Sau 3 seed:
   - dấu giữ ở cả 3 cặp seed **và** CI của hiệu trung bình-seed không chứa 0 → "Conformer relPE tốt hơn X ± Y điểm";
   - thiếu một điều kiện → "không phân biệt được ở 3 seed".
+  - **Đã xảy ra (chấm chung 16/10, tiêu chí note gap 9.6):** cả 3 cặp, greedy và beam+LM, CI hai tầng chứa 0 →
+    **"không phân biệt được ở 3 seed"**; relPE seed 42 là run tốt nhất trong 9 run. Số: `clean_test_results_2026-10-15.md`
+    mục "Lần chấm chung 2026-10-16".
 - 10 ms: hai encoder Mamba vượt Conformer **không PE** 6–9 điểm (CI rõ). Với Conformer relPE 10 ms:
   - relPE vẫn thua Mamba → "lợi thế Mamba ở 10 ms là thật";
   - relPE bắt kịp/vượt → "lợi thế ở 10 ms chủ yếu do baseline không PE yếu" — và **đó là kết luận chính**, không
     chuyển sang so với bản không PE.
+  - **Đã xảy ra (16/10, 1 seed, quy tắc 9.6 điều 6):** nhánh trộn — B1 vẫn tốt hơn relPE (−2,6 điểm, CI không chứa 0)
+    nhưng ConExt − relPE +0,1 điểm, CI chứa 0 → lợi thế ở 10 ms là của **B1**, không phải của "Mamba" nói chung;
+    lợi thế ConExt so với bản không PE chủ yếu do baseline không PE yếu.
+  - Khuyến nghị thực dụng bên dưới đã viết lại 17/10 (người dùng duyệt): bản cũ "câu ngắn → Conformer relPE 40 ms"
+    dựa trên WER seed 42, không còn đứng ở 3 seed.
 
 **KL2 — Hai cách đưa Mamba vào encoder.** B1 tốt hơn ConExt 3,2 điểm ở 10 ms (CI [2,5; 3,8]). Ở 40 ms không phân
 biệt được, thứ hạng đổi chỗ giữa clean-test và nửa dev. Viết "phù hợp với giả thuyết độ phân giải", **không** "chứng
@@ -71,8 +79,11 @@ trên từ Việt** (0,088); khoảng cách do từ ngoại bị phiên âm thà
 kèm điều kiện khác (2.000 h pre-train, 600M, subsampling 8×, nhãn giả khi fine-tune, khả năng rò rỉ).
 
 **Khuyến nghị thực dụng (Chương 4), luôn kèm điều kiện "một bộ dữ liệu, ~12M, CTC, T4, 1–3 seed":**
-- Câu ngắn, cần train nhanh, GPU nhỏ → Conformer relPE 40 ms.
-- Audio dài (≥ ~1 phút) hoặc giới hạn VRAM/độ trễ suy luận → ConExtBiMamba 40 ms.
+- Câu ngắn (10–15 s): ba encoder 40 ms không phân biệt được về WER (3 seed) và độ trễ ~20–30 ms/câu → chọn theo triển
+  khai: Conformer relPE 40 ms không cần `mamba-ssm`/kernel CUDA, chạy được CPU. Không chọn theo GPU-h (chênh ~5% giữa
+  ConExt và relPE nhỏ hơn dao động máy Kaggle ~7%).
+- Audio dài (≥ ~1 phút) hoặc cần độ trễ suy luận thấp trên audio dài → ConExtBiMamba 40 ms (Conformer relPE còn hết bộ
+  nhớ từ ~656 s do cách cài bias vị trí tường minh).
 - Có sẵn mô hình lớn, không cần train, chấp nhận chậm 5–10× → Parakeet.
 
 ## 4. Mục hạn chế phải khai (đưa nguyên vào Ch3 và Kết luận)

@@ -322,6 +322,71 @@ def decode(npz: dict[str, Path], out: Path) -> None:
     print(f"ghi {len(hyps)} câu → {out}", flush=True)
 
 
+def export_arpa(lm: KNLM, out: Path) -> None:
+    """Ghi KNLM ra ARPA để giải mã bằng KenLM trong flashlight (Linux; bản Windows không kèm KenLM). `logp`/`bow` đã là
+    dạng backoff ARPA nên ghi thẳng — `KNLM.score` và KenLM cho cùng xác suất (kiểm bằng giải mã trên Kaggle 19/10)."""
+    by_order = collections.defaultdict(list)
+    for g, lp in lm.logp.items():
+        by_order[len(g)].append(g)
+    with out.open("w", encoding="utf-8") as f:
+        f.write("\\data\\\n" + "".join(f"ngram {n}={len(by_order[n])}\n" for n in sorted(by_order)) + "\n")
+        for n in sorted(by_order):
+            f.write(f"\\{n}-grams:\n")
+            for g in sorted(by_order[n]):
+                bow = lm.bow.get(g) if n < lm.order else None
+                f.write(f"{max(lm.logp[g], -99.0):.6f}\t{' '.join(g)}" + (f"\t{bow:.6f}" if bow is not None else "") + "\n")
+            f.write("\n")
+        f.write("\\end\\\n")
+
+
+def topk_emissions(path: Path):
+    """Đọc npz top-k (`eval_gs2.py`: keys, lengths, idx, val) → [(khoá, log-prob [T', 1001])], ô ngoài top-k = −1e4
+    như cột SIL của `beam_words`. Kiểm 19/10 trên 609 câu clean-test: top-32 cho greedy và beam+LM trùng 100% bản đầy
+    đủ (decoder chỉ xét `beam_size_token` = 20 token mỗi khung)."""
+    d = np.load(path)
+    offsets = np.concatenate([[0], np.cumsum(d["lengths"])])
+    idx, val = d["idx"].astype(np.int64), d["val"].astype(np.float32)
+    for i, key in enumerate(d["keys"]):
+        a, b = offsets[i], offsets[i + 1]
+        lp = np.full((b - a, 1001), -1e4, dtype=np.float32)  # 1000 BPE + blank (cột 0)
+        np.put_along_axis(lp, idx[a:b], val[a:b], 1)
+        yield str(key), lp
+
+
+def _decode_topk_one(args) -> dict:
+    name, path = args
+    tok = _Tokens()
+    knlm = load_lm(LM_DIR / "lm3.pkl")
+    dec = make_decoder(LM_DIR / "lexicon.txt", knlm, tok)
+    out, t = {}, time.time()
+    for k, lp in topk_emissions(path):
+        g = greedy(lp, tok)
+        h = beam_words(dec, lp)
+        if len(h.split()) < FALLBACK * len(g.split()):
+            h = split_sticky(g, knlm)
+        out[k] = {f"{name}_greedy": g, f"{name}_lm": h}
+    print(f"{name}: {len(out)} câu, {time.time() - t:.0f} s", flush=True)
+    return out
+
+
+def decode_topk(npz: dict[str, Path], out: Path, jobs: int) -> None:
+    """Như `decode` nhưng đầu vào là npz top-k; mỗi mô hình một tiến trình (LM + decoder dựng riêng)."""
+    from multiprocessing import Pool
+    hyps = {}
+    with Pool(jobs) as pool:
+        for part in pool.imap_unordered(_decode_topk_one, list(npz.items())):
+            for k, v in part.items():
+                hyps.setdefault(k, {}).update(v)
+    cols = sorted({c for v in hyps.values() for c in v})
+    out.parent.mkdir(parents=True, exist_ok=True)
+    with out.open("w", encoding="utf-8", newline="") as f:
+        w = csv.writer(f, delimiter="\t")
+        w.writerow(["key"] + cols)
+        for k, v in hyps.items():
+            w.writerow([k] + [v.get(c, "") for c in cols])
+    print(f"ghi {len(hyps)} câu → {out}", flush=True)
+
+
 def main() -> None:
     sys.stdout.reconfigure(encoding="utf-8")
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
@@ -331,11 +396,18 @@ def main() -> None:
     d = sub.add_parser("decode")
     d.add_argument("--npz", nargs="+", required=True, help="tên=đường_dẫn.npz (tên thành tiền tố cột)")
     d.add_argument("--out", type=Path, required=True)
+    k = sub.add_parser("decode-topk", help="npz top-k của eval_gs2.py (GigaSpeech 2, 19/10)")
+    k.add_argument("--npz", nargs="+", required=True, help="tên=đường_dẫn.npz")
+    k.add_argument("--out", type=Path, required=True)
+    k.add_argument("--jobs", type=int, default=4)
     a = ap.parse_args()
+    npz = {x.split("=", 1)[0]: Path(x.split("=", 1)[1]) for x in getattr(a, "npz", [])}
     if a.cmd == "build":
         build(a.text)
+    elif a.cmd == "decode":
+        decode(npz, a.out)
     else:
-        decode({x.split("=", 1)[0]: Path(x.split("=", 1)[1]) for x in a.npz}, a.out)
+        decode_topk(npz, a.out, a.jobs)
 
 
 if __name__ == "__main__":

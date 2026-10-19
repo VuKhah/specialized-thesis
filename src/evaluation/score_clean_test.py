@@ -42,7 +42,9 @@ SEED_MODELS = [("conformer_relpos", "Conformer relPE"), ("mamba", "B1 Mamba"), (
 SEEDS = (43, 44)
 # Kernel `scripts/kaggle/dump_greedy_10ms/` (16/10): 4 checkpoint ep37 10 ms + Parakeet fine-tune, khoá "clean_test|split:index".
 HYP_10MS = Path("reports/results/dump_greedy_10ms_2026-10-16/greedy.json")
-OUT = Path("reports/results/clean_test_scored_2026-10-16")
+# Lần chấm chung duy nhất (đủ 9 run 40 ms + 4 checkpoint 10 ms + Parakeet FT, có canon_tone); thư mục `_2026-10-16`
+# không hậu tố là lần chấm 10 ms sáng 16/10, giữ nguyên để đối chiếu.
+OUT = Path("reports/results/clean_test_scored_2026-10-16_chung")
 
 FILLERS = {"ờ", "ơ", "ừm", "ưm", "ầm", "hừm", "hmm", "hm", "uh", "um"}
 FRAGMENTS = {(153, 9)}  # (số thứ tự câu 1-based, vị trí từ trong ref đã chuẩn hoá) — người dùng xác nhận 15/10
@@ -186,8 +188,11 @@ def block_bootstrap(err: np.ndarray, words: np.ndarray, n_boot: int = 10_000, se
     return err[idx].sum(1) / words[idx].sum(1)
 
 
-def main() -> None:
-    sys.stdout.reconfigure(encoding="utf-8")
+def load_hypotheses():
+    """Nạp manifest, bảng từ, alt_spellings và mọi giả thuyết. Tách ra để `error_breakdown` dùng đúng cùng nguồn
+    với bảng chính (phân rã lỗi phải cộng về đúng WER đã báo).
+
+    Trả về (samples, tags, alt, hyps, systems); hyps[split:index][cột] = chuỗi giả thuyết."""
     samples = json.loads(MANIFEST.read_text(encoding="utf-8"))["samples"]
     with TAGS.open(encoding="utf-8-sig") as f:
         tags = {r["key"]: r["label"] for r in csv.DictReader(f, delimiter="\t") if r["label"]}
@@ -212,7 +217,12 @@ def main() -> None:
             set_name, sent = key.split("|", 1)
             if set_name == "clean_test":
                 hyps[sent][f"v2a10_{model}"] = hyp
+    return samples, tags, alt, hyps, systems
 
+
+def main() -> None:
+    sys.stdout.reconfigure(encoding="utf-8")
+    samples, tags, alt, hyps, systems = load_hypotheses()
     videos = sorted({s["source"] for s in samples})
     pre_mark = [not s.get("corrected_at") or s["corrected_at"] < OURS_VISIBLE_FROM for s in samples]
     results, per_sent = {}, []

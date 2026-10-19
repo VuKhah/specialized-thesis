@@ -1,0 +1,8 @@
+{
+  "n_ref_words": 10352,
+  "n_label_error_positions": 162,
+  "by_group": {
+    "việt": 63,
+    "ngoại": 99
+  }
+}

@@ -1,0 +1,40 @@
+{
+ "mode": "10ms",
+ "commit": "edd7dd40d8057cf931d259038092a2c0d0d5c64e",
+ "minutes": 16.9,
+ "errors": [],
+ "models": {
+  "mamba": {
+   "epoch": 37,
+   "seconds": {
+    "gs2_test": 486.1,
+    "clean_test": 9.0
+   },
+   "encoder_params": 12285696
+  },
+  "conextbimamba": {
+   "epoch": 37,
+   "seconds": {
+    "gs2_test": 504.3,
+    "clean_test": 5.7
+   },
+   "encoder_params": 12241536
+  },
+  "conformer_relpos": {
+   "epoch": 37,
+   "seconds": {
+    "gs2_test": 188.1,
+    "clean_test": 5.6
+   },
+   "encoder_params": 12732672
+  },
+  "conformer": {
+   "epoch": 37,
+   "seconds": {
+    "gs2_test": 436.4,
+    "clean_test": 4.2
+   },
+   "encoder_params": 12204288
+  }
+ }
+}

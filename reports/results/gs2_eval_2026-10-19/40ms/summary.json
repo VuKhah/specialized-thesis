@@ -1,0 +1,88 @@
+{
+ "mode": "40ms",
+ "commit": "0090bd75535c980542885aa680a50789b9991630",
+ "minutes": 27.6,
+ "errors": [],
+ "parakeet_ft_ckpt": {
+  "global_step": 9379,
+  "wer_val": 0.08182659895547334,
+  "wer_val_unseen": 0.08021175238508793
+ },
+ "models": {
+  "conextbimamba_seed42": {
+   "epoch": 37,
+   "seconds": {
+    "gs2_test": 306.4,
+    "clean_test": 8.2
+   },
+   "encoder_params": 12286592
+  },
+  "conextbimamba_seed43": {
+   "epoch": 37,
+   "seconds": {
+    "gs2_test": 306.4,
+    "clean_test": 8.4
+   },
+   "encoder_params": 12286592
+  },
+  "conextbimamba_seed44": {
+   "epoch": 37,
+   "seconds": {
+    "gs2_test": 206.6,
+    "clean_test": 9.1
+   },
+   "encoder_params": 12286592
+  },
+  "mamba_seed42": {
+   "epoch": 37,
+   "seconds": {
+    "gs2_test": 273.3,
+    "clean_test": 13.5
+   },
+   "encoder_params": 12330752
+  },
+  "mamba_seed43": {
+   "epoch": 37,
+   "seconds": {
+    "gs2_test": 293.6,
+    "clean_test": 13.0
+   },
+   "encoder_params": 12330752
+  },
+  "mamba_seed44": {
+   "epoch": 37,
+   "seconds": {
+    "gs2_test": 284.7,
+    "clean_test": 10.3
+   },
+   "encoder_params": 12330752
+  },
+  "conformer_relpos_seed42": {
+   "epoch": 37,
+   "seconds": {
+    "gs2_test": 160.7,
+    "clean_test": 6.4
+   },
+   "encoder_params": 12777728
+  },
+  "conformer_relpos_seed43": {
+   "epoch": 37,
+   "seconds": {
+    "gs2_test": 148.3,
+    "clean_test": 6.7
+   },
+   "encoder_params": 12777728
+  },
+  "conformer_relpos_seed44": {
+   "epoch": 37,
+   "seconds": {
+    "gs2_test": 117.0,
+    "clean_test": 4.5
+   },
+   "encoder_params": 12777728
+  },
+  "parakeet_ft": {
+   "seconds_total": 393.7
+  }
+ }
+}

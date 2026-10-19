@@ -74,7 +74,7 @@ Tuần tính từ thứ Hai; "Tuần 6 ≈ 2026-10-01". Quota: 3 tài khoản A/
 Cắt giảm nếu chậm (theo thứ tự): L3 "nhại" (RQ3) → bảng phụ LM → phân rã theo âm tiết. Không cắt Bảng 3.1–3.3,
 RQ2, mục Hạn chế.
 
-## 3. Trạng thái hiện tại (2026-10-15 khuya)
+## 3. Trạng thái hiện tại (2026-10-16 tối)
 
 | Hạng mục | Trạng thái | Ghi chú |
 |---|---|---|
@@ -82,7 +82,7 @@ RQ2, mục Hạn chế.
 | v1 30 epoch ×3 + Conformer dài 69 ep | ✅ | phụ lục; avg ep20–29 là số tham chiếu |
 | 10 ms ×4 ep37 (B1, ConExt, relPE, không PE) | ✅ train + chấm clean-test 16/10 | B1 0,1432 · relPE 0,1694 · ConExt 0,1705 · không PE 0,2235 (`clean_test_results` bổ sung 16/10) |
 | 40 ms ×3 seed 42 (ep37) | ✅ train + chấm clean-test | relPE 0,1211 · B1 0,1264 · ConExt 0,1309 (greedy); + LM 0,1024 / 0,1115 / 0,1081 |
-| Seed 43/44 ở 40 ms | ▶ 6/6 run đẩy 16/10 08:36–08:49 (A ConExt, B relPE, C B1) | ~32 GPU-h, xong ~14:00–15:00 |
+| Seed 43/44 ở 40 ms | ✅ 6/6 + chấm chung 16/10 | 3 seed tb: relPE 0,1264±0,0046 · B1 0,1266±0,0014 · ConExt 0,1291±0,0018 → **không phân biệt được** (cả LM); `clean_test_scored_2026-10-16_chung/` |
 | Parakeet zero-shot / fine-tune | ✅ / ✅ chấm clean-test | zero-shot 0,1378; FT 0,0943 |
 | PhoWhisper zero-shot | ✅ | 0,1490 |
 | RQ2 cuối | ✅ 7 cấu hình + Parakeet | `reports/results/rq2_final_2026-10-13/` |
@@ -120,6 +120,10 @@ Theo thứ tự thời gian. Quyết định bị thay thế giữ lại để t
 | 2026-10-16 | **12 quyết định sau rà soát Fable 15/10, chốt theo khuyến nghị** (review mục 4): (1) luận điểm + RQ như review 2.1, 10/40 ms ở RQ1; (2) **bỏ nhãn "mô hình chính"** (thay quyết định 12/10), viết thành khảo sát hai encoder Mamba; (3) vá bảng 10 ms (L1, L2) trước mọi run mới; (4) **seed 43/44 × 3 mô hình 40 ms** (~32 GPU-h), tiêu chí **9.6** (bootstrap hai tầng thay điều 4a/5 của review 2.3); (5) không CR-CTC/BPE3000, chỉ bảng phụ giải mã; (6) **trục GPU-giờ: chỉ báo cột GPU-h + đường WER theo GPU-h, không train bù** (đóng 9.4 điều 10; khai sự cố 13/10); (7) chấm Parakeet FT trên clean-test (gộp L2); (8) gõ mù ~20 câu; (9) chất lượng nhãn gộp RQ3; (10) **đóng băng GPU 25/10** (dự phòng 01/11 chỉ cho run seed lỗi); (11) kiểm `normalize_text`/`alt_spellings`, đổi thì chấm lại toàn bộ một lần; (12) commit file chưa track sau rà repo public. **10 ms: 1 seed, không cổng seed** (người dùng loại đề xuất cổng của AI) | Người dùng ~08:20, trước khi xem WER relPE 10 ms; `conextbimamba_gap_2026-10-12.md` mục 9.6 |
 | 2026-10-16 | **Không gõ mù 20 câu** (thay #8 vừa chốt): mức neo nhãn không đo; khai hạn chế bằng số đã có (ô hiệu đính điền sẵn nhãn giả; 80/113 câu đầu giữ y nhãn giả; bản hiệu đính cách nhãn giả 1,5–1,8% WER; một người hiệu đính) | Người dùng ~08:45 |
 | 2026-10-16 | **#11: thống nhất vị trí dấu thanh ở vần mở oa/oe/uy** (hóa→hoá, thủy→thuỷ; bỏ qua sau `q`) — quy tắc chung trong `score_clean_test.py` (`canon_tone`), **không** đổi `normalize_text`; chốt trước kết quả seed 43/44, áp ở lần chấm chung khi đủ run. Đo trên output hiện có: PhoWhisper −4 lỗi (0,1490 → 0,1486), ConExt v1 −1, còn lại 0 | Người dùng ~09:05; khai ở Ch2 (quy tắc thêm sau lần chấm 15/10) |
+| 2026-10-17 | **8 mục treo sau chấm chung, chốt theo đề xuất AI:** (1) quy tắc tách âm tiết giữ nguyên như note rq3 mục 1, khai 3 chỉnh sửa lúc chạy kiểm; (2) từ dính dùng `sticky_words` cho mọi hệ thống, số note 15/10 chỉ ghi phụ lục; (3) commit `reports/results/error_analysis/`; (4) nhận câu sửa note RQ2 ("≤ 21%" theo tb 3 seed); (5) **viết lại khuyến nghị Ch4**: câu ngắn chọn theo triển khai (WER 40 ms không phân biệt được), audio dài → ConExt 40 ms; (6) "không phân biệt được" luôn kèm CI 95% của hiệu, không viết "chênh ≤ X"; (7) Hình 3.5 vẽ lại với 40 ms trung bình 3 seed; (8) gitignore `data/Test_micro/`. Thêm việc 0 GPU (giới hạn ~2 ngày): kiểm định dấu theo video (mô tả, không đổi tiêu chí 9.4/9.6); hình WER theo GPU-giờ; L3 "nhại" bản tối giản (≤ 1 ngày); hạ câu "lần đầu" thành "theo phạm vi tra cứu" hoặc quét VLSP/ACL. **Không đổi mốc đóng băng GPU: giữ 25/10** (người dùng bác đề xuất đóng 17/10) | Người dùng 17/10; đề xuất trong phiên 17/10 |
+| 2026-10-19 | **So với mô hình hiện hành: A + B** (mở lại mục "eval ngoài miền" review 15/10 mục 3 vì GVHD 17/10 hỏi "so với mấy model hiện thời"). A: bảng cùng clean-test có CI hai tầng + số công bố (khác tập test); B: chỉ eval mọi checkpoint bảng chính + pre-train trên test GigaSpeech 2 vi, ước 1–3 GPU-h, trước 25/10; quy tắc chấm chốt trước khi giải mã. `docs/notes/so_sanh_hien_hanh_2026-10-19.md` | Người dùng 19/10 |
+| 2026-10-19 | **Bỏ ràng buộc "tham số giải mã cố định / chấm một lần" cho GigaSpeech 2** (người dùng: nguyên tắc để giữ tiến độ, không để chặn tối ưu). Được tối ưu giải mã + LM rộng (văn bản GigaSpeech 2 train); giữ một điều: chỉ chỉnh trên **dev** GigaSpeech 2, test chỉ để báo; báo cả cấu hình cố định lẫn tối ưu. `so_sanh_hien_hanh` B.2 mục 4–5 | Người dùng 19/10 |
+| 2026-10-19 | **11/203 câu clean-test trùng nội dung với train (tập tổng hợp/đăng lại): bỏ qua** — giữ 203 câu, không sửa, không khai báo; ảnh hưởng 0,1–0,4 điểm, thứ hạng không đổi. `data_audit_2026-10-19.md` mục 3 | Người dùng 19/10 |
 
 ## 5. Quyết định đang mở / rủi ro đã biết
 
@@ -635,3 +639,85 @@ Mỗi mục: làm gì · chốt gì · phiên sau bắt đầu từ đâu. Các 
   "câu hỏi → trả lời", giới hạn tách riêng và ngắn.
 - **Kernel:** 6 run seed RUNNING lúc 10:48; ước xong ~13:50–14:45.
 - **Phiên sau bắt đầu từ:** TODO khối ▶ (16/10 ~10:50).
+
+### 2026-10-16 (đóng phiên ~11:10)
+- **Đã làm:** commit + push `e81ee17..ecb3d2d` (quét khoá sạch trước khi push); tạo thư mục Drive `2026-10-16` với 4
+  Google Doc (đề cương điều chỉnh, mục lục + nhận định Ch1, danh mục TLTK 26 mục, tóm tắt kết quả); tải 23 PDF tham
+  khảo vào `docs/khoa_luan/tai_lieu_tham_khao/` (gitignore), kiểm tên bài/tác giả qua trang đầu → sửa tác giả trong
+  đề cương local; chọn 4 bài gần đề tài nhất (Zhang 2024, Miyazaki 2024, Jiang 2024, Zevallos 2025) vào `4_bai_gan_nhat/`.
+- **Chưa xong:** PDF chưa lên Drive (connector cần nội dung trong lệnh gọi) → người dùng kéo thả. Doc đề cương trên
+  Drive còn dấu [đối chiếu] (không sửa được Doc sau khi tạo).
+- **Kernel:** 11:10 cả 6 run seed RUNNING; ước xong ~13:50–14:45.
+- **Phiên sau bắt đầu từ:** TODO khối ▶ (16/10 ~11:10) — chấm seed khi xong; Hình 3.4/3.5 chờ người dùng.
+
+### 2026-10-16 (phiên chiều–tối, đóng ~18:20)
+- **Đã làm:** gom 6 run seed 40 ms (`collect_seeds.py`): cả 6 returncode 0, 38/38 epoch, 0 nonfinite, commit `0090bd75`,
+  log sạch; file nhỏ vào `reports/results/train_full/v2a-s4-*/seed43|44/`. Tải 6 `epoch37.pt` → dataset A
+  `kltn-v2a-s4-seeds-ep37`; **đẩy kernel `dump-seeds-v2a-s4` (A) 17:44**, xong 17:48 (2,6′ GPU, 0 lỗi); greedy val_unseen
+  khớp eval lúc train 593/600 câu (lệch 1 từ/câu, sai số fp16/padding). Giải mã beam+LM CPU (7,5′) → greedy khớp kernel
+  203/203 × 6. **Lần chấm chung duy nhất** (áp `canon_tone`) → `reports/results/clean_test_scored_2026-10-16_chung/`
+  (`OUT` mới trong `score_clean_test.py`, giữ thư mục sáng 16/10).
+- **Kết quả (theo tiêu chí chốt trước, note gap 9.6):** 40 ms 3 seed — cả 3 cặp, greedy và beam+LM, CI hai tầng chứa 0 →
+  "không phân biệt được ở 3 seed". relPE seed 42 (0,1211) là run tốt nhất trong 9 run; sd seed relPE 0,46 điểm, gấp ~3
+  lần Mamba. Kết luận "relPE tốt hơn ở 40 ms" của seed 42 **không đứng vững**. Ghi ở `clean_test_results_2026-10-15.md`
+  mục "Lần chấm chung" và nhánh đã xảy ra ở `ket_qua_cuoi_khung` KL1 (gồm nhánh 10 ms: B1 > relPE, ConExt ≈ relPE).
+- **Không làm:** chưa chạy lại `rq2_final_tables.py` (sẽ vẽ lại Hình 3.4/3.5 đang chờ người dùng); không sửa khuyến nghị
+  Ch4 — đánh dấu để người dùng xem.
+- **Quota:** A dùng thêm ~0,1 GPU-h (kernel dump).
+- **Phiên sau bắt đầu từ:** TODO khối ▶ (16/10 ~18:20).
+
+### 2026-10-16 (tối, ~19:00–20:00)
+- **Đã làm:** tải Parakeet FT `best.pt` (step 9379) về `D:/Model/kltn_checkpoints/parakeet_ft/`; dựng bản sao lưu
+  `D:/Model/kltn_drive_backup/checkpoints_kltn_2026-10-16/` (39 file, 3,4 GB, README + SHA256SUMS khớp); tạo thư mục Drive
+  `checkpoints_kltn_2026-10-16` — người dùng kéo thả (Chrome giới hạn 10 MB/lần, máy không có Drive for Desktop).
+  Theo yêu cầu người dùng, 2 agent song song: Bảng 3.6 (3 seed) + Hình 3.4 lưới 1×2 (Hình 3.5 giữ nguyên); Bảng 3.8
+  (`error_breakdown.py`, khớp WER bảng chính 29/29). Đã tự chạy lại: phân rã trùng ngoài cột CI, scorer trùng byte.
+- **Chờ người dùng:** 4 điểm ở TODO ▶ mục 3; Hình 3.5; khuyến nghị Ch4.
+- **Phiên sau bắt đầu từ:** TODO khối ▶.
+
+### 2026-10-16 (tối muộn, ~19:30–22:30)
+- **Demo (`src/demo/app.py`):** nạp 7 checkpoint ep37 từ `checkpoints/final/` (hard link tới bản sao lưu; 13/13 sha256 khớp
+  bản sao lưu + file gốc Kaggle; greedy trùng chấm chính thức 21/21); giải mã beam + LM (mặc định, trùng chính thức 15/15);
+  mặc định 3 mô hình 40 ms, "Xem thêm" 10 ms, "Hiện lỗi" tắt; dòng tham chiếu đọc từ lần chấm chung; câu ngẫu nhiên + độ khó;
+  thu âm sửa (bỏ `format="wav"`, đọc webm qua ffmpeg). Lỗi mất bản thu phía người dùng do extension IDM (Chrome sạch chạy đúng).
+- **Thử audio ngoài bộ kiểm tra** (`data/Test_micro/`, 2 câu, chưa gitignore phần txt/md): cùng kênh 19–26% (LM), kênh khác
+  28–39%; gộp log-prob nhiều checkpoint (150 câu val_unseen) chỉ giúp greedy, làm beam + LM tệ đi → không dùng.
+- **Dashboard cho GVHD** https://claude.ai/artifact/N9y2mpE5kgL15XNcvcAL3S (riêng tư — người dùng tự bật chia sẻ): bảng bối
+  cảnh, Bảng 3.1–3.3 (3.3 chỉ greedy + nhóm pre-train), Hình 3.4a toàn chiều rộng cắt 20 ph + điểm giao, 3.6–3.7, 3.8; mỗi
+  hình: giả thuyết + nhãn + mã nguồn [Miy24]… (đọc abstract PDF local) + căn cứ + câu viết được; bảng số liệu luôn mở;
+  khung "Khuyến nghị" 6 ý; danh mục 8 tài liệu. Dữ liệu dựng bằng script scratchpad `dash/build_data.py` (ngoài repo).
+- `ket_qua_cuoi_khung` Bảng 3.3 thay số cuối. Bản sao lưu checkpoint + Parakeet FT: 39 file, chờ người dùng kéo thả Drive.
+- **Chờ người dùng:** gitignore `data/Test_micro/`; câu chữ "chênh ≤ X điểm"; bộ số từ dính; quy tắc âm tiết; Hình 3.5;
+  khuyến nghị Ch4; commit.
+- **Phiên sau bắt đầu từ:** TODO khối ▶.
+
+### 2026-10-17
+- **Đã làm:** rà lại dự án + review Fable (bản rà soát + bảng điểm); người dùng chốt 8 mục treo theo đề xuất, **bác đóng
+  băng GPU sớm (giữ 25/10)** — `Plan.md` mục 4 dòng 17/10. Hình 3.5 vẽ lại (40 ms tb 3 seed, chấm từng seed); khuyến nghị
+  Ch4 viết lại; gitignore `data/Test_micro/`. Kiểm dashboard GVHD: số khớp chấm chung, đã có forest plot cặp, 3.4a/b, 3.6,
+  3.8 — chỉ thiếu hình WER theo GPU-giờ → `scripts/fig_wer_gpu_hours.py` (`fig_wer_gpu_hours.png`, GPU-h/WER ep37 khớp
+  Bảng 3.6). Kiểm định dấu theo video (`src/evaluation/video_sign_test.py`): đồng thuận bootstrap mọi cặp; 10 ms B1 <
+  relPE ở 26/29 video; 40 ms không cặp nào p < 0,05. L3 "nhại" (`src/evaluation/label_echo.py`, quy tắc ghi note rq3 mục
+  6 trước khi tính): 162 vị trí lỗi nhãn; hệ học nhãn giả nhại 15–24% so với đối chứng zero-shot 9–13%, phần lớn là cùng
+  xoá hư từ; không khác biệt giữa encoder.
+- **Chưa làm:** hình RQ1 dạng PNG cho Word (dashboard là d3); cập nhật Hình 3.5 / hình GPU-giờ lên dashboard; commit.
+- **Khung Ch3** (người dùng yêu cầu, văn phong bài báo — thiết kế cuối, hạn chế viết thành phạm vi, không kể lịch sử
+  các lần chạy): `docs/khoa_luan/ch3_khung.md`, đủ 9 bảng + 4 hình, số từ lần chấm chung. Thêm L4 vào `label_echo.py`
+  (Spearman thứ hạng nhãn giả vs hiệu đính 0,99; chỉ B1/relPE 40 ms đổi chỗ, chênh 0,05 điểm).
+- **Phiên sau bắt đầu từ:** TODO khối ▶ (17/10) — còn lại chủ yếu là viết (khung Ch3) + việc tay đề cương/GVHD.
+
+### 2026-10-19
+- **Đã làm:** rà code + hướng đi, kiểm tính đúng của xử lý dữ liệu bằng dữ liệu thật → `docs/notes/data_audit_2026-10-19.md`.
+  Sạch: split không giao nhau, video giữ riêng không lọt train/val, manifest khớp HF, tokenizer 0 unk/khứ hồi đúng,
+  CTC khả thi mọi câu ở 10/40 ms × speed, duration khớp file. **Mới:** vài video giữ riêng là tập tổng hợp/đặc biệt dùng
+  lại audio tập thường trong train → 11/203 câu clean-test trùng nội dung (8-gram ≥ 50%); bỏ 11 câu đổi WER +0,1–0,4
+  điểm, thứ hạng không đổi, nhóm train từ đầu được lợi nhiều hơn pre-train.
+- **Không làm:** không đổi tập chính thức, không chạy lại bootstrap 192 câu, không commit.
+- **Tiếng Anh "dịch mù" (đối chiếu `Argon_feedback.md`):** A1 không xoá câu chêm (48,2/50,3 h loại là cả video khách nước ngoài; 40,9% câu train còn từ tiếng Anh); Zipformer viết đúng từ phổ biến, sai ở tiếng Anh hiếm (8.223 loại ≤ 2 lần) — lỗi nhãn, không phải pipeline. Không đổi pipeline; note mục 4.
+- **So với mô hình hiện hành (nhận xét GVHD 17/10):** đưa phương án A (0 GPU, bảng cùng clean-test + số công bố) / B (+ eval test GigaSpeech 2 vi, ~1–3 GPU-h ước) / C (VIVOS) — **chờ người dùng chốt**, review 15/10 từng loại eval ngoài miền. Kiểm thêm: VietSuperSpeech train **100% một kênh Vietcetera** (60.656/60.656 đoạn) — chưa ghi thành hạn chế ở đâu; GigaSpeech 2 tách test theo kênh, 19 chủ đề/8 định dạng (không có mục "phỏng vấn/podcast" riêng) → đo khả năng ra ngoài kênh, không phải cùng miền. "Trà tắc": từng âm tiết có trong nhãn train (trà 238, tắc 122), cụm 0 lần; Test_micro sai cả từ phổ biến (hồng 182 lần → "học") → chủ yếu lệch kênh/giọng, không chỉ thiếu từ vựng.
+- **Chốt A + B.** A xong: `src/evaluation/compare_pretrained.py` → `reports/results/compare_pretrained_2026-10-19/` (40 ms greedy không phân biệt được với Parakeet zero-shot, thấp hơn PhoWhisper-small; + LM thấp hơn cả hai; Parakeet FT tốt nhất). B chờ người dùng mở quyền GigaSpeech 2 trên HF (máy chưa có token).
+- **B (GigaSpeech 2) 19/10 chiều:** 4 kernel (A 40 ms + Parakeet FT, A 10 ms — B tạo dataset 403 do cache upload dùng chung giữa tài khoản; C PhoWhisper — bản 1 kẹt cấp máy 0 log, người dùng huỷ, đẩy lại 16:45; D Parakeet zero-shot). Kết quả tạm `so_sanh_hien_hanh` B.3: train từ đầu sụt ~15 điểm ngoài kênh, Parakeet FT 2,7; thứ hạng encoder giữ như clean-test. Quy tắc B.2 khoá khi người dùng xem số.
+- **Phiên sau bắt đầu từ:** B bước 1–2 (note `so_sanh_hien_hanh` mục B) nếu người dùng đã đăng nhập HF; song song: người dùng chốt cách báo cáo trùng nội dung (`data_audit` mục 3).
+- **B tối 19/10:** beam+LM cố định (local, LM Vietcetera) trên test GS2: relPE/ConExt/B1 40 ms tb 3 seed 22,5/23,3/23,8% (greedy 27,8/27,9/28,3%), xoá gần hết từ dính; LM ngoài kênh perplexity 234 vs 74 → chưa tới ~20%. Người dùng **bỏ quy tắc hạn chế**, giữ "chỉ chỉnh trên dev" (Plan mục 4). Dựng pipeline CPU Kaggle B/C/D (trừ A): `scripts/kaggle/decode_gs2_cpu/` (KenLM + flashlight trên venv uv py3.12, cổng kiểm khớp LM Python, LM rộng = LM Vietcetera + văn bản train GS2 trừ câu dev/test, lưới LMW × WS trên 2.000 câu dev). Thêm tài khoản D, E (GPU kiểm OK). `score_gs2` đọc thêm cột `_lmtuned` (`40ms_tuned/<enc>/test_hyps.tsv`).
+- **Đang chạy khi đóng phiên (18:45):** A `eval-gs2-40ms-dev` (RUNNING — top-k dev 3 encoder seed 42); D `eval-gs2-parakeet-zs`, D `eval-gs2-phowhisper` (QUEUED).
+- **Phiên sau bắt đầu từ:** kiểm 3 kernel trên → tải output (`gs2_eval_2026-10-19/<mode>/`, `tk_*_gs2_dev.npz` → `checkpoints/gs2_topk/`) → `score_gs2` → `launch_cpu.py bundle/upload/push --stage tune` → chọn cấu hình chung theo WER dev tb → `push --stage final` → chấm. Quyết định chờ người dùng: thêm 1–2 mô hình fine-tune (gợi ý chờ số GS2). (11 câu trùng nội dung: đã chốt bỏ qua.)

@@ -1,0 +1,13 @@
+config,a,b,n_videos,a_better,b_better,ties,p_sign
+10 ms,mamba,conformer_relpos,29,26,3,0,1.5e-05
+10 ms,conextbimamba,conformer_relpos,29,13,14,2,1.0
+10 ms,mamba,conextbimamba,29,28,0,1,0.0
+10 ms,conformer_relpos,conformer,29,29,0,0,0.0
+10 ms,mamba,conformer,29,29,0,0,0.0
+10 ms,conextbimamba,conformer,29,29,0,0,0.0
+40 ms 3 seed greedy,mamba,conextbimamba,29,20,9,0,0.061428
+40 ms 3 seed greedy,mamba,conformer_relpos,29,15,13,1,0.850554
+40 ms 3 seed greedy,conextbimamba,conformer_relpos,29,12,16,1,0.571588
+40 ms 3 seed lm,mamba,conextbimamba,29,13,16,0,0.711071
+40 ms 3 seed lm,mamba,conformer_relpos,29,8,19,2,0.052239
+40 ms 3 seed lm,conextbimamba,conformer_relpos,29,9,19,1,0.087159

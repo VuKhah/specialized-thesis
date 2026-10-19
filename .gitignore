@@ -93,3 +93,12 @@ reports/results/train_full/**/eval_*.jsonl
 reports/results/train_full/**/runs/
 # Bản sinh từ scripts/kaggle/zero_shot/zero_shot.py lúc đẩy kernel bảng so sánh cuối
 scripts/kaggle/final_compare/final_compare.py
+
+# Audio/ảnh thử demo ngoài bộ dữ liệu (người dùng 17/10: không đưa lên repo public; ảnh demo lưu Drive)
+data/Test_micro/
+scripts/kaggle/*/_build/
+# Giả thuyết trên test/dev GigaSpeech 2 (gần như bản phiên âm dữ liệu gated) — chỉ giữ local; summary/kết quả chấm thì commit
+reports/results/gs2_eval_*/**/greedy.json
+reports/results/gs2_eval_*/**/*hyps*.tsv
+# Chat riêng với GVHD (họ tên người thứ ba) — chỉ giữ local
+docs/notes/Thao_Luan_*.txt

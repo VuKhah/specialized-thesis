@@ -3,22 +3,28 @@
 Dựng bằng `scripts/rq2_final_tables.py` từ số đã đo (`reports/results/rq2_final_2026-10-13/`, T4, batch 1, trọng số ngẫu
 nhiên, làm ấm từng độ dài, chia đôi tìm OOM) và `metrics.jsonl` của các run; **không chạy GPU mới**. Output:
 `reports/results/rq2_tables_2026-10-16/` (`table_3_6_train_cost.csv`, `table_3_7_inference.csv`, `crossover.csv`,
-`numerics.md`), `reports/figures/rq2/fig_3_4_latency_vram.png`, `fig_3_5_wer_rtf.png`. Chạy lại khi 6 run seed về
-(Bảng 3.6 thêm GPU-h; Hình 3.5 đổi WER 40 ms sang trung bình 3 seed — hiện là seed 42).
+`numerics.md`, `table_3_6_train_cost_per_seed.csv`), `reports/figures/rq2/fig_3_4_latency_vram.png`, `fig_3_5_wer_rtf.png`.
+16/10 tối: Bảng 3.6 đã đọc đủ 3 seed 40 ms; Hình 3.5 **chỉ vẽ lại khi chạy với `--fig35`** (mặc định giữ nguyên PNG
+— người dùng "tạm để"; WER 40 ms trên hình vẫn là seed 42).
 
 ## Bảng 3.6 — chi phí huấn luyện (2×T4, 38 epoch tới ep37)
 
-| Cấu hình | Encoder (M) | + subsampling (M) | Tổng (M) | s/step | GPU-h | VRAM train (GiB/GPU) | Step không hữu hạn |
-|---|---|---|---|---|---|---|---|
-| B1 40 ms | 12,33 | 1,84 | 14,43 | 0,187 | 6,00 | 1,31 | 0 |
-| ConExt 40 ms | 12,29 | 1,84 | 14,38 | 0,150 | 4,86 | 1,22 | 0 |
-| Conformer PE 40 ms | 12,78 | 1,84 | 14,87 | 0,164 | 5,28 | 1,30 | 0 |
-| B1 10 ms | 12,29 | — | 12,54 | 0,688 | 21,33* | 3,61 | 0 |
-| ConExt 10 ms | 12,24 | — | 12,50 | 0,399 | 12,75* | 3,18 | 0 |
-| Conformer PE 10 ms | 12,73 | — | 12,99 | 0,585 | 19,20 | 5,14 | 0 |
-| Conformer không PE 10 ms | 12,20 | — | 12,46 | 0,260 | 8,40* | 2,88 | 0 |
+40 ms: trung bình ± độ lệch chuẩn mẫu (ddof = 1) qua 3 seed (42/43/44; số từng seed ở
+`table_3_6_train_cost_per_seed.csv`); 10 ms: 1 seed. Số tham số giống nhau giữa các seed (script kiểm).
+
+| Cấu hình | Seed | Encoder (M) | + subsampling (M) | Tổng (M) | s/step | GPU-h | VRAM train (GiB/GPU) | Step không hữu hạn |
+|---|---|---|---|---|---|---|---|---|
+| B1 40 ms | 3 | 12,33 | 1,84 | 14,43 | 0,185 ± 0,003 | 5,93 ± 0,11 | 1,31 ± 0,00 | 0 |
+| ConExt 40 ms | 3 | 12,29 | 1,84 | 14,38 | 0,151 ± 0,001 | 4,89 ± 0,04 | 1,22 ± 0,00 | 0 |
+| Conformer PE 40 ms | 3 | 12,78 | 1,84 | 14,87 | 0,160 ± 0,007 | 5,16 ± 0,20 | 1,30 ± 0,01 | 0 |
+| B1 10 ms | 1 | 12,29 | — | 12,54 | 0,688 | 21,33* | 3,61 | 0 |
+| ConExt 10 ms | 1 | 12,24 | — | 12,50 | 0,399 | 12,75* | 3,18 | 0 |
+| Conformer PE 10 ms | 1 | 12,73 | — | 12,99 | 0,585 | 19,20 | 5,14 | 0 |
+| Conformer không PE 10 ms | 1 | 12,20 | — | 12,46 | 0,260 | 8,40* | 2,88 | 0 |
 
 \* rẽ nhánh từ v1 ep29: GPU-h gồm 30 epoch v1 (commit khác); s/step, VRAM chỉ của pha giảm 8 epoch.
+GPU-h từng seed (42/43/44): B1 6,00/5,98/5,80 · ConExt 4,86/4,93/4,88 · Conformer PE 5,28/4,93/5,28. GPU-h là thời
+gian tường của kernel Kaggle nên lẫn cả dao động máy (Conformer PE seed 43 nhanh hơn ~7% với cùng số step).
 
 ## Bảng 3.7 — chi phí suy luận theo độ dài (độ trễ trung vị, giây; RTF trong `table_3_7_inference.csv`)
 
@@ -81,7 +87,8 @@ Phản biện 16/10 (3 agent: thiết kế hình, phương pháp, kiểm VRAM). 
    định chứ không phải encoder: lớp tích chập đầu tiên sinh bản đồ đặc trưng 256 kênh trên toàn trục thời gian mới
    giảm 2×, lớn hơn activation của một khối Mamba ở 10 ms; vì vậy rút ngắn chuỗi vào encoder 4× không giảm bộ nhớ
    đỉnh với audio rất dài."* Script kiểm: scratchpad phiên 16/10 (`sub_mem.py`).
-5. **Chi phí huấn luyện:** 40 ms ba mô hình lệch ≤ 24% (4,86–6,00 GPU-h), Conformer PE rẻ hơn B1. Cột GPU-h 10 ms
+5. **Chi phí huấn luyện:** 40 ms ba mô hình lệch ≤ 21% theo trung bình 3 seed (4,89–5,93 GPU-h; bản 1 seed: ≤ 24%),
+   Conformer PE rẻ hơn B1. Cột GPU-h 10 ms
    **không so trực tiếp được** giữa run rẽ nhánh v1 (gồm 30 epoch v1, commit khác) và Conformer PE 10 ms train từ đầu.
 
 ## Nhỏ từ đầu vs lớn có pre-train (Parakeet) — được phép viết gì
@@ -101,26 +108,42 @@ trên `val` (`finetune_parakeet.py`: tập đầu của EVAL_MANIFESTS).
   toàn cục mặc định của NeMo (có chế độ attention cục bộ — **chưa kiểm**); không tính chi phí pre-train; nghi trùng
   dữ liệu; fine-tune trên nhãn giả.
 
-## Hình (bản 16/10 trưa, sau phản biện thiết kế)
+## Hình (bản 16/10 trưa, sau phản biện thiết kế; 3.4 đổi lại 16/10 tối)
 
-> **Người dùng 16/10 ~10:50: KHÔNG chấp nhận thiết kế 2×2 cho Hình 3.4** — chờ người dùng nêu thiết kế muốn
-> dùng (PNG hiện tại trong `reports/figures/rq2/` là bản 2×2, chưa dùng). **Hình 3.5: người dùng sẽ hỏi lại** — chưa
-> chốt. Mô tả dưới đây là phương án đã bị bác (3.4) / đang chờ (3.5), giữ để truy vết.
+> **Người dùng 16/10 ~10:50: KHÔNG chấp nhận thiết kế 2×2 cho Hình 3.4.** **16/10 tối: đổi sang 1×2 theo yêu cầu
+> người dùng** (thiết kế chi tiết do agent chọn, mô tả dưới). **Hình 3.5: 17/10 vẽ lại** (người dùng duyệt) với 40 ms
+> trung bình 3 seed từ lần chấm chung; script vẫn chỉ vẽ khi chạy `--fig35`.
 
-**Hình 3.4** — lưới 2×2 (cột 40 ms / 10 ms; hàng độ trễ / VRAM), cùng trục y theo hàng; chỉ nhóm ~12M; nhãn trực tiếp;
-nét + marker riêng từng encoder (đọc được đen trắng); "×" điểm đo cuối trước OOM; đường ngang giới hạn T4.
-> *Hình 3.4. Độ trễ suy luận trung vị (a, b) và VRAM đỉnh (c, d) theo độ dài audio của các encoder train từ đầu ~12M
-> ở khung 40 ms (trái) và 10 ms (phải). Đo trên T4, batch 1, audio ghép từ cùng một video, có làm ấm từng độ dài;
-> khối Mamba chạy fp32, phần còn lại autocast fp16. Dải xám: câu 10–15 s, nơi mọi mô hình có độ trễ 15–30 ms và chênh
-> nhau 1–2 ms. "×": điểm đo cuối trước khi hết bộ nhớ; OOM của Conformer PE do cách cài bias vị trí tường minh O(T²),
-> bản không PE (SDPA) chạy hết 3.600 s. Ở (c), B1 và ConExt trùng nhau vì đỉnh do khối Conv2d subsampling quyết định.
-> Parakeet-CTC-0,6B (khác điều kiện) có số liệu ở Bảng 3.7.*
+**Hình 3.4 (bản 1×2, hiện hành)** — (a) độ trễ trung vị, (b) VRAM đỉnh, theo độ dài audio; cả hai trục log; mỗi panel
+đủ 7 cấu hình ~12M (Parakeet không vẽ, như bản cũ — số ở Bảng 3.7). Mã hoá: **màu + hình marker = encoder** (B1 xanh
+tròn, ConExt cam vuông, Conformer PE xanh lục tam giác, Conformer không PE xanh lục tam giác ngược); **nét liền + marker
+đặc = 40 ms, nét đứt + marker rỗng = 10 ms** (cùng quy ước đặc/rỗng với Hình 3.5) → đọc được khi in đen trắng. Gộp hai
+cấu hình vào cùng panel để thấy trực tiếp một encoder đổi thế nào giữa 40 ms và 10 ms; hai panel không chung trục y
+(đơn vị khác). Legend chung dưới hình (hàng = cấu hình, cột = encoder) thay cho nhãn đầu đường vì 7 đường + đường trùng
+làm nhãn chồng nhau. OOM: ở (b) đường chấm nối điểm đo cuối tới "×" trên đường giới hạn bộ nhớ T4 tại độ dài bắt đầu
+OOM, ghi số giây; ở (a) "×" đặt ở điểm đo cuối. Dải xám 10–15 s; trục x giữ từ 5 s (điểm đo nhỏ nhất) để thấy vùng
+độ trễ phẳng dưới độ dài câu huấn luyện. 6,3 × 3,55 in, chữ ≥ 8 pt, 300 dpi.
+> *Hình 3.4. Độ trễ suy luận trung vị (a) và VRAM đỉnh (b) theo độ dài audio (cả hai trục thang log) của các encoder
+> train từ đầu ~12M. Nét liền, marker đặc: khung 40 ms (subsampling 4×); nét đứt, marker rỗng: khung 10 ms. Đo trên
+> T4, batch 1, audio ghép các đoạn liên tiếp của cùng một video, có làm ấm từng độ dài; khối Mamba chạy fp32, phần
+> còn lại autocast fp16. Dải xám: độ dài câu huấn luyện 10–15 s, nơi mọi mô hình có độ trễ 15–30 ms. "×": hết bộ nhớ —
+> ở (b) đặt tại độ dài bắt đầu OOM trên giới hạn 14,56 GiB của T4, ở (a) tại điểm đo cuối trước OOM; OOM của
+> Conformer PE do cách cài bias vị trí tường minh O(T²), bản không PE (SDPA) chạy hết 3.600 s. Ở (b), B1 và ConExt
+> 40 ms trùng nhau vì VRAM đỉnh do khối Conv2d subsampling quyết định. Parakeet-CTC-0,6B (khác điều kiện) có số liệu ở
+> Bảng 3.7.*
+
+<details><summary>Bản 2×2 đã bị bác (giữ để truy vết)</summary>
+
+Lưới 2×2 (cột 40 ms / 10 ms; hàng độ trễ / VRAM), cùng trục y theo hàng; chỉ nhóm ~12M; nhãn trực tiếp; nét + marker
+riêng từng encoder; "×" điểm đo cuối trước OOM; đường ngang giới hạn T4. Chú thích cũ: *"Hình 3.4. Độ trễ suy luận
+trung vị (a, b) và VRAM đỉnh (c, d) theo độ dài audio … ở khung 40 ms (trái) và 10 ms (phải) …"*
+</details>
 
 **Hình 3.5** — trục x độ trễ (ms) ở câu 15 s, thang tuyến tính từ 0 (thang log phóng đại chênh 1–2 ms); marker đặc
 40 ms / rỗng 10 ms; Parakeet chỉ là hai đường ngang tham chiếu WER, không đặt trên trục độ trễ.
 > *Hình 3.5. WER clean-test (greedy, CI 95% bootstrap theo video) theo độ trễ suy luận trung vị trên câu 15 s (T4,
-> batch 1) của các encoder train từ đầu ~12M. Marker đặc: khung 40 ms [sau L3: WER trung bình 3 seed]; rỗng: khung
-> 10 ms, 1 seed. Điều kiện số học không đồng nhất (khối Mamba fp32, phần còn lại fp16). Đường xám ngang: WER của
+> batch 1) của các encoder train từ đầu ~12M. Marker đặc: khung 40 ms, WER trung bình 3 seed (CI của trung bình dưới
+> lấy lại video, chưa gồm dao động seed; chấm nhỏ: từng seed 42/43/44); rỗng: khung 10 ms, 1 seed. Điều kiện số học không đồng nhất (khối Mamba fp32, phần còn lại fp16). Đường xám ngang: WER của
 > Parakeet-CTC-0,6B (pre-train, 608M) — mốc tham chiếu khác điều kiện, không đặt trên trục độ trễ (Bảng 3.7). CI chồng
 > nhau không cho phép xếp hạng; so sánh cặp ở Bảng 3.3.*
 
@@ -131,7 +154,20 @@ nét + marker riêng từng encoder (đọc được đen trắng); "×" điểm
 - Không có WER trên audio dài; mô hình train trên câu 10–15 s; không đo kịch bản chia đoạn bằng VAD.
 - Trọng số ngẫu nhiên; audio ghép từ một video; độ trễ chỉ tính giải mã greedy (chưa tính beam + LM).
 - Điểm giao nội suy trên lưới thưa; ngưỡng ≥ 1,5× đặt sau khi thấy số; bảng chỉ báo trung vị (p25/p75 có trong csv).
-- GPU-h 10 ms trộn run rẽ nhánh v1 và run train từ đầu; 40 ms hiện 1 seed (đang chạy thêm 2).
+- GPU-h 10 ms trộn run rẽ nhánh v1 và run train từ đầu, 1 seed; 40 ms trung bình 3 seed.
 - Phần dư ~1,6 GiB trong VRAM 40 ms chưa phân rã.
 - Parakeet: khác framework, khung 80 ms, attention mặc định, không tính chi phí pre-train, nghi trùng dữ liệu, fine-tune
   trên nhãn giả.
+
+## Hình WER theo GPU-giờ (2026-10-17) — gộp hình 1 + 2 của khung Ch3
+
+`python scripts/fig_wer_gpu_hours.py` → `reports/figures/rq2/fig_wer_gpu_hours.png`, số từng epoch ở
+`reports/results/rq2_tables_2026-10-16/wer_gpu_hours.csv`. GPU-h ep37 khớp Bảng 3.6; WER val_unseen ep37 khớp eval lúc train.
+> *Hình 3.x. WER trên val_unseen (nhãn giả, 29 video giữ riêng; eval sau mỗi epoch) theo GPU-giờ tích luỹ (giờ tường
+> kernel 2×T4) của các encoder train từ đầu ~12M: (a) cấu hình 40 ms, 3 seed mỗi encoder; (b) cấu hình 10 ms, 1 seed.
+> Nét đậm: pha giảm LR (ep30–37); marker đặc: ep37 (checkpoint bảng chính). Vòng rỗng: nhánh 10 ms rẽ từ v1 ep29 (commit
+> khác); Conformer PE 10 ms train từ đầu một mạch. Trục y cắt ở 30%.*
+
+Nhận xét (mô tả, không train bù — quyết định #6): (a) ở 40 ms ba encoder gần như chồng lên nhau suốt quá trình, relPE
+chậm hơn ở ~2 GPU-h đầu rồi bắt kịp; pha giảm LR (ep29 → ep37) cho mỗi run 2,0–2,7 điểm. (b) ở 10 ms pha giảm LR cho 3,1–6,1 điểm (Conformer
+không PE từ 26,8 → 20,7%: cuối v1 WER đang dao động); B1 tốn GPU-h nhất (21,3) và cũng đạt thấp nhất (12,5%).
