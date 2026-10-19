@@ -1,7 +1,7 @@
 {
   "runs": {
     "mamba_best": {
-      "checkpoint": "/kaggle/input/datasets/tieunhi/kltn-best-ckpt/mamba.pt",
+      "checkpoint": "/kaggle/input/datasets/<A>/kltn-best-ckpt/mamba.pt",
       "checkpoint_epoch": 28,
       "averaged_epochs": null,
       "config": "configs/model_mamba.yaml",

@@ -262,7 +262,7 @@ Mỗi mục: làm gì · chốt gì · phiên sau bắt đầu từ đâu. Các 
     trần 120′). Báo động nếu quota B > 2,5 h.
 - **Phiên sau bắt đầu từ:**
   1. Kiểm 2 kernel trên (status + quota). Tải output nhỏ:
-     `kaggle kernels output <kernel> -p <dir> --file-pattern '.*\.(json|jsonl|log|csv)$'` (B: `KAGGLE_CONFIG_DIR=C:/Users/Dell/.kaggle_Duc`).
+     `kaggle kernels output <kernel> -p <dir> --file-pattern '.*\.(json|jsonl|log|csv)$'` (B: `KAGGLE_CONFIG_DIR=<thư mục khoá B>`).
      Log stream (`logs -f`) đang lỗi 500 phía Kaggle → chỉ đọc được sau khi kernel xong.
   2. Preflight: đọc `preflight_v2_summary.json` — K1 (tham số, padding_diff), **Đ2 VRAM xấu nhất của conformer_relpos
      (rủi ro OOM chính)**, K3 7 pipeline, Đ4 s/step thật → **chốt lại ngân sách** (ước hiện ~213 + 20% ≈ 255 GPU-h,

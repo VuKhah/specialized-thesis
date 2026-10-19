@@ -37,12 +37,9 @@ for _stream in (sys.stdout, sys.stderr):
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[2]  # git chạy ở gốc repo: pathspec `src`/`configs` tương đối theo cwd
 BUILD = HERE / "_build"
-ACCOUNTS = {  # tài khoản → (username Kaggle, KAGGLE_CONFIG_DIR) — xem memory/kaggle CLI
-    "A": ("tieunhi", None),
-    "B": ("vuvanduc1", "C:/Users/Dell/.kaggle_Duc"),
-    # C (2026-10-13): username giống họ tên người thứ ba, repo public → đọc trường `username` trong kaggle.json lúc chạy.
-    "C": (None, "C:/Users/Dell/.kaggle_Nhan"),
-}
+sys.path.insert(0, str(HERE.parent))
+import accounts  # noqa: E402 — username/thư mục khoá chỉ ở máy local (repo public)
+
 MODELS = {"conformer": "configs/model_conformer.yaml", "mamba": "configs/model_mamba.yaml",
           "conextbimamba": "configs/model_conextbimamba.yaml",
           # Công thức v2 (2026-10-12): bảng chính 10 ms, ablation PE, nhánh 40 ms.
@@ -61,15 +58,15 @@ MODELS = {"conformer": "configs/model_conformer.yaml", "mamba": "configs/model_m
           "v2a-s4-conformer-relpos": "configs/v2a/model_conformer_relpos_sub4.yaml"}
 # Rẽ nhánh v2a: experiment + epoch của checkpoint v1 (latest.pt cuối epoch 29, có optimizer — đã kiểm
 # `kaggle kernels files` 2026-10-12) và kernel v1 có output đó. Conformer còn bản trong dataset
-# vuvanduc1/conformer-s1-ckpt (checkpoints/conformer_ctc_baseline/latest.pt, ep29) — dùng với --branch_dataset.
-BRANCH = {"v2a-mamba": {"experiment": "mamba_ctc", "epoch": 29, "kernel": "vuvanduc1/train-full-mamba-s2"},
+# {B}/conformer-s1-ckpt (checkpoints/conformer_ctc_baseline/latest.pt, ep29) — dùng với --branch_dataset.
+BRANCH = {"v2a-mamba": {"experiment": "mamba_ctc", "epoch": 29, "kernel": "{B}/train-full-mamba-s2"},
           "v2a-conextbimamba": {"experiment": "conextbimamba_ctc", "epoch": 29,
-                                "kernel": "tieunhi/train-full-conextbimamba-s2"},
+                                "kernel": "{A}/train-full-conextbimamba-s2"},
           "v2a-conformer": {"experiment": "conformer_ctc_baseline", "epoch": 29,
-                            "kernel": "tieunhi/train-full-conformer-s1"}}
+                            "kernel": "{A}/train-full-conformer-s1"}}
 # Dataset do A sở hữu, đã chia sẻ B (TODO bước 5).
-DATASETS = ["tieunhi/vss-asr-train-shard0", "tieunhi/vss-asr-train-shard1", "tieunhi/vss-asr-train-shard2",
-            "tieunhi/vss-asr-train-shard3", "tieunhi/vss-asr-val", "tieunhi/mamba-wheels-v2"]
+DATASETS = ["{A}/vss-asr-train-shard0", "{A}/vss-asr-train-shard1", "{A}/vss-asr-train-shard2",
+            "{A}/vss-asr-train-shard3", "{A}/vss-asr-val", "{A}/mamba-wheels-v2"]
 
 
 def git(*args: str) -> str:
@@ -84,7 +81,7 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--model", required=True, choices=MODELS)
     ap.add_argument("--session", type=int, required=True)
-    ap.add_argument("--account", default=None, choices=ACCOUNTS, help="Mặc định A; bắt buộc với v2a-*")
+    ap.add_argument("--account", default=None, choices=accounts.names(), help="Mặc định A; bắt buộc với v2a-*")
     ap.add_argument("--branch_kernel", default=None, help="v2a nhánh (1): kernel v1 khác mặc định trong BRANCH")
     ap.add_argument("--branch_dataset", default=None,
                     help="v2a nhánh (1): gắn dataset chứa checkpoint v1 thay vì output kernel v1")
@@ -99,11 +96,7 @@ def main() -> None:
         if args.model.startswith("v2a-"):
             sys.exit("LỖI: v2a-* phải chỉ định --account (phân bổ tài khoản do người dùng chốt)")
         args.account = "A"
-    user, config_dir = ACCOUNTS[args.account]
-    if user is None and config_dir and (Path(config_dir) / "kaggle.json").exists():
-        user = json.loads((Path(config_dir) / "kaggle.json").read_text(encoding="utf-8"))["username"]
-    if user is None:
-        sys.exit(f"LỖI: tài khoản {args.account} chưa có username — điền ACCOUNTS trong launch.py")
+    user = accounts.username(args.account)
     name = slug(args.model, args.session, args.tag)
     first = BUILD / slug(args.model, 1, args.tag) / "build.json"
     if args.commit:
@@ -129,9 +122,9 @@ def main() -> None:
             if args.branch_dataset:
                 branch_datasets = [args.branch_dataset]
             else:
-                branch_kernels = [args.branch_kernel or branch["kernel"]]
-                if branch_kernels[0].split("/")[0] != user:
-                    print(f"CẢNH BÁO: {branch_kernels[0]} thuộc tài khoản khác {user} — kernel riêng tư không gắn "
+                branch_kernels = [accounts.ref(args.branch_kernel or branch["kernel"])]
+                if accounts.owner(branch_kernels[0]) != args.account:
+                    print(f"CẢNH BÁO: {accounts.mask(branch_kernels[0])} thuộc tài khoản khác {args.account} — kernel riêng tư không gắn "
                           "được; chạy bằng tài khoản sở hữu hoặc dùng --branch_dataset", flush=True)
     for key, value in subs.items():
         code, n = re.subn(rf"^{key}(: [^=]+)? = .*$", lambda m: f"{key}{m.group(1) or ''} = {value}", code,
@@ -145,21 +138,20 @@ def main() -> None:
     meta = {
         "id": f"{user}/{name}", "title": name, "code_file": "train_full.py", "language": "python",
         "kernel_type": "script", "is_private": "true", "enable_gpu": "true", "enable_internet": "true",
-        "machine_shape": "NvidiaTeslaT4", "dataset_sources": DATASETS + branch_datasets, "competition_sources": [],
+        "machine_shape": "NvidiaTeslaT4", "dataset_sources": [accounts.ref(d) for d in DATASETS] + branch_datasets, "competition_sources": [],
         "kernel_sources": ([f"{user}/{slug(args.model, args.session - 1, args.tag)}"] if args.session > 1 else [])
                           + branch_kernels,
     }
     (out / "kernel-metadata.json").write_text(json.dumps(meta, indent=2), encoding="utf-8")
     (out / "build.json").write_text(json.dumps({"commit": commit, **subs}, indent=2), encoding="utf-8")
-    print(f"{out}: {meta['id']} | commit {commit[:8]} | nguồn {meta['kernel_sources'] or '-'} | "
+    print(f"{out}: {accounts.mask(meta['id'])} | commit {commit[:8]} | nguồn {accounts.mask(str(meta['kernel_sources'] or '-'))} | "
           f"{args.session_minutes} phút | extra {args.extra}")
 
     if args.push:
-        import os
-        env = {**os.environ, "PYTHONUTF8": "1", **({"KAGGLE_CONFIG_DIR": config_dir} if config_dir else {})}
+        env = accounts.env(args.account)
         timeout = (args.session_minutes + 20) * 60
         subprocess.run(["kaggle", "kernels", "push", "-p", str(out), "-t", str(timeout)], env=env, check=True)
-        print(f"Theo dõi: python scripts/kaggle/watch_kernel.py {meta['id']}")
+        print(f"Theo dõi: python scripts/kaggle/watch_kernel.py {args.account}:{name}")
 
 
 if __name__ == "__main__":

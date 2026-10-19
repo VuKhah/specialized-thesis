@@ -9,7 +9,7 @@
   },
   "branch_args": [
     "--branch_from",
-    "/kaggle/input/notebooks/tieunhi/train-full-conformer-s1/checkpoints/conformer_ctc_baseline/latest.pt"
+    "/kaggle/input/notebooks/<A>/train-full-conformer-s1/checkpoints/conformer_ctc_baseline/latest.pt"
   ],
   "run": {
     "commit": "edd7dd40d8057cf931d259038092a2c0d0d5c64e",
@@ -55,7 +55,7 @@
     "peak_vram_gib": 2.877936840057373,
     "lr": 0.0,
     "resumed_mid_epoch": false,
-    "branched_from": "/kaggle/input/notebooks/tieunhi/train-full-conformer-s1/checkpoints/conformer_ctc_baseline/latest.pt",
+    "branched_from": "/kaggle/input/notebooks/<A>/train-full-conformer-s1/checkpoints/conformer_ctc_baseline/latest.pt",
     "wer_val": 0.20943440845561564,
     "loss_val": 0.7794437693620401,
     "eval_seconds_val": 27.07663130760193,

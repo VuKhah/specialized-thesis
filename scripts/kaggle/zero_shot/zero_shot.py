@@ -68,7 +68,7 @@ _WARMUP_ENV = os.environ.get("ZS_WARMUP", "all")
 N_WARMUP = None if _WARMUP_ENV == "all" else int(_WARMUP_ENV)
 
 # Nhóm train từ đầu: dựng bằng code của repo ở đúng commit đã train, trọng số best.pt (chỉ phần `model`)
-# từ Kaggle Dataset `tieunhi/kltn-best-ckpt` (local: ZS_CKPT_DIR/<tên>.pt).
+# từ Kaggle Dataset `<A>/kltn-best-ckpt` (local: ZS_CKPT_DIR/<tên>.pt).
 OURS_COMMIT = "bb8d0ebd885c6ba21f67373cfd44cb67bb67c988"
 OURS_REPO_URL = "https://github.com/VuKhah/specialized-thesis"
 OURS_REPO_DIR = Path("/tmp/specialized-thesis")

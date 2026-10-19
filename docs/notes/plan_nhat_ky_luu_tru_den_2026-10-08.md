@@ -544,8 +544,8 @@ khảo sát dataset, phát hiện sai lệch số liệu, prefetch script, train
   lại lịch train full (mục 2). Song song: kernel zero-shot một mức WER; RQ2.
 
 ### 2026-10-04 (khuya, tiếp) — kết nối hai tài khoản Kaggle
-- **Tài khoản B = `<B>`**, khoá ở `~/.kaggle_Duc/kaggle.json`, chọn bằng
-  `KAGGLE_CONFIG_DIR="C:/Users/Dell/.kaggle_Duc"` (đường dẫn Windows). Kernel test CPU
+- **Tài khoản B = `<B>`**, khoá ở `<thư mục khoá B>/kaggle.json`, chọn bằng
+  `KAGGLE_CONFIG_DIR="<thư mục khoá B>"` (đường dẫn Windows). Kernel test CPU
   `<B>/connection-test-asr` chạy xong, tải được output.
 - **Dataset:** `vss-asr-train-shard0..3` đã tạo, B đọc được. Kaggle **tự giải nén tar**
   khi tạo Dataset → `extract_audio` thêm nhánh chép thư mục `<part>/` theo `<part>.tsv`
@@ -614,7 +614,7 @@ khảo sát dataset, phát hiện sai lệch số liệu, prefetch script, train
 - **Đóng phiên 2026-10-05 (sáng sớm giờ VN)** — đã push `61c6149`. Preflight B
   `<B>/preflight-asr` đẩy 19:08 UTC 04/10 (`-t 2400`, quota B 0/30 trước khi chạy).
 - **Phiên sau bắt đầu từ:**
-  1. Đọc kết quả preflight B: `KAGGLE_CONFIG_DIR=C:/Users/Dell/.kaggle_Duc kaggle kernels
+  1. Đọc kết quả preflight B: `KAGGLE_CONFIG_DIR=<thư mục khoá B> kaggle kernels
      output <B>/preflight-asr -p <scratch> --file-pattern '.*\.log$'` (đọc log JSON). Cần thấy
      `MÔI TRƯỜNG: python 3.13… torch 2.11…`, `CHECK OK`, 5 part chép đủ, 3 dòng pipeline có
      `eval val … WER=`, `trial_report` rc 0, `resume từ`, **`PREFLIGHT OK`**. Hỏng bước nào →

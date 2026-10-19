@@ -10,7 +10,6 @@ D (Parakeet zero-shot) chỉ cần audio và mô hình công khai trên HF. User
 
 import argparse
 import json
-import os
 import subprocess
 import sys
 from pathlib import Path
@@ -20,10 +19,8 @@ if sys.stdout.encoding != "utf-8":
 
 HERE = Path(__file__).resolve().parent
 BUILD = HERE / "_build"
-CONFIG_DIRS = {"A": Path.home() / ".kaggle", "B": Path("C:/Users/Dell/.kaggle_Duc"),
-               "C": Path("C:/Users/Dell/.kaggle_Nhan"),
-               # D (19/10): như C, username là họ tên người thứ ba → chỉ đọc lúc chạy, không ghi vào file track.
-               "D": Path("C:/Users/Dell/.kaggle_Lam")}
+sys.path.insert(0, str(HERE.parent))
+import accounts  # noqa: E402 — username/thư mục khoá chỉ ở máy local (repo public)
 PLAN = {  # chế độ → (tài khoản, dataset của chính tài khoản đó, kernel_sources)
     "40ms": ("A", ["mamba-wheels-v2", "kltn-v2a-s4-ep37", "kltn-v2a-s4-seeds-ep37", "gs2-vi-test"],
              ["finetune-parakeet-main"]),
@@ -39,13 +36,13 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--mode", required=True, choices=PLAN)
     ap.add_argument("--push", action="store_true")
-    ap.add_argument("--account", choices=CONFIG_DIRS, default=None,
+    ap.add_argument("--account", choices=accounts.names(), default=None,
                     help="Ghi đè tài khoản (19/10: C, D QUEUED > 1 h không được cấp GPU → chạy pre-train trên A)")
     args = ap.parse_args()
     account, datasets, kernels = PLAN[args.mode]
     account = args.account or account
-    user = json.loads((CONFIG_DIRS[account] / "kaggle.json").read_text(encoding="utf-8"))["username"]
-    wheels_user = json.loads((CONFIG_DIRS[WHEELS_OWNER] / "kaggle.json").read_text(encoding="utf-8"))["username"]
+    user = accounts.username(account)
+    wheels_user = accounts.username(WHEELS_OWNER)
     sources = [f"{wheels_user if d == 'mamba-wheels-v2' else user}/{d}" for d in datasets]
 
     out = BUILD / args.mode
@@ -60,7 +57,7 @@ def main() -> None:
         "kernel_sources": [f"{user}/{k}" for k in kernels]}, indent=2), encoding="utf-8")
     print(f"{args.mode}: tài khoản {account}, {len(sources)} dataset, {len(kernels)} kernel nguồn → {out}")
     if args.push:
-        env = {**os.environ, "PYTHONUTF8": "1", "KAGGLE_CONFIG_DIR": str(CONFIG_DIRS[account])}
+        env = accounts.env(account)
         r = subprocess.run(["kaggle", "kernels", "push", "-p", str(out), "-t", "10800"], env=env, text=True,
                            capture_output=True, encoding="utf-8", errors="replace")
         print((r.stdout + r.stderr).replace(user, f"<{account}>").strip())

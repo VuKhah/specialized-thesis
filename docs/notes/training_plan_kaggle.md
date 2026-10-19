@@ -270,7 +270,7 @@ trong output `env-check-asr`. Tài khoản B cần chúng qua Dataset (thêm ver
 `mamba-wheels`).
 
 **Chuẩn bị train thử lần 3 (2026-10-05) — khoá những phần chưa từng chạy trên GPU:**
-- Wheel cp313 trong dataset **`tieunhi/mamba-wheels-v2`** (người dùng tạo từ output
+- Wheel cp313 trong dataset **`<A>/mamba-wheels-v2`** (người dùng tạo từ output
   `env-check-asr`, chia sẻ B; cả hai tài khoản liệt kê được, kích thước khớp bản build). Mọi
   kernel lấy wheel từ dataset này — một nguồn cho cả hai tài khoản.
 - `train.py --limit_train N --limit_eval N` (chỉ để kiểm tra). Kernel train thử chạy
@@ -279,14 +279,14 @@ trong output `env-check-asr`. Tài khoản B cần chúng qua Dataset (thêm ver
   `check=True` → hỏng là dừng sau ~1 phút/mô hình. Test CPU local với manifest thật: đủ file,
   `trial_report` ra bảng (bắt được lỗi không tạo thư mục output — đã sửa).
 - `PREFLIGHT_ONLY = True` → chỉ chạy phần kiểm tra (môi trường, wheel, CHECK_CODE, chép 27 GB,
-  pipeline tí hon, resume) rồi dừng: kernel kiểm tra cho tài khoản B (`vuvanduc1/preflight-asr`,
+  pipeline tí hon, resume) rồi dừng: kernel kiểm tra cho tài khoản B (`<B>/preflight-asr`,
   bản sao `train_trial.py` dựng ở scratchpad lúc đẩy; metadata riêng `id` + `dataset_sources`).
 - Thứ tự đề xuất: preflight B (~15 phút GPU của B) → train thử A (~15 phút preflight + ~2,3 h train).
 
 
 ## 7. Preflight full (2026-10-05) và lịch train full
 
-Kernel `tieunhi/preflight-full-asr` (commit `1727ec7`, ~1,1 GPU-h quota A), số gốc
+Kernel `<A>/preflight-full-asr` (commit `1727ec7`, ~1,1 GPU-h quota A), số gốc
 `preflight_summary.json` trong output kernel. **Mọi mục kiểm đạt:** K1 môi trường + CHECK_CODE
 (Mamba CUDA thật); K2 53.277 file audio, thiếu 0, sai định dạng 0; K4 pipeline 3 mô hình; K5 bỏ step
 NaN dưới DDP (15/15, kể cả NaN chỉ ở rank 1 — không treo; VRAM đỉnh 3,6 → 3,6 GiB); K6 resume giữa
@@ -319,7 +319,7 @@ Chạy: `scripts/kaggle/train_full/launch.py` (một kernel mỗi phiên, nối 
 
 **Thử nối phiên (tài khoản B, `train-full-chain-conformer-s1/s2`, commit `ea108cd`, ~0,6 GPU-h):** s1
 (4.000 câu × 4 epoch) xong, `session_summary.json` đúng; s2 tìm thấy output s1 ở
-`/kaggle/input/notebooks/vuvanduc1/train-full-chain-conformer-s1/checkpoints/...`, chép latest/best/metrics/
+`/kaggle/input/notebooks/<B>/train-full-chain-conformer-s1/checkpoints/...`, chép latest/best/metrics/
 eval, resume `epoch 4 step 0 (global_step=1000)`, train tiếp tới epoch 5, `metrics.jsonl` liền mạch 0-5.
 **Sự cố hạ tầng B:** 2/4 lần đẩy s1 kết thúc ERROR với log rỗng (một lần sau ~50 phút RUNNING, một lần
 sau ~3 phút) — quota **không** bị trừ. Lần đầu chạy thật bị watchdog kill vì `extract_audio` im > 10 phút

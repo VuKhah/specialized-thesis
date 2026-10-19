@@ -1,0 +1,71 @@
+{
+ "mode": "40ms_dev",
+ "commit": "0090bd75535c980542885aa680a50789b9991630",
+ "minutes": 30.0,
+ "errors": [],
+ "models": {
+  "conextbimamba_seed42": {
+   "epoch": 37,
+   "seconds": {
+    "gs2_dev": 464.5
+   },
+   "encoder_params": 12286592
+  },
+  "conextbimamba_seed43": {
+   "epoch": 37,
+   "seconds": {
+    "gs2_dev": 464.5
+   },
+   "encoder_params": 12286592
+  },
+  "conextbimamba_seed44": {
+   "epoch": 37,
+   "seconds": {
+    "gs2_dev": 338.5
+   },
+   "encoder_params": 12286592
+  },
+  "mamba_seed42": {
+   "epoch": 37,
+   "seconds": {
+    "gs2_dev": 419.5
+   },
+   "encoder_params": 12330752
+  },
+  "mamba_seed43": {
+   "epoch": 37,
+   "seconds": {
+    "gs2_dev": 474.4
+   },
+   "encoder_params": 12330752
+  },
+  "mamba_seed44": {
+   "epoch": 37,
+   "seconds": {
+    "gs2_dev": 445.1
+   },
+   "encoder_params": 12330752
+  },
+  "conformer_relpos_seed42": {
+   "epoch": 37,
+   "seconds": {
+    "gs2_dev": 258.0
+   },
+   "encoder_params": 12777728
+  },
+  "conformer_relpos_seed43": {
+   "epoch": 37,
+   "seconds": {
+    "gs2_dev": 234.9
+   },
+   "encoder_params": 12777728
+  },
+  "conformer_relpos_seed44": {
+   "epoch": 37,
+   "seconds": {
+    "gs2_dev": 181.9
+   },
+   "encoder_params": 12777728
+  }
+ }
+}

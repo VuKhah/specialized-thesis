@@ -102,3 +102,5 @@ reports/results/gs2_eval_*/**/greedy.json
 reports/results/gs2_eval_*/**/*hyps*.tsv
 # Chat riêng với GVHD (họ tên người thứ ba) — chỉ giữ local
 docs/notes/Thao_Luan_*.txt
+# Ánh xạ tài khoản Kaggle → thư mục khoá (tên người thứ ba) — chỉ local
+scripts/kaggle/accounts.local.json

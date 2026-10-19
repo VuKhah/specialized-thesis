@@ -1,7 +1,7 @@
 {
   "runs": {
     "conformer_best": {
-      "checkpoint": "/kaggle/input/datasets/tieunhi/kltn-best-ckpt/conformer.pt",
+      "checkpoint": "/kaggle/input/datasets/<A>/kltn-best-ckpt/conformer.pt",
       "checkpoint_epoch": 28,
       "averaged_epochs": null,
       "config": "configs/model_conformer.yaml",

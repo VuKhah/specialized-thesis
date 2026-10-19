@@ -9,7 +9,7 @@
   },
   "branch_args": [
     "--branch_from",
-    "/kaggle/input/notebooks/vuvanduc1/train-full-mamba-s2/checkpoints/mamba_ctc/latest.pt"
+    "/kaggle/input/notebooks/<B>/train-full-mamba-s2/checkpoints/mamba_ctc/latest.pt"
   ],
   "run": {
     "commit": "edd7dd40d8057cf931d259038092a2c0d0d5c64e",
@@ -55,7 +55,7 @@
     "peak_vram_gib": 3.6110148429870605,
     "lr": 0.0,
     "resumed_mid_epoch": false,
-    "branched_from": "/kaggle/input/notebooks/vuvanduc1/train-full-mamba-s2/checkpoints/mamba_ctc/latest.pt",
+    "branched_from": "/kaggle/input/notebooks/<B>/train-full-mamba-s2/checkpoints/mamba_ctc/latest.pt",
     "wer_val": 0.1271148057444958,
     "loss_val": 0.5310206794200054,
     "eval_seconds_val": 56.96256446838379,

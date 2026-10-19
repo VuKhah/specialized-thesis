@@ -1,7 +1,7 @@
 {
   "runs": {
     "mamba_avg20-29": {
-      "checkpoint": "/kaggle/input/datasets/tieunhi/kltn-v1-avg20-29/mamba_avg20-29.pt",
+      "checkpoint": "/kaggle/input/datasets/<A>/kltn-v1-avg20-29/mamba_avg20-29.pt",
       "checkpoint_epoch": null,
       "averaged_epochs": [
         20,

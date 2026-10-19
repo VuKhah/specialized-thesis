@@ -1,6 +1,6 @@
 # Tốc độ train: subsampling và độ chính xác khối Mamba (2026-10-08)
 
-Người dùng yêu cầu ghi lại để hỏi GVHD. Kernel `tieunhi/subsample-speed-asr`
+Người dùng yêu cầu ghi lại để hỏi GVHD. Kernel `<A>/subsample-speed-asr`
 (`scripts/kaggle/subsample_speed/subsample_speed.py`), quota tài khoản A tổng
 ~0,6 GPU-h (v1 ~1′ lỗi cài gói, v2 24′, v3 12′). Số liệu gốc:
 `reports/results/subsample_speed/v2/`, `.../v3/` (`subsample_speed_result.json`

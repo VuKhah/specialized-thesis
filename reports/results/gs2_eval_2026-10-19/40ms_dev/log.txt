@@ -1,0 +1,28 @@
+[{"stream_name":"stdout","time":11.898113095,"data":"[11:32:27 +0′] MÔI TRƯỜNG: python 3.13.15 | torch 2.11.0+cu128 | CUDA torch 12.8 | GPU 2x Tesla T4\n"}
+,{"stream_name":"stdout","time":19.190417967,"data":"GS2 dev: 6613 câu (7 s)\n"}
+,{"stream_name":"stdout","time":19.190458907,"data":"\n"}
+,{"stream_name":"stdout","time":19.190462851,"data":"[11:32:34 +0′] $ /usr/bin/python3 -m pip install -q einops librosa soundfile sentencepiece pyyaml tensorboard jiwer\n"}
+,{"stream_name":"stdout","time":23.388842567,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.2/3.2 MB 31.6 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":26.021562501,"data":"[11:32:41 +0′] → returncode 0\n"}
+,{"stream_name":"stdout","time":26.029679648,"data":"\n"}
+,{"stream_name":"stdout","time":26.029719807,"data":"[11:32:41 +0′] $ /usr/bin/python3 -m pip install -q --no-deps /kaggle/input/mamba-wheels-v2/wheels/causal_conv1d-1.5.4-cp313-cp313-linux_x86_64.whl /kaggle/input/mamba-wheels-v2/wheels/mamba_ssm-2.3.1-cp313-cp313-linux_x86_64.whl\n"}
+,{"stream_name":"stdout","time":29.090328744,"data":"[11:32:44 +0′] → returncode 0\n"}
+,{"stream_name":"stdout","time":29.111642843,"data":"checkpoint: ['conextbimamba_seed42', 'conextbimamba_seed43', 'conextbimamba_seed44', 'conformer_relpos_seed42', 'conformer_relpos_seed43', 'conformer_relpos_seed44', 'mamba_seed42', 'mamba_seed43', 'mamba_seed44']\n"}
+,{"stream_name":"stdout","time":541.327568988,"data":"[conextbimamba_seed42] gs2_dev: 6613 câu, 464 s\n"}
+,{"stream_name":"stdout","time":541.330015671,"data":"[conextbimamba_seed43] gs2_dev: 6613 câu, 464 s\n"}
+,{"stream_name":"stdout","time":881.099347049,"data":"[conextbimamba_seed44] gs2_dev: 6613 câu, 338 s\n"}
+,{"stream_name":"stdout","time":961.873823383,"data":"[mamba_seed42] gs2_dev: 6613 câu, 420 s\n"}
+,{"stream_name":"stdout","time":1356.74908642,"data":"[mamba_seed43] gs2_dev: 6613 câu, 474 s\n"}
+,{"stream_name":"stdout","time":1408.187397071,"data":"[mamba_seed44] gs2_dev: 6613 câu, 445 s\n"}
+,{"stream_name":"stdout","time":1615.995128858,"data":"[conformer_relpos_seed42] gs2_dev: 6613 câu, 258 s\n"}
+,{"stream_name":"stdout","time":1644.208656992,"data":"[conformer_relpos_seed43] gs2_dev: 6613 câu, 235 s\n"}
+,{"stream_name":"stdout","time":1798.907876191,"data":"[conformer_relpos_seed44] gs2_dev: 6613 câu, 182 s\n"}
+,{"stream_name":"stdout","time":1799.033775263,"data":"{\"mode\": \"40ms_dev\", \"commit\": \"0090bd75535c980542885aa680a50789b9991630\", \"minutes\": 30.0, \"errors\": [], \"models\": {\"conextbimamba_seed42\": {\"epoch\": 37, \"seconds\": {\"gs2_dev\": 464.5}, \"encoder_params\": 12286592}, \"conextbimamba_seed43\": {\"epoch\": 37, \"seconds\": {\"gs2_dev\": 464.5}, \"encoder_params\": 12286592}, \"conextbimamba_seed44\": {\"epoch\": 37, \"seconds\": {\"gs2_dev\": 338.5}, \"encoder_params\": 12286592}, \"mamba_seed42\": {\"epoch\": 37, \"seconds\": {\"gs2_dev\": 419.5}, \"encoder_params\": 12330752}, \"mamba_seed43\": {\"epoch\": 37, \"seconds\": {\"gs2_dev\": 474.4}, \"encoder_params\": 12330752}, \"mamba_seed44\": {\"epoch\": 37, \"seconds\": {\"gs2_dev\": 445.1}, \"encoder_params\": 12330752}, \"conformer_relpos_seed42\": {\"epoch\": 37, \"seconds\": {\"gs2_dev\": 258.0}, \"encoder_params\": 12777728}, \"conformer_relpos_seed43\": {\"epoch\": 37, \"seconds\": {\"gs2_dev\": 234.9}, \"encoder_params\": 12777728}, \"conformer_relpos_seed44\": {\"epoch\": 37, \"seconds\": {\"gs2_dev\": 181.9}, \"encoder_params\": 12777728}}}\n"}
+,{"stream_name":"stdout","time":1799.134060274,"data":"{\"mode\": \"40ms_dev\", \"commit\": \"0090bd75535c980542885aa680a50789b9991630\", \"minutes\": 30.0, \"errors\": [], \"models\": {\"conextbimamba_seed42\": {\"epoch\": 37, \"seconds\": {\"gs2_dev\": 464.5}, \"encoder_params\": 12286592}, \"conextbimamba_seed43\": {\"epoch\": 37, \"seconds\": {\"gs2_dev\": 464.5}, \"encoder_params\": 12286592}, \"conextbimamba_seed44\": {\"epoch\": 37, \"seconds\": {\"gs2_dev\": 338.5}, \"encoder_params\": 12286592}, \"mamba_seed42\": {\"epoch\": 37, \"seconds\": {\"gs2_dev\": 419.5}, \"encoder_params\": 12330752}, \"mamba_seed43\": {\"epoch\": 37, \"seconds\": {\"gs2_dev\": 474.4}, \"encoder_params\": 12330752}, \"mamba_seed44\": {\"epoch\": 37, \"seconds\": {\"gs2_dev\": 445.1}, \"encoder_params\": 12330752}, \"conformer_relpos_seed42\": {\"epoch\": 37, \"seconds\": {\"gs2_dev\": 258.0}, \"encoder_params\": 12777728}, \"conformer_relpos_seed43\": {\"epoch\": 37, \"seconds\": {\"gs2_dev\": 234.9}, \"encoder_params\": 12777728}, \"conformer_relpos_seed44\": {\"epoch\": 37, \"seconds\": {\"gs2_dev\": 181.9}, \"encoder_params\": 12777728}}}\n"}
+,{"stream_name":"stderr","time":1808.033281792,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":1808.033320892,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":1808.299570473,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":1808.299612512,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":1809.127275549,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":1809.739709689,"data":"[NbConvertApp] Writing 356297 bytes to __results__.html\n"}
+]

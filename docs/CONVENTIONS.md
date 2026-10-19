@@ -177,3 +177,5 @@ ghi chú `.md`, số liệu tổng hợp nhỏ.
   (`docs/notes/mamba_versions.md`).
 - Training có checkpoint/resume (đã xong, commit `139f018`) vì Kaggle giới
   hạn session liên tục.
+
+**Tài khoản Kaggle (2026-10-19):** launcher lấy username/thư mục khoá qua `scripts/kaggle/accounts.py`, ánh xạ ở `scripts/kaggle/accounts.local.json` (gitignore; mẫu `accounts.example.json`). File track chỉ ghi `<A>`…`<E>` hoặc `"{A}/<slug>"` + `accounts.ref()`; log tải về đi qua `accounts.mask()`.

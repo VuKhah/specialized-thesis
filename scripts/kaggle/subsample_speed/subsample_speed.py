@@ -21,7 +21,7 @@ vài epoch) — chỉ đo tốc độ. Subsampling theo kiểu Conv2dSubsampling
 kênh = d_model) → encoder thêm ~1,8M tham số (ghi trong kết quả).
 
     kaggle kernels push -p scripts/kaggle/subsample_speed -t 3600
-    PYTHONUTF8=1 kaggle kernels output tieunhi/subsample-speed-asr -p reports/results/subsample_speed
+    PYTHONUTF8=1 kaggle kernels output <A>/subsample-speed-asr -p reports/results/subsample_speed
     python scripts/kaggle/subsample_speed/subsample_speed.py --local    # thử nhanh trên CPU (MambaRef)
 """
 

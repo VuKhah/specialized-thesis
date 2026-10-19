@@ -2,11 +2,11 @@
 v1 (B1 mamba, conextbimamba, conformer) trên val, val_unseen, clean-test 203 câu; kèm best.pt của từng mô hình
 đo lại bằng CÙNG đường đo (`src.evaluation.average_checkpoints`) để hiệu avg − best không lẫn khác biệt cách đo.
 
-Trung bình đã làm sẵn ở local (CPU, không cần mamba_ssm) rồi upload thành dataset `tieunhi/kltn-v1-avg20-29`
-(`<model>_avg20-29.pt`, ~50 MB/file) — đỡ upload 30 file epoch (~1,5 GB). best.pt lấy từ `tieunhi/kltn-best-ckpt`.
+Trung bình đã làm sẵn ở local (CPU, không cần mamba_ssm) rồi upload thành dataset `<A>/kltn-v1-avg20-29`
+(`<model>_avg20-29.pt`, ~50 MB/file) — đỡ upload 30 file epoch (~1,5 GB). best.pt lấy từ `<A>/kltn-best-ckpt`.
 
     kaggle kernels push -p scripts/kaggle/avg_eval -t 3600
-    python scripts/kaggle/watch_kernel.py tieunhi/avg-eval-v1-asr
+    python scripts/kaggle/watch_kernel.py A:avg-eval-v1-asr
 
 Hai GPU chạy song song hai hàng: GPU0 mamba (chậm nhất: khối Mamba fp32), GPU1 conformer rồi conextbimamba.
 Mỗi lần eval một thư mục riêng `parts/<name>/` rồi gộp ở cuối — tránh hai tiến trình cùng ghi một file.

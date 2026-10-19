@@ -30,8 +30,8 @@ STAGE_DIR = REPO / "data/raw/gigaspeech2/kaggle_ds"
 GS2 = REPO / "data/raw/gigaspeech2/data/vi"
 TOPK = REPO / "checkpoints/gs2_topk"
 PLAN = {"B": "conformer_relpos", "C": "conextbimamba", "D": "mamba"}
-CONFIG_DIRS = {"B": Path("C:/Users/Dell/.kaggle_Duc"), "C": Path("C:/Users/Dell/.kaggle_Nhan"),
-               "D": Path("C:/Users/Dell/.kaggle_Lam")}
+sys.path.insert(0, str(HERE.parent))
+import accounts  # noqa: E402 — username/thư mục khoá chỉ ở máy local (repo public)
 FILES = ["src/__init__.py", "src/evaluation/__init__.py", "src/evaluation/lm_decode.py", "src/evaluation/vi_syllable.py",
          "src/evaluation/text_normalize.py", "src/evaluation/score_clean_test.py", "src/evaluation/bootstrap.py",
          "src/data/__init__.py", "src/data/correct_clean_test.py", "configs/tokenizer.model",
@@ -39,8 +39,7 @@ FILES = ["src/__init__.py", "src/evaluation/__init__.py", "src/evaluation/lm_dec
          "checkpoints/lm/lm3.arpa", "checkpoints/lm/lm_text_clean.txt"]
 
 
-def user(acc: str) -> str:
-    return json.loads((CONFIG_DIRS[acc] / "kaggle.json").read_text(encoding="utf-8"))["username"]
+user = accounts.username
 
 
 def bundle() -> None:
@@ -78,7 +77,7 @@ def upload() -> None:
     cache = Path(os.environ.get("TEMP", "C:/Users/Dell/AppData/Local/Temp")) / ".kaggle/uploads"
     for acc in PLAN:
         shutil.rmtree(cache, ignore_errors=True)
-        env = {**os.environ, "PYTHONUTF8": "1", "KAGGLE_CONFIG_DIR": str(CONFIG_DIRS[acc])}
+        env = accounts.env(acc)
         r = subprocess.run(["kaggle", "datasets", "create", "-p", ".", "-r", "skip"], cwd=STAGE_DIR / f"cpu_{acc}",
                            env=env, capture_output=True, text=True, encoding="utf-8", errors="replace")
         ok = r.returncode == 0 and "403" not in r.stdout + r.stderr
@@ -101,7 +100,7 @@ def push(stage: str, final: str | None) -> None:
             "kernel_type": "script", "is_private": "true", "enable_gpu": "false", "enable_internet": "true",
             "dataset_sources": [f"{user(acc)}/gs2-cpu-{enc.replace('_', '-')}"], "competition_sources": [],
             "kernel_sources": []}, indent=2), encoding="utf-8")
-        env = {**os.environ, "PYTHONUTF8": "1", "KAGGLE_CONFIG_DIR": str(CONFIG_DIRS[acc])}
+        env = accounts.env(acc)
         r = subprocess.run(["kaggle", "kernels", "push", "-p", str(out), "-t", "43200"], env=env, capture_output=True,
                            text=True, encoding="utf-8", errors="replace")
         print(f"{acc} {slug}: rc={r.returncode} " + (r.stdout + r.stderr).strip().replace(user(acc), f"<{acc}>")[-160:])

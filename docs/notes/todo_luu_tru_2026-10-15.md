@@ -170,7 +170,7 @@ và `conextbimamba --session 2` (A); sau khi đẩy chạy `watch_kernel.py` và
 Lý do: không để mất trắng hàng giờ GPU vì phiên trước hỏng mà không ai thấy.
 
 Kiểm mỗi phiên vừa xong (chỉ tải file nhỏ, không tải checkpoint):
-1. `kaggle kernels status <kernel>` (B: `KAGGLE_CONFIG_DIR=C:/Users/Dell/.kaggle_Duc`) — COMPLETE / ERROR?
+1. `kaggle kernels status <kernel>` (B: `KAGGLE_CONFIG_DIR=<thư mục khoá B>`) — COMPLETE / ERROR?
 2. `python scripts/kaggle/train_full/fetch.py --model <conformer|mamba|conextbimamba> --session <k> [--account B]`
    → in returncode, epoch xong, finished, commit. Đọc `reports/results/train_full/<model>/s<k>/`:
    - `session_summary.json`: `returncode` 0, `latest.epoch/step_in_epoch` tăng so với phiên trước, `run.commit` = 7660a6b
