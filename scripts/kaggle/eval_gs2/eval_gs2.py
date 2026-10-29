@@ -327,11 +327,33 @@ def main_pretrain(sets: dict, run) -> None:
         sys.exit(f"LỖI: {list(errors)}")
 
 
+def preinstall_nemo() -> None:
+    """Cài NeMo trước khi tiến trình nạp numpy/torch. Sự cố 19/10 (D, parakeet_zs): `install_nemo` của `zero_shot.py`
+    pip-cài giữa tiến trình đã nạp numpy → pip thay numpy trên đĩa, `import nemo` gãy ở `numpy.ma` (AttributeError
+    `__qualname__`). Cài trước thì lần gọi trong `load_parakeet` không đổi gói nào. Cùng ràng buộc torch như bản gốc."""
+    from importlib.metadata import version
+    constraints = Path("/tmp/nemo_constraints.txt")
+    constraints.write_text(f"torch=={version('torch')}\n", encoding="utf-8")
+    for req in ["nemo_toolkit[asr]==2.6.2", "nemo_toolkit[asr]"]:
+        if subprocess.run([sys.executable, "-m", "pip", "install", "-q", req, "-c", str(constraints)]).returncode == 0:
+            break
+    else:
+        sys.exit("LỖI: cài nemo_toolkit[asr] thất bại")
+
+
 def main() -> None:
     assert MODE in COMMITS, MODE
+    if MODE == "parakeet_zs":
+        preinstall_nemo()
     subprocess.run(["git", "clone", "-q", REPO_URL, str(REPO_DIR)], check=True)
     subprocess.run(["git", "checkout", "-q", COMMITS[MODE]], cwd=REPO_DIR, check=True)
     sys.path.insert(0, str(REPO_DIR))
+    # Wheel nemo_toolkit 2.6.2 cài kèm package `scripts/` (có __init__.py) vào site-packages; package thường thắng
+    # namespace package `scripts/` của repo dù repo đứng trước trong sys.path → gắn cứng (lỗi 20/10, sau preinstall_nemo).
+    import types
+    pkg = types.ModuleType("scripts")
+    pkg.__path__ = [str(REPO_DIR / "scripts")]
+    sys.modules["scripts"] = pkg
     from scripts.kaggle.train_trial.train_trial import check_env, run
 
     check_env()

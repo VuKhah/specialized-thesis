@@ -1,0 +1,32 @@
+{
+ "chain": "Bao_gio_cho_het_chuyen_doi_moi_-_Ruby_Ng_seg026-091",
+ "duration_s": 883.6,
+ "cpu": "Intel64 Family 6 Model 142 Stepping 9, GenuineIntel",
+ "torch_threads": 2,
+ "models": {
+  "conformer_relpe_40ms": {
+   "cut": 0.04500539996661246,
+   "encoder": 23.780896600335836,
+   "decode": 14.61953889997676,
+   "total": 38.44544090027921,
+   "rtf": 0.04351000554581169,
+   "device": "cpu"
+  },
+  "b1_mamba_40ms": {
+   "cut": 0.05167239997535944,
+   "encoder": 79.75472810026258,
+   "decode": 16.845115900272503,
+   "total": 96.65151640051045,
+   "rtf": 0.10938378949808787,
+   "device": "cpu"
+  },
+  "conextbimamba_40ms": {
+   "cut": 0.038325499976053834,
+   "encoder": 44.320713300141506,
+   "decode": 14.672782699926756,
+   "total": 59.031821500044316,
+   "rtf": 0.06680830862386183,
+   "device": "cpu"
+  }
+ }
+}

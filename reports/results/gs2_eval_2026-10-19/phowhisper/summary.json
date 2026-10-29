@@ -1,0 +1,16 @@
+{
+ "mode": "phowhisper",
+ "commit": "ecb3d2d538e43708378128831f4eec6a18e2f2b2",
+ "minutes": 61.2,
+ "errors": [],
+ "models": {
+  "phowhisper": {
+   "seconds_total": 3553.3,
+   "meta": {
+    "decoding": "greedy (num_beams=1), language=vi, task=transcribe, max_new_tokens=200"
+   },
+   "revision": "a86b604c346caf7148c37512eafe783a16420adb",
+   "amp": true
+  }
+ }
+}

@@ -124,6 +124,10 @@ Theo thứ tự thời gian. Quyết định bị thay thế giữ lại để t
 | 2026-10-19 | **So với mô hình hiện hành: A + B** (mở lại mục "eval ngoài miền" review 15/10 mục 3 vì GVHD 17/10 hỏi "so với mấy model hiện thời"). A: bảng cùng clean-test có CI hai tầng + số công bố (khác tập test); B: chỉ eval mọi checkpoint bảng chính + pre-train trên test GigaSpeech 2 vi, ước 1–3 GPU-h, trước 25/10; quy tắc chấm chốt trước khi giải mã. `docs/notes/ket_qua/so_sanh_hien_hanh_2026-10-19.md` | Người dùng 19/10 |
 | 2026-10-19 | **Bỏ ràng buộc "tham số giải mã cố định / chấm một lần" cho GigaSpeech 2** (người dùng: nguyên tắc để giữ tiến độ, không để chặn tối ưu). Được tối ưu giải mã + LM rộng (văn bản GigaSpeech 2 train); giữ một điều: chỉ chỉnh trên **dev** GigaSpeech 2, test chỉ để báo; báo cả cấu hình cố định lẫn tối ưu. `so_sanh_hien_hanh` B.2 mục 4–5 | Người dùng 19/10 |
 | 2026-10-19 | **11/203 câu clean-test trùng nội dung với train (tập tổng hợp/đăng lại): bỏ qua** — giữ 203 câu, không sửa, không khai báo; ảnh hưởng 0,1–0,4 điểm, thứ hạng không đổi. `data_audit_2026-10-19.md` mục 3 | Người dùng 19/10 |
+| 2026-10-20 | **Không khai "thứ tự quyết định sau khi thấy v1" và "sự cố thấy WER relPE sớm 13/10"** trong khóa luận: các lần chốt với AI là để định nghĩa lệnh chạy, không phải thời điểm ra quyết định nghiên cứu. Giới hạn về thiết kế (40 ms trộn 4 biến, nhánh 10 ms rẽ từ v1, Conformer không PE phi chuẩn) vẫn giữ | Người dùng 20/10 |
+| 2026-10-26 | **Bổ sung A (tiêu đề tập podcast làm ngữ cảnh khi giải mã) + B (trực quan hoá Δ và attention ẩn của Mamba)**, 0 GPU, không train, quy tắc chốt trước khi chạy; WER audio dài, công cụ SRT, tốc độ CPU, độ tin cậy, thêm fine-tune: treo | Người dùng 26/10 sau câu GVHD "chỉ có vậy thôi à?"; `TODO.md` khối ▶ |
+| 2026-10-27 | **Dồn sức "giải pháp/sản phẩm"**: công cụ phiên âm podcast dài → phụ đề (`src/demo/longform.py`) + tốc độ CPU + độ tin cậy; sau đó duyệt thêm hình Pareto, kiểm bản ghi Vietcetera, **WER audio dài nguyên chuỗi** (hạn 31/10). Gộp demo: treo. Thêm mô hình fine-tune: vẫn treo | Người dùng 27/10 |
+| 2026-10-27 | **Thông điệp mở đầu + sườn slide theo khung "báo cáo về AI"** (`docs/notes/review/danh_gia_bo_sung_2026-10-26.md`, mục "Khung báo cáo về Trí tuệ nhân tạo"): câu hỏi trung tâm "Mamba có thay được attention cho ASR tiếng Việt hội thoại không, trả giá gì, bên trong học khác ra sao"; slide: bài toán → hai mô hình chuỗi → thiết kế có kiểm soát → độ chính xác → chi phí + ngoại suy độ dài → bên trong mô hình (B) → nhãn nhiễu + ngoài phân bố → ứng dụng (1 slide + demo) → kết luận về AI; CI chi tiết ở slide dự phòng. Không đổi tên đề tài vì khung này (chờ GVHD trả lời đơn đổi tên 08/10) | Người dùng 27/10: "giữ thông điệp mở đầu và sườn slide" |
 
 ## 5. Quyết định đang mở / rủi ro đã biết
 
@@ -721,3 +725,237 @@ Mỗi mục: làm gì · chốt gì · phiên sau bắt đầu từ đâu. Các 
 - **B tối 19/10:** beam+LM cố định (local, LM Vietcetera) trên test GS2: relPE/ConExt/B1 40 ms tb 3 seed 22,5/23,3/23,8% (greedy 27,8/27,9/28,3%), xoá gần hết từ dính; LM ngoài kênh perplexity 234 vs 74 → chưa tới ~20%. Người dùng **bỏ quy tắc hạn chế**, giữ "chỉ chỉnh trên dev" (Plan mục 4). Dựng pipeline CPU Kaggle B/C/D (trừ A): `scripts/kaggle/decode_gs2_cpu/` (KenLM + flashlight trên venv uv py3.12, cổng kiểm khớp LM Python, LM rộng = LM Vietcetera + văn bản train GS2 trừ câu dev/test, lưới LMW × WS trên 2.000 câu dev). Thêm tài khoản D, E (GPU kiểm OK). `score_gs2` đọc thêm cột `_lmtuned` (`40ms_tuned/<enc>/test_hyps.tsv`).
 - **Đang chạy khi đóng phiên (18:45):** A `eval-gs2-40ms-dev` (RUNNING — top-k dev 3 encoder seed 42); D `eval-gs2-parakeet-zs`, D `eval-gs2-phowhisper` (QUEUED).
 - **Phiên sau bắt đầu từ:** kiểm 3 kernel trên → tải output (`gs2_eval_2026-10-19/<mode>/`, `tk_*_gs2_dev.npz` → `checkpoints/gs2_topk/`) → `score_gs2` → `launch_cpu.py bundle/upload/push --stage tune` → chọn cấu hình chung theo WER dev tb → `push --stage final` → chấm. Quyết định chờ người dùng: thêm 1–2 mô hình fine-tune (gợi ý chờ số GS2). (11 câu trùng nội dung: đã chốt bỏ qua.)
+- **Cuối phiên 19/10 (sau 19:00):** kernel A `eval-gs2-40ms-dev` COMPLETE (30 phút, không lỗi) → `reports/results/gs2_eval_2026-10-19/40ms_dev/` + 9 file `tk_*_gs2_dev.npz` trong `checkpoints/gs2_topk/`. D `eval-gs2-parakeet-zs`, `eval-gs2-phowhisper` vẫn QUEUED. Người dùng: bỏ qua 11 câu trùng nội dung; chờ số GS2 rồi mới chọn mô hình fine-tune thêm (đã kiểm dữ liệu train pre-train, `so_sanh_hien_hanh` mục C). Gỡ username Kaggle khỏi file track (`scripts/kaggle/accounts.py` + `accounts.local.json` gitignore; lịch sử git cũ giữ nguyên). Sắp `docs/notes/` vào thư mục con; `review/`, `luu_tru/`, `de_cuong_gvhd/`, `Argon_feedback.md` chỉ giữ local. Commit `426d2f9`, `cd89d96`, `95f2840`.
+- **Phiên sau bắt đầu từ:** kiểm 2 kernel D (QUEUED lâu → cân nhắc chuyển sang E, cần upload `gs2-vi-test` cho E) → `launch_cpu.py bundle` → `upload` → `push --stage tune` (B/C/D CPU) → chọn cấu hình chung theo WER dev → `push --stage final` → tải `test_hyps.tsv` vào `gs2_eval_2026-10-19/40ms_tuned/<enc>/` → `score_gs2`.
+- **Phiên 19/10 (tối, tiếp):** D `eval-gs2-parakeet-zs`, `eval-gs2-phowhisper` vẫn QUEUED. `launch_cpu.py bundle` xong (B/C/D mỗi bên 6 file, 0,70 GB) → `upload` lần lượt. **Người dùng: tạm khoá GPU tài khoản A** (không đẩy kernel GPU lên A tới khi mở lại).
+- **22:51:** người dùng huỷ 2 kernel D (CANCEL_ACKNOWLEDGED) → đẩy lại trên D: `eval-gs2-parakeet-zs` v3, `eval-gs2-phowhisper` v2 (`launch_gs2.py --mode phowhisper --account D`); `watch_kernel.py` canh. Đã dựng `kaggle_ds/E/` (`gs2-vi-test`, hard link) — tải lên sau khi upload B/C/D xong (cache upload dùng chung).
+- **22:54:** `eval-gs2-parakeet-zs` v3 ERROR sau 1,6′: `install_nemo` (zero_shot.py) pip-cài giữa tiến trình đã nạp numpy → `import nemo` gãy ở `numpy.ma`. Sửa trong file kernel: `preinstall_nemo()` đầu `main()` (chỉ `parakeet_zs`), không đổi commit ghim. Đẩy lại v4 22:56.
+- **23:04:** upload `gs2-cpu-*` B/C/D xong (D báo 403 lúc kiểm status ngay sau upload — Kaggle đang xử lý; sau đó `ready`, đủ file; `bundle.tar.gz` bị Kaggle tự giải nén, `decode_cpu.py` đã xử lý). Đẩy `push --stage tune`: B `gs2-cpu-tune-conformer-relpos`, C `gs2-cpu-tune-conextbimamba`, D `gs2-cpu-tune-mamba` (CPU, 0 GPU-h). Đang tải `gs2-vi-test` lên E (dự phòng).
+- **23:10–23:26:** tune B, D v1 ERROR (C v1 cùng lỗi): cổng KenLM 200/200 qua, LM rộng dựng xong (GS2 train 4.996.366 câu, bỏ 156 trùng dev/test; 58.138 từ, ARPA 374 MB), gãy ở chấm điểm — `score_clean_test` import `correct_clean_test` (gradio/torch). Sửa `decode_cpu.py`: bước dựng WORK thay file đó bằng file chỉ mang hằng `OURS_VISIBLE_FROM` (không tải lại dataset); mô phỏng local chặn gradio/torch, WER trùng bản đầy đủ. Đẩy lại v2 cả 3 (23:26). E `gs2-vi-test` ready. Parakeet zs v4 QUEUED trên D (PhoWhisper D RUNNING 32′).
+- **23:40 tune xong (B/C/D v2 COMPLETE, ~11′ mỗi kernel, CPU):** output `reports/results/gs2_eval_2026-10-19/40ms_tune/<enc>/tune.json` + log. Cổng 200/200 cả 3; 2.010 câu dev (seed 42). WER dev tb 3 encoder: tốt nhất LM rộng lmw 1,0 ws 2,0 = 14,21% (relPE 13,23 / ConExt 14,34 / B1 15,05); LM Vietcetera tốt nhất 15,88% (lmw 0,6 ws 1,0); cấu hình cố định cũ (vss 0,8/1,0) 15,04/15,95/16,69. **ws 2,0 là mép lưới** → hỏi người dùng: mở rộng ws (CPU ~11′) hay chốt (broad,1,0,2,0) cho final.
+- **23:46:** người dùng chọn mở rộng ws. `launch_cpu.py push --grid` (mới; bước dựng WORK sửa 2 dòng `LMW`/`WS` của bản `decode_cpu.py` trong bundle) → đẩy tune v3 B/C/D, lưới LMW [0,8; 1,0; 1,3] × WS [2,5; 3,0; 4,0] × 2 LM. Chọn cấu hình chung trên hợp hai lưới (cùng 2.010 câu dev). Cron kiểm 5′ (job phiên). PhoWhisper D RUNNING ~55′; Parakeet zs D QUEUED.
+- **23:57–00:05 (20/10):** tune lưới mở rộng xong (B/C/D v3, `40ms_tune_ext/`). Hợp 58 cấu hình: tốt nhất vẫn **LM rộng lmw 1,0 ws 2,0** (dev tb 14,21%; ws 2,5 → 14,23%, lmw 1,3/ws 3,0 → 14,29%) — nay nằm trong lưới → chốt theo quy tắc. Đẩy `push --stage final --final '{"lm":"broad","lmw":1.0,"ws":2.0}'` B/C/D lúc 00:00. PhoWhisper D COMPLETE (61′ GPU, không lỗi) → `gs2_eval_2026-10-19/phowhisper/`; clean-test kèm trùng `final_compare_2026-10-08` 203/203. `score_gs2`: PhoWhisper-small zero-shot GS2 test **12,63%** [12,31; 12,94] (Parakeet FT 12,15%). Parakeet zs D vẫn QUEUED.
+- **00:05–00:15:** final B/C/D COMPLETE (5–10′ CPU, 4.422 câu × 3 seed, rc 0) → `40ms_tuned/<enc>/test_hyps.tsv`. `score_gs2` **chưa có** đọc `_lmtuned` (nhật ký 19/10 ghi nhầm) → thêm nạp `40ms_tuned/*/test_hyps.tsv` + chế độ `lmtuned` vào bootstrap hai tầng. Kết quả test GS2 (tb 3 seed): relPE 20,50% / ConExt 21,39% / B1 22,01% (LM cố định 22,46/23,25/23,81; greedy 27,77/27,90/28,27). Cặp hai tầng lmtuned: B1 > ConExt [+0,36; +0,88], B1 > relPE [+0,70; +2,18], ConExt > relPE [+0,05; +1,58] (sát 0). Mọi hệ train từ đầu vẫn kém PhoWhisper zs 12,63 / Parakeet FT 12,15 ~8–10 điểm. Còn: Parakeet zs D QUEUED; cập nhật note `so_sanh_hien_hanh` mục B.
+- **Đóng phiên 20/10 ~00:35.** Chốt: cấu hình giải mã GS2 = LM rộng lmw 1,0 ws 2,0 (dev tb, hợp 58 cấu hình). Đã có đủ số test GS2 trừ Parakeet zero-shot. Code đổi (chưa commit): `scripts/kaggle/eval_gs2/eval_gs2.py` (`preinstall_nemo`), `scripts/kaggle/decode_gs2_cpu/decode_cpu.py` (file thay `correct_clean_test`, `GRID`), `launch_cpu.py` (`--grid`), `src/evaluation/score_gs2.py` (`_lmtuned`). Output mới: `gs2_eval_2026-10-19/{phowhisper,40ms_tune,40ms_tune_ext,40ms_tuned}/`, `gs2_scored_2026-10-19/` chấm lại.
+- **Phiên sau bắt đầu từ:** (1) kiểm D `eval-gs2-parakeet-zs` v4 (QUEUED từ 22:56; chạy ~15′ khi có máy). Còn QUEUED → hỏi người dùng huỷ trên UI rồi đẩy `launch_gs2.py --mode parakeet_zs --account E --push` (E đã có `gs2-vi-test` ready). Xong → tải vào `gs2_eval_2026-10-19/parakeet_zs/` (qua `accounts.mask`), đối chiếu clean-test kèm với `final_compare_2026-10-08` cột `raw_parakeet_fp32`, `python -m src.evaluation.score_gs2`. (2) Cập nhật note `so_sanh_hien_hanh_2026-10-19.md` mục B (bảng greedy / LM cố định / LM dò dev, cặp hai tầng, PhoWhisper 12,63%; ghi ConExt vs relPE: lmtuned CI [+0,05; +1,58] sát 0, LM cố định "không phân biệt được" → nhạy cấu hình giải mã). (3) Hỏi người dùng: thêm 1–2 mô hình fine-tune? (4) Commit khi người dùng bảo. GPU A vẫn khoá.
+
+### 2026-10-20 (sáng)
+- **Parakeet zs D v4 ERROR** (chạy lúc nào đó trong đêm, vài phút): `preinstall_nemo` chạy được, nhưng wheel `nemo_toolkit` 2.6.2 cài kèm package `scripts/` (có `__init__.py`) vào site-packages → đè namespace `scripts/` của repo → `No module named 'scripts.kaggle'`. Sửa `eval_gs2.py`: gắn `sys.modules["scripts"]` vào `REPO_DIR/scripts` sau checkout (tái hiện + kiểm local với site-packages giả). Đẩy lên **E** 08:59 (`--account E`; D từng QUEUED 1,5 h).
+- **Khung Ch3 (người dùng duyệt hướng 20/10: chỉ thêm thứ trả lời RQ, 0 GPU):** `docs/khoa_luan/ch3_khung.md` thêm Bảng 3.0 (cấu hình kiểu Bảng 1 Jiang 2024 — gộp L7), mục 3.3.6 + Bảng 3.5b (GS2: RQ1 thứ hạng ngoài kênh, Spearman 7 cấu hình 0,93; sd seed relPE 0,77 vs Mamba 0,10–0,16), đoạn GS2 ở 3.5.2 (RQ3, chờ Parakeet zs), 3.6 viết lại đối chiếu Jiang (**sửa lỗi bản 17/10**: nhận định độ phân giải của Jiang là về hiệu quả, không về WER; ngưỡng 1,5× lùi 60–90 s → ~20 s khi token 40 → 10 ms, ≈ tỉ lệ chuỗi), 3.7 thêm "một kênh nguồn" + nguồn dữ liệu pre-train. Bỏ: WER theo 30 nhóm GS2 (không thuộc RQ); WER theo độ dài câu GS2 chỉ làm nếu thừa thời gian. Bản note `so_sanh_hien_hanh` thêm mục B.3c.
+- **09:25 Parakeet zs E COMPLETE** (22,9′ GPU E, không lỗi) → `gs2_eval_2026-10-19/parakeet_zs/`; clean-test kèm 203/203; GS2 12,66%. **B (GS2) hoàn tất.** FT − zs ngoài kênh −0,51 [−0,68; −0,33] (trong kênh −4,35); từ Việt FT **kém hơn** +0,53 [+0,35; +0,69], lợi chỉ ở từ ngoại → vào Ch3 3.5.2 + 3.6 (RQ3: nhãn giả một kênh dạy quy ước chép, không chuyển thích nghi âm học). Người dùng: chưa chuyển Word — tiếp tục viết sườn, dành riêng 1 tuần cho văn phong + Word sau.
+- **Tổng hợp kết quả (người dùng 20/10: chốt trình bày gì trước khi viết sườn tiếp):** `docs/notes/ket_qua/tong_hop_ket_qua_2026-10-20.md` — câu trả lời 3 RQ một đoạn + bảng kiểm kê 40 kết quả (ID, nguồn, đề xuất vị trí Ch2/Ch3/PL/Ch4/Bỏ, cột Chốt để trống). Chờ người dùng duyệt; 6 dòng [CHỌN].
+- **Kiểm trích dẫn Ch3 (20/10):** 8 khoá đều khớp (đọc PDF local + trang công bố): Zhang (B1 = ExtBiMamba dùng độc lập, Alg. 2 — gỡ [CẦN KIỂM], viết lại câu), Jiang (ICASSP 2025 theo DBLP), Miyazaki (Interspeech 2024), Zevallos ("≤ 10 s", sửa), Liu & Peng (Interspeech 2020 → khoá [LiuPeng2020]), Bouthillier (MLSys 2021 — chỉ nguyên tắc, không phải thủ tục hai tầng; note gap 9.6 cập nhật), Hägele (NeurIPS 2024), Yang GS2 (ACL 2025). Bảng trích dẫn cuối `ch3_khung.md`.
+- **Phân tích đánh đổi (bản xem trước):** `docs/notes/ket_qua/danh_gia_danh_doi_2026-10-20.md` — bảng chi phí mọi hệ thống, 5 nhận xét (10 ms bị lấn át mọi trục; 40 ms chọn theo chi phí, ConExt lấn át B1; LM là đòn bẩy rẻ nhất; nhỏ vs pre-train: nhường 1,2 điểm trong kênh / 8,4 ngoài kênh; Mamba chỉ có giá trị ở audio dài), bảng khuyến nghị theo tình huống. Chờ người dùng duyệt.
+- **Bộ slide bảo vệ (bản phác, người dùng muốn hình dung):** artifact https://claude.ai/artifact/XTrMQr4CvYq1WDVwDYUmcQ (riêng tư), 14 slide ~15′ theo Mẫu 3 (trình bày 15′ tối đa 20′, demo 5′, hỏi đáp ~10′; Rubric Mẫu 2: thuyết trình 10%, trả lời hội đồng 20%, phương pháp 40%). Số lấy từ lần chấm đã khoá; ghi chú lời nói + thời lượng mỗi slide. Chỗ trống: tên đề tài chính thức, họ tên/GVHD/ngày.
+- **Slide (tiếp):** người dùng: slide thiếu cơ chế, không có điểm để hội đồng hỏi → thêm 3 slide (kiến trúc ba encoder kiểu Hình 3 Jiang; bên trong khối Mamba + đảo chuỗi theo độ dài thật; ví dụ thật train:944 "silicon valley…" qua 6 hệ thống + train:13537 "ready"→"rady" nhại lỗi nhãn) → 17 slide ~19–20′. Người dùng vẫn chưa ưng, chưa thấy slide đề tài tương tự → tìm tham khảo (đã kiểm link sống): Hung-yi Lee ML2025 Mamba (pdf/pptx), NeurIPS 2024 "Demystify Mamba in Vision" (slides), sigport ICASSP 2021 "A Better and Faster E2E Model for Streaming ASR" (Conformer), sigport ICASSP 2022 Conformer hybrid ASR Switchboard, Edinburgh ASR lecture CTC, UBC CPSC503 intro E2E ASR. Không tìm thấy slide công khai cho Mamba-ASR (ConMamba/Zhang/Miyazaki) hay bảo vệ luận văn ASR tiếng Việt.
+
+### 2026-10-20 (đóng phiên)
+- **Đã làm:** GS2 xong toàn bộ (Parakeet zs E 12,66% sau 2 lần sửa kernel: numpy, package `scripts` của NeMo); `score_gs2` thêm `_lmtuned`; khung Ch3 thêm Bảng 3.0, 3.3.6 + Bảng 3.5b, đoạn GS2 ở 3.5.2, viết lại đối chiếu Jiang (sửa lỗi gán nhận định hiệu quả cho độ chính xác); kiểm 8 trích dẫn Ch3 (bảng cuối `ch3_khung.md`); note tổng hợp kết quả (`tong_hop_ket_qua_2026-10-20.md`, cột Chốt trống) và phân tích đánh đổi (`danh_gia_danh_doi_2026-10-20.md`); bộ slide bản phác (artifact riêng tư https://claude.ai/artifact/XTrMQr4CvYq1WDVwDYUmcQ). Chốt: không khai "thứ tự quyết định sau v1"/"sự cố 13/10"; chưa chuyển Word (1 tuần riêng cho văn phong + Word sau).
+- **Chưa commit** (chờ người dùng): `eval_gs2.py`, `decode_cpu.py`, `launch_cpu.py`, `score_gs2.py`, output `gs2_eval_2026-10-19/` + `gs2_scored_2026-10-19/`, các note mới/sửa, Plan, TODO (rà username/dữ liệu gated trước khi add).
+- **Phiên sau bắt đầu từ:** (1) người dùng điền cột Chốt `tong_hop_ket_qua` (6 dòng [CHỌN]) + trả lời mục 5 `danh_gia_danh_doi`; (2) hỏi: giữ hay bỏ giới hạn số 6 "clean-test đã được nhìn trong giai đoạn thiết kế"; (3) slide: người dùng xem tham khảo rồi quyết hướng (bố cục, mức chi tiết cơ chế; 17 slide → chuyển 2 slide sang dự phòng?); (4) Hình 3.2 forest plot PNG (0 GPU); (5) thêm mô hình fine-tune — AI nghiêng không, người dùng chưa chốt; (6) commit khi được bảo. GPU A vẫn khoá; đóng băng GPU 25/10.
+
+### 2026-10-23 — rà phương pháp; mục lục mới theo Jiang 2024; dựng văn phong khóa luận
+- **Rà phương pháp** (chỉ đọc + script scratchpad đọc `per_sentence.tsv`, 0 GPU): lõi đúng — không rò rỉ (tokenizer,
+  CMVN tính lại sau tách 29 video `f102ee9`; LM lọc trùng val/val_unseen/clean-test; Parakeet FT chỉ train trên manifest
+  đã bỏ video giữ riêng); 0 chữ số trong output pre-train trên clean-test; code chấm tái lập đúng mọi CI hai tầng đã
+  công bố. **Cần sửa chữ (chưa sửa, chờ người dùng):** (1) GS2 greedy B1 − ConExt +0,36 [+0,02; +0,72] → theo luật là
+  "ConExt tốt hơn B1 ngoài kênh"; `tong_hop_ket_qua` mục 0, `danh_gia_danh_doi` N2, `ch3_khung` 3.3.6 đang ghi "giữ
+  nguyên"/"không phân biệt được"; với LM ngoài kênh relPE tốt hơn ConExt và B1. (2) CI hai tầng là khoảng của hiệu giữa
+  hai lần train đơn lẻ, không phải CI của trung bình 3 seed (độ nhạy trung bình-seed: chỉ cặp LM B1 − relPE đổi, [+0,06;
+  +1,10]) — giữ luật, sửa câu mô tả. (3) "lợi thế B1 chỉ khi không lấy mẫu xuống" → "chỉ thấy ở cấu hình 10 ms"; tương
+  tác (B1 − relPE) 10 ms − 40 ms = −2,64 [−3,82; −1,57] (mô tả, tính sau khi có số). (4) 10 ms − 40 ms cùng encoder:
+  B1 +1,66 [+1,04; +2,31] · ConExt +4,14 [+3,26; +5,12] · relPE +4,30 [+3,36; +5,48]. (5) tỉ lệ sd seed relPE/Mamba: F
+  p một phía 0,08/0,14; "nhất quán trên hai tập độc lập" sai (cùng 3 lần train). (6) "kiểm trực tiếp Jiang" → "phù
+  hợp". (7) Khai: lmw/ws dò trên nửa val_unseen (cùng 29 video với clean-test). (8) So sánh A thiên lệch có lợi cho nhóm
+  train từ đầu (cùng kênh, neo nhãn, 11 câu trùng, LM cùng kênh). (9) Giả định 30 nhóm GS2 = bản ghi chưa kiểm. (10)
+  "GPU-giờ" = giờ tường kernel 2×T4. Nêu hệ quả, không đổi quyết định: 11/203 không khai; không khai thứ tự quyết định
+  (mâu thuẫn note gap 9.4 điều 1); giới hạn #6.
+- **Mục lục mới** `docs/khoa_luan/muc_luc_de_xuat.md` theo trình tự Jiang 2024 + Mẫu 5: ~59 tr (Mở đầu 5 · Ch1 lý thuyết
+  11 · **Ch2 kiến trúc mô hình** 10, từ dưới lên · Ch3 thực nghiệm và kết quả 24 · Ch4 thảo luận và ứng dụng 7 · KL 2);
+  bản 16/10 lưu `muc_luc_de_xuat_luu_2026-10-16.md`. Người dùng "được rồi" (duyệt hướng); 5 mục [CHỌN]/[GVHD] chưa trả
+  lời. Mẫu 5: TLTK đánh số theo thứ tự chữ cái tác giả.
+- **Văn phong:** skill `.claude/skills/van-phong-khoa-luan/SKILL.md` (gitignore). Chốt: đoạn kết quả "đặt câu hỏi rồi trả
+  lời"; xưng "chúng tôi"; Việt kèm Anh lần đầu; người đọc là hội đồng CNTT; có công thức, không chứng minh; vài ví dụ đắt
+  giá; giới hạn nói thẳng rồi chuyển hướng phát triển; chú thích đọc độc lập; tiểu kết ngắn; chỉ giải thích nguyên nhân
+  khi có nguồn; tên mục danh từ; câu mời "Hãy xét…"; ký tự (– khoảng, − trừ, không —, _ chỉ trong mã); "điểm phần trăm"
+  định nghĩa một lần rồi luân phiên cách nói. Đoạn giải thích chuẩn = đoạn S4/Δ người dùng gửi (từ quen "Cách mà",
+  "song", "Lưu ý rằng"). **Chưa chốt:** nét riêng (câu đùa bị bác: cố gây cười, sai chỗ), cách mở chương, câu hỏi tu từ.
+  Đoạn nghị luận seed 42: bản dài bị chê (dài + câu CI), bản ≤ 80 chữ người dùng vẫn "chưa ưng bụng".
+- Mẫu thử `docs/khoa_luan/ch2_mau_thu.md` (2.2.1; ô [CẦN KIỂM]: Jiang dùng chung phép chiếu vào–ra?). Bài tập
+  `docs/khoa_luan/bai_tap_van_phong.md`: người dùng chọn **Phần B — 15 đề ngoài dự án**, viết tay.
+- Không chạy GPU, không sửa code, không commit.
+- **Phiên sau bắt đầu từ:** (1) nhận bài viết tay → rút nét lặp → ghi skill mục 1/10 → viết lại 1–2 đề theo giọng khóa
+  luận để so → viết 2.2.1 rồi trọn Ch2 (nhịp: một mục thử rồi cả chương); (2) hỏi 5 mục [CHỌN]/[GVHD] của mục lục, rồi sửa
+  "Phần NỘI DUNG" đề cương mới cho khớp; (3) hỏi có áp các sửa chữ của bản rà phương pháp không; (4) việc cũ ở TODO.
+
+### 2026-10-26 — GVHD hỏi "chỉ có vậy thôi à?": chấm lại theo Mẫu 2, đề xuất bổ sung (chưa làm)
+- **Bối cảnh:** người dùng báo thầy hỏi "chỉ có vậy thôi à?"; hỏi khóa luận đủ chưa (thang 100), cần thêm gì.
+- **Đã làm (0 GPU, chỉ đọc + script scratchpad):** đọc `docs/bieu_mau/Mau-2-Rubric-KLTN-Edit.docx` — 7 tiêu chí: thực tiễn +
+  hiểu biết 10 · phương pháp/thiết kế/**giải pháp**/**sản phẩm**/khối lượng 40 · thuyết trình 10 · đọc tài liệu ngoại ngữ 5 ·
+  tổng hợp + viết 10 · hình thức 5 · hỏi đáp 20; mỗi tiêu chí 5 mức 0/20/50/70/100%. Bảng điểm 15/10 chia theo cấu trúc tự
+  đặt (không có tiêu chí thực tiễn, hỏi đáp 10). AI ước: nội dung hiện có + viết tốt ~78 (72–84); hụt ở tiêu chí 1 và phần
+  giải pháp/sản phẩm của tiêu chí 2 (khớp ý thầy 17/10 "có giải pháp rõ ràng"); thêm (1) + (2) dưới đây ~86.
+- **Kiểm dữ liệu:** 29 video giữ riêng (val_unseen + clean-test) = 11,7 h; theo số seg liền nhau: 81 chuỗi ≥ 1′, 26 ≥ 5′,
+  22 ≥ 10′, dài nhất 38,5′ (câu train 10–15 s). Lý do 03/10 không đo WER audio dài ("validation gần như không có chuỗi seg
+  liên tiếp dài") hết đúng từ khi tách video 04/10.
+- **Nguồn đã kiểm:** Miyazaki 2024 mục 3.3, Hình 2 (PDF local: TEDLIUM2, ghép 3 đoạn liên tiếp; Conformer-Transformer AED suy
+  giảm từ > 25 s, thêm Mamba giảm suy giảm); Alabi và cs. arXiv:2607.01502 (preprint 07/2026; CTC ký tự, ConMamba vs
+  Conformer, ghép 60–240 s: cả hai suy giảm, ConMamba hơi ít hơn); DeciMamba arXiv:2406.14528 và Chiu 2019 arXiv:1911.02242
+  (mức tóm tắt).
+- **Đề xuất, chờ người dùng chốt (chưa chạy gì):** (1) WER audio dài trên 29 video giữ riêng: 9 checkpoint 40 ms ep37, nguyên
+  chuỗi L ∈ {1, 5, 10′, cả chuỗi} vs đoạn gốc vs chia đoạn 15 s chồng lấn; greedy, bootstrap theo video, quy tắc chốt trước;
+  CPU qua `mamba_ref.py` (0 GPU-h; kiểm khớp output GPU đã lưu trước) hoặc ~0,5–1 GPU-h nếu mở GPU sau mốc 25/10; ~2–3 ngày.
+  (2) Công cụ phiên âm audio dài (mở rộng demo: mốc thời gian CTC, xuất SRT), ~1–2 ngày. (3) Tuỳ chọn: tốc độ CPU Conformer
+  PE 40 ms (± int8), hình Pareto. Không đề xuất train/seed/LR mới; thêm mô hình fine-tune vẫn là ⛔ của người dùng (AI: không).
+- **Người dùng: "để những người bạn cùng nghiên cứu"** → 4 tác tử chạy nền (chấm bịt mắt theo Mẫu 2; tổng quan tài liệu audio
+  dài; fork đo khả thi CPU, không tạo WER; phản biện đề xuất). Kết quả tổng hợp ghi vào mục sau.
+- **Tính mới (người dùng hỏi):** quét nhanh nguồn — không thấy công bố Mamba cho ASR tiếng Việt (Zevallos 2025 và MLMA không có
+  tiếng Việt); bài VietSuperSpeech không báo WER, không định lượng nhãn. Ba điểm mới đứng được: so sánh có kiểm soát trên tiếng
+  Việt hội thoại (theo phạm vi tra cứu); thứ hạng đổi theo độ phân giải token (tương tác −2,64 [−3,82; −1,57], mô tả, cấu
+  hình 40 ms trộn 4 khác biệt); bộ đánh giá cho VietSuperSpeech (tách theo video, clean-test hiệu đính, đo nhãn giả, split
+  gốc trùng video, bản phát hành khác bài báo).
+- **Ý tưởng "hay ho" (người dùng hỏi; 0 GPU, không train, chờ chốt):** (A) tiêu đề tập podcast làm ngữ cảnh cho beam search
+  (thêm từ vào từ điển + điểm thưởng; đo B-WER/U-WER theo Le 2021; Jung 2022 "Spell my name") — nhắm từ ngoại/tên riêng
+  (3,1% số từ, ~21% số lỗi, WER 88–100%); (B) mở hộp đen Mamba: Δ theo thời gian (Gu & Dao 2023 mục 3.5.2, PDF local) +
+  attention ẩn (Ali và cs., ACL 2025) cạnh attention Conformer; (C) độ tin cậy từ theo entropy (Laptev & Ginsburg
+  arXiv:2212.08703) + transcript tô màu. Loại: nhầm hỏi/ngã (lỗi chỉ sai thanh 0,17–0,28% số từ — rq3 mục 4).
+- **Tác tử A (chấm bịt mắt theo Mẫu 2) xong:** viết tốt 85 (8,5) · viết vội 59; GVHD chấm tiêu chí 2 mức Khá → trung bình
+  ~8,1 → "Giỏi chưa chắc" (khớp AI). Đủ tốt nghiệp; rủi ro thật là thủ tục (Plan chỉ ghi 1 lần gặp trực tiếp 01/10; đề
+  cương mới chưa gửi/duyệt). "Chỉ có vậy" có thể nhắm: độ rộng "loại" mô hình (thầy buổi 1: "ASR và fine-tune"), thiếu
+  "giải pháp rõ ràng", thầy chưa thấy phần sau 17/10. **Báo cáo gửi thầy 17/10 ghi "kém mô hình 0,6B chỉ 1–3,5 điểm"**
+  (đúng trên clean-test lúc đó; GS2 sau đó: ngoài kênh chênh 8–16 điểm) → cần cập nhật cho thầy. Câu hỏi mới phải chuẩn bị:
+  FastConformer attention cục bộ chạy tới 11 h (Rekesh 2023) → "Mamba chạy được 1 giờ" phải nói rõ là so với attention toàn
+  cục; câu hỏi "dùng AI tới đâu". A khuyên gặp thầy tuần này với 1–2 trang + thực đơn, trước khi làm bổ sung nào.
+- **Chốt cuối phiên (người dùng):** làm **A** (tiêu đề tập làm ngữ cảnh) và **B** (mở hộp đen Mamba) — 0 GPU, không train;
+  các đề xuất còn lại treo. Dừng tác tử B/C/D trước khi báo cáo (token ~90%). **Từ nay nương theo khối ▶ của `TODO.md`.**
+- **Ghi đủ để không nhắc lại:** `docs/notes/review/danh_gia_bo_sung_2026-10-26.md` (đánh giá, điểm mới, đề xuất, các bước A/B).
+- **Phiên sau bắt đầu từ:** `TODO.md` khối ▶ 26/10 — quy tắc phân tích A → người dùng chép 29 tiêu đề → code A → B.
+
+### 2026-10-27 — triển khai A + B (dừng giữa chừng vì hết token)
+- **Đã làm:** chốt quy tắc A/B trước khi chạy (`docs/notes/ket_qua/bo_sung_AB_quy_tac_2026-10-27.md`; A dùng danh sách tự
+  động từ tên file video, chọn b trên `val_unseen_subset` seed 42; B dùng 30 câu val_unseen seed 42). Giao 2 tác tử song
+  song (A: tiêu đề tập làm ngữ cảnh; B: hộp đen Mamba), CPU local, không GPU, không đẩy kernel (theo chỉ dẫn).
+- **Khi đóng (token 94%):** hai tác tử còn chạy nền, chưa báo cáo; chưa kiểm kết quả, chưa commit.
+- **Phiên sau bắt đầu từ:** `TODO.md` khối ▶ dòng "27/10" — kiểm đầu ra trên đĩa, đối chiếu quy tắc + mục "Sửa đổi", làm
+  tiếp phần thiếu, tổng hợp số cho người dùng.
+- **Phiên tiếp (27/10, sau khi mở lại):** hai tác tử đã ghi gần đủ trước khi phiên cũ đóng. AI kiểm và làm nốt: note kết quả A
+  (`bo_sung_A_ket_qua_2026-10-27.md`), điền phần kiểm + kết quả của note B, vẽ hình (c) (`scripts/fig_mamba_m3.py`). Kiểm: (i)
+  tái lập 203/203 câu × 9 run; hook B không đổi đầu ra; attention ẩn khớp bản tính thẳng. **A:** b = 4 (nửa tune 441 câu);
+  (ii) trùng (i); (iii) B-WER −9 đến −12 điểm (8/9 run giảm) nhưng CI chứa 0, độ phủ 29 từ → không phân biệt được; WER,
+  U-WER không đổi; b ≥ 8 hại (overbiasing). **B:** M2 < 1 ở 40 ms (mọi khối ConExt, nửa khối B1), ngược/lẫn ở 10 ms; M1 ≈ 1;
+  M3 Conformer ~2–3 s mọi lớp, Mamba 2 s → 0,2–1 s theo độ sâu, 10 ms còn ~một nửa (theo giây). Chưa commit.
+- **Phiên sau bắt đầu từ:** người dùng xem hình B + quyết chạy lại A với tiêu đề/mô tả có dấu; rồi viết (khối 23/10).
+
+### 2026-10-27 (chiều) — A điều kiện riêng (iv): tiêu đề có dấu + mô tả tập, lấy tự động
+- Người dùng: "đọc note 26–27 và tiếp tục theo hướng đó" → làm bước tiếp của A (note kết quả A mục 3.5), 0 GPU.
+- **Chốt trước khi tải/tính:** quy tắc A8 (`bo_sung_AB_quy_tac_2026-10-27.md`) + "Sửa đổi" 27/10 chiều. Không cần người dùng
+  chép tay: trang podcast vietcetera.com mang tiêu đề + mô tả YouTube của tập (`episode.video.snippet`); **không dùng
+  `transcriptSSR`** (tưởng là bản ghi lời tập; kiểm sau: chỉ chứa id tập, bản ghi nếu có nằm sau API nội bộ — note
+  `docs/notes/du_lieu/vietcetera_transcript_2026-10-27.md`). Sitemap không có trang video → 22 video ghép trang podcast theo Jaccard, 6 tìm
+  tay, 1 (Yêu Lành SS5 EP4, tiêu đề trên trang đã đổi) giữ danh sách A2.
+- Code: `bias_title.py` thêm `fetch-pages`, `lists-iv`, cờ `--variant iv` cho `grid`/`decode`/`score` (mặc định giữ hành vi
+  cũ; demo không đổi). Nguyên văn trang ở `data/processed/bias_title/` (gitignore).
+- **Kết quả (iv):** độ phủ 56 từ; b = 2; B-WER −4,8 đến −7,7 điểm, 9/9 run giảm, CI chứa 0 → không phân biệt được; WER/U-WER
+  không đổi. Sửa `lexicon_with` (Windows: hai tiến trình cùng ghi một file từ điển tạm).
+- Người dùng hỏi "giữ được mấy điểm mới" → giữ cả 3, không thêm (ghi mục 3 `danh_gia_bo_sung`); quét nguồn B: chưa thấy phân
+  tích attention ẩn trên encoder ASR (2 lượt). Người dùng hỏi theo bảng Mẫu 2 làm gì thêm → AI xếp: tiêu chí 2 (+12) sản phẩm,
+  tiêu chí 7 (+6) bảng trả lời 10 câu hỏi; gặp thầy trước.
+
+### 2026-10-27 (tối) — SẢN PHẨM: phiên âm podcast dài → phụ đề
+- **Người dùng chốt:** "tập trung hết mức cho phần Giải pháp/sản phẩm" → gộp việc treo (2) công cụ dài + SRT, (3) tốc độ
+  CPU, (C) độ tin cậy; 0 GPU. Quy tắc chốt trước: `docs/notes/ket_qua/san_pham_podcast_quy_tac_2026-10-27.md`.
+- **Đã làm:** `src/demo/longform.py` (cắt chỗ lặng 10–15 s → beam + LM đã khoá + ngữ cảnh A + mốc thời gian + độ tin cậy
+  entropy → SRT/TXT/JSON/HTML); tab Gradio; chữ trùng `lm_hyp` 24/24; 17,8′ chạy 41 s CPU (RTF 0,038). Sửa lệch timestep
+  flashlight (T + 2 vị trí).
+- **Đo (val_unseen, nhãn giả, 38 chuỗi / 7 video / 3,01 h):** P1 tự cắt 8,22% vs đoạn gốc 8,02%, hiệu +0,20 [+0,07; +0,37] →
+  tự cắt kém hơn, nhỏ (báo nguyên); P3 AUROC entropy 0,940 / max-prob 0,937, hiệu +0,003 [+0,002; +0,004]; P2 RTF CPU
+  Conformer 0,044 · ConExt 0,067 · B1 0,109 (Mamba bản tham chiếu). Note `san_pham_podcast_ket_qua_2026-10-27.md`.
+- **Sau đó:** sửa lọc ngữ cảnh của sản phẩm (hàm chung `context_words`; danh sách (iv) tạo lại trùng từng byte); hình Ch4
+  `reports/figures/san_pham/` (ảnh HTML chụp bằng Chrome headless — ảnh người dùng chụp có thanh dấu trang/tab cá nhân, giữ
+  local; sơ đồ quy trình đọc số từ file); hướng dẫn `docs/huong_dan_san_pham.md`; `requirements.txt` + `flashlight-text`,
+  `scipy`. Người dùng hỏi gộp demo → AI nêu 3 mức; người dùng: **tạm để y, chưa quyết** (⛔ trong TODO).
+- **Khuya:** người dùng hỏi còn làm gì + vì sao không 100 (Mẫu 2 chỉ 5 nấc, 100 = cả 3 người chấm Giỏi cả 7 tiêu chí; 83–88
+  là kỳ vọng, không phải trần). Người dùng duyệt (2) + (4), 2 tác tử: `transcriptSSR` **chỉ là id tập** (AI ghi sai trước
+  đó là "bản ghi lời" — đã đính chính ở mọi note); hình `fig_pareto_cpu.png`. (1) WER audio dài nguyên chuỗi: AI khuyên,
+  chưa có lệnh.
+- **27/10 18:17 — (1) WER audio dài nguyên chuỗi:** người dùng "chạy việc 1, chia nhỏ cho các bạn phối hợp". Quy tắc chốt
+  trước (`audio_dai_nguyen_chuoi_quy_tac_2026-10-27.md`); 2 tác tử viết chạy/chấm (kiểm trên dữ liệu giả + chạy thử 2 chuỗi);
+  Conformer chạy được tới 8.279 khung (11,3 GB), 8.918 khung chết → 10/38 cửa sổ "cả chuỗi" bỏ. Đang chạy 9 checkpoint
+  tuần tự (~9–10 h).
+- **19:16:** xong 2/9 (Conformer s42 18:45, 1.130 ok + 10 skip_mem; ConExt s42 19:13, 1.140 ok), B1 s42 đang chạy; ước xong
+  cả 9 ~00:00–00:30 28/10. Người dùng hỏi đẩy Kaggle → AI khuyên không (lợi ~3–4 h rơi vào ban đêm; tốn công đóng gói ~800 MB,
+  quota GPU, trộn thiết bị CPU/GPU); người dùng chưa yêu cầu lại. Đã bật theo dõi báo mỗi checkpoint xong (chỉ sống trong phiên).
+- **Sau 19:16:** người dùng duyệt thông điệp mở đầu + sườn slide (mục 4) và "cập nhật mục lục và khung" (mục lục 5b; khung
+  `docs/khoa_luan/ch3_khung_bo_sung_2026-10-27.md`); bảng hỏi đáp 24 câu `docs/khoa_luan/hoi_dap_bao_ve.md` (tác tử soạn, AI
+  rà). **23:36 (1) xong:** cả ba encoder kém đi khi cửa sổ dài (1′ +0,3–0,4; 5′ +0,6–1,5; cả chuỗi B1 +0,96, ConExt +0,65,
+  Conformer +1,27 trên 28 chuỗi); Mamba vs Conformer không phân biệt được ở mọi độ dài; B1 − ConExt cả chuỗi +0,31 [+0,01;
+  +0,72]; Mamba RTF/RAM không đổi (17,8′ ≤ 7,1 GB), Conformer 9,6–12,9 GB ở 5,5′. Số sơ bộ seed 42 ("Mamba kém đi hơn ở 1′")
+  không giữ. Đính chính: RAM B1 11,2 GB lúc kiểm là RSS cộng dồn (thật 5,9 GB).
+- **Phiên sau bắt đầu từ (cập nhật 23:45):** chờ người dùng viết bài tập văn phong Phần B (~6 đề) + chọn 5 mục mục lục + Hình
+  3.7 → viết văn xuôi theo khung; gộp demo (⛔); gặp thầy + bản 1–2 trang (⛔). Chưa commit gì từ 26/10.
+- **(cũ, đã xong) Phiên sau bắt đầu từ:** (1) kiểm `reports/results/long_audio_2026-10-27/hyps/` đủ 9 file × 1.140 dòng (Conformer có
+  10 `skip_mem`); thiếu → chạy lại vòng lệnh trong `TODO.md` (tự chạy tiếp). (2) `python -m src.evaluation.long_audio_score`
+  → `python scripts/fig_audio_dai.py` → viết `docs/notes/ket_qua/audio_dai_nguyen_chuoi_ket_qua_2026-10-28.md` theo đúng mục 3
+  quy tắc (Δ từng encoder × L, CI; so encoder; RAM/thời gian mô tả; kết quả bất lợi báo nguyên) → cập nhật bảng trạng thái
+  `danh_gia_bo_sung` mục 4. (3) Còn treo: gộp demo (⛔), bảng trả lời 10 câu hỏi hội đồng, viết Ch4 phần sản phẩm, gặp thầy.
+  Chưa commit gì từ 26/10 (danh sách file: `git status`).
+
+### 2026-10-27 — TỔNG KẾT PHIÊN (26–27/10, đóng ~23:50)
+- **Bối cảnh:** GVHD hỏi "chỉ có vậy thôi à?" → chấm lại theo Mẫu 2 (~78/100 nếu viết tốt; đòn bẩy: tiêu chí 2 "giải
+  pháp/sản phẩm" +12, tiêu chí 7 hỏi đáp +6) → người dùng chọn A + B, rồi "dồn sức giải pháp/sản phẩm", rồi (1)(2)(4).
+- **Đã làm + kết quả (mọi quy tắc chốt trước khi đo; sửa đổi ghi trong từng note quy tắc):**
+  - A ngữ cảnh tiêu đề (iii) + (iv): B-WER giảm 8/9 và 9/9 run, CI chứa 0 → không phân biệt được; WER không đổi.
+  - B hộp đen Mamba: Δ nhỏ ở khung lặng (40 ms); không reset ở ranh giới từ; Conformer 2–3 s mọi lớp, Mamba hẹp dần.
+  - Sản phẩm `src/demo/longform.py` + tab Gradio + hướng dẫn: P1 +0,20 [+0,07; +0,37]; P3 AUROC 0,940/0,937; P2 RTF CPU
+    0,044/0,067/0,109; hình quy trình, ảnh HTML (headless), Pareto.
+  - Audio dài nguyên chuỗi (9 checkpoint, 18:17–23:36): ΔWER 1′ +0,34–0,38, 5′ +0,59–1,50, cả chuỗi +0,65–1,27 (mọi CI ≠ 0);
+    Mamba vs Conformer không phân biệt được; B1 − ConExt cả chuỗi +0,31 [+0,01; +0,72]; Mamba RTF/RAM phẳng (17,8′ ≤ 7,1 GB),
+    Conformer 9,6–12,9 GB ở 5,5′, dừng ở đó.
+  - Bản ghi Vietcetera: không công bố. Bảng hỏi đáp 24 câu. Thông điệp mở đầu + sườn slide chốt; mục lục ~64,5 tr + khung.
+- **Đính chính trong phiên (đã sửa mọi note):** (a) `transcriptSSR` không phải bản ghi lời (AI suy từ tên trường); (b) RAM
+  B1 11,2 GB lúc kiểm là RSS cộng dồn (thật 5,9 GB); (c) số sơ bộ seed 42 "Mamba kém đi hơn ở 1′" không giữ với 3 seed;
+  (d) giờ bắt đầu chạy ghi nhầm "28/10 00:30" (thật 27/10 18:17). Lỗi kỹ thuật đã sửa: lệch timestep flashlight (T + 2),
+  tranh ghi file từ điển trên Windows, ngữ cảnh sản phẩm chưa lọc URL.
+- **Đánh giá cuối phiên (người dùng hỏi "cần thêm gì"):** không cần thêm thí nghiệm. Còn: commit (⛔ người dùng duyệt), gặp
+  thầy + bản 1–2 trang (⛔), CI cho chênh 1,2 điểm trong kênh, hình còn thiếu (3.1, 2.1–2.3, 1.1), Bảng 4.1/4.2, quét nguồn
+  thêm cho 3.6, slide theo sườn mới, viết (sau bài tập văn phong). Tuỳ chọn: người hiệu đính thứ hai ~30 câu.
+- **Phiên sau bắt đầu từ:** `TODO.md` khối ▶ (đóng phiên 27/10): hỏi người dùng duyệt commit + soạn bản gặp thầy; làm mục
+  "AI làm được ngay" 1–3; chờ bài tập văn phong để viết.
+
+### 2026-10-28 — viết nháp Ch1–Ch4 (0 GPU, không commit)
+- **Đã làm:** nạp skill `but-phap` + `van-phong-khoa-luan`; viết nháp theo `muc_luc_de_xuat.md` 28/10, mỗi chương một thư mục
+  `docs/khoa_luan/chN/` gồm `chN.md` (văn) + `nguon_chN.md` (nguồn từng số, chỗ treo). Ch2 ~2.950 chữ (rà bởi 2 tác tử:
+  văn phong; công thức + code — số tham số đếm lại khớp từng tham số; sửa 2 chỗ sai: ablation khác Conformer PE ở **4** điểm,
+  ConExt và Conformer PE không "chỉ khác khối trộn chuỗi"). Ch3 ~6.500 chữ (7 bảng; thảo luận/giới hạn cũ chuyển Ch4). Ch4
+  ~2.800 chữ (Bảng 4.1 cập nhật hai ô "[chưa đo]"). Ch1 ~3.400 chữ (tác tử fork; công thức 1.1–1.23; trạng thái SSM đổi h → s,
+  Ch3 (3.1)–(3.2) đổi chỉ số khung s → j cho khớp). Mở chương: Ch1 (c), Ch2 (d), Ch3 (a), Ch4 (d).
+- **Phát hiện khi đối chiếu:** Jiang 2024 dùng chung phép chiếu vào–ra + lấy trung bình (giải ô [CẦN KIỂM] mẫu thử 23/10);
+  câu "README mamba-ssm khuyên SSM fp32" trong mẫu thử sai nguồn → thay bằng sự cố NaN; BPE 1.000 **không có lý do ghi lúc
+  chọn** (commit `7891303` 14/09 "bắt đầu thử 1000"; lý do giữ 03/10: CTC head không đổi).
+- **AI đã áp vào văn Ch3/Ch4 (chưa sửa note gốc) các sửa chữ của bản rà phương pháp 23/10** — đáng chú ý: GS2 tham lam 40 ms
+  ConExt tốt hơn B1 (+0,36 [+0,02; +0,72]) theo luật CI; mô tả CI hai tầng; khai LM dò trên nửa val_unseen. Danh sách:
+  `docs/khoa_luan/ch3/nguon_ch3.md` mục 3. Người dùng chưa duyệt.
+- **Phiên sau bắt đầu từ:** người dùng đọc Ch1–Ch4; trả lời các chỗ treo trong 4 tệp `nguon_chN.md` (BPE, sửa chữ 23/10,
+  [CHỌN] Hình 3.4/3.7, [GVHD] UML, khoá trích dẫn mới); mỗi lần người dùng sửa → ghi `but-phap` mục 9. Sau đó: Mở đầu →
+  Kết luận → Tóm tắt; hình còn thiếu (1.1, 2.1–2.3, 3.1).
+- **Rà cuối phiên (người dùng hỏi "đã đúng đắn chưa"):** nội dung Ch1–Ch4 đúng về số/luật ở phần đã kiểm; chưa chắc: 10 sửa chữ
+  23/10 (chờ duyệt), Ch1 chưa rà độc lập (ví dụ tách BPE *nghỉ ngơi* → ▁NGH, Ỉ, ▁NG, ƠI ở `ch1.md:110` chưa kiểm bằng tokenizer
+  thật), 12 khoá trích dẫn chưa có PDF, CI Conformer PE + LM vs Parakeet FT. **Slide 20/10 lỗi thời** (7 chỗ, ghi ở TODO ▶) và
+  không theo sườn chốt 27/10 (thiếu ngoại suy độ dài, bên trong encoder, ứng dụng, ba điểm mới; CI nên ở slide dự phòng).
+- **Đóng phiên 28/10.** Phiên sau: người dùng duyệt chương (ưu tiên 10 sửa chữ 23/10, BPE) → AI dựng lại deck theo sườn chốt,
+  giữ link cũ `https://claude.ai/artifact/XTrMQr4CvYq1WDVwDYUmcQ`.
+
+### 2026-10-29 — ba việc 0 GPU không cần quyết định (không commit)
+- **Đã làm:** (1) Kiểm ví dụ BPE `ch1.md:110` bằng `configs/tokenizer.model`: `NGHỈ NGƠI` → `▁NGH Ỉ ▁NG ƠI`, khớp (văn bản
+  huấn luyện viết hoa). (2) CI chênh trong kênh Conformer PE 40 ms + LM − Parakeet tinh chỉnh: **+1,17 [+0,27; +1,99]**
+  (hai tầng video × seed, 3 seed vs 1 run; từng seed +0,81/+1,20/+1,49); tham lam +3,21 [+2,06; +4,35]. Tính từ
+  `clean_test_scored_2026-10-16_chung/per_sentence.tsv` + `bootstrap.two_level_bootstrap` (script một lần, không lưu repo).
+  Văn Ch3 3.3.4, Ch4 4.2, `hoi_dap_bao_ve.md` sửa "chỉ cách ~1,2 điểm, chưa có CI" → "kém 1,2 điểm (CI…)", kèm giới hạn
+  Parakeet một lần chạy. (3) Hình 3.1 forest plot: `scripts/fig_forest_cleantest.py` →
+  `reports/figures/clean_test/fig_forest_cap_encoder.png` (7 hàng khớp Bảng 3.3; đơn sắc; điểm đặc = CI ≠ 0).
+- **Chưa đổi:** thông điệp 3 ở mục 4 và slide 20/10 vẫn "~1,2 điểm" — sửa khi dựng lại deck.
+- **Tiếp (người dùng "tiếp tục"):** Hình 1.1, 2.1–2.3 (`scripts/fig_kien_truc.py` → `reports/figures/kien_truc/`; Hình 2.1 đặt
+  đổi tốc độ **trước** log-mel theo code, lệch mô tả nháp cũ); Bảng 4.2 đã có trong nháp, kiểm khớp note; quét nguồn 3.6
+  lượt 3: không có công bố phân tích Δ/attention ẩn trên encoder ASR Mamba, thêm LongMamba (ICLR 2025) làm nguồn "phù hợp
+  với" (`ch3/nguon_ch3.md` mục 5). Sau đó commit + push theo yêu cầu, **không đẩy `docs/`** (người dùng: "các file doc không đẩy").
+- **Phiên sau bắt đầu từ:** người dùng duyệt chương + hình mới, BPE, 10 sửa chữ 23/10, gặp thầy; dựng lại deck theo sườn chốt.

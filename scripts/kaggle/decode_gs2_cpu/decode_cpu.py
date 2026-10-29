@@ -18,6 +18,7 @@ STAGE `final`: giải mã test 3 seed của encoder với cấu hình `FINAL` �
 
 import json
 import os
+import re
 import subprocess
 import sys
 import tarfile
@@ -31,6 +32,8 @@ sys.stdout.reconfigure(encoding="utf-8")
 STAGE = os.environ.get("GS2_STAGE", "__STAGE__")
 ENCODER = os.environ.get("GS2_ENCODER", "__ENCODER__")
 FINAL = json.loads(os.environ.get("GS2_FINAL", '__FINAL__').replace("__FINAL__", "null"))  # {"lm": vss|broad, "lmw": .., "ws": ..}
+# Lưới mở rộng cho lần tune sau (19/10: tối ưu ws = 2,0 nằm ở mép lưới) — {"lmw": [..], "ws": [..]}, null = lưới mặc định.
+GRID = json.loads(os.environ.get("GS2_GRID", '__GRID__').replace("__GRID__", "null"))
 N_DEV = 2000
 LMW = [0.4, 0.6, 0.8, 1.0, 1.3]
 WS = [-1.0, 0.0, 1.0, 2.0]
@@ -80,7 +83,19 @@ def setup() -> None:
     else:  # Kaggle tự giải nén archive khi tạo dataset
         src = next(p for p in Path("/kaggle/input").rglob("src") if (p / "evaluation/lm_decode.py").exists()).parent
         sh(f"cp -r {src}/. {WORK}/")
-    log(f"bundle: {sorted(p.name for p in WORK.iterdir())}")
+    # `score_clean_test` chỉ lấy hằng `OURS_VISIBLE_FROM` từ `correct_clean_test` (công cụ hiệu đính, import gradio/torch
+    # ở đầu file — venv không có, lỗi 19/10 23:09) → thay bằng file chỉ mang đúng hằng đó. Sửa ở bước này (code kernel)
+    # vì phần trong venv chạy bản `decode_cpu.py` cũ trong bundle; khỏi tải lại dataset.
+    cct = WORK / "src/data/correct_clean_test.py"
+    const = re.search(r'^OURS_VISIBLE_FROM = "[^"]+"', cct.read_text(encoding="utf-8"), re.M).group(0)
+    cct.write_text(const + "\n", encoding="utf-8")
+    if GRID:  # cùng lý do: bản trong venv là bản cũ trong bundle → sửa thẳng hai dòng lưới của nó
+        dc = WORK / "decode_cpu.py"
+        text = re.sub(r"^LMW = .*$", f"LMW = {GRID['lmw']}", dc.read_text(encoding="utf-8"), count=1, flags=re.M)
+        text = re.sub(r"^WS = .*$", f"WS = {GRID['ws']}", text, count=1, flags=re.M)
+        dc.write_text(text, encoding="utf-8")
+        log(f"lưới: LMW {GRID['lmw']} × WS {GRID['ws']}")
+    log(f"bundle:{sorted(p.name for p in WORK.iterdir())}")
 
 
 # ---------------------------------------------------------------- phần chạy trong venv 3.12 (cwd = WORK)

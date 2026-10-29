@@ -1,0 +1,315 @@
+{
+ "clean_test": {
+  "ref_words": 10352,
+  "ref_words_in_list": 56,
+  "sentences": 203,
+  "sentences_with_list_word": 31,
+  "videos_with_list_word": 14,
+  "per_word": [
+   {
+    "video": "Bao_gio_cho_het_chuyen_doi_moi_-_Ruby_Nguyen_CEO_Curieous_VIV_S2_EP25",
+    "word": "curieous",
+    "count": 2
+   },
+   {
+    "video": "Bao_gio_cho_het_chuyen_doi_moi_-_Ruby_Nguyen_CEO_Curieous_VIV_S2_EP25",
+    "word": "ruby",
+    "count": 2
+   },
+   {
+    "video": "Bao_hiem_so_huong_den_su_thuan_tien_va_de_tiep_can_-_Dang_Hoang_Tung_CEO_OPES_VI_S3_EP26",
+    "word": "opes",
+    "count": 2
+   },
+   {
+    "video": "Blockchain_tao_co_hoi_de_Viet_Nam_sanh_vai_the_gioi_Huy_Nguyen_Co-Founder_President_KardiaChain",
+    "word": "miro",
+    "count": 1
+   },
+   {
+    "video": "Blockchain_tao_co_hoi_de_Viet_Nam_sanh_vai_the_gioi_Huy_Nguyen_Co-Founder_President_KardiaChain",
+    "word": "silicon",
+    "count": 1
+   },
+   {
+    "video": "Buoc_nhay_tiep_theo_cua_Marketing_-_Phi_Khanh_Le_Giam_doc_Marketing_Gojek_Vietnam_VI_S2_EP21",
+    "word": "health",
+    "count": 1
+   },
+   {
+    "video": "Buoc_nhay_tiep_theo_cua_Marketing_-_Phi_Khanh_Le_Giam_doc_Marketing_Gojek_Vietnam_VI_S2_EP21",
+    "word": "marketing",
+    "count": 4
+   },
+   {
+    "video": "Cau_chuyen_binh_dang_gioi_tai_PG_-_Nguyen_Thi_Hoang_Anh_Logistics_Director_PG_Vietnam_S3_EP12",
+    "word": "pg",
+    "count": 1
+   },
+   {
+    "video": "Ke_chuyen_bang_hinh_anh_3D_-_Thao_Dan_Visual_Artist_va_Creative_Director_MAD_EP20",
+    "word": "artist",
+    "count": 1
+   },
+   {
+    "video": "Ke_chuyen_bang_hinh_anh_3D_-_Thao_Dan_Visual_Artist_va_Creative_Director_MAD_EP20",
+    "word": "creative",
+    "count": 1
+   },
+   {
+    "video": "Ke_chuyen_bang_hinh_anh_3D_-_Thao_Dan_Visual_Artist_va_Creative_Director_MAD_EP20",
+    "word": "director",
+    "count": 1
+   },
+   {
+    "video": "Ke_chuyen_bang_hinh_anh_3D_-_Thao_Dan_Visual_Artist_va_Creative_Director_MAD_EP20",
+    "word": "mad",
+    "count": 1
+   },
+   {
+    "video": "Ke_chuyen_bang_hinh_anh_3D_-_Thao_Dan_Visual_Artist_va_Creative_Director_MAD_EP20",
+    "word": "new",
+    "count": 2
+   },
+   {
+    "video": "Ke_chuyen_bang_hinh_anh_3D_-_Thao_Dan_Visual_Artist_va_Creative_Director_MAD_EP20",
+    "word": "suboi",
+    "count": 1
+   },
+   {
+    "video": "Ke_chuyen_bang_hinh_anh_3D_-_Thao_Dan_Visual_Artist_va_Creative_Director_MAD_EP20",
+    "word": "video",
+    "count": 1
+   },
+   {
+    "video": "Ke_chuyen_bang_hinh_anh_3D_-_Thao_Dan_Visual_Artist_va_Creative_Director_MAD_EP20",
+    "word": "visual",
+    "count": 1
+   },
+   {
+    "video": "Ke_chuyen_bang_hinh_anh_3D_-_Thao_Dan_Visual_Artist_va_Creative_Director_MAD_EP20",
+    "word": "york",
+    "count": 2
+   },
+   {
+    "video": "Khui_het_12_tap_trong_12_phut_Have_A_Sip_-_After_Hours_dac_biet",
+    "word": "video",
+    "count": 1
+   },
+   {
+    "video": "Lam_sang_tao_tai_sao_phai_hieu_ve_NFT_-_Pham_Toan_Thang_CEOFounder_Cong_Troi_NFT_MAD_S3_EP02",
+    "word": "blockchain",
+    "count": 1
+   },
+   {
+    "video": "Lam_sang_tao_tai_sao_phai_hieu_ve_NFT_-_Pham_Toan_Thang_CEOFounder_Cong_Troi_NFT_MAD_S3_EP02",
+    "word": "nft",
+    "count": 5
+   },
+   {
+    "video": "Tren_cang_thang_duoi_sao_cang_cung_-_Nha_tri_lieu_tam_ly_Bui_Thanh_Thuy_Coi_Mo_S4_Ep2",
+    "word": "stress",
+    "count": 4
+   },
+   {
+    "video": "Truoc_khi_dung_duong_nen_doi_lan_lac_loi_-_Nhiep_anh_gia_Maika_Elan_HaveASip_110",
+    "word": "have",
+    "count": 1
+   },
+   {
+    "video": "Truoc_khi_dung_duong_nen_doi_lan_lac_loi_-_Nhiep_anh_gia_Maika_Elan_HaveASip_110",
+    "word": "hikikomori",
+    "count": 1
+   },
+   {
+    "video": "Tu_VJ_MC_den_nguoi_tao_noi_dung_doc_lap_-_Dustin_Phuc_Nguyen_HaveASip_6",
+    "word": "youtube",
+    "count": 1
+   },
+   {
+    "video": "Vao_bar_dung_de_cai_net_di_choi_xa_Coi_Mo_Happy_Hour_EP09_coimohappyhour",
+    "word": "bar",
+    "count": 2
+   },
+   {
+    "video": "Vao_bar_dung_de_cai_net_di_choi_xa_Coi_Mo_Happy_Hour_EP09_coimohappyhour",
+    "word": "bartender",
+    "count": 3
+   },
+   {
+    "video": "Ve_dep_cua_nguoi_di_bar_mot_minh_Coi_Mo_Happy_Hour_EP04_coimohappyhour",
+    "word": "bar",
+    "count": 5
+   },
+   {
+    "video": "Ve_dep_cua_nguoi_di_bar_mot_minh_Coi_Mo_Happy_Hour_EP04_coimohappyhour",
+    "word": "dustin",
+    "count": 1
+   },
+   {
+    "video": "Viet_creative_brief_Dai_ma_ro_y_la_tot_hay_ngan_nhung_truyen_cam_hung_moi_goi_la_hay_YMP_EP10",
+    "word": "brand",
+    "count": 1
+   },
+   {
+    "video": "Viet_creative_brief_Dai_ma_ro_y_la_tot_hay_ngan_nhung_truyen_cam_hung_moi_goi_la_hay_YMP_EP10",
+    "word": "brief",
+    "count": 1
+   },
+   {
+    "video": "Viet_creative_brief_Dai_ma_ro_y_la_tot_hay_ngan_nhung_truyen_cam_hung_moi_goi_la_hay_YMP_EP10",
+    "word": "campaign",
+    "count": 1
+   },
+   {
+    "video": "Viet_creative_brief_Dai_ma_ro_y_la_tot_hay_ngan_nhung_truyen_cam_hung_moi_goi_la_hay_YMP_EP10",
+    "word": "consumer",
+    "count": 2
+   },
+   {
+    "video": "Viet_creative_brief_Dai_ma_ro_y_la_tot_hay_ngan_nhung_truyen_cam_hung_moi_goi_la_hay_YMP_EP10",
+    "word": "head",
+    "count": 1
+   }
+  ]
+ },
+ "val_tune": {
+  "ref_words": 22983,
+  "ref_words_in_list": 103,
+  "sentences": 441,
+  "sentences_with_list_word": 71,
+  "videos_with_list_word": 5,
+  "per_word": [
+   {
+    "video": "Ap_luc_nao_khien_ta_lo_du_-_Vu_My_Anh_Minh_Tu_Di-tox_EP2",
+    "word": "app",
+    "count": 2
+   },
+   {
+    "video": "Ap_luc_nao_khien_ta_lo_du_-_Vu_My_Anh_Minh_Tu_Di-tox_EP2",
+    "word": "detox",
+    "count": 1
+   },
+   {
+    "video": "Bao_hiem_so_huong_den_su_thuan_tien_va_de_tiep_can_-_Dang_Hoang_Tung_CEO_OPES_VI_S3_EP26",
+    "word": "digital",
+    "count": 3
+   },
+   {
+    "video": "Bao_hiem_so_huong_den_su_thuan_tien_va_de_tiep_can_-_Dang_Hoang_Tung_CEO_OPES_VI_S3_EP26",
+    "word": "mindset",
+    "count": 2
+   },
+   {
+    "video": "Bao_hiem_so_huong_den_su_thuan_tien_va_de_tiep_can_-_Dang_Hoang_Tung_CEO_OPES_VI_S3_EP26",
+    "word": "opes",
+    "count": 5
+   },
+   {
+    "video": "Bao_hiem_so_huong_den_su_thuan_tien_va_de_tiep_can_-_Dang_Hoang_Tung_CEO_OPES_VI_S3_EP26",
+    "word": "technology",
+    "count": 1
+   },
+   {
+    "video": "Bao_hiem_so_huong_den_su_thuan_tien_va_de_tiep_can_-_Dang_Hoang_Tung_CEO_OPES_VI_S3_EP26",
+    "word": "video",
+    "count": 1
+   },
+   {
+    "video": "Bao_hiem_so_huong_den_su_thuan_tien_va_de_tiep_can_-_Dang_Hoang_Tung_CEO_OPES_VI_S3_EP26",
+    "word": "vietnam",
+    "count": 1
+   },
+   {
+    "video": "Bao_hiem_so_huong_den_su_thuan_tien_va_de_tiep_can_-_Dang_Hoang_Tung_CEO_OPES_VI_S3_EP26",
+    "word": "vpbank",
+    "count": 1
+   },
+   {
+    "video": "Blockchain_tao_co_hoi_de_Viet_Nam_sanh_vai_the_gioi_Huy_Nguyen_Co-Founder_President_KardiaChain",
+    "word": "android",
+    "count": 1
+   },
+   {
+    "video": "Blockchain_tao_co_hoi_de_Viet_Nam_sanh_vai_the_gioi_Huy_Nguyen_Co-Founder_President_KardiaChain",
+    "word": "app",
+    "count": 4
+   },
+   {
+    "video": "Blockchain_tao_co_hoi_de_Viet_Nam_sanh_vai_the_gioi_Huy_Nguyen_Co-Founder_President_KardiaChain",
+    "word": "blockchain",
+    "count": 36
+   },
+   {
+    "video": "Blockchain_tao_co_hoi_de_Viet_Nam_sanh_vai_the_gioi_Huy_Nguyen_Co-Founder_President_KardiaChain",
+    "word": "facebook",
+    "count": 2
+   },
+   {
+    "video": "Blockchain_tao_co_hoi_de_Viet_Nam_sanh_vai_the_gioi_Huy_Nguyen_Co-Founder_President_KardiaChain",
+    "word": "google",
+    "count": 12
+   },
+   {
+    "video": "Blockchain_tao_co_hoi_de_Viet_Nam_sanh_vai_the_gioi_Huy_Nguyen_Co-Founder_President_KardiaChain",
+    "word": "ios",
+    "count": 1
+   },
+   {
+    "video": "Blockchain_tao_co_hoi_de_Viet_Nam_sanh_vai_the_gioi_Huy_Nguyen_Co-Founder_President_KardiaChain",
+    "word": "miro",
+    "count": 12
+   },
+   {
+    "video": "Blockchain_tao_co_hoi_de_Viet_Nam_sanh_vai_the_gioi_Huy_Nguyen_Co-Founder_President_KardiaChain",
+    "word": "silicon",
+    "count": 3
+   },
+   {
+    "video": "Blockchain_tao_co_hoi_de_Viet_Nam_sanh_vai_the_gioi_Huy_Nguyen_Co-Founder_President_KardiaChain",
+    "word": "video",
+    "count": 1
+   },
+   {
+    "video": "Blockchain_tao_co_hoi_de_Viet_Nam_sanh_vai_the_gioi_Huy_Nguyen_Co-Founder_President_KardiaChain",
+    "word": "vietnam",
+    "count": 1
+   },
+   {
+    "video": "Blockchain_tao_co_hoi_de_Viet_Nam_sanh_vai_the_gioi_Huy_Nguyen_Co-Founder_President_KardiaChain",
+    "word": "youtube",
+    "count": 2
+   },
+   {
+    "video": "Cam_giac_khien_nguoi_ta_nghien_lam_phim_-_Dao_dien_Lam_Dao_Dao_MAD_S3EP7",
+    "word": "email",
+    "count": 1
+   },
+   {
+    "video": "Cam_giac_khien_nguoi_ta_nghien_lam_phim_-_Dao_dien_Lam_Dao_Dao_MAD_S3EP7",
+    "word": "house",
+    "count": 1
+   },
+   {
+    "video": "Cam_giac_khien_nguoi_ta_nghien_lam_phim_-_Dao_dien_Lam_Dao_Dao_MAD_S3EP7",
+    "word": "mv",
+    "count": 2
+   },
+   {
+    "video": "Cam_giac_khien_nguoi_ta_nghien_lam_phim_-_Dao_dien_Lam_Dao_Dao_MAD_S3EP7",
+    "word": "production",
+    "count": 1
+   },
+   {
+    "video": "Cam_giac_khien_nguoi_ta_nghien_lam_phim_-_Dao_dien_Lam_Dao_Dao_MAD_S3EP7",
+    "word": "video",
+    "count": 5
+   },
+   {
+    "video": "Truoc_khi_dung_duong_nen_doi_lan_lac_loi_-_Nhiep_anh_gia_Maika_Elan_HaveASip_110",
+    "word": "hikikomori",
+    "count": 1
+   }
+  ]
+ }
+}

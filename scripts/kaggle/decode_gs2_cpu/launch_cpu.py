@@ -8,6 +8,7 @@ xoá cache upload trước mỗi lần (cache resume của Kaggle CLI không tá
     python scripts/kaggle/decode_gs2_cpu/launch_cpu.py bundle                 # dựng thư mục dataset 3 tài khoản
     python scripts/kaggle/decode_gs2_cpu/launch_cpu.py upload                 # tải lên lần lượt
     python scripts/kaggle/decode_gs2_cpu/launch_cpu.py push --stage tune
+    python scripts/kaggle/decode_gs2_cpu/launch_cpu.py push --stage tune --grid '{"lmw":[0.8,1.0,1.3],"ws":[2.5,3.0,4.0]}'
     python scripts/kaggle/decode_gs2_cpu/launch_cpu.py push --stage final --final '{"lm":"broad","lmw":0.8,"ws":1.0}'
 """
 
@@ -85,14 +86,15 @@ def upload() -> None:
               flush=True)
 
 
-def push(stage: str, final: str | None) -> None:
+def push(stage: str, final: str | None, grid: str | None) -> None:
     code = (HERE / "decode_cpu.py").read_text(encoding="utf-8")
     for acc, enc in PLAN.items():
         out = HERE / "_build" / f"{stage}_{acc}"
         out.mkdir(parents=True, exist_ok=True)
         c = (code.replace('os.environ.get("GS2_STAGE", "__STAGE__")', f'os.environ.get("GS2_STAGE", "{stage}")')
              .replace('os.environ.get("GS2_ENCODER", "__ENCODER__")', f'os.environ.get("GS2_ENCODER", "{enc}")')
-             .replace("""os.environ.get("GS2_FINAL", '__FINAL__')""", f"""os.environ.get("GS2_FINAL", '{final or "null"}')"""))
+             .replace("""os.environ.get("GS2_FINAL", '__FINAL__')""", f"""os.environ.get("GS2_FINAL", '{final or "null"}')""")
+             .replace("""os.environ.get("GS2_GRID", '__GRID__')""", f"""os.environ.get("GS2_GRID", '{grid or "null"}')"""))
         (out / "decode_cpu.py").write_text(c, encoding="utf-8")
         slug = f"gs2-cpu-{stage}-{enc.replace('_', '-')}"
         (out / "kernel-metadata.json").write_text(json.dumps({
@@ -111,8 +113,9 @@ def main() -> None:
     ap.add_argument("cmd", choices=["bundle", "upload", "push"])
     ap.add_argument("--stage", choices=["tune", "final"])
     ap.add_argument("--final", default=None, help='JSON cấu hình cho stage final, vd. {"lm":"vss","lmw":0.8,"ws":1.0}')
+    ap.add_argument("--grid", default=None, help='JSON lưới tune thay mặc định, vd. {"lmw":[0.8,1.0,1.3],"ws":[2.5,3.0,4.0]}')
     a = ap.parse_args()
-    {"bundle": bundle, "upload": upload}.get(a.cmd, lambda: push(a.stage, a.final))()
+    {"bundle": bundle, "upload": upload}.get(a.cmd, lambda: push(a.stage, a.final, a.grid))()
 
 
 if __name__ == "__main__":

@@ -70,6 +70,16 @@ def load_systems() -> dict[str, tuple[str, str, dict]]:
                 enc, seed = c[len("v2a_"):-len("_lm")].rsplit("_seed", 1)
                 col = f"v2a_{enc}{'' if seed == '42' else f'_seed{seed}'}_lm"
                 out[col] = (f"{ENC[enc]} 40 ms ep37 seed {seed} · beam+LM", "40 ms + giải mã", {r["key"]: r[c] for r in rows})
+    # Beam + LM rộng, một cấu hình chung chọn theo WER dev tb 3 encoder (kernel CPU `decode_gs2_cpu`, 19–20/10).
+    for path in sorted(RES.glob("40ms_tuned/*/test_hyps.tsv")):
+        with path.open(encoding="utf-8") as f:
+            rows = list(csv.DictReader(f, delimiter="\t"))
+        for c in rows[0]:
+            if c.endswith("_lm"):
+                enc, seed = c[len("v2a_"):-len("_lm")].rsplit("_seed", 1)
+                col = f"v2a_{enc}{'' if seed == '42' else f'_seed{seed}'}_lmtuned"
+                out[col] = (f"{ENC[enc]} 40 ms ep37 seed {seed} · beam+LM dò dev", "40 ms + giải mã dò dev",
+                            {r["key"]: r[c] for r in rows})
     return out
 
 
@@ -112,7 +122,7 @@ def main() -> None:
 
     # 40 ms 3 seed: cặp encoder (hai tầng) và so với pre-train — cùng tiêu chí clean-test.
     paired = []
-    for mode in ("greedy", "lm"):
+    for mode in ("greedy", "lm", "lmtuned"):
         cols = {m: [c for c in (f"v2a_{m}_{mode}", f"v2a_{m}_seed43_{mode}", f"v2a_{m}_seed44_{mode}") if c in results]
                 for m in ("mamba", "conextbimamba", "conformer_relpos")}
         if min(map(len, cols.values())) < 3:

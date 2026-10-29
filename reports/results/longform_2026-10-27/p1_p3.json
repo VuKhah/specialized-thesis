@@ -1,0 +1,409 @@
+{
+ "p1": {
+  "wer_auto": 0.08222892986841485,
+  "wer_orig": 0.08020091496486347,
+  "diff": 0.002028014903551384,
+  "ci": [
+   0.0007194848831514647,
+   0.0036785827836945096
+  ],
+  "n_chains": 38,
+  "n_videos": 7,
+  "hours": 3.0144444270833337,
+  "words": 42406
+ },
+ "p3": {
+  "n_words": 42153,
+  "wrong_rate": 0.06203591677935141,
+  "auroc_entropy": 0.9397708736673396,
+  "auroc_maxprob": 0.9369806397737075,
+  "diff": 0.002790233893632088,
+  "ci": [
+   0.002119126684078765,
+   0.0035287457865213444
+  ],
+  "n_boot": 2000
+ },
+ "chains": [
+  {
+   "chain": "Ap_luc_nao_khien_ta_lo_du_-_Vu_My_Anh_Mi_seg004-011",
+   "video": "Ap_luc_nao_khien_ta_lo_du_-_Vu_My_Anh_Minh_Tu_Di-tox_EP2",
+   "duration_s": 105.7,
+   "n_orig": 8,
+   "n_auto": 9,
+   "words": 408,
+   "err_auto": 37,
+   "err_orig": 36
+  },
+  {
+   "chain": "Ap_luc_nao_khien_ta_lo_du_-_Vu_My_Anh_Mi_seg022-042",
+   "video": "Ap_luc_nao_khien_ta_lo_du_-_Vu_My_Anh_Minh_Tu_Di-tox_EP2",
+   "duration_s": 269.6,
+   "n_orig": 21,
+   "n_auto": 22,
+   "words": 1083,
+   "err_auto": 138,
+   "err_orig": 138
+  },
+  {
+   "chain": "Ap_luc_nao_khien_ta_lo_du_-_Vu_My_Anh_Mi_seg044-049",
+   "video": "Ap_luc_nao_khien_ta_lo_du_-_Vu_My_Anh_Minh_Tu_Di-tox_EP2",
+   "duration_s": 77.9,
+   "n_orig": 6,
+   "n_auto": 7,
+   "words": 324,
+   "err_auto": 13,
+   "err_orig": 11
+  },
+  {
+   "chain": "Ap_luc_nao_khien_ta_lo_du_-_Vu_My_Anh_Mi_seg051-062",
+   "video": "Ap_luc_nao_khien_ta_lo_du_-_Vu_My_Anh_Minh_Tu_Di-tox_EP2",
+   "duration_s": 150.6,
+   "n_orig": 12,
+   "n_auto": 13,
+   "words": 604,
+   "err_auto": 60,
+   "err_orig": 55
+  },
+  {
+   "chain": "Bao_gio_cho_het_chuyen_doi_moi_-_Ruby_Ng_seg000-010",
+   "video": "Bao_gio_cho_het_chuyen_doi_moi_-_Ruby_Nguyen_CEO_Curieous_VIV_S2_EP25",
+   "duration_s": 145.4,
+   "n_orig": 11,
+   "n_auto": 12,
+   "words": 565,
+   "err_auto": 43,
+   "err_orig": 46
+  },
+  {
+   "chain": "Bao_gio_cho_het_chuyen_doi_moi_-_Ruby_Ng_seg016-024",
+   "video": "Bao_gio_cho_het_chuyen_doi_moi_-_Ruby_Nguyen_CEO_Curieous_VIV_S2_EP25",
+   "duration_s": 114.5,
+   "n_orig": 9,
+   "n_auto": 10,
+   "words": 499,
+   "err_auto": 23,
+   "err_orig": 18
+  },
+  {
+   "chain": "Bao_gio_cho_het_chuyen_doi_moi_-_Ruby_Ng_seg026-091",
+   "video": "Bao_gio_cho_het_chuyen_doi_moi_-_Ruby_Nguyen_CEO_Curieous_VIV_S2_EP25",
+   "duration_s": 883.6,
+   "n_orig": 66,
+   "n_auto": 70,
+   "words": 3724,
+   "err_auto": 227,
+   "err_orig": 228
+  },
+  {
+   "chain": "Bao_gio_cho_het_chuyen_doi_moi_-_Ruby_Ng_seg093-101",
+   "video": "Bao_gio_cho_het_chuyen_doi_moi_-_Ruby_Nguyen_CEO_Curieous_VIV_S2_EP25",
+   "duration_s": 120.5,
+   "n_orig": 9,
+   "n_auto": 10,
+   "words": 466,
+   "err_auto": 54,
+   "err_orig": 55
+  },
+  {
+   "chain": "Bao_gio_cho_het_chuyen_doi_moi_-_Ruby_Ng_seg110-115",
+   "video": "Bao_gio_cho_het_chuyen_doi_moi_-_Ruby_Nguyen_CEO_Curieous_VIV_S2_EP25",
+   "duration_s": 73.2,
+   "n_orig": 6,
+   "n_auto": 6,
+   "words": 311,
+   "err_auto": 23,
+   "err_orig": 26
+  },
+  {
+   "chain": "Bao_gio_cho_het_chuyen_doi_moi_-_Ruby_Ng_seg121-155",
+   "video": "Bao_gio_cho_het_chuyen_doi_moi_-_Ruby_Nguyen_CEO_Curieous_VIV_S2_EP25",
+   "duration_s": 459.8,
+   "n_orig": 35,
+   "n_auto": 36,
+   "words": 1890,
+   "err_auto": 154,
+   "err_orig": 155
+  },
+  {
+   "chain": "Bao_hiem_so_huong_den_su_thuan_tien_va_d_seg000-018",
+   "video": "Bao_hiem_so_huong_den_su_thuan_tien_va_de_tiep_can_-_Dang_Hoang_Tung_CEO_OPES_VI_S3_EP26",
+   "duration_s": 251.9,
+   "n_orig": 19,
+   "n_auto": 21,
+   "words": 1047,
+   "err_auto": 44,
+   "err_orig": 35
+  },
+  {
+   "chain": "Bao_hiem_so_huong_den_su_thuan_tien_va_d_seg021-027",
+   "video": "Bao_hiem_so_huong_den_su_thuan_tien_va_de_tiep_can_-_Dang_Hoang_Tung_CEO_OPES_VI_S3_EP26",
+   "duration_s": 96.7,
+   "n_orig": 7,
+   "n_auto": 9,
+   "words": 385,
+   "err_auto": 14,
+   "err_orig": 11
+  },
+  {
+   "chain": "Bao_hiem_so_huong_den_su_thuan_tien_va_d_seg034-064",
+   "video": "Bao_hiem_so_huong_den_su_thuan_tien_va_de_tiep_can_-_Dang_Hoang_Tung_CEO_OPES_VI_S3_EP26",
+   "duration_s": 411.7,
+   "n_orig": 31,
+   "n_auto": 34,
+   "words": 1615,
+   "err_auto": 107,
+   "err_orig": 91
+  },
+  {
+   "chain": "Bao_hiem_so_huong_den_su_thuan_tien_va_d_seg071-076",
+   "video": "Bao_hiem_so_huong_den_su_thuan_tien_va_de_tiep_can_-_Dang_Hoang_Tung_CEO_OPES_VI_S3_EP26",
+   "duration_s": 78.3,
+   "n_orig": 6,
+   "n_auto": 7,
+   "words": 337,
+   "err_auto": 34,
+   "err_orig": 35
+  },
+  {
+   "chain": "Bao_hiem_so_huong_den_su_thuan_tien_va_d_seg078-123",
+   "video": "Bao_hiem_so_huong_den_su_thuan_tien_va_de_tiep_can_-_Dang_Hoang_Tung_CEO_OPES_VI_S3_EP26",
+   "duration_s": 609.0,
+   "n_orig": 46,
+   "n_auto": 49,
+   "words": 2505,
+   "err_auto": 153,
+   "err_orig": 146
+  },
+  {
+   "chain": "Biet_on_nhung_tran_tro_25_-_Hoang_Dung_H_seg000-008",
+   "video": "Biet_on_nhung_tran_tro_25_-_Hoang_Dung_Have_A_Sip_EP61",
+   "duration_s": 114.8000625,
+   "n_orig": 9,
+   "n_auto": 9,
+   "words": 399,
+   "err_auto": 36,
+   "err_orig": 32
+  },
+  {
+   "chain": "Biet_on_nhung_tran_tro_25_-_Hoang_Dung_H_seg010-035",
+   "video": "Biet_on_nhung_tran_tro_25_-_Hoang_Dung_Have_A_Sip_EP61",
+   "duration_s": 331.199875,
+   "n_orig": 26,
+   "n_auto": 27,
+   "words": 1294,
+   "err_auto": 74,
+   "err_orig": 74
+  },
+  {
+   "chain": "Biet_on_nhung_tran_tro_25_-_Hoang_Dung_H_seg037-043",
+   "video": "Biet_on_nhung_tran_tro_25_-_Hoang_Dung_Have_A_Sip_EP61",
+   "duration_s": 84.8,
+   "n_orig": 7,
+   "n_auto": 8,
+   "words": 333,
+   "err_auto": 18,
+   "err_orig": 19
+  },
+  {
+   "chain": "Biet_on_nhung_tran_tro_25_-_Hoang_Dung_H_seg045-062",
+   "video": "Biet_on_nhung_tran_tro_25_-_Hoang_Dung_Have_A_Sip_EP61",
+   "duration_s": 230.6,
+   "n_orig": 18,
+   "n_auto": 20,
+   "words": 887,
+   "err_auto": 52,
+   "err_orig": 50
+  },
+  {
+   "chain": "Biet_on_nhung_tran_tro_25_-_Hoang_Dung_H_seg064-102",
+   "video": "Biet_on_nhung_tran_tro_25_-_Hoang_Dung_Have_A_Sip_EP61",
+   "duration_s": 490.5999375,
+   "n_orig": 39,
+   "n_auto": 42,
+   "words": 1971,
+   "err_auto": 158,
+   "err_orig": 154
+  },
+  {
+   "chain": "Biet_on_nhung_tran_tro_25_-_Hoang_Dung_H_seg104-117",
+   "video": "Biet_on_nhung_tran_tro_25_-_Hoang_Dung_Have_A_Sip_EP61",
+   "duration_s": 172.4,
+   "n_orig": 14,
+   "n_auto": 14,
+   "words": 651,
+   "err_auto": 74,
+   "err_orig": 76
+  },
+  {
+   "chain": "Biet_on_nhung_tran_tro_25_-_Hoang_Dung_H_seg119-154",
+   "video": "Biet_on_nhung_tran_tro_25_-_Hoang_Dung_Have_A_Sip_EP61",
+   "duration_s": 457.7,
+   "n_orig": 36,
+   "n_auto": 37,
+   "words": 1714,
+   "err_auto": 117,
+   "err_orig": 113
+  },
+  {
+   "chain": "Biet_on_nhung_tran_tro_25_-_Hoang_Dung_H_seg156-165",
+   "video": "Biet_on_nhung_tran_tro_25_-_Hoang_Dung_Have_A_Sip_EP61",
+   "duration_s": 125.6,
+   "n_orig": 10,
+   "n_auto": 11,
+   "words": 503,
+   "err_auto": 44,
+   "err_orig": 35
+  },
+  {
+   "chain": "Blockchain_tao_co_hoi_de_Viet_Nam_sanh_v_seg000-009",
+   "video": "Blockchain_tao_co_hoi_de_Viet_Nam_sanh_vai_the_gioi_Huy_Nguyen_Co-Founder_President_KardiaChain",
+   "duration_s": 136.2,
+   "n_orig": 10,
+   "n_auto": 12,
+   "words": 544,
+   "err_auto": 52,
+   "err_orig": 52
+  },
+  {
+   "chain": "Blockchain_tao_co_hoi_de_Viet_Nam_sanh_v_seg011-028",
+   "video": "Blockchain_tao_co_hoi_de_Viet_Nam_sanh_vai_the_gioi_Huy_Nguyen_Co-Founder_President_KardiaChain",
+   "duration_s": 239.4,
+   "n_orig": 18,
+   "n_auto": 19,
+   "words": 967,
+   "err_auto": 114,
+   "err_orig": 114
+  },
+  {
+   "chain": "Blockchain_tao_co_hoi_de_Viet_Nam_sanh_v_seg031-046",
+   "video": "Blockchain_tao_co_hoi_de_Viet_Nam_sanh_vai_the_gioi_Huy_Nguyen_Co-Founder_President_KardiaChain",
+   "duration_s": 213.4,
+   "n_orig": 16,
+   "n_auto": 17,
+   "words": 904,
+   "err_auto": 66,
+   "err_orig": 77
+  },
+  {
+   "chain": "Blockchain_tao_co_hoi_de_Viet_Nam_sanh_v_seg048-068",
+   "video": "Blockchain_tao_co_hoi_de_Viet_Nam_sanh_vai_the_gioi_Huy_Nguyen_Co-Founder_President_KardiaChain",
+   "duration_s": 283.9,
+   "n_orig": 21,
+   "n_auto": 23,
+   "words": 1137,
+   "err_auto": 81,
+   "err_orig": 79
+  },
+  {
+   "chain": "Blockchain_tao_co_hoi_de_Viet_Nam_sanh_v_seg070-091",
+   "video": "Blockchain_tao_co_hoi_de_Viet_Nam_sanh_vai_the_gioi_Huy_Nguyen_Co-Founder_President_KardiaChain",
+   "duration_s": 288.4,
+   "n_orig": 22,
+   "n_auto": 23,
+   "words": 1170,
+   "err_auto": 77,
+   "err_orig": 76
+  },
+  {
+   "chain": "Blockchain_tao_co_hoi_de_Viet_Nam_sanh_v_seg093-122",
+   "video": "Blockchain_tao_co_hoi_de_Viet_Nam_sanh_vai_the_gioi_Huy_Nguyen_Co-Founder_President_KardiaChain",
+   "duration_s": 398.5,
+   "n_orig": 30,
+   "n_auto": 33,
+   "words": 1678,
+   "err_auto": 145,
+   "err_orig": 139
+  },
+  {
+   "chain": "Blockchain_tao_co_hoi_de_Viet_Nam_sanh_v_seg124-167",
+   "video": "Blockchain_tao_co_hoi_de_Viet_Nam_sanh_vai_the_gioi_Huy_Nguyen_Co-Founder_President_KardiaChain",
+   "duration_s": 588.7,
+   "n_orig": 44,
+   "n_auto": 48,
+   "words": 2217,
+   "err_auto": 233,
+   "err_orig": 226
+  },
+  {
+   "chain": "Buoc_nhay_tiep_theo_cua_Marketing_-_Phi__seg007-085",
+   "video": "Buoc_nhay_tiep_theo_cua_Marketing_-_Phi_Khanh_Le_Giam_doc_Marketing_Gojek_Vietnam_VI_S2_EP21",
+   "duration_s": 1067.8,
+   "n_orig": 79,
+   "n_auto": 84,
+   "words": 3909,
+   "err_auto": 446,
+   "err_orig": 453
+  },
+  {
+   "chain": "Buoc_nhay_tiep_theo_cua_Marketing_-_Phi__seg092-100",
+   "video": "Buoc_nhay_tiep_theo_cua_Marketing_-_Phi_Khanh_Le_Giam_doc_Marketing_Gojek_Vietnam_VI_S2_EP21",
+   "duration_s": 113.5,
+   "n_orig": 9,
+   "n_auto": 10,
+   "words": 400,
+   "err_auto": 24,
+   "err_orig": 22
+  },
+  {
+   "chain": "Buoc_nhay_tiep_theo_cua_Marketing_-_Phi__seg102-164",
+   "video": "Buoc_nhay_tiep_theo_cua_Marketing_-_Phi_Khanh_Le_Giam_doc_Marketing_Gojek_Vietnam_VI_S2_EP21",
+   "duration_s": 836.9,
+   "n_orig": 63,
+   "n_auto": 67,
+   "words": 3051,
+   "err_auto": 296,
+   "err_orig": 278
+  },
+  {
+   "chain": "Cam_giac_khien_nguoi_ta_nghien_lam_phim__seg000-008",
+   "video": "Cam_giac_khien_nguoi_ta_nghien_lam_phim_-_Dao_dien_Lam_Dao_Dao_MAD_S3EP7",
+   "duration_s": 121.3,
+   "n_orig": 9,
+   "n_auto": 10,
+   "words": 402,
+   "err_auto": 38,
+   "err_orig": 37
+  },
+  {
+   "chain": "Cam_giac_khien_nguoi_ta_nghien_lam_phim__seg010-028",
+   "video": "Cam_giac_khien_nguoi_ta_nghien_lam_phim_-_Dao_dien_Lam_Dao_Dao_MAD_S3EP7",
+   "duration_s": 244.2000625,
+   "n_orig": 19,
+   "n_auto": 19,
+   "words": 827,
+   "err_auto": 83,
+   "err_orig": 79
+  },
+  {
+   "chain": "Cam_giac_khien_nguoi_ta_nghien_lam_phim__seg030-046",
+   "video": "Cam_giac_khien_nguoi_ta_nghien_lam_phim_-_Dao_dien_Lam_Dao_Dao_MAD_S3EP7",
+   "duration_s": 221.2,
+   "n_orig": 17,
+   "n_auto": 18,
+   "words": 833,
+   "err_auto": 61,
+   "err_orig": 56
+  },
+  {
+   "chain": "Cam_giac_khien_nguoi_ta_nghien_lam_phim__seg050-058",
+   "video": "Cam_giac_khien_nguoi_ta_nghien_lam_phim_-_Dao_dien_Lam_Dao_Dao_MAD_S3EP7",
+   "duration_s": 111.4,
+   "n_orig": 9,
+   "n_auto": 9,
+   "words": 378,
+   "err_auto": 35,
+   "err_orig": 33
+  },
+  {
+   "chain": "Cam_giac_khien_nguoi_ta_nghien_lam_phim__seg064-073",
+   "video": "Cam_giac_khien_nguoi_ta_nghien_lam_phim_-_Dao_dien_Lam_Dao_Dao_MAD_S3EP7",
+   "duration_s": 131.1,
+   "n_orig": 10,
+   "n_auto": 11,
+   "words": 474,
+   "err_auto": 39,
+   "err_orig": 41
+  }
+ ]
+}

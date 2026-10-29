@@ -1,0 +1,15 @@
+{
+ "date": "2026-10-27 11:32",
+ "torch": "2.8.0+cpu",
+ "threads": 2,
+ "n_utterances": 30,
+ "n_channels_10ms": 128,
+ "seconds_per_model": {
+  "b1_40": 569.8,
+  "conext_40": 202.1,
+  "conformer_40": 33.5,
+  "b1_10": 1371.5,
+  "conext_10": 386.8,
+  "conformer_10": 57.6
+ }
+}

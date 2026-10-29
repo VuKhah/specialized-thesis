@@ -23,6 +23,9 @@ huggingface_hub
 
 # Evaluation
 jiwer
+scipy
+# Giải mã beam + từ điển + LM (`torchaudio.models.decoder.ctc_decoder` cần gói này từ torchaudio 2.x)
+flashlight-text
 
 # Demo
 gradio
